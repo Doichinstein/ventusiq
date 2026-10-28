@@ -15,14 +15,14 @@ export function mountEvents({document,window,fetcher=fetch}){
     }catch(error){if(gen===listGeneration)get('event-list-status').textContent=error.message;}finally{if(gen===listGeneration)get('event-more').disabled=false;}
   }
   async function openStory(nextId,nextAt=null,{resolve=false}={}){
-    show();const gen=++generation;get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
+    show();const gen=++generation;window.WeatherEventReports?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
     id=nextId;asof=nextAt;story=null;get('event-detail').hidden=true;get('event-status').textContent=resolve?'Retrieving up to five referenced messages from NWS…':'Reading the collected timeline…';
     const params=new URLSearchParams({event:id});if(asof)params.set('at',asof);window.history.replaceState(null,'',window.location.pathname+window.location.search+'#'+params);
     try{const data=await request('/api/events/'+id+(asof?'?at='+encodeURIComponent(asof):resolve?'?resolve=1':''));if(gen!==generation)return;story=data;render();}
     catch(error){if(gen===generation){get('event-status').textContent=error.message+' Earlier views cannot use messages or links collected later.';get('event-detail').hidden=true;}}
   }
   function render(){
-    if(!story)return;const entries=timelineEntries(story),latest=[...entries].reverse().find(t=>t.present!==0)||entries.at(-1),p=latest.feature.properties;
+    if(!story)return;window.WeatherEventReports?.updateStory(story,asof);const entries=timelineEntries(story),latest=[...entries].reverse().find(t=>t.present!==0)||entries.at(-1),p=latest.feature.properties;
     get('event-detail').hidden=false;get('event-title').textContent=p.event||'Alert timeline';get('event-area').textContent=p.areaDesc||'';
     get('event-status').textContent=`${asof?'Historical archive view':'Latest collected archive'} · ${entries.length} recorded transitions across ${new Set(entries.map(e=>e.id)).size} collected messages.`;
     get('event-view-time').textContent=`View cutoff ${time(story.as_of)}. ${story.last_collection?'Last complete active-feed collection at or before this view: '+time(story.last_collection)+'.':'No complete active-feed collection is recorded before this view.'}`;
@@ -47,7 +47,7 @@ export function mountEvents({document,window,fetcher=fetch}){
   get('event-asof-form').onsubmit=e=>{e.preventDefault();const at=new Date(get('event-asof').value);if(!Number.isFinite(at.getTime())){get('event-status').textContent='Choose a valid local date and time.';return;}openStory(id,at.toISOString());};get('event-current').onclick=()=>openStory(id);get('event-resolve').onclick=()=>openStory(id,null,{resolve:true});
   get('event-share').onclick=async()=>{try{await window.navigator.clipboard.writeText(window.location.href);get('event-status').textContent='Timeline link copied, including the archive cutoff when selected.';}catch{get('event-status').textContent='Copy the timeline URL from the address bar.';}};
   get('event-export').onclick=()=>{if(!story)return;const blob=new Blob([JSON.stringify(story,null,2)],{type:'application/json'}),url=window.URL.createObjectURL(blob),a=el('a');a.href=url;a.download='ventusiq-event-'+id.slice(0,12)+'.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherEvents={hide,openStory,async openAlert(value){await openStory(await eventId(value));if(!messages.length)loadList();}};
+  window.WeatherEvents={hide,openStory,context:()=>({story,asof}),async openAlert(value){await openStory(await eventId(value));if(!messages.length)loadList();}};
   const shared=new URLSearchParams(window.location.hash.slice(1));if(shared.has('event')){openStory(shared.get('event'),shared.get('at'));loadList();}
   // Keep an open story stable while somebody reads or expands official text.
   window.setInterval(()=>{if(visible&&!asof&&!id)loadList();},60000);

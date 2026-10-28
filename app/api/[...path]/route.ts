@@ -8,6 +8,7 @@ import { JourneyService } from '../../../lib/journey-service.mjs';
 import { AnalogsService } from '../../../lib/analogs-service.mjs';
 import { PlanningService } from '../../../lib/planning-service.mjs';
 import { AirTrendsService } from '../../../lib/air-trends-service.mjs';
+import { EventReportsService } from '../../../lib/event-reports-service.mjs';
 
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
@@ -15,6 +16,10 @@ export async function GET(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
+    if(path==='/api/event-reports'){
+      const result=await new EventReportsService(service).forEvent(url.searchParams.get('id'),url.searchParams.has('at')?atTime(url.searchParams.get('at'))*1000:null,url.searchParams.has('alertAt')?atTime(url.searchParams.get('alertAt'))*1000:null);
+      return result?json(result):json({error:'No collected event at this time'},404);
+    }
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));
     if(path==='/api/planning/grid'){
       try{return json(await new PlanningService(service).grid(url.searchParams.get('lat'),url.searchParams.get('lon')));}

@@ -254,3 +254,7 @@ Historical context: the hosted My weather briefing includes [comparable historic
 [Activity planning](docs/activity-planning.md) supports editable presets, full-window gust limits, margin scenarios, timed alert context and JSON export. Current PM2.5 readings are shown separately; future air-quality coverage remains unknown.
 
 River gauge details can compare successive collected forecasts: matched-time level changes, shared-horizon highs, threshold-crossing brackets and complete source evidence. Observation updates alone do not become forecast revisions.
+
+The Events workspace also links [preliminary NOAA storm reports](docs/event-reports.md)
+to severe-convective alert areas and times, with source comments, archive-cutoff replay
+and raw-evidence downloads. Matching reports provide context, not official warning verification.

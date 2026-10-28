@@ -16,6 +16,7 @@
   <script type="module" src="/rivers.js"></script>
   <script type="module" src="/river-changes.js"></script>
   <script type="module" src="/events.js"></script>
+  <script type="module" src="/event-reports.js"></script>
   <script type="module" src="/observations.js"></script>
   <script type="module" src="/journey.js"></script>
   <script type="module" src="/compound.js"></script>
@@ -81,6 +82,7 @@
         <div class="place-heading"><div><span class="eyebrow">OFFICIAL ALERT MESSAGE CHAIN</span><h2 id="event-title"></h2><p id="event-area" class="small"></p></div><div class="place-actions"><button id="event-share" class="action secondary">Copy timeline link</button><button id="event-export" class="action secondary">Export JSON</button></div></div>
         <section class="weather-card"><h3>View what had been collected</h3><form id="event-asof-form" class="event-asof"><label>As of (your local time)<input id="event-asof" type="datetime-local" step="0.001" required></label><button class="action">View archive at this time</button><button type="button" id="event-current" class="action secondary">Latest collected view</button></form><p id="event-view-time" class="small"></p><p class="small">Collection time controls replay. A message retrieved later cannot appear in an earlier view, even if it was issued earlier. Unattended alert upkeep is hourly; intervening changes can be missed.</p></section>
         <section class="weather-card"><div class="section-top"><h3>Coverage of this timeline</h3><button id="event-resolve" class="action secondary">Retrieve referenced messages</button></div><p id="event-coverage"></p><p id="event-resolution" class="small" role="status"></p><p class="small">Connections follow explicit NWS message references. They do not prove that every message describes one physical storm. Leaving the active feed is not proof of cancellation, all-clear conditions or a measured outcome.</p></section>
+        <section class="weather-card"><span class="eyebrow">REPORTED OUTCOMES / SOURCE EVIDENCE</span><h3>What was reported in this area?</h3><p class="small">Compare severe-convective alert windows with NOAA’s preliminary tornado, wind and hail reports. Reports can be delayed, duplicated, estimated or corrected. Matching an area and time does not establish that an alert verified.</p><button id="event-reports-run" class="action secondary" disabled>Find overlapping storm reports</button><p id="event-reports-status" class="small" role="status"></p><div id="event-reports-results" aria-live="polite"></div><button id="event-reports-export" class="text-button" disabled>Export reports and matching evidence JSON</button></section>
         <div id="event-timeline" class="event-timeline"></div>
       </div></div></div>
   </section>

@@ -201,3 +201,7 @@ Do not substitute navigation placeholders or roadmap labels for working features
 ## Air-quality history
 
 `AirTrendsService` collects bounded raw EPA hourly histories for IDs present in the current measured-monitor feed, using the shared hazard archive and a 500-monitor admission cap. `air-trends-core.mjs` independently checks measurement flags, units, timestamps and location continuity; it computes six-hour endpoint differences and complete six-reading means without filling gaps. `air-trends.js` owns nearby-monitor selection, the chart/table, freshness handling and raw-evidence export in My weather. It reuses `WeatherHazards` discovery and refresh hooks and supports direct editions with the same adapter. See [measured air-quality trends](air-trends.md).
+
+## Reported event outcomes
+
+`EventReportsService` links the selected immutable alert snapshot with bounded daily SPC report editions. `event-reports-core.mjs` parses the three source sections, maps 12Z report days to UTC occurrence times, follows explicit successor timing and matches validated alert/zone geography. `event-reports.js` adds an on-demand report panel and complete evidence export to Events without refreshing the timeline under a reader. Historical retrieval uses only editions and boundaries available at the cutoff, with explicit millisecond availability for report bodies. These are preliminary spatiotemporal associations, not verified alert outcomes. See [event report methods](event-reports.md).

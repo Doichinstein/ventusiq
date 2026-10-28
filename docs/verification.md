@@ -2,6 +2,36 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Historical analog increment
+
+- Added ten-year NASA POWER daily reanalysis ingestion, shared native-grid caching,
+  complete UTC forecast-day targets, fixed similarity retrieval, following-day
+  distributions, out-of-time baseline evaluation and full normalized-data export.
+  Methods and limits: [historical analogs](historical-analogs.md).
+- Twenty new tests cover units/fill values, UTC and date-line handling, forecast
+  gaps/overlaps/freshness, seasonal wrap/leap days, outcome cutoff and spacing,
+  outcome-blind ranking, sparse/out-of-distribution targets, held-out isolation,
+  baselines, source revisions, restart/outage/cache/backoff behavior, provider gate,
+  redirects/size limits, UI races, safe text, selection invalidation and export.
+- Regression total: 145 Node + 16 Python tests (161); TypeScript and production
+  build passed. No dependencies or schema migration were added.
+- Real NASA collection returned 3,653 usable days (2016–2025) for grid center
+  39.000, -76.875. In 48 predetermined 2024–2025 holdout cases, analog high/low
+  MAE was 2.566/2.134°C versus seasonal 3.806/3.641°C. Wind MAE was 0.960 m/s
+  versus seasonal 0.870 m/s; precipitation MAE was 1.979 mm versus 1.810 mm.
+  The method did not improve those latter baselines. Both strengths and failures
+  appear in the UI; these reanalysis tests do not validate forecast transfer.
+- The built Worker returned history and a live NWS forecast for Washington
+  (38.9, -77). Its 2026-10-29 UTC forecast matched 20 prior days. A second point
+  in the same history grid reused the revision. Invalid coordinates returned 400;
+  history modules and the application returned 200. Source history revision:
+  `5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2`.
+- The integration check caught Workers rejecting fetch redirect mode `error`;
+  collection now uses `manual` and rejects non-success responses without following
+  redirects. The corrected live check passed after the shared failure backoff.
+- Browser layout remains unverified under the saved permission setting. No alternate
+  browser automation was attempted. The hourly alert-upkeep schedule is unchanged.
+
 ## Compound-hazard increment
 
 - Added six versioned rules and a My weather card with overlap windows, explanatory

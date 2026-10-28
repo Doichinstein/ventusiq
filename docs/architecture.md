@@ -92,6 +92,15 @@ have individual ownership, deletion, bounded quotas and authenticated writes.
 External feeds, notifications and webhooks need delivery records, idempotency keys,
 bounded retries and explicit user opt-in. Never send from a page view alone.
 
+`AnalogsService` archives NASA POWER daily reanalysis by native meteorology grid
+and ten-year window. `analogs-core.mjs` matches complete upcoming UTC forecast days
+against fixed temperature/wind similarity rules and evaluates held-out years
+against seasonal and persistence baselines. `analogs.js` exposes source coverage,
+selected dates, following-day distributions, validation and reproducible export.
+Reanalysis outcomes are historical context, not operational forecast probabilities;
+station and reported-impact integration remain future work. See
+[the complete historical analog method](historical-analogs.md).
+
 ## Durable archive
 
 `compound-core.mjs` evaluates six versioned rules over the selected place's current

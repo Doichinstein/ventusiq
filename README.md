@@ -246,3 +246,5 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
   retained in `public/assets/fonts/`. No external font requests are made. Visitors
   contact NWS (static mode) and the tile service; there are no analytics or accounts.
 
+
+Historical context: the hosted My weather briefing includes [comparable historical days](docs/historical-analogs.md), using ten years of NASA POWER grid data, explicit similarity limits, following-day distributions, chronological baseline tests and a reproducible evidence export. These are historical comparisons, not calibrated forecasts.

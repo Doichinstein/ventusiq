@@ -1,4 +1,4 @@
-# Weather Commons
+# VentusIQ — Open Weather
 
 A free, Apache-2.0 map of US weather alerts. A small Python daemon collects the
 National Weather Service active feed, retains 24 hours of snapshots, and serves a
@@ -6,7 +6,9 @@ responsive map with filters, official alert details, replay, and a change feed.
 
 Public source: https://github.com/Doichinstein/weather-commons
 
-Working project name: Weather Commons. No accounts, paid data keys, or Python
+The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal
+colors, and Geist typography. The source repository/package remains named
+`weather-commons`. No accounts, paid data keys, or Python
 runtime dependencies are required. Python 3.11 or newer is required.
 
 ## Run locally
@@ -144,7 +146,8 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
   [usage policy](https://operations.osmfoundation.org/policies/tiles/). Do not bulk
   download or prefetch tiles. Replace `tileUrl` and `tileAttribution` in frontend
   configuration for a different provider. No offline tile feature is included.
-- Optional web typography loads DM Sans and Manrope from Google Fonts. The system
-  sans-serif fallback works without the font service. Visitors contact NWS (static
-  mode), the tile service, and the font service; there are no analytics or accounts.
+- Geist, Geist Mono, Geist Pixel Line, and Geist Pixel Square are self-hosted
+  copies from VentusIQ's existing assets, under SIL OFL 1.1. Font licenses are
+  retained in `dist/assets/fonts/`. No external font requests are made. Visitors
+  contact NWS (static mode) and the tile service; there are no analytics or accounts.
 

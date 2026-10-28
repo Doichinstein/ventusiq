@@ -21,14 +21,21 @@ Date: 2026-10-28. This record distinguishes executed checks from deployment reci
   `/api/zones/...` endpoint.
 - The NWS active feed returned `Access-Control-Allow-Origin: *`, supporting the
   static browser mode. This check does not prove browser execution.
+- The user opened the published site and explicitly confirmed that the map
+  renders and selecting an alert opens its details.
+- Sites confirmed successful public deployment, and GitHub confirmed a public
+  repository with Apache-2.0 recognized.
 
 ## Verification limits
 
-- Browser visual/interaction verification is incomplete. The browser tool denied
+- Automated browser visual/interaction verification is incomplete. The browser tool denied
   opening the local preview; after the user authorized a retry, the tool reported
   a saved permission or managed policy still blocked the origin. No alternate
   browser mechanism was used. Offline DOM/map test doubles do not verify real
   Leaflet rendering, responsive layout, or browser integrations.
+- A raw HTTP probe of the hosted Site was rejected by Cloudflare with error 1010.
+  No bypass was attempted. Public deployment is confirmed by Sites and the user's
+  successful browser check, rather than that raw HTTP probe.
 - Docker/Caddy recipes have not been run on this host (Docker is unavailable).
 - No custom domain has been purchased or configured.
 - Real replay begins with actual collection; no synthetic 24-hour archive is

@@ -1,4 +1,4 @@
-Weather Commons
+VentusIQ Open Weather (weather-commons)
 Copyright 2026 Weather Commons contributors
 
 The collector lane, source freshness, and latest-state architecture are adapted
@@ -7,6 +7,12 @@ with authorization from the project owner. Changes include JSON payloads,
 transactional SQLite storage, alert-specific cadence, retries, health reporting,
 and bounded snapshot history. No trading logic, credentials, or private datasets
 are included.
+
+The VentusIQ wordmark and cloud icon are copied from the owner's existing
+dashboard assets at the owner's request. The UI carries the current VentusIQ
+terminal palette and local Geist display typography. Geist, Geist Mono, and
+Geist Pixel font files are distributed under SIL Open Font License 1.1;
+their licenses are retained in dist/assets/fonts/.
 
 Leaflet 1.9.4 is distributed under its BSD 2-Clause license. Its license is retained
 at dist/vendor/LEAFLET-LICENSE. OpenStreetMap data is separately licensed under

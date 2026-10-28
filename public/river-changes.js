@@ -6,7 +6,7 @@ export function mountRiverChanges({document,window,fetcher=fetch,clock=Date.now}
   function clear(){generation++;busy=false;report=null;get('river-change-export').disabled=true;get('river-change-results').replaceChildren();}
   function updateGauge(next){
     const changed=next?.metadata?.lid!==product?.metadata?.lid||next?.revision!==product?.revision||next?.checked_at!==product?.checked_at||!!next?.stale!==!!product?.stale||next?.error!==product?.error;
-    if(!hosted&&next){const id=next.metadata.lid,old=session.get(id),identity=forecastIdentity(next);session.set(id,{identity,current:next,previous:old?.identity!==identity?old?.current||null:old?.previous||null});if(session.size>48)session.delete(session.keys().next().value);}
+    if(!hosted&&next){const id=next.metadata.lid,old=session.get(id),now=clock(),identity=forecastIdentity(next,now);session.set(id,{current:next,previous:old&&forecastIdentity(old.current,now)!==identity?old.current:old?.previous||null});if(session.size>48)session.delete(session.keys().next().value);}
     product=next;if(changed||!fresh(next)){clear();get('river-change-status').textContent=!next?'Choose a gauge.':!fresh(next)?'Refresh the gauge before comparing delayed products.':hosted?'Compare the latest collected forecast with the preceding distinct forecast in the seven-day archive.':'Compare distinct forecasts collected while this tab is open.';}
     get('river-change-run').disabled=!fresh(next)||busy;
   }
@@ -17,7 +17,8 @@ export function mountRiverChanges({document,window,fetcher=fetch,clock=Date.now}
     if(r.status==='compared'){
       nodes.push(el('p',`${r.horizon.matched} matching future timestamps between ${time(r.horizon.start)} and ${time(r.horizon.end)}. Current product has ${r.horizon.current_future} future samples; previous has ${r.horizon.previous_future}. Unmatched times are excluded; values are not interpolated.`,'small'),el('p',`Largest matched change: ${signed(r.largest_change.change,r.unit)} at ${time(r.largest_change.at)}.`),el('p',`Highest matched sample: ${value(r.high.previous.value,r.unit)} → ${value(r.high.current.value,r.unit)} (${signed(r.high.change,r.unit)}). This is a shared-horizon sample maximum, not a guaranteed crest.`));
       if(r.high.previous.repeated||r.high.current.repeated||r.high.previous.at_end||r.high.current.at_end)nodes.push(el('p','At least one maximum repeats or occurs at the shared horizon’s end. A unique or later crest is not established.','small'));
-      if(r.same_issue_revision)nodes.push(el('p','Forecast values changed under the same source issue timestamp; this is a collected revision, not evidence of a later issue.','small'));
+      if(r.pairs.every(p=>Math.abs(p.change)<1e-6))nodes.push(el('p','No value change at matching future timestamps. Differences outside those timestamps are not assessed.','small'));
+      if(r.same_issue_revision)nodes.push(el('p','Forecast coverage or values differ under the same source issue timestamp; this is a collected revision, not evidence of a later issue.','small'));
       if(r.datum_status==='not_supplied')nodes.push(el('p','Vertical reference details are not supplied. The same-gauge comparison assumes an unchanged reference.','warning-note'));
       const labels={newly_reaches:'Now reaches this threshold',no_longer_reaches:'No longer reaches in this horizon',still_reaches:'Both forecasts reach it',neither_reaches:'Neither forecast reaches it',threshold_changed:'Threshold changed or unavailable',unknown:'Comparison unknown'};
       nodes.push(el('h3','Threshold timing changes'));if(!r.thresholds.length)nodes.push(el('p','No ordered compatible thresholds were available.'));

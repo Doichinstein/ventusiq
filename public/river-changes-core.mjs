@@ -1,7 +1,8 @@
 import {normalizeSeries,dimension,waterValue} from './rivers-core.mjs';
 const HOUR=3600000;
-export const RIVER_CHANGE_METHOD='2026-10-28.1';
-export function forecastIdentity(product){const f=product?.series?.forecast||{};return JSON.stringify({issued:f.issuedTime||null,name:f.primaryName||null,units:f.primaryUnits||null,points:(f.data||[]).map(p=>[p.validTime,p.primary??null]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])))});}
+export const RIVER_CHANGE_METHOD='2026-10-28.2';
+function identityTime(raw){const at=Date.parse(raw);return Number.isFinite(at)&&/(Z|[+-]\d\d:\d\d)$/.test(raw||'')?new Date(at).toISOString():raw??null;}
+export function forecastIdentity(product,asOf=-Infinity){const f=product?.series?.forecast||{};return JSON.stringify({issued:identityTime(f.issuedTime),name:f.primaryName||null,units:f.primaryUnits||null,points:(f.data||[]).filter(p=>{const at=Date.parse(p.validTime);return !Number.isFinite(at)||!/(Z|[+-]\d\d:\d\d)$/.test(p.validTime||'')||at>=asOf;}).map(p=>[identityTime(p.validTime),p.primary??null]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])))});}
 function datum(p){return (p.metadata?.datums?.vertical?.value||[]).map(d=>[d.abbrev||d.label||'',d.value??null]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])));}
 function thresholds(p,kind){const d=dimension(kind,p.metadata?.flood?.[kind==='stage'?'stageUnits':'flowUnits']);if(!d.kind)return [];const rows=['action','minor','moderate','major'].map(name=>({name,value:waterValue(p.metadata?.flood?.categories?.[name]?.[kind])})).filter(t=>t.value!==null).map(t=>({...t,value:t.value*d.factor}));return rows.every((t,i)=>!i||t.value>=rows[i-1].value)?rows:[];}
 function sampleSeries(raw){const s=normalizeSeries(raw),seen=new Set();let duplicate=false,invalidTime=false;for(const p of raw?.data||[]){const at=Date.parse(p.validTime);if(!Number.isFinite(at)||!/(Z|[+-]\d\d:\d\d)$/.test(p.validTime||''))invalidTime=true;if(Number.isFinite(at)){if(seen.has(at))duplicate=true;seen.add(at);}}if(!/(Z|[+-]\d\d:\d\d)$/.test(raw?.issuedTime||''))s.issued_at=null;return {...s,duplicate,invalidTime};}

@@ -300,3 +300,7 @@ Date: 2026-10-28. This record distinguishes executed checks from deployment reci
   snapshot, visibly labeled delayed. An active-feed removal is not proof of cancellation.
 - The shared daemon is designed for one collector and a modest public service
   behind a reverse proxy. Configure map tiles and hosting capacity for your traffic.
+
+## River revision production check (2026-10-28)
+
+The hosted AKFM7 comparison returned 70 matching future readings. Two additional hours in the current source product shared the same issue timestamp, with no change at the matching readings. This led to corrected coverage-aware wording and baseline selection that ignores expired samples at a common evaluation time. Regression cases cover horizon extension, timestamp formatting, expired samples and the direct browser-session baseline. Production API checks use documented Sites service authorization; rendered browser verification remains unavailable.

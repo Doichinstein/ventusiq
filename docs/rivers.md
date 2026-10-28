@@ -124,3 +124,5 @@ product so its source does not silently lag behind the comparison.
 Static/Python editions retain distinct baselines only during the open browser
 session, bounded to 48 gauges. They do not claim access to the hosted archive or
 durable daemon river history. All editions share the same comparison evaluator.
+
+Forecast revision selection uses one evaluation time for both products and ignores expired samples. Equivalent explicit-zone timestamp formats share an identity. Future coverage extensions remain distinct revisions; the comparison explicitly states when every shared reading is unchanged. Method version: `2026-10-28.2`.

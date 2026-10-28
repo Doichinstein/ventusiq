@@ -89,7 +89,7 @@
     target.replaceChildren(...nodes);
   }
   function render(){
-    const place=current();window.WeatherHazards?.updatePlace(place);window.WeatherRivers?.updatePlace(place);window.WeatherObservations?.updatePlace(place);get('place-empty').hidden=!!place;get('place-content').hidden=!place;if(!place)return;
+    const place=current();window.WeatherHazards?.updatePlace(place);window.WeatherRivers?.updatePlace(place);window.WeatherObservations?.updatePlace(place);window.WeatherCompound?.refresh();get('place-empty').hidden=!!place;get('place-content').hidden=!place;if(!place)return;
     const data=forecasts.get(place.id), props=data?.metadata?.properties||{};
     get('place-title').textContent=place.name;get('place-location').textContent=`${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}${props.relativeLocation?.properties?.city?' · near '+props.relativeLocation.properties.city+', '+props.relativeLocation.properties.state:''}`;
     get('forecast-status').className=stale(data)?'warning-note':'small';
@@ -120,7 +120,7 @@
   get('notify-enable').onclick=async()=>{if(typeof Notification==='undefined'){get('notify-status').textContent='This browser does not support desktop notifications. Updates remain in the page.';return;}try{if(stored.notifications){stored.notifications=false;notificationPermission='default';get('notify-status').textContent='Desktop updates disabled. Updates remain in the page.';}else{notificationPermission=await Notification.requestPermission();stored.notifications=notificationPermission==='granted';get('notify-status').textContent=stored.notifications?'Desktop updates enabled while this page is open. Keep official emergency alerts enabled on your devices.':'Desktop updates were not enabled. Updates remain in the page.';}get('notify-enable').textContent=stored.notifications?'Disable desktop updates':'Enable desktop updates';save();}catch{get('notify-status').textContent='Desktop updates are unavailable here.';}};
   if(notificationPermission==='granted'){get('notify-enable').textContent='Disable desktop updates';get('notify-status').textContent='Desktop updates enabled while this page is open. Background push is not available yet.';}
   for(const [id,k] of [['plan-duration','duration'],['plan-min','minTemp'],['plan-max','maxTemp'],['plan-wind','wind'],['plan-rain','rain']])get(id).value=stored.preferences[k];
-  window.WeatherPersonal={current,places:()=>stored.places.map(p=>({...p})),show,alertsUpdated(){for(const p of stored.places)applyAlerts(p);if(personal)render();}};
+  window.WeatherPersonal={current,context:()=>({place:current(),forecast:forecasts.get(selected),alerts:window.WeatherMap?.live()}),places:()=>stored.places.map(p=>({...p})),show,alertsUpdated(){for(const p of stored.places)applyAlerts(p);if(personal)render();}};
   selected=stored.places[0]?.id||null;places();for(const place of stored.places)load(place);
   const shared=new URLSearchParams(location.hash.slice(1));
   if(shared.has('lat')&&shared.has('lon')){get('place-name').value=(shared.get('place')||'Shared place').slice(0,60);get('place-lat').value=shared.get('lat');get('place-lon').value=shared.get('lon');show(true);get('place-message').textContent='Shared coordinates loaded. Save this place to open its briefing.';}

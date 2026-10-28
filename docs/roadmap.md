@@ -13,7 +13,7 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | Journey weather | Cached OSRM driving routes, bounded distance/time sampling, three departure scenarios, full-road intersections with loaded alert boundaries, coverage and JSON export | Rendered QA, traffic/stops/via points, gust/smoke exposure, verified closure attribution and broader deployment capacity |
 | Forecast confidence | Immutable point forecasts; nearby station observations and retrospective 6–24h temperature errors with sample counts and evidence export | Ensemble ingestion, longer observation history, seasonal/lead grading and validated confidence |
 | Historical analogs | Decision-time archive prevents future leakage | Historical ingestion, local similarity and holdout evaluation |
-| Compound hazards | Explainable rule contract specified | Reviewed rules and temporal/spatial evaluation |
+| Compound hazards | Six source-reviewed rules, exact temporal/spatial premises, observed-vs-forecast distinction, missing-data audit and evidence export | Rendered QA, independent domain review, outcome validation, additional provider combinations and opt-in delivery |
 | Event timeline | Persistent CAP-linked alert graph, immutable revisions and presence transitions; collection-time views, missing-reference retrieval, stable links and JSON export | Linked measured observations/reports, forecast-to-outcome comparison, rendered QA and archive storage/export policy |
 
 The hosted runtime now includes shared collection and a persistent D1 archive.

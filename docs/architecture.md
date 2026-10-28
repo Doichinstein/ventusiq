@@ -94,6 +94,14 @@ bounded retries and explicit user opt-in. Never send from a page view alone.
 
 ## Durable archive
 
+`compound-core.mjs` evaluates six versioned rules over the selected place's current
+alerts, point forecast and nearby measured air quality. Each result carries exact
+time segments and source evidence; unmatched rules remain unknown when required
+inputs are missing. `compound.js` displays the evidence and exports the current
+evaluation. It reuses collection lanes through read-only personal/hazard bridges,
+does not mix map replay into the briefing, and does not produce a risk probability.
+See [rule definitions, review and provenance](compound-hazards.md).
+
 `JourneyService` caches OSRM geometry and segment durations with a shared provider
 rate gate. `journey-core.mjs` builds arrival-time samples, clips full road segments
 to polygon/zone alert geometry and official validity windows, and evaluates each

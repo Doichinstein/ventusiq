@@ -33,7 +33,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     s.next=clock()+(kind==='satellite'?3600000:900000);
     s.pending=(async()=>{try{s.data=await request(kind);s.error=s.data.error||null;draw(kind);}
       catch(error){s.error=error.message;s.next=clock()+120000;}
-      finally{s.pending=null;status(kind);renderPlace();}})();
+      finally{s.pending=null;status(kind);renderPlace();window.WeatherCompound?.refresh();}})();
     status(kind);await s.pending;return s.data;
   }
   function fireSummary(f){const p=f.properties;return `${p.kind} · ${[p.county,p.state].filter(Boolean).join(', ')} · ${quantity(p.acres,' acres')} · ${quantity(p.contained,'% contained')}`;}
@@ -111,6 +111,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   for(const kind of Object.keys(sources))get('layer-'+kind).onchange=()=>{sync();if(get('layer-'+kind).checked)load(kind);};
   get('fire-search').oninput=renderFires;
   window.WeatherHazards={
+    snapshot(kind){const s=state[kind];return s?.data?{...s.data,stale:isDelayed(kind),error:s.error||s.data.error||null}:null;},
     updatePlace(value){place=value;renderPlace();if(place){load('fires');load('air');}},
     setReplay(value){replay=value;perimeterRequest++;map.closePopup();sync();},
     showMap(value){get('hazard-workspace').hidden=!value;},

@@ -36,6 +36,10 @@ test('saved places use distance and recent measurements, never treating missing 
   s.window.WeatherHazards.updatePlace({lat:0,lon:0});assert.match(s.nodes['place-hazards'].textContent,/Air quality here is unknown/);assert.doesNotMatch(s.nodes['place-hazards'].textContent,/AQI 151/);
   s.advance(4*3600000);s.fail();s.window.WeatherHazards.updatePlace({lat:37,lon:-122});await Promise.all([s.mounted.load('fires'),s.mounted.load('air')]);assert.match(s.nodes['place-hazards'].textContent,/Air quality here is unknown/);
 });
+
+test('compound consumers receive source refreshes and stale last-good snapshots after an air outage',async()=>{
+  const s=await setup();let refreshed=0;s.window.WeatherCompound={refresh(){refreshed++;}};await s.mounted.load('air');const first=s.window.WeatherHazards.snapshot('air');assert.equal(first.stale,false);assert.equal(refreshed,1);s.advance(901000);s.fail();await s.mounted.load('air');const stale=s.window.WeatherHazards.snapshot('air');assert.equal(stale.stale,true);assert.equal(stale.checked_at,first.checked_at);assert.match(stale.error,/Unavailable/);assert.equal(refreshed,2);
+});
 test('a changed place wins over an earlier pending source request',async()=>{
   const s=await setup();s.hold();s.window.WeatherHazards.updatePlace({lat:37,lon:-122});s.window.WeatherHazards.updatePlace({lat:0,lon:0});
   s.release();await Promise.all([s.mounted.load('fires'),s.mounted.load('air')]);

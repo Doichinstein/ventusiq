@@ -32,6 +32,12 @@ route for three departure times. Choose endpoints from saved places, coordinates
 or the map; inspect arrival-hour forecasts, time-overlapping alert boundaries,
 missing coverage and exportable evidence. See [routing and exposure methods](docs/journeys.md).
 
+**Conditions in combination** evaluates six transparent rules in My weather:
+overlapping heat/air, winter/wind and inland/coastal flood alerts; recent nearby
+PM2.5 during a heat alert; and same-hour precipitation/wind or freezing conditions.
+Every finding shows its sources and timing, with explicit unknown coverage and an
+evidence export. See [compound-hazard rules](docs/compound-hazards.md).
+
 **Observations & track record** in hosted My weather adds nearby NWS station
 selection, current readings with quality flags, a 24-hour temperature chart and
 table, and retrospective comparisons against forecasts actually archived 6–24

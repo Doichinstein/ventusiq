@@ -2,6 +2,28 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Compound-hazard increment
+
+- Added six versioned rules and a My weather card with overlap windows, explanatory
+  source evidence, all-rule coverage audit and JSON export. Primary-source review
+  and inference limits are documented in [compound hazards](compound-hazards.md).
+- New tests exercise temporal intersection vs touching windows, polygon/zone
+  precedence and holes, invalid/missing times, stale-source suppression, alert
+  families/deduplication, nearest-monitor selection, observed-time boundaries,
+  same-hour forecast thresholds, gap preservation, unit conversion, UI freshness,
+  preserved evidence expansion, safe source text and report export.
+- Air refreshes propagate current source failures to compound consumers while
+  retaining last-good provenance. Hosted alerts now expose their revision and
+  stale/error state without changing source archive contents.
+- Regression suite: 125 Node and 16 Python tests passed (141 total). TypeScript
+  checks passed. No new database migration or dependency was required.
+- The built Worker served both compound modules and returned revision/freshness
+  metadata on live alerts. A live check used 1,691 measured AirNow monitors and
+  fresh forecasts: Washington returned no listed combinations; Nome returned one
+  precipitation/wind window supported by three hourly forecast premises, while
+  its unavailable nearby-air input stayed unknown. No fixture data was substituted.
+- Browser rendering remains unverified under the saved permission setting.
+
 ## Journey weather increment
 
 - Added hosted route collection with persistent caching, database-wide provider

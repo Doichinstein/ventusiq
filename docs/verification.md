@@ -2,6 +2,25 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Fire, air and hourly upkeep increment
+
+- Enabled the Sites task **VentusIQ hourly archive upkeep** after the owner chose
+  hourly operation. Schedule creation is confirmed; autonomous execution has not
+  yet been independently verified. The task checks alerts and health, not personal
+  subscriptions or fire/air feeds. Those hazard feeds currently refresh on demand.
+- Production service requests using documented Sites service authorization returned
+  313 alerts and 156 forecast periods, and successful collection health. Credentials
+  remained in memory/hidden process input; they were never saved to project files.
+- Real source adapters returned 253 NIFC fire incidents, 1,690 EPA/AirNow PM2.5
+  monitors, and NASA's available date 2026-10-27. A NASA WMS image request returned
+  HTTP 200 with PNG content. Missing incident perimeters return an empty collection.
+- Regression suite: 41 Node and 16 Python tests passed (57 total). Additional
+  coverage includes source pagination, missing/zero units and values, observation
+  age, GUID validation, source allowlists, cached outage behavior, nearby-place
+  switching, replay hiding and satellite tile failure display.
+- TypeScript check passed. Rendered browser verification remains unavailable due
+  to the saved permission block; the new layers have not received visual QA.
+
 ## Shared hosted runtime increment
 
 - The frontend source moved from `dist/` to `public/`; `dist/` is now generated
@@ -18,7 +37,7 @@ Date: 2026-10-28. This record distinguishes executed checks from deployment reci
   persistent backoff, concurrent cold-request leases, forecast rollback/time travel,
   invalid coordinates and rejection of off-origin pagination.
 - Regression run: 29 Node tests and 16 Python tests passed (45 total).
-- Hosted collection is currently on demand, not an unattended scheduler. Closed-page
+- At this earlier increment hosted collection ran on demand. Closed-page
   push and subscription ownership remain unfinished. Prior visual verification
   limits still apply. Local D1 evidence does not alone prove production D1 writes.
 
@@ -79,9 +98,9 @@ Date: 2026-10-28. This record distinguishes executed checks from deployment reci
   a saved permission or managed policy still blocked the origin. No alternate
   browser mechanism was used. Offline DOM/map test doubles do not verify real
   Leaflet rendering, responsive layout, or browser integrations.
-- A raw HTTP probe of the hosted Site was rejected by Cloudflare with error 1010.
-  No bypass was attempted. Public deployment is confirmed by Sites and the user's
-  successful browser check, rather than that raw HTTP probe.
+- An earlier unauthenticated HTTP probe of the hosted Site was rejected by
+  Cloudflare with error 1010. Later service API checks succeeded using the documented
+  token supplied by Sites. This is distinct from browser rendering verification.
 - Docker/Caddy recipes have not been run on this host (Docker is unavailable).
 - No custom domain has been purchased or configured.
 - Real replay begins with actual collection; no synthetic 24-hour archive is

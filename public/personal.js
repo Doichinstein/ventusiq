@@ -13,7 +13,7 @@
   function timezone(){return forecasts.get(selected)?.metadata?.properties?.timeZone;}
   function stale(data){return !data||data.stale||!data.checked_at||Date.now()-Date.parse(data.checked_at)>900000;}
   function time(stamp,full=true){try{return new Date(stamp).toLocaleString(undefined,{timeZone:timezone(),...(full?{weekday:'short',month:'short',day:'numeric'}:{}),hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch{return new Date(stamp).toLocaleString();}}
-  function show(value){personal=value;get('personal-workspace').hidden=!value;get('map-workspace').hidden=value;get('map-timeline').hidden=value;for(const [id,on] of [['nav-personal',value],['nav-map',!value]]){get(id).classList.toggle('nav-active',on);get(id).setAttribute('aria-pressed',String(on));}if(!value)window.WeatherMap?.show();else render();}
+  function show(value){personal=value;get('personal-workspace').hidden=!value;get('map-workspace').hidden=value;get('map-timeline').hidden=value;window.WeatherHazards?.showMap(!value);for(const [id,on] of [['nav-personal',value],['nav-map',!value]]){get(id).classList.toggle('nav-active',on);get(id).setAttribute('aria-pressed',String(on));}if(!value)window.WeatherMap?.show();else render();}
   function places(){get('place-list').replaceChildren(...stored.places.map(p=>{const b=el('button',p.name,'place-choice');b.setAttribute('aria-pressed',String(p.id===selected));b.onclick=()=>{selected=p.id;places();render();load(p);};return b;}));}
   async function json(url){const response=await fetch(url,{headers:{Accept:'application/geo+json, application/json'},signal:AbortSignal.timeout(30000)});if(!response.ok)throw new Error(`Source returned HTTP ${response.status}`);return response.json();}
   async function forecast(place){
@@ -89,7 +89,7 @@
     target.replaceChildren(...nodes);
   }
   function render(){
-    const place=current();get('place-empty').hidden=!!place;get('place-content').hidden=!place;if(!place)return;
+    const place=current();window.WeatherHazards?.updatePlace(place);get('place-empty').hidden=!!place;get('place-content').hidden=!place;if(!place)return;
     const data=forecasts.get(place.id), props=data?.metadata?.properties||{};
     get('place-title').textContent=place.name;get('place-location').textContent=`${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}${props.relativeLocation?.properties?.city?' · near '+props.relativeLocation.properties.city+', '+props.relativeLocation.properties.state:''}`;
     get('forecast-status').className=stale(data)?'warning-note':'small';
@@ -120,7 +120,7 @@
   get('notify-enable').onclick=async()=>{if(typeof Notification==='undefined'){get('notify-status').textContent='This browser does not support desktop notifications. Updates remain in the page.';return;}try{if(stored.notifications){stored.notifications=false;notificationPermission='default';get('notify-status').textContent='Desktop updates disabled. Updates remain in the page.';}else{notificationPermission=await Notification.requestPermission();stored.notifications=notificationPermission==='granted';get('notify-status').textContent=stored.notifications?'Desktop updates enabled while this page is open. Keep official emergency alerts enabled on your devices.':'Desktop updates were not enabled. Updates remain in the page.';}get('notify-enable').textContent=stored.notifications?'Disable desktop updates':'Enable desktop updates';save();}catch{get('notify-status').textContent='Desktop updates are unavailable here.';}};
   if(notificationPermission==='granted'){get('notify-enable').textContent='Disable desktop updates';get('notify-status').textContent='Desktop updates enabled while this page is open. Background push is not available yet.';}
   for(const [id,k] of [['plan-duration','duration'],['plan-min','minTemp'],['plan-max','maxTemp'],['plan-wind','wind'],['plan-rain','rain']])get(id).value=stored.preferences[k];
-  window.WeatherPersonal={alertsUpdated(){for(const p of stored.places)applyAlerts(p);if(personal)render();}};
+  window.WeatherPersonal={current,alertsUpdated(){for(const p of stored.places)applyAlerts(p);if(personal)render();}};
   selected=stored.places[0]?.id||null;places();for(const place of stored.places)load(place);
   const shared=new URLSearchParams(location.hash.slice(1));
   if(shared.has('lat')&&shared.has('lon')){get('place-name').value=(shared.get('place')||'Shared place').slice(0,60);get('place-lat').value=shared.get('lat');get('place-lon').value=shared.get('lon');show(true);get('place-message').textContent='Shared coordinates loaded. Save this place to open its briefing.';}

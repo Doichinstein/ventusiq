@@ -15,7 +15,7 @@ Geist Pixel font files are distributed under SIL Open Font License 1.1;
 their licenses are retained in public/assets/fonts/.
 
 Leaflet 1.9.4 is distributed under its BSD 2-Clause license. Its license is retained
-at dist/vendor/LEAFLET-LICENSE. OpenStreetMap data is separately licensed under
+at public/vendor/LEAFLET-LICENSE. OpenStreetMap data is separately licensed under
 ODbL; visible attribution links to its copyright page. NWS data and external map
 services retain their own applicable terms. Apache-2.0 covers this project's
 original code, not a relicensing of third-party data or dependencies.
@@ -24,4 +24,10 @@ Hosted runtime build tools include the OpenAI Sites Vite integration, copyright
 2026 OpenAI, under its retained MIT license in scripts/vite/sites-vite-plugin.LICENSE.
 Installed dependencies retain their own licenses; Apache-2.0 applies to original
 VentusIQ Open Weather application code, not a relicensing of those dependencies.
+
+Fire incident locations and reported perimeters: NIFC / WFIGS.
+PM2.5 monitoring observations: US EPA / AirNow and its reporting agencies.
+Daily VIIRS NOAA-20 thermal-anomaly imagery: NASA FIRMS / GIBS.
+These providers' public data services retain their own terms and attribution;
+their observations are not relicensed as original application code.
 

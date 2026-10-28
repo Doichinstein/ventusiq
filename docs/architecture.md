@@ -21,21 +21,31 @@ an arbitrary visitor's location in an indefinite background subscription.
 
 The Sites runtime now has shared API collection and a durable D1 archive. It
 refreshes on demand with database leases across isolates. The frontend retains
-device-local preferences. Unattended scheduling, closed-browser push and optional
-cross-device accounts remain delivery requirements.
+device-local preferences. The public deployment has an hourly Sites upkeep task;
+its execution is separate from on-demand refresh and must be verified using
+collection timestamps. Closed-browser push and optional cross-device accounts
+remain delivery requirements.
 The Python edition archives point forecasts and can watch configured points while
-no browser is open. A hosted runtime with durable storage is still required for
-continuous public behavior. Do not call tab notifications background push.
+no browser is open. Minute-by-minute hosted unattended collection is deferred by
+the owner in favor of hourly upkeep. Do not call tab notifications background push.
 
 `lib/weather-service.mjs` implements the hosted collector using the same provenance
 and last-good-state rules as Python. D1 `datasets` controls leases, cadence and
-failure backoff; `revisions` stores gzip/base64 raw products and hashes; `checks`
+failure backoff; `revisions` stores gzip/base64 products and hashes (raw forecasts,
+normalized hazard observations); `checks`
 records each successful collection; `change_batches` retains alert changes. The
 schema is migration-owned and never created during request handling. The hosted
 forecast cache currently admits up to approximately 1,000 distinct requested points;
 subscriptions and broader rollout need user quotas and archive retention/export.
 
 ## Data contracts shared by the ten features
+
+`hazards-core.mjs` supplies the fire, air-monitor and NASA date adapters shared by
+hosted and direct editions. `lib/hazards-service.mjs` uses the existing collection
+lease and archive. `hazards.js` owns independent Leaflet layers and saved-place
+proximity summaries, with no inference that proximity proves exposure. Hazard
+revisions retain seven days plus the current last-good revision. Alert replay
+hides current hazard layers; historical hazard playback remains future work.
 
 Every source product must carry provider, source URL, source issue time (nullable,
 never synthesized), collection time, valid time/range, spatial coverage, units,

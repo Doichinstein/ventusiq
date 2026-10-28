@@ -8,7 +8,7 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | My Places | Device-local places, map selection, official alerts, hourly outlook and share links | Rendered QA; optional cross-device ownership later |
 | Meaningful updates | CAP-linked alert changes, forecast shifts, opt-in desktop notifications while page open | Persistent subscriptions, threshold triggers, closed-page push, feeds/webhooks and delivery records |
 | Activity windows | Duration, temperature, sustained wind and rain chance constraints; unknown/gap handling | Air quality/gust inputs, evaluated uncertainty and activity presets |
-| Fire and smoke | Source and module architecture specified | NIFC/FIRMS/AirNow/HRRR adapters, layers, trends and location exposure |
+| Fire and smoke | NIFC incident points/perimeters, AirNow PM2.5 monitors, NASA VIIRS daily imagery; saved-place proximity; seven-day hosted archive | Rendered QA, smoke forecasts, trends and evaluated exposure |
 | Flood timing | Source and module architecture specified | NWPS observations/forecasts, crest timing and documented impacts |
 | Journey weather | Route-time contracts specified | Route provider, segment sampling, departure alternatives and coverage |
 | Forecast confidence | Immutable point forecast revision archive | Ensemble ingestion, observations, grading and validated confidence |
@@ -17,8 +17,9 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | Event timeline | Existing 24-hour alert replay; separate persistent forecast archive | Event identity, observations, longer history, durable links and export |
 
 The hosted runtime now includes shared collection and a persistent D1 archive.
-Collection currently runs on demand. Unattended scheduling, subscription ownership
-and delivery still need implementation and end-to-end verification.
+Collection runs on demand with an hourly Sites archive-upkeep task configured for
+the public deployment. Scheduled execution must be checked using actual collection
+timestamps. Subscription ownership and closed-page delivery remain unfinished.
 Self-hosted Python supports `--watch LAT,LON` background point-forecast collection.
 
 ## First release

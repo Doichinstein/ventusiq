@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
 import {WeatherService,pack,unpack,pointKey} from '../lib/weather-service.mjs';
+import {HazardsService} from '../lib/hazards-service.mjs';
 function database(){
   const sqlite=new DatabaseSync(':memory:');
   for(const file of readdirSync(new URL('../drizzle/',import.meta.url)).filter(f=>f.endsWith('.sql')).sort())sqlite.exec(readFileSync(new URL('../drizzle/'+file,import.meta.url),'utf8'));
@@ -11,6 +12,13 @@ function database(){
 const alert=(id='one',extra={})=>({type:'Feature',id:'https://api.weather.gov/alerts/'+id,geometry:null,properties:{id,status:'Actual',messageType:'Alert',event:'Flood Warning',areaDesc:'Test',...extra}});
 const collection=(...features)=>({type:'FeatureCollection',features,updated:'2026-10-28T00:00:00Z'});
 const hourly=temp=>({properties:{updateTime:'2026-10-28T00:00:00Z',periods:[{startTime:'2026-10-28T01:00:00Z',endTime:'2026-10-28T02:00:00Z',temperature:temp,temperatureUnit:'F'}]}});
+test('hazard snapshots survive service restart and outages retain timestamped last-good data',async()=>{
+  const db=database();let now=1000,calls=0,broken=false;
+  const fetcher=async url=>{calls++;if(broken)throw new Error('Provider unavailable');return {ok:true,json:async()=>url.includes('/query?')?{type:'FeatureCollection',features:[{type:'Feature',id:1,geometry:{type:'Point',coordinates:[-122,37]},properties:{OBJECTID:1,IncidentName:'Test fire',PercentContained:0}}]}:{}};};
+  const service=()=>new HazardsService(new WeatherService(db,{fetcher,clock:()=>now}));
+  const first=await service().get('fires');assert.equal(first.features.length,1);assert.equal(first.stale,false);await service().get('fires');assert.equal(calls,2);
+  now=2000;broken=true;const stale=await service().get('fires');assert.equal(stale.stale,true);assert.equal(stale.checked_at,first.checked_at);assert.equal(stale.error,'Provider unavailable');await service().get('fires');assert.equal(calls,3);db.close();
+});
 test('gzip archive preserves unicode and structured values',async()=>{
   const original={text:'Weather → VentusIQ',zero:0,missing:null,features:[alert()]};
   assert.deepEqual(await unpack(await pack(original)),original);

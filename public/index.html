@@ -11,6 +11,7 @@
   <link rel="icon" href="/assets/ventusiq-icon.png" type="image/png">
   <link rel="stylesheet" href="/vendor/leaflet.css"><link rel="stylesheet" href="/style.css">
   <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
+  <script type="module" src="/hazards.js"></script>
 </head>
 <body>
   <a class="skip" href="#feed">Skip to alert list</a>
@@ -35,12 +36,25 @@
         <div id="place-content" hidden>
           <div class="place-heading"><div><h2 id="place-title"></h2><p id="place-location" class="small"></p></div><div class="place-actions"><button id="share-place" class="action secondary">Share briefing</button><button id="remove-place" class="text-button">Remove</button></div></div>
           <p id="forecast-status" role="status"></p><div class="brief-grid"><section class="weather-card"><span class="eyebrow">RELEVANT ALERTS</span><div id="place-alerts"></div></section><section class="weather-card"><span class="eyebrow">NEXT 48 HOURS</span><div id="place-outlook"></div></section></div>
+          <section class="weather-card"><span class="eyebrow">FIRE & AIR NEARBY</span><h3>Conditions around this place.</h3><div id="place-hazards" aria-live="polite"><p>Loading nearby observations…</p></div><p class="small">Distances are straight-line distances. A nearby fire does not establish exposure, and a monitor may not represent conditions at your exact location. PM2.5 can have sources other than wildfire.</p></section>
           <section class="weather-card"><div class="section-top"><h3>What changed?</h3><button id="clear-updates" class="text-button">Clear updates</button></div><p class="small">Alert revisions and forecast shifts since this device’s previous successful check.</p><div id="place-updates" aria-live="polite"></div></section>
           <section class="weather-card"><span class="eyebrow">ACTIVITY PLANNER</span><h3>Find a window that works.</h3><p class="small">Compare the next 48 hours using your limits. Times are local to the selected place.</p><form id="planner-form" class="planner-form"><label>Duration<select id="plan-duration"><option value="1">1 hour</option><option value="2" selected>2 hours</option><option value="3">3 hours</option><option value="4">4 hours</option><option value="6">6 hours</option></select></label><label>Minimum °F<input id="plan-min" type="number" value="40" min="-100" max="150" required></label><label>Maximum °F<input id="plan-max" type="number" value="85" min="-100" max="150" required></label><label>Max wind mph<input id="plan-wind" type="number" value="15" min="0" max="200" required></label><label>Max rain chance %<input id="plan-rain" type="number" value="30" min="0" max="100" required></label><button type="submit" class="action">Compare windows</button></form><p class="small">Wind means forecast sustained wind, not gusts. Rain chance is hourly probability, not expected duration. Review relevant warnings before making plans.</p><div id="plan-results" aria-live="polite"></div></section>
           <section class="weather-card"><div class="section-top"><h3>Hourly outlook</h3><a id="point-source" target="_blank" rel="noopener">Official forecast ↗</a></div><div class="hourly-scroll"><table class="hourly-table"><caption class="sr-only">Hourly conditions at the selected place</caption><thead><tr><th>Time</th><th>Weather</th><th>Temperature</th><th>Wind</th><th>Rain chance</th></tr></thead><tbody id="hourly-body"></tbody></table></div></section>
         </div>
       </div>
     </div>
+  </section>
+  <section id="hazard-workspace" class="hazard-workspace" aria-label="Fire and air layers">
+    <details id="hazard-controls"><summary><span class="eyebrow">FIRE & AIR</span><strong>Add context to the map</strong><span class="small">Incidents · monitors · satellite detections</span></summary>
+      <div class="hazard-grid">
+        <section><label class="layer-choice"><input type="checkbox" id="layer-fires"><strong>Reported wildfires</strong></label><p class="small">Orange points show reported incident locations. Select one to inspect its latest reported perimeter.</p><p id="fires-status" class="small" role="status">Enable to load NIFC incidents.</p><a href="https://data-nifc.opendata.arcgis.com/" target="_blank" rel="noopener">NIFC / WFIGS ↗</a></section>
+        <section><label class="layer-choice"><input type="checkbox" id="layer-air"><strong>PM2.5 observations</strong></label><p class="small">Colored circles show monitor AQI. Gray circles have missing or older observations; no interpolation between monitors.</p><p id="air-status" class="small" role="status">Enable to load AirNow monitors.</p><a href="https://www.airnow.gov/" target="_blank" rel="noopener">EPA / AirNow ↗</a></section>
+        <section><label class="layer-choice"><input type="checkbox" id="layer-satellite"><strong>Satellite heat detections</strong></label><p class="small">NASA's imagery shows VIIRS thermal anomalies for the available UTC day. These are detected pixels, not fire boundaries.</p><p id="satellite-status" class="small" role="status">Enable to check NASA's available date.</p><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS / GIBS ↗</a></section>
+      </div>
+      <p id="hazard-replay" class="warning-note" hidden>These layers show latest available data and are hidden during alert replay. Return to Live to restore them.</p>
+      <div id="fire-browser" hidden><label class="hazard-search">Find a reported fire<input id="fire-search" type="search" placeholder="Incident, state or county"></label><p id="fire-count" class="small"></p><div id="fire-list" class="fire-list"></div></div>
+      <p class="small">Incident records and perimeters can lag conditions on the ground. Satellite overpasses, clouds and coverage gaps can hide fires. These layers do not show evacuation zones or a smoke forecast.</p>
+    </details>
   </section>
   <main id="map-workspace" class="workspace">
     <aside class="sidebar" aria-label="Weather alerts">

@@ -10,6 +10,12 @@ while the page is open, share links, and configurable activity windows. Planning
 checks duration, temperature, sustained wind and hourly rain probability. Missing
 values or gaps never count as favorable; stale forecasts pause recommendations.
 
+**Fire & air** adds reported NIFC wildfire points and perimeters, EPA/AirNow
+PM2.5 monitor readings, NASA VIIRS daily thermal-detection imagery, and nearby
+conditions for saved places. Each product shows its own timestamp and coverage
+limits. Current layers hide during historical alert replay. See
+[fire and air sources](docs/fire-and-air.md) for provenance and remaining work.
+
 Public source: https://github.com/Doichinstein/weather-commons
 
 The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal
@@ -77,9 +83,14 @@ The interval is configurable with `--interval`; it cannot be below 30 seconds.
 with Cloudflare D1 storing compressed immutable revisions, collection checks and
 freshness. Concurrent visitors share a database collection lease. Alerts refresh
 on demand at most once per minute; point forecasts at most once per ten minutes.
-History survives browser closure and server restarts. Unattended scheduling and
-closed-page push are still in progress; no continuous overnight collection is
-implied by an archive that currently refreshes on demand.
+History survives browser closure and server restarts. The public deployment has
+an hourly Sites archive-upkeep task; check actual collection timestamps to verify
+execution. It does not imply minute-by-minute unattended collection or closed-page
+push. See [collector upkeep](docs/collector-schedule.md). Hosted fire and air
+products share a 15-minute cache and retain seven days of collected revisions.
+NASA's available satellite day is checked hourly; imagery is requested directly
+from NASA when its layer is enabled. Python and static editions request fire/air
+sources directly in the browser and do not yet archive those hazard products.
 
 **Shared daemon (recommended for your own domain):** Python serves the static UI
 and read-only API, with one background collector and persistent SQLite history.

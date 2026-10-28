@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { WeatherService, pointKey, iso } from '../../../lib/weather-service.mjs';
+import { HazardsService } from '../../../lib/hazards-service.mjs';
 
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
@@ -7,6 +8,11 @@ export async function GET(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
+    if(path.startsWith('/api/hazards/')){
+      const kind=path.slice('/api/hazards/'.length);
+      if(!['fires','air','satellite','perimeters'].includes(kind))return json({error:'Unknown hazard product'},404);
+      return json(await new HazardsService(service).get(kind,url.searchParams.get('id')));
+    }
     if(path==='/api/health')return json(await service.health());
     if(path==='/api/alerts'){
       if(url.searchParams.has('at')){const result=await service.read('alerts/us',atTime(url.searchParams.get('at')));return result?json({...result.data,collected_at:result.checked_at}):json({error:'No collected snapshot at that time'},404);}

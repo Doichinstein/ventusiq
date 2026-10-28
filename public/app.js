@@ -322,6 +322,7 @@ async function replay(index) {
     const data = direct ? directHistory.find(s => s.at === snap.at).data : await request('/api/alerts?at=' + encodeURIComponent(snap.at));
     if (gen !== snapshotGeneration) return;
     replayAt = snap.at;
+    window.WeatherHazards?.setReplay(true);
     $('live-button').classList.add('replaying');
     $('map-mode').textContent = 'COLLECTED HISTORY';
     $('timeline-time').textContent = dateText(snap.at,true);
@@ -334,6 +335,7 @@ async function replay(index) {
 }
 function returnLive() {
   replayAt = null; replayLoading = false; snapshotGeneration++;
+  window.WeatherHazards?.setReplay(false);
   $('map-mode').textContent = 'LIVE CONDITIONS';
   $('live-button').classList.remove('replaying');
   $('timeline-time').textContent = 'Now';
@@ -364,11 +366,13 @@ $('about-close').onclick = () => $('about').close();
 $('about').addEventListener('click', e => { if (e.target === $('about')) { const b = $('about').getBoundingClientRect(); if (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) $('about').close(); } });
 $('history-mode').textContent = direct ? 'History for this session' : '24h retained history';
 $('mode-explainer').textContent = direct ? 'This static public edition reads NWS directly from your browser. Replay and the change feed cover collections made while this page is open. Download the self-hosted edition for a shared background daemon and persistent 24-hour history.' : 'This edition reads from a shared background daemon. Collections continue even when nobody is viewing the map. Replay covers the last 24 hours collected since the daemon started; it does not invent earlier history.';
-if(config.mode==='hosted')$('mode-explainer').textContent='This edition reads a shared hosted collector and persistent archive. Requests refresh alerts at most once per minute, shared across visitors. History survives closing the browser. Collection currently runs on demand; unattended scheduling is still being integrated.';
+if(config.mode==='hosted')$('mode-explainer').textContent='This edition reads a shared hosted collector and persistent archive. Visitors refresh alerts at most once per minute. An hourly archive-upkeep task is configured for periods with no visitors; check actual collection timestamps for freshness. History survives closing the browser. Fire and air feeds refresh when requested, at most once per 15 minutes. Closed-page notifications are not available yet.';
 document.addEventListener('keydown', e => { if (e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {e.preventDefault();$('search').focus();} if (e.key === 'Escape' && !$('about').open) closeDetail(); });
 window.addEventListener('resize', () => map.invalidateSize());
 // Small public interface keeps personal planning independent of map/replay state.
 window.WeatherMap = {
+  instance: map,
+  isReplay: () => !!replayAt,
   live: () => liveData,
   show: () => map.invalidateSize(),
   focus: (lat,lon) => map.setView([lat,lon],9),

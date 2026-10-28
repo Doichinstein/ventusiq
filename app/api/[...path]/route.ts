@@ -1,4 +1,6 @@
 import { env } from 'cloudflare:workers';
+import { after } from 'next/server';
+import { getChatGPTUser } from '../../chatgpt-auth';
 import { WeatherService, pointKey, iso } from '../../../lib/weather-service.mjs';
 import { HazardsService } from '../../../lib/hazards-service.mjs';
 import { RiversService } from '../../../lib/rivers-service.mjs';
@@ -9,6 +11,8 @@ import { AnalogsService } from '../../../lib/analogs-service.mjs';
 import { PlanningService } from '../../../lib/planning-service.mjs';
 import { AirTrendsService } from '../../../lib/air-trends-service.mjs';
 import { EventReportsService } from '../../../lib/event-reports-service.mjs';
+import { WatchService } from '../../../lib/watch-service.mjs';
+import { watchGet,watchPost } from '../../../lib/watch-http.mjs';
 
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
@@ -16,6 +20,8 @@ export async function GET(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
+    if(path==='/api/watches')return watchGet(request,new WatchService(service),(await getChatGPTUser())?.userId||null);
+    if(path.startsWith('/api/watch-feed/'))return watchGet(request,new WatchService(service),null);
     if(path==='/api/event-reports'){
       const result=await new EventReportsService(service).forEvent(url.searchParams.get('id'),url.searchParams.has('at')?atTime(url.searchParams.get('at'))*1000:null,url.searchParams.has('alertAt')?atTime(url.searchParams.get('alertAt'))*1000:null);
       return result?json(result):json({error:'No collected event at this time'},404);
@@ -52,7 +58,7 @@ export async function GET(request:Request){
     if(path==='/api/health')return json(await service.health());
     if(path==='/api/alerts'){
       if(url.searchParams.has('at')){const result=await service.read('alerts/us',atTime(url.searchParams.get('at')));return result?json({...result.data,collected_at:result.checked_at}):json({error:'No collected snapshot at that time'},404);}
-      return json(await service.alerts());
+      const result=await service.alerts();after(()=>new WatchService(service).upkeep(result));return json(result);
     }
     if(path==='/api/history')return json({snapshots:await service.history('alerts/us'),retention_hours:24});
     if(path==='/api/changes')return json({changes:await service.changes()});
@@ -65,4 +71,12 @@ export async function GET(request:Request){
     }
     return json({error:'Unknown API route'},404);
   }catch(error){const message=String((error as Error).message);return json({error:message},/Invalid|Archive time/.test(message)?400:503);}
+}
+export async function POST(request:Request){
+  if(!env.DB)return json({error:'Shared database unavailable'},503);
+  if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);
+  const service=new WeatherService(env.DB),watches=new WatchService(service),user=await getChatGPTUser();
+  const response=await watchPost(request,watches,user?.userId||null);
+  if(response.ok)after(async()=>{await watches.upkeep(await service.alerts());});
+  return response;
 }

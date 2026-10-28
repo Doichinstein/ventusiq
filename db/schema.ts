@@ -27,3 +27,12 @@ export const eventLinks = sqliteTable('event_links',{
   source:text('source').notNull(),target:text('target').notNull(),targetCap:text('target_cap').notNull(),firstSeen:integer('first_seen').notNull(),
 },t=>[primaryKey({columns:[t.source,t.target]}),index('event_link_target').on(t.target)]);
 export const eventCollections = sqliteTable('event_collections',{at:integer('at').primaryKey()});
+export const watches = sqliteTable('watches',{
+  id:text('id').primaryKey(),owner:text('owner').notNull(),label:text('label').notNull(),point:text('point').notNull(),settings:text('settings').notNull(),
+  createdAt:integer('created_at').notNull(),updatedAt:integer('updated_at').notNull(),enabled:integer('enabled').notNull().default(1),
+  nextCheck:integer('next_check').notNull().default(0),leaseUntil:integer('lease_until').notNull().default(0),leaseToken:text('lease_token'),
+  checkedAt:integer('checked_at'),error:text('error'),baseline:text('baseline'),sequence:integer('sequence').notNull().default(0),feedHash:text('feed_hash'),
+},t=>[index('watch_owner').on(t.owner),index('watch_due').on(t.enabled,t.nextCheck)]);
+export const watchEvents = sqliteTable('watch_events',{
+  id:text('id').primaryKey(),watchId:text('watch_id').notNull(),at:integer('at').notNull(),kind:text('kind').notNull(),title:text('title').notNull(),payload:text('payload').notNull(),
+},t=>[index('watch_event_time').on(t.watchId,t.at)]);

@@ -318,3 +318,12 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - The built Worker collected the eight-report SPC edition through `/api/event-reports` for three locally archived Minnesota warning chains. Those three chains had no matching reports; the endpoint preserved that distinction from missing coverage. A historical cutoff before the first report retrieval returned `not_collected_by_cutoff`; subsequent historical views used only already-collected editions.
 - The built-runtime check caught an unsupported Cloudflare fetch redirect mode. The corrected collector uses manual redirect handling and rejects non-success responses. The local source backoff was allowed to expire before confirming successful collection.
 - Browser rendering remains unverified under the existing saved permission restriction. The tests verify DOM state, source contracts and API behavior, not visual layout.
+
+
+## Persistent owned watches and Atom feeds (2026-10-28)
+
+- 243 Node tests and 16 Python tests pass. New coverage includes owner isolation, same-origin writes, request-size limits, account/global quotas, idempotent enrollment, concurrent leases, in-flight pause, deletion, feed hashing/rotation/revocation, retention, threshold crossings, unknown coverage, timezone requirements and UI enrollment controls. TypeScript checking and the production build pass.
+- Migration `0002_mixed_dexter_bennett.sql` was applied to the local Worker database. A real NWS forecast at 38.9, -77.04 produced a persisted background watch baseline at 22:57:17 UTC with both alert and forecast coverage available, after the creation API returned. This confirms the built Worker execution-context path rather than only the service unit tests.
+- Local runtime checks returned 401 for anonymous management and 404 for another development owner, served Atom successfully, and returned 404 for the same feed after deletion. Development identity fixtures were used only on loopback; the temporary local watch was deleted. This is not evidence of a real production sign-in session.
+- Sites reports the existing hourly archive-upkeep schedule enabled. This change reuses its live-alert read to invoke due watch checks; schedule configuration alone does not prove that each watch ran on schedule. No duplicate schedule or external-message delivery was created.
+- Real browser sign-in, layout and interaction verification remain unavailable under the existing saved browser permission restriction. Closed-browser push and webhooks remain unfinished; private feeds are polled by readers.

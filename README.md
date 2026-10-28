@@ -10,6 +10,11 @@ while the page is open, share links, and configurable activity windows. Planning
 checks duration, temperature, sustained wind and hourly rain probability. Missing
 values or gaps never count as favorable; stale forecasts pause recommendations.
 
+**Persistent watches** in the hosted edition store explicitly enrolled places and
+alert/forecast threshold changes across sessions. Sign in to manage up to four
+watches, inspect retained evidence or issue a revocable private Atom feed. Hourly
+upkeep is best effort; see [watch behavior and ownership](docs/watches.md).
+
 **Fire & air** adds reported NIFC wildfire points and perimeters, EPA/AirNow
 PM2.5 monitor readings, NASA VIIRS daily thermal-detection imagery, and nearby
 conditions for saved places. Each product shows its own timestamp and coverage
@@ -51,8 +56,8 @@ Public source: https://github.com/Doichinstein/ventusiq
 
 The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal
 colors, and Geist typography. The public repository is `ventusiq`; the Python
-distribution and command remain named `weather-commons`. No accounts, paid data keys, or Python
-runtime dependencies are required. Python 3.11 or newer is required.
+distribution and command remain named `weather-commons`. Public browsing requires no account or paid data keys; optional hosted watches
+require sign-in. The Python edition has no runtime dependencies. Python 3.11 or newer is required.
 
 ## Run locally
 
@@ -148,6 +153,8 @@ dependency-free and does not require a frontend build. For the hosted edition:
 npm ci
 npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_daily_thor.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_polite_mentallo.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_mixed_dexter_bennett.sql
 npm start
 ```
 

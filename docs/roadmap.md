@@ -5,8 +5,8 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 
 | Feature | Current implementation | Remaining delivery |
 |---|---|---|
-| My Places | Device-local places, map selection, official alerts, hourly outlook and share links | Rendered QA; optional cross-device ownership later |
-| Meaningful updates | CAP-linked alert changes, forecast shifts, opt-in desktop notifications while page open | Persistent subscriptions, threshold triggers, closed-page push, feeds/webhooks and delivery records |
+| My Places | Device-local places, map selection, official alerts, hourly outlook and share links | Rendered QA; full saved-place synchronization (owned watches already persist across devices) |
+| Meaningful updates | CAP-linked changes, opt-in tab notifications, owned persistent watches, forecast threshold crossings, retained evidence and revocable Atom feeds | Rendered/sign-in QA, closed-page push, webhooks and delivery records |
 | Activity windows | Editable presets, duration/temperature/wind/rain/gust checks across full windows, user margin tests, timed alerts, current PM2.5 context and evidence export | Rendered QA, future air/smoke forecasts, calibrated uncertainty and observation-based evaluation |
 | Fire and smoke | NIFC incident points/perimeters, AirNow PM2.5 monitors, NASA VIIRS daily imagery; saved-place proximity; 24-hour measured monitor trends with gaps and evidence export; seven-day hosted archive | Rendered QA, smoke forecasts and evaluated exposure |
 | Flood timing | Regional NWPS gauges, observed/forecast hydrographs, forecast high and threshold windows, official impacts, nearby gauges/map markers, revision comparisons and threshold-timing changes | Rendered QA, watershed-aware associations and optional threshold subscriptions |
@@ -19,7 +19,8 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 The hosted runtime now includes shared collection and a persistent D1 archive.
 Collection runs on demand with an hourly Sites archive-upkeep task configured for
 the public deployment. Scheduled execution must be checked using actual collection
-timestamps. Subscription ownership and closed-page delivery remain unfinished.
+timestamps. Explicit owned watches now reuse this upkeep; see [watches](watches.md).
+Closed-page push and webhook delivery remain unfinished.
 Self-hosted Python supports `--watch LAT,LON` background point-forecast collection.
 
 ## First release

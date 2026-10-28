@@ -23,8 +23,9 @@ The Sites runtime now has shared API collection and a durable D1 archive. It
 refreshes on demand with database leases across isolates. The frontend retains
 device-local preferences. The public deployment has an hourly Sites upkeep task;
 its execution is separate from on-demand refresh and must be verified using
-collection timestamps. Closed-browser push and optional cross-device accounts
-remain delivery requirements.
+collection timestamps. Explicit hosted watches have signed-in ownership; the
+rest of the saved-place workspace remains device-local. Closed-browser push
+remains a delivery requirement.
 The Python edition archives point forecasts and can watch configured points while
 no browser is open. Minute-by-minute hosted unattended collection is deferred by
 the owner in favor of hourly upkeep. Do not call tab notifications background push.
@@ -36,7 +37,8 @@ normalized hazard observations); `checks`
 records each successful collection; `change_batches` retains alert changes. The
 schema is migration-owned and never created during request handling. The hosted
 forecast cache currently admits up to approximately 1,000 distinct requested points;
-subscriptions and broader rollout need user quotas and archive retention/export.
+watches enforce four per owner and 64 globally. Broader rollout needs a capacity
+review and archive retention/export.
 
 ## Data contracts shared by the ten features
 
@@ -87,10 +89,13 @@ window and source links. Confidence labels distinguish model spread, historical
 skill and calibrated probability. A percentage requires its method and validation.
 
 Saved places begin device-local and optional. A share link explicitly contains
-only its place name and coordinates. Later account storage and subscriptions must
-have individual ownership, deletion, bounded quotas and authenticated writes.
-External feeds, notifications and webhooks need delivery records, idempotency keys,
-bounded retries and explicit user opt-in. Never send from a page view alone.
+only its place name and coordinates. `WatchService` owns explicitly enrolled
+server watches with authenticated writes, ownership, deletion, bounded quotas,
+leased checks and retained evidence. `watch-core.mjs` evaluates state changes;
+`watch-http.mjs` serves owner APIs and revocable read-only Atom feeds. Live alert
+reads register due upkeep with `after()` so the existing hourly task checks enrolled
+places. Feed polling is separate from pushed delivery. Future push and webhooks
+need delivery records, idempotency keys and bounded retries. See [watches](watches.md).
 
 `AnalogsService` archives NASA POWER daily reanalysis by native meteorology grid
 and ten-year window. `analogs-core.mjs` matches complete upcoming UTC forecast days

@@ -27,7 +27,7 @@ class Element {
 const fixture=(id,event='Flood Warning',severity='Severe',area='Test County')=>({type:'Feature',id:'https://api.weather.gov/alerts/'+id,geometry:{type:'Polygon',coordinates:[[[-100,40],[-99,40],[-99,41],[-100,40]]]},properties:{id,status:'Actual',event,severity,areaDesc:area,sent:new Date().toISOString(),expires:'2099-01-01T00:00:00Z',description:'Official <script>text</script>',instruction:'Seek higher ground',affectedZones:[]}});
 const payload=(features)=>({type:'FeatureCollection',features,updated:new Date().toISOString(),collected_at:new Date().toISOString()});
 async function setup(mode='direct') {
-  const ids=[...fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8').matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
+  const ids=[...fs.readFileSync(path.join(__dirname,'../public/index.html'),'utf8').matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
   const els=Object.fromEntries(ids.map(id=>[id,new Element()]));
   els.severity.value='all';els.region.value='conus';
   for(const c of ['all','Warning','Watch','Advisory']) {const b=new Element('button');b.dataset.category=c;els.categories.append(b);}
@@ -49,7 +49,7 @@ async function setup(mode='direct') {
   const doc={getElementById:id=>els[id],createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e;},createDocumentFragment:()=>new Element('fragment'),addEventListener(){},activeElement:new Element('body')};
   const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,console,setInterval(){},setTimeout(){return 1;}});
   const run=code=>vm.runInContext(code,ctx);
-  run(fs.readFileSync(path.join(__dirname,'../dist/app.js'),'utf8'));
+  run(fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8'));
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(r=>setImmediate(r));};
   await settle();
   return {els,run,settle,stored,setData(data){current=data;},fail(){error=true;}};

@@ -12,7 +12,7 @@ from .freshness import Policy
 from .nws import BASE, ZONE, fetch_json
 from .forecast import ForecastService, point_key
 
-ROOT = Path(__file__).resolve().parent.parent / "dist"
+ROOT = Path(__file__).resolve().parent.parent / "public"
 log = logging.getLogger(__name__)
 
 

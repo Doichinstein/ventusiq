@@ -19,12 +19,21 @@ The Python daemon owns shared collection, persistent provenance and archives.
 operator-selected background watches. Reading a public endpoint must not enroll
 an arbitrary visitor's location in an indefinite background subscription.
 
-The current Sites deployment is static. It supports on-page collection and local
-preferences; it does not provide a shared daemon, closed-browser push, cross-device
-accounts, or a durable public forecast archive. These remain delivery requirements.
+The Sites runtime now has shared API collection and a durable D1 archive. It
+refreshes on demand with database leases across isolates. The frontend retains
+device-local preferences. Unattended scheduling, closed-browser push and optional
+cross-device accounts remain delivery requirements.
 The Python edition archives point forecasts and can watch configured points while
 no browser is open. A hosted runtime with durable storage is still required for
-equivalent public behavior. Do not call tab notifications background push.
+continuous public behavior. Do not call tab notifications background push.
+
+`lib/weather-service.mjs` implements the hosted collector using the same provenance
+and last-good-state rules as Python. D1 `datasets` controls leases, cadence and
+failure backoff; `revisions` stores gzip/base64 raw products and hashes; `checks`
+records each successful collection; `change_batches` retains alert changes. The
+schema is migration-owned and never created during request handling. The hosted
+forecast cache currently admits up to approximately 1,000 distinct requested points;
+subscriptions and broader rollout need user quotas and archive retention/export.
 
 ## Data contracts shared by the ten features
 

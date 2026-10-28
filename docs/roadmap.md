@@ -16,8 +16,9 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | Compound hazards | Explainable rule contract specified | Reviewed rules and temporal/spatial evaluation |
 | Event timeline | Existing 24-hour alert replay; separate persistent forecast archive | Event identity, observations, longer history, durable links and export |
 
-The current public Sites release is static. A shared persistent runtime is required
-for unattended public collection, historical analysis and closed-page delivery.
+The hosted runtime now includes shared collection and a persistent D1 archive.
+Collection currently runs on demand. Unattended scheduling, subscription ownership
+and delivery still need implementation and end-to-end verification.
 Self-hosted Python supports `--watch LAT,LON` background point-forecast collection.
 
 ## First release

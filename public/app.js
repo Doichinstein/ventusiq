@@ -106,10 +106,10 @@ async function refresh() {
       lastSuccess = data.collected_at;
       lastError = null;
     } else {
+      data = await request('/api/alerts');
       const health = await request('/api/health');
       lastSuccess = health.last_success ? new Date(health.last_success * 1000).toISOString() : null;
       lastError = health.last_error;
-      data = await request('/api/alerts');
       const [history, changeData] = await Promise.all([request('/api/history'), request('/api/changes')]);
       snapshots = history.snapshots;
       changes = changeData.changes;
@@ -364,6 +364,7 @@ $('about-close').onclick = () => $('about').close();
 $('about').addEventListener('click', e => { if (e.target === $('about')) { const b = $('about').getBoundingClientRect(); if (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) $('about').close(); } });
 $('history-mode').textContent = direct ? 'History for this session' : '24h retained history';
 $('mode-explainer').textContent = direct ? 'This static public edition reads NWS directly from your browser. Replay and the change feed cover collections made while this page is open. Download the self-hosted edition for a shared background daemon and persistent 24-hour history.' : 'This edition reads from a shared background daemon. Collections continue even when nobody is viewing the map. Replay covers the last 24 hours collected since the daemon started; it does not invent earlier history.';
+if(config.mode==='hosted')$('mode-explainer').textContent='This edition reads a shared hosted collector and persistent archive. Requests refresh alerts at most once per minute, shared across visitors. History survives closing the browser. Collection currently runs on demand; unattended scheduling is still being integrated.';
 document.addEventListener('keydown', e => { if (e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {e.preventDefault();$('search').focus();} if (e.key === 'Escape' && !$('about').open) closeDetail(); });
 window.addEventListener('resize', () => map.invalidateSize());
 // Small public interface keeps personal planning independent of map/replay state.

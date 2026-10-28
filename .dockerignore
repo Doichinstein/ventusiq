@@ -7,4 +7,9 @@ __pycache__
 *.tar.gz
 .env
 .venv
+node_modules
+.sites-runtime
+.wrangler
+.vinext
+dist
 

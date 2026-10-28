@@ -3,7 +3,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const core=require('../dist/weather-core.js');
+const core=require('./load-core.cjs');
 class Element{
   constructor(tag='div'){this.tagName=tag.toUpperCase();this.children=[];this.value='';this.hidden=false;this.attributes={};this.text='';this.classList={toggle(){}};}
   set textContent(v){this.text=String(v??'');this.children=[];}
@@ -16,7 +16,7 @@ class Element{
 const start=Math.floor(Date.now()/3600000)*3600000;
 function data(temp=60){return {properties:{updateTime:new Date(start).toISOString(),periods:Array.from({length:48},(_,i)=>({startTime:new Date(start+i*3600000).toISOString(),endTime:new Date(start+(i+1)*3600000).toISOString(),temperature:temp,temperatureUnit:'F',windSpeed:'5 mph',probabilityOfPrecipitation:{value:0},shortForecast:'Sunny'}))}};}
 async function setup(saved=null){
-  const ids=[...fs.readFileSync(require.resolve('../dist/index.html'),'utf8').matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
+  const ids=[...fs.readFileSync(require.resolve('../public/index.html'),'utf8').matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
   const els=Object.fromEntries(ids.map(id=>[id,new Element()]));
   let value=saved,payload=data(),failure=false,identifier=0,clipboard=null,delay=false;
   const pending=[],clock=[Date.now()];
@@ -30,7 +30,7 @@ async function setup(saved=null){
     setInterval:fn=>timers.push(fn),console,Date:Clock,
     fetch:async url=>{requests.push(url);if(failure)throw new Error('Source outage');return {ok:true,json:async()=>url.includes('/points/')?{properties:{forecastHourly:'https://api.weather.gov/gridpoints/MTR/1,1/forecast/hourly',timeZone:'America/Los_Angeles',county:'https://api.weather.gov/zones/county/ABC001'}}:delay?new Promise(resolve=>pending.push(resolve)):payload};}
   });
-  vm.runInContext(fs.readFileSync(require.resolve('../dist/personal.js'),'utf8'),context);
+  vm.runInContext(fs.readFileSync(require.resolve('../public/personal.js'),'utf8'),context);
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(r=>setImmediate(r));};
   await settle();
   const add=async(name='Home',lat='37.7',lon='-122.4')=>{els['place-name'].value=name;els['place-lat'].value=lat;els['place-lon'].value=lon;els['place-form'].onsubmit({preventDefault(){}});await settle();};

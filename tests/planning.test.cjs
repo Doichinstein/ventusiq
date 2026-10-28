@@ -1,6 +1,6 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const core=require('../dist/weather-core.js');
+const core=require('./load-core.cjs');
 const start=Date.parse('2026-10-28T12:00:00Z');
 const polygon={type:'Polygon',coordinates:[[[-123,37],[-121,37],[-121,39],[-123,39],[-123,37]],[[-122.5,37.5],[-121.5,37.5],[-121.5,38.5],[-122.5,38.5],[-122.5,37.5]]]};
 const forecast=(changes={})=>({forecast:{properties:{periods:Array.from({length:5},(_,i)=>({startTime:new Date(start+i*3600000).toISOString(),endTime:new Date(start+(i+1)*3600000).toISOString(),temperature:60,temperatureUnit:'F',windSpeed:'5 to 10 mph',probabilityOfPrecipitation:{value:10},...changes}))}}});

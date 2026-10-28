@@ -71,23 +71,48 @@ The interval is configurable with `--interval`; it cannot be below 30 seconds.
   labeled cancellation without evidence.
 - Apache-2.0 source, a source ZIP download, container deployment, and tests.
 
-## Two deployment modes
+## Three deployment modes
+
+**Shared hosted edition (Sites):** A Vinext Worker serves the UI and weather API,
+with Cloudflare D1 storing compressed immutable revisions, collection checks and
+freshness. Concurrent visitors share a database collection lease. Alerts refresh
+on demand at most once per minute; point forecasts at most once per ten minutes.
+History survives browser closure and server restarts. Unattended scheduling and
+closed-page push are still in progress; no continuous overnight collection is
+implied by an archive that currently refreshes on demand.
 
 **Shared daemon (recommended for your own domain):** Python serves the static UI
 and read-only API, with one background collector and persistent SQLite history.
 Nobody needs to keep a browser open. `config.js` is served by Python in daemon mode.
 
-**Static public edition:** Serve `dist/` from any static host. Its `config.js`
+**Static export:** Run `python scripts/export_static.py <new-output-directory>`
+and serve that directory from any static host. Its generated `config.js`
 selects direct NWS access from each browser. It is a working live map but has no
 server daemon; replay and changes cover that tab's in-memory session, up to 24
 hours. Closing/reloading loses session history. The interface labels this mode.
-This is the Sites-hosted edition; it is not the persistent daemon deployment.
 Personal places and limits persist on the device; forecast caches and change
 baselines last for the page session. Desktop notifications require opt-in and an
-open page. Closed-page push and durable public history are not yet deployed.
+open page. The static export does not have a shared archive.
 
-Both modes use the same frontend. To scale traffic, deploy the shared collector
+All modes use the same frontend from `public/`. To scale traffic, use a shared collector
 edition and choose a map tile provider appropriate to your usage.
+
+## Hosted development
+
+The hosted edition requires Node.js 22.13+ and npm. The Python edition remains
+dependency-free and does not require a frontend build. For the hosted edition:
+
+```sh
+npm ci
+npm run build
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_daily_thor.sql
+npm start
+```
+
+Apply a migration once to each local database. Additional schema changes use
+`npm run db:generate`; applied migrations are immutable. Production migrations
+are packaged by the retained Sites integration and applied during publication.
+Never copy local `.wrangler` state or secrets into a deployment archive.
 
 ## Deploy the daemon edition to your domain
 
@@ -147,12 +172,13 @@ instant, including source rollbacks; it never uses a later collection.
 
 ```sh
 python -m unittest discover -s tests -v
-node --check dist/app.js
+node --check public/app.js
 node --test tests/*.test.cjs
+node --test tests/hosted.test.mjs
 python scripts/package_source.py
 ```
 
-The last command creates `dist/source.zip` from an explicit source allowlist. It
+The last command creates `public/source.zip` from an explicit source allowlist. It
 excludes private runtime data, Git metadata, secrets, and hosting identity. Run it
 after source changes before shipping the static site. Leaflet is vendored at
 1.9.4 with its license. There is no JavaScript build step.
@@ -169,7 +195,7 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
 - [NWS API](https://www.weather.gov/documentation/services-web-api): open alert data,
   with source-specific availability and rate limits. This is not a guaranteed
   emergency notification service. Follow official NWS and local guidance.
-- [Leaflet](https://leafletjs.com): BSD 2-Clause, retained in `dist/vendor/LEAFLET-LICENSE`.
+- [Leaflet](https://leafletjs.com): BSD 2-Clause, retained in `public/vendor/LEAFLET-LICENSE`.
 - [OpenStreetMap](https://www.openstreetmap.org/copyright): separate ODbL map data.
   The default browser tile service is best-effort and has a
   [usage policy](https://operations.osmfoundation.org/policies/tiles/). Do not bulk
@@ -177,6 +203,6 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
   configuration for a different provider. No offline tile feature is included.
 - Geist, Geist Mono, Geist Pixel Line, and Geist Pixel Square are self-hosted
   copies from VentusIQ's existing assets, under SIL OFL 1.1. Font licenses are
-  retained in `dist/assets/fonts/`. No external font requests are made. Visitors
+  retained in `public/assets/fonts/`. No external font requests are made. Visitors
   contact NWS (static mode) and the tile service; there are no analytics or accounts.
 

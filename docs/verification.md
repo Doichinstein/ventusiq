@@ -2,6 +2,26 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Shared hosted runtime increment
+
+- The frontend source moved from `dist/` to `public/`; `dist/` is now generated
+  Worker/client output. Python and the static export use the same frontend source.
+- The production Vinext/Cloudflare build succeeded. The generated artifact carries
+  the original Sites project identity and the DB binding. The schema migration was
+  inspected (four tables, one index, no data updates) and applied to local D1.
+- Local built-Worker HTTP returned the branded dashboard, hosted configuration,
+  health, 313 real NWS alerts, history, changes, and 156 forecast periods. Stopping
+  and restarting the Worker preserved the alert snapshot and forecast revision;
+  historical HTTP replay returned all 313 originally collected alerts.
+- Six additional hosted tests exercise actual SQLite schema and collector logic:
+  compressed payload roundtrip, deduplication across service instances, outages and
+  persistent backoff, concurrent cold-request leases, forecast rollback/time travel,
+  invalid coordinates and rejection of off-origin pagination.
+- Regression run: 29 Node tests and 16 Python tests passed (45 total).
+- Hosted collection is currently on demand, not an unattended scheduler. Closed-page
+  push and subscription ownership remain unfinished. Prior visual verification
+  limits still apply. Local D1 evidence does not alone prove production D1 writes.
+
 ## Public decision workspace increment
 
 - Python: 16 passing tests, including immutable forecast revisions, decision-time

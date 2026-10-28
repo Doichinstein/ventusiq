@@ -2,6 +2,34 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Activity-planning increment
+
+- Added archived NWS grid gust forecasts, full-window optional gust limits,
+  editable Walk/Bike ride/Outdoor tasks presets, user-selected margin tests,
+  per-window official-alert overlap, current measured PM2.5 context and JSON export.
+  [Method and limits](activity-planning.md) explicitly separate margin scenarios
+  from calibrated uncertainty and observations from future air-quality coverage.
+- Nineteen new tests exercise ISO grid intervals/DST, units and nulls, complete
+  duration coverage, gaps/duplicates, gust exceedances, freshness, margin sensitivity,
+  timed alerts, nearest measured air, preference/application behavior, async races,
+  shared grid cache, immutable revision replay, outages and input/source validation.
+- Regression suite: 164 Node and 16 Python tests passed (180 total); TypeScript
+  and production build passed. No dependency or database migration was added.
+- Built Worker integration used live Washington hourly/grid forecasts and AirNow
+  measurements: 49 two-hour candidate starts met Walk limits and 44 passed the
+  extra margins. The first option used a maximum forecast gust of about 8.1 mph;
+  McMillan Reservoir was the closest eligible measured PM2.5 monitor. Future AQI
+  remained explicitly unknown. Results change with source revisions and time.
+- Live grid archive revision:
+  `4bae15a1373e8c0fa6b101a607774c6b6fc238df23cc2bfa1d5a8ec43cbdc9e8`.
+  Both planning modules and the application returned 200; missing coordinates
+  returned 400. Non-hosted editions use the official grid directly; live browser
+  execution of those editions has not been independently verified.
+- Updated GitHub links/user-agent contact URLs to the canonical `Doichinstein/ventusiq`
+  repository after GitHub reported the repository move. Browser rendering remains
+  unverified under the saved permission setting; no alternate automation was used.
+  Hourly archive upkeep remains unchanged.
+
 ## Historical analog increment
 
 - Added ten-year NASA POWER daily reanalysis ingestion, shared native-grid caching,

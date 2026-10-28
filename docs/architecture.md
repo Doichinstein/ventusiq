@@ -101,6 +101,14 @@ Reanalysis outcomes are historical context, not operational forecast probabiliti
 station and reported-impact integration remain future work. See
 [the complete historical analog method](historical-analogs.md).
 
+`PlanningService` shares and archives NWS raw grid forecasts for gust coverage.
+`planning-core.mjs` checks full-duration windows, source freshness, user margins,
+alert timing and separate current-air context; `planning.js` owns presets,
+controls, alternatives and export. The personal workspace owns preference storage
+and exposes it through a small bridge. All editions use the evaluator; non-hosted
+editions fetch the official grid directly. Margin scenarios are not statistical
+confidence. See [activity planning](activity-planning.md).
+
 ## Durable archive
 
 `compound-core.mjs` evaluates six versioned rules over the selected place's current

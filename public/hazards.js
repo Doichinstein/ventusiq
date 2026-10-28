@@ -33,7 +33,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     s.next=clock()+(kind==='satellite'?3600000:900000);
     s.pending=(async()=>{try{s.data=await request(kind);s.error=s.data.error||null;draw(kind);}
       catch(error){s.error=error.message;s.next=clock()+120000;}
-      finally{s.pending=null;status(kind);renderPlace();window.WeatherCompound?.refresh();}})();
+      finally{s.pending=null;status(kind);renderPlace();window.WeatherCompound?.refresh();window.WeatherPlanner?.refresh();}})();
     status(kind);await s.pending;return s.data;
   }
   function fireSummary(f){const p=f.properties;return `${p.kind} · ${[p.county,p.state].filter(Boolean).join(', ')} · ${quantity(p.acres,' acres')} · ${quantity(p.contained,'% contained')}`;}

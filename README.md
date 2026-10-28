@@ -45,11 +45,11 @@ hours ahead. It shows sample size, missing coverage, errors and exportable evide
 new places need time to accumulate eligible forecasts. See [observation and
 comparison methods](docs/observations.md).
 
-Public source: https://github.com/Doichinstein/weather-commons
+Public source: https://github.com/Doichinstein/ventusiq
 
 The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal
-colors, and Geist typography. The source repository/package remains named
-`weather-commons`. No accounts, paid data keys, or Python
+colors, and Geist typography. The public repository is `ventusiq`; the Python
+distribution and command remain named `weather-commons`. No accounts, paid data keys, or Python
 runtime dependencies are required. Python 3.11 or newer is required.
 
 ## Run locally
@@ -248,3 +248,5 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
 
 
 Historical context: the hosted My weather briefing includes [comparable historical days](docs/historical-analogs.md), using ten years of NASA POWER grid data, explicit similarity limits, following-day distributions, chronological baseline tests and a reproducible evidence export. These are historical comparisons, not calibrated forecasts.
+
+[Activity planning](docs/activity-planning.md) supports editable presets, full-window gust limits, margin scenarios, timed alert context and JSON export. Current PM2.5 readings are shown separately; future air-quality coverage remains unknown.

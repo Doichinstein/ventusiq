@@ -7,7 +7,7 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 |---|---|---|
 | My Places | Device-local places, map selection, official alerts, hourly outlook and share links | Rendered QA; optional cross-device ownership later |
 | Meaningful updates | CAP-linked alert changes, forecast shifts, opt-in desktop notifications while page open | Persistent subscriptions, threshold triggers, closed-page push, feeds/webhooks and delivery records |
-| Activity windows | Duration, temperature, sustained wind and rain chance constraints; unknown/gap handling | Air quality/gust inputs, evaluated uncertainty and activity presets |
+| Activity windows | Editable presets, duration/temperature/wind/rain/gust checks across full windows, user margin tests, timed alerts, current PM2.5 context and evidence export | Rendered QA, future air/smoke forecasts, calibrated uncertainty and observation-based evaluation |
 | Fire and smoke | NIFC incident points/perimeters, AirNow PM2.5 monitors, NASA VIIRS daily imagery; saved-place proximity; seven-day hosted archive | Rendered QA, smoke forecasts, trends and evaluated exposure |
 | Flood timing | Regional NWPS gauges, observed/forecast hydrographs, forecast high and threshold windows, official impacts, nearby gauges and map markers | Rendered QA, watershed-aware associations, forecast updates and optional threshold subscriptions |
 | Journey weather | Cached OSRM driving routes, bounded distance/time sampling, three departure scenarios, full-road intersections with loaded alert boundaries, coverage and JSON export | Rendered QA, traffic/stops/via points, gust/smoke exposure, verified closure attribution and broader deployment capacity |

@@ -1,4 +1,24 @@
-# Roadmap
+# Public roadmap
+
+All ten decision-support features are public Apache-2.0 scope. The implementation
+sequence and acceptance criteria are specified in [architecture](architecture.md).
+
+| Feature | Current implementation | Remaining delivery |
+|---|---|---|
+| My Places | Device-local places, map selection, official alerts, hourly outlook and share links | Rendered QA; optional cross-device ownership later |
+| Meaningful updates | CAP-linked alert changes, forecast shifts, opt-in desktop notifications while page open | Persistent subscriptions, threshold triggers, closed-page push, feeds/webhooks and delivery records |
+| Activity windows | Duration, temperature, sustained wind and rain chance constraints; unknown/gap handling | Air quality/gust inputs, evaluated uncertainty and activity presets |
+| Fire and smoke | Source and module architecture specified | NIFC/FIRMS/AirNow/HRRR adapters, layers, trends and location exposure |
+| Flood timing | Source and module architecture specified | NWPS observations/forecasts, crest timing and documented impacts |
+| Journey weather | Route-time contracts specified | Route provider, segment sampling, departure alternatives and coverage |
+| Forecast confidence | Immutable point forecast revision archive | Ensemble ingestion, observations, grading and validated confidence |
+| Historical analogs | Decision-time archive prevents future leakage | Historical ingestion, local similarity and holdout evaluation |
+| Compound hazards | Explainable rule contract specified | Reviewed rules and temporal/spatial evaluation |
+| Event timeline | Existing 24-hour alert replay; separate persistent forecast archive | Event identity, observations, longer history, durable links and export |
+
+The current public Sites release is static. A shared persistent runtime is required
+for unattended public collection, historical analysis and closed-page delivery.
+Self-hosted Python supports `--watch LAT,LON` background point-forecast collection.
 
 ## First release
 
@@ -20,9 +40,7 @@ assuming the NWS alert endpoint includes radar imagery.
 
 ## Pinned: separate paid decision platform
 
-Deferred until the public map is established. A separate commercial service can
-reuse the Apache-2.0 infrastructure and add location exposure, configurable
-thresholds, scenario comparisons, and operational workflows. These are candidate
-directions; audience, pricing, and product scope remain undecided. Keep the free
-public dashboard useful on its own. Others may also commercially reuse released
-code under Apache-2.0.
+Deferred. A separate commercial service may reuse the Apache-2.0 infrastructure;
+audience, pricing and product scope remain undecided. No feature in the ten-feature
+public roadmap is reserved for that service. Others may also commercially reuse
+released code under Apache-2.0.

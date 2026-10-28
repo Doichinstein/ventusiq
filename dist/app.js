@@ -115,6 +115,7 @@ async function refresh() {
       changes = changeData.changes;
     }
     liveData = data;
+    window.WeatherPersonal?.alertsUpdated(data);
     nextFetch = Date.now() + 60000;
     if (generation === snapshotGeneration && !replayAt && !replayLoading) {
       lastSourceUpdated = data.updated;
@@ -365,6 +366,14 @@ $('history-mode').textContent = direct ? 'History for this session' : '24h retai
 $('mode-explainer').textContent = direct ? 'This static public edition reads NWS directly from your browser. Replay and the change feed cover collections made while this page is open. Download the self-hosted edition for a shared background daemon and persistent 24-hour history.' : 'This edition reads from a shared background daemon. Collections continue even when nobody is viewing the map. Replay covers the last 24 hours collected since the daemon started; it does not invent earlier history.';
 document.addEventListener('keydown', e => { if (e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {e.preventDefault();$('search').focus();} if (e.key === 'Escape' && !$('about').open) closeDetail(); });
 window.addEventListener('resize', () => map.invalidateSize());
+// Small public interface keeps personal planning independent of map/replay state.
+window.WeatherMap = {
+  live: () => liveData,
+  show: () => map.invalidateSize(),
+  focus: (lat,lon) => map.setView([lat,lon],9),
+  pick: callback => map.once('click', e => callback(e.latlng.lat,((e.latlng.lng+180)%360+360)%360-180)),
+  selectAlert: id => { const f=features.find(f=>f.id===id); if(f)selectAlert(f); },
+};
 setInterval(() => { updateHealth(); if (!replayAt && lastSuccess) render(); }, 30000);
 setInterval(refresh, 5000);
 refresh();

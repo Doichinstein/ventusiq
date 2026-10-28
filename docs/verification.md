@@ -2,6 +2,32 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Public decision workspace increment
+
+- Python: 16 passing tests, including immutable forecast revisions, decision-time
+  reads before/after an upstream rollback, payload deduplication, restart cache,
+  failure/backoff, invalid coordinates and rejected source URLs.
+- Node: 23 passing offline tests across the existing map, decision primitives and
+  personal workspace. New coverage includes polygon holes/date-line boundaries,
+  polygon precedence over county coverage, full-duration windows, unknown values,
+  missing hours, unit conversion, CAP-linked changes, forecast comparisons at the
+  same valid time, saved-place restore/removal, sharing with text escaping, map
+  selection, duplicate updates, late requests for a previous place, stale forecast
+  handling and corrupt saved preferences.
+- A real NWS point lookup for San Francisco returned 156 hourly periods. The
+  archive stored its issue time, collection/check times and immutable revision.
+- Local HTTP served `/`, `/personal.js`, `/weather-core.js`, `/api/forecast` and
+  `/api/forecast/history`. Decision-time replay returned the matching revision.
+  Invalid latitude, non-finite coordinates and timezone-free archive timestamps
+  returned HTTP 400. The running daemon collected 315 live alerts.
+- Source files pass JavaScript syntax checks and `git diff --check`.
+- This increment has not had real browser rendering/interaction verification;
+  the previously saved browser permission block remains. The user's earlier
+  confirmation covered the original map, not the new personal workspace.
+- Background delivery, provider layers 4–9, and durable public event stories are
+  incomplete. `architecture.md` and `roadmap.md` preserve all ten requirements.
+  Public static hosting does not run the Python forecast archive or daemon.
+
 ## Executed
 
 - Python 3.13: `python -m unittest discover -s tests -v` — 11 passing tests.

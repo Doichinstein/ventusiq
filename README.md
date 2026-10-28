@@ -1,8 +1,14 @@
 # VentusIQ — Open Weather
 
-A free, Apache-2.0 map of US weather alerts. A small Python daemon collects the
+A free, Apache-2.0 weather map and personal planning workspace. A small Python daemon collects the
 National Weather Service active feed, retains 24 hours of snapshots, and serves a
 responsive map with filters, official alert details, replay, and a change feed.
+
+**My weather** adds device-local saved places, geographic alert matching, a 48-hour
+hourly outlook, meaningful alert/forecast changes, optional desktop notifications
+while the page is open, share links, and configurable activity windows. Planning
+checks duration, temperature, sustained wind and hourly rain probability. Missing
+values or gaps never count as favorable; stale forecasts pause recommendations.
 
 Public source: https://github.com/Doichinstein/weather-commons
 
@@ -21,6 +27,19 @@ Open http://127.0.0.1:8765. The first collection happens immediately; later
 collections happen about every 60 seconds. A fresh installation has no history
 before its first collection. Replay becomes available after the next snapshot.
 Stop with Ctrl+C. State persists in `data/weather.sqlite` across restarts.
+
+To collect hourly forecasts even when no page is open, explicitly configure points:
+
+```sh
+python -m weathercommons serve --watch 37.7749,-122.4194 --watch 40.7128,-74.0060
+```
+
+Forecasts refresh at most every ten minutes per point. Revisions and check times
+persist separately from the rolling alert archive. Repeated identical payloads
+are deduplicated; failures retain the last good revision and are visibly stale.
+The forecast archive currently has no automatic pruning: monitor disk use and
+back up the database. These operator-selected points are independent of visitors'
+device-local saved places. Public forecast reads do not create background watches.
 
 For a custom port, use `--port 9000`. For remote access behind a reverse proxy,
 use `--host 0.0.0.0`. Keep the API and dashboard on the same origin.
@@ -62,7 +81,10 @@ Nobody needs to keep a browser open. `config.js` is served by Python in daemon m
 selects direct NWS access from each browser. It is a working live map but has no
 server daemon; replay and changes cover that tab's in-memory session, up to 24
 hours. Closing/reloading loses session history. The interface labels this mode.
-This is the initial Sites-hosted edition; it is not the persistent daemon deployment.
+This is the Sites-hosted edition; it is not the persistent daemon deployment.
+Personal places and limits persist on the device; forecast caches and change
+baselines last for the page session. Desktop notifications require opt-in and an
+open page. Closed-page push and durable public history are not yet deployed.
 
 Both modes use the same frontend. To scale traffic, deploy the shared collector
 edition and choose a map tile provider appropriate to your usage.
@@ -115,12 +137,18 @@ separately from the collector's successful-fetch timestamp.
 Read-only endpoints: `/api/alerts`, `/api/alerts?at=<ISO timestamp>`, `/api/history`,
 `/api/changes`, `/api/health`, and `/api/zones/<type>/<id>`.
 
+Point endpoints: `/api/forecast?lat=...&lon=...`,
+`/api/forecast/history?lat=...&lon=...`, and
+`/api/forecast?lat=...&lon=...&at=<ISO-with-timezone>` for decision-time replay.
+The last endpoint selects a successfully collected revision available at that
+instant, including source rollbacks; it never uses a later collection.
+
 ## Development and verification
 
 ```sh
 python -m unittest discover -s tests -v
 node --check dist/app.js
-node --test tests/frontend.test.cjs
+node --test tests/*.test.cjs
 python scripts/package_source.py
 ```
 
@@ -130,7 +158,8 @@ after source changes before shipping the static site. Leaflet is vendored at
 1.9.4 with its license. There is no JavaScript build step.
 
 See `docs/verification.md` for current checks and known limitations, and
-`docs/roadmap.md` for the separate future decision-support product.
+`docs/roadmap.md` and `docs/architecture.md` for the ten public decision-support
+features, their implementation status, source contracts and acceptance criteria.
 
 ## Data, mapping, and licensing
 

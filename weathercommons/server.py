@@ -10,12 +10,14 @@ from urllib.parse import urlparse, parse_qs, unquote
 import time
 from .freshness import Policy
 from .nws import BASE, ZONE, fetch_json
+from .forecast import ForecastService, point_key
 
 ROOT = Path(__file__).resolve().parent.parent / "dist"
 log = logging.getLogger(__name__)
 
 
-def make_server(store, host="127.0.0.1", port=8765, policy=Policy()):
+def make_server(store, host="127.0.0.1", port=8765, policy=Policy(), forecasts=None):
+    forecasts = forecasts or ForecastService(store)
     zone_lock = threading.Lock()
     zone_gate = threading.BoundedSemaphore(4)
     locks = {}
@@ -54,6 +56,19 @@ def make_server(store, host="127.0.0.1", port=8765, policy=Policy()):
                     self.send(200, {"snapshots": store.history(), "retention_hours": store.retention / 3600})
                 elif path == "/api/changes":
                     self.send(200, {"changes": store.changes()})
+                elif path in ("/api/forecast", "/api/forecast/history"):
+                    query = parse_qs(url.query)
+                    point = point_key(query.get("lat", [None])[0], query.get("lon", [None])[0])
+                    if path.endswith("/history"):
+                        self.send(200, {"revisions": forecasts.archive.history(point)})
+                    elif "at" in query:
+                        stamp = datetime.fromisoformat(query["at"][0].replace("Z", "+00:00"))
+                        if stamp.tzinfo is None:
+                            raise ValueError("Archive time requires a timezone")
+                        result = forecasts.archive.latest(point, stamp.timestamp())
+                        self.send(200 if result else 404, result or {"error": "No forecast had been collected by that time"})
+                    else:
+                        self.send(200, forecasts.get(*point.split(",")))
                 elif path.startswith("/api/zones/"):
                     match = ZONE.fullmatch(path)
                     if not match:

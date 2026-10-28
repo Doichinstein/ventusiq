@@ -7,6 +7,7 @@ from .lane import Collector
 from .nws import fetch_alerts
 from .server import make_server
 from .store import Store
+from .forecast import ForecastService, point_key
 
 
 def main():
@@ -18,6 +19,7 @@ def main():
     parser.add_argument("--interval", type=int, default=60)
     parser.add_argument("--once", action="store_true", help="Collect one snapshot, then exit")
     parser.add_argument("--no-collector", action="store_true", help="Serve only; use a separate collector process")
+    parser.add_argument("--watch", action="append", default=[], metavar="LAT,LON", help="Archive this point's hourly forecasts in the background; repeat for more places")
     args = parser.parse_args()
     if args.interval < 30:
         parser.error("NWS recommends no more than one alert request per 30 seconds")
@@ -25,9 +27,24 @@ def main():
     store = Store(args.data)
     policy = Policy(args.interval)
     collector = Collector(store, fetch_alerts, policy)
+    forecasts = ForecastService(store)
+    try:
+        points = [point_key(*value.split(",")).split(",") for value in args.watch]
+    except (ValueError, TypeError):
+        parser.error("Each --watch must contain valid LAT,LON coordinates")
     stop = threading.Event()
     if args.once:
-        raise SystemExit(0 if collector.tick(force=True) else 1)
+        success = collector.tick(force=True)
+        for point in points:
+            try:
+                forecasts.get(*point)
+            except Exception:
+                success = False
+        raise SystemExit(0 if success else 1)
+    forecast_worker = None
+    if points and (args.command == "collect" or not args.no_collector):
+        forecast_worker = threading.Thread(target=forecasts.run, args=(points, stop), daemon=True)
+        forecast_worker.start()
     if args.command == "collect":
         try:
             collector.run(stop)
@@ -38,7 +55,7 @@ def main():
     if not args.no_collector:
         worker = threading.Thread(target=collector.run, args=(stop,), daemon=True)
         worker.start()
-    server = make_server(store, args.host, args.port, policy)
+    server = make_server(store, args.host, args.port, policy, forecasts)
     print(f"Weather Commons: http://{args.host}:{args.port}", flush=True)
     try:
         server.serve_forever()
@@ -49,6 +66,8 @@ def main():
         server.server_close()
         if worker:
             worker.join(timeout=30)
+        if forecast_worker:
+            forecast_worker.join(timeout=30)
 
 
 if __name__ == "__main__":

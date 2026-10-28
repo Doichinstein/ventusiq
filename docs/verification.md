@@ -2,6 +2,26 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Persistent alert timeline increment
+
+- An additive migration creates five event tables and two indexes. It was inspected
+  and applied to local D1 without altering existing tables. Event writes share the
+  collector transaction and lease token; partial or failed collections do not retire
+  messages.
+- Regression suite: 74 Node and 16 Python tests passed (90 total). New coverage
+  verifies explicit CAP chains, cycles, missing references, late retrieval, source
+  rollback, duplicate polls, preserved collection times, survival beyond map
+  retention, stale-lease rejection, safe source text, cutoff links/export, selection
+  races and clearing a newer story when a past view is unavailable. Additional
+  checks cover retrieval of newly discovered reference generations and exclusion
+  of a later retrieval within the same second using millisecond timestamps.
+  Concurrent reference retrieval cannot overwrite an active-feed record.
+- TypeScript validation passed. Rendered visual QA remains blocked by the saved
+  browser permission setting; interaction doubles do not verify browser layout.
+- The archive currently covers alert messages and active-feed presence. Measured
+  observations and impact reports are not yet linked into forecast-to-outcome
+  timelines, and missing messages or expiry are not interpreted as physical outcomes.
+
 ## River timing increment
 
 - Live NWPS adapters returned 262 gauges in the Missouri search region. LOLT2

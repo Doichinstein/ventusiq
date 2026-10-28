@@ -14,7 +14,7 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | Forecast confidence | Immutable point forecast revision archive | Ensemble ingestion, observations, grading and validated confidence |
 | Historical analogs | Decision-time archive prevents future leakage | Historical ingestion, local similarity and holdout evaluation |
 | Compound hazards | Explainable rule contract specified | Reviewed rules and temporal/spatial evaluation |
-| Event timeline | Existing 24-hour alert replay; separate persistent forecast archive | Event identity, observations, longer history, durable links and export |
+| Event timeline | Persistent CAP-linked alert graph, immutable revisions and presence transitions; collection-time views, missing-reference retrieval, stable links and JSON export | Linked measured observations/reports, forecast-to-outcome comparison, rendered QA and archive storage/export policy |
 
 The hosted runtime now includes shared collection and a persistent D1 archive.
 Collection runs on demand with an hourly Sites archive-upkeep task configured for

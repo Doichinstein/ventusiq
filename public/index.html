@@ -13,12 +13,13 @@
   <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
   <script type="module" src="/hazards.js"></script>
   <script type="module" src="/rivers.js"></script>
+  <script type="module" src="/events.js"></script>
 </head>
 <body>
   <a class="skip" href="#feed">Skip to alert list</a>
   <header class="header">
     <a href="/" class="brand" aria-label="VentusIQ Open Weather home"><img class="brand-icon" src="/assets/ventusiq-icon.png" alt="" width="42" height="42"><span class="brand-lockup"><img class="brand-wordmark" src="/assets/ventusiq-wordmark.png" alt="VentusIQ" width="205" height="41"><span class="brand-edition">OPEN WEATHER / COMMUNITY EDITION</span></span></a>
-    <nav aria-label="Main"><button id="nav-map" class="nav-active" aria-pressed="true">Live map</button><button id="nav-personal" aria-pressed="false">My weather</button><button id="nav-rivers" aria-pressed="false">Rivers</button><button id="about-open">About <span aria-hidden="true">↗</span></button></nav>
+    <nav aria-label="Main"><button id="nav-map" class="nav-active" aria-pressed="true">Live map</button><button id="nav-personal" aria-pressed="false">My weather</button><button id="nav-rivers" aria-pressed="false">Rivers</button><button id="nav-events" aria-pressed="false">Events</button><button id="about-open">About <span aria-hidden="true">↗</span></button></nav>
     <a class="source-link" href="https://github.com/Doichinstein/weather-commons" target="_blank" rel="noopener">〈 / 〉 <span>Get the code</span></a>
   </header>
   <section class="intro">
@@ -45,6 +46,16 @@
         </div>
       </div>
     </div>
+  </section>
+  <section id="event-workspace" class="personal-workspace" hidden aria-label="Persistent alert timelines">
+    <div class="personal-title"><div><span class="eyebrow">EVENT ARCHIVE / WHAT WE KNEW, WHEN</span><h2>Follow the alert beyond the map.</h2><p>Collected messages, official updates and changes in active-feed presence.</p></div><button id="event-refresh" class="action secondary">Refresh archive</button></div>
+    <div class="river-layout"><aside class="places-panel"><h3>Collected alerts</h3><form id="event-search-form"><label>Event or affected area<input id="event-search" type="search" maxlength="120" placeholder="Flood, winter, county…"></label><button class="action">Search archive</button></form><p id="event-list-status" class="small" role="status"></p><div id="event-list" class="river-list"></div><button id="event-more" class="action secondary" hidden>Load more</button></aside>
+      <div class="personal-content"><p id="event-status" role="status">Select a collected alert to follow its timeline.</p><div id="event-detail" hidden>
+        <div class="place-heading"><div><span class="eyebrow">OFFICIAL ALERT MESSAGE CHAIN</span><h2 id="event-title"></h2><p id="event-area" class="small"></p></div><div class="place-actions"><button id="event-share" class="action secondary">Copy timeline link</button><button id="event-export" class="action secondary">Export JSON</button></div></div>
+        <section class="weather-card"><h3>View what had been collected</h3><form id="event-asof-form" class="event-asof"><label>As of (your local time)<input id="event-asof" type="datetime-local" step="0.001" required></label><button class="action">View archive at this time</button><button type="button" id="event-current" class="action secondary">Latest collected view</button></form><p id="event-view-time" class="small"></p><p class="small">Collection time controls replay. A message retrieved later cannot appear in an earlier view, even if it was issued earlier. Unattended alert upkeep is hourly; intervening changes can be missed.</p></section>
+        <section class="weather-card"><div class="section-top"><h3>Coverage of this timeline</h3><button id="event-resolve" class="action secondary">Retrieve referenced messages</button></div><p id="event-coverage"></p><p id="event-resolution" class="small" role="status"></p><p class="small">Connections follow explicit NWS message references. They do not prove that every message describes one physical storm. Leaving the active feed is not proof of cancellation, all-clear conditions or a measured outcome.</p></section>
+        <div id="event-timeline" class="event-timeline"></div>
+      </div></div></div>
   </section>
   <section id="river-workspace" class="personal-workspace" hidden aria-label="River observations and forecasts">
     <div class="personal-title"><div><span class="eyebrow">RIVERS / LEVELS / TIMING</span><h2>What is the water doing next?</h2><p>Observed levels, forecast highs and official impacts at a selected gauge.</p></div><div class="place-actions"><button id="river-map-center" class="action secondary">Search near map center</button><button id="river-region-map" class="action secondary">Map these gauges</button></div></div>

@@ -21,6 +21,12 @@ observed and forecast hydrographs, highest upcoming forecast samples, threshold
 crossing windows and official stage-based impact statements. Gauge markers can
 be shown on the map and hide during alert replay. See [river data and timing](docs/rivers.md).
 
+**Events** in the shared hosted edition preserves alert revisions beyond the map's
+24-hour replay. Follow explicit NWS message references, inspect collection-time
+history, retrieve available missing references, share a stable timeline link, and
+export the selected view as JSON. Disappearance is not called a cancellation or
+an all-clear. See [event archive semantics](docs/events.md).
+
 Public source: https://github.com/Doichinstein/weather-commons
 
 The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal

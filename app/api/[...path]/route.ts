@@ -2,6 +2,7 @@ import { env } from 'cloudflare:workers';
 import { WeatherService, pointKey, iso } from '../../../lib/weather-service.mjs';
 import { HazardsService } from '../../../lib/hazards-service.mjs';
 import { RiversService } from '../../../lib/rivers-service.mjs';
+import { EventsService } from '../../../lib/events-service.mjs';
 
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
@@ -9,6 +10,14 @@ export async function GET(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
+    if(path==='/api/events')return json(await new EventsService(service).list(url.searchParams.get('q')||'',url.searchParams.get('cursor')||''));
+    if(path.startsWith('/api/events/')){
+      if(url.searchParams.get('resolve')==='1'&&url.searchParams.has('at'))return json({error:'Invalid request: retrieve references from the latest view'},400);
+      const events=new EventsService(service),id=path.slice('/api/events/'.length);
+      const resolution=url.searchParams.get('resolve')==='1'?await events.resolve(id):null;
+      const story=await events.story(id,url.searchParams.has('at')?atTime(url.searchParams.get('at')):undefined);
+      return story?json({...story,resolution}):json({error:'No collected event at this time'},404);
+    }
     if(path==='/api/rivers/near')return json(await new RiversService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/rivers/gauge')return json(await new RiversService(service).gauge(url.searchParams.get('id')));
     if(path.startsWith('/api/hazards/')){

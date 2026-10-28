@@ -8,6 +8,13 @@
       "when": 1793214908419,
       "tag": "0000_daily_thor",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1793218569080,
+      "tag": "0001_polite_mentallo",
+      "breakpoints": true
     }
   ]
 }

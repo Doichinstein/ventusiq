@@ -304,6 +304,7 @@ function renderDetail(f) {
   link.href = f.id.startsWith(`${NWS}/alerts/`) ? f.id : 'https://www.weather.gov/';
   link.target = '_blank'; link.rel = 'noopener';
   body.append(link, node('p',`Collected ${dateText(replayAt || lastSuccess,true)}. Source feed updated ${dateText(lastSourceUpdated,true)}.`));
+  if(config.mode==='hosted'){const timeline=node('button','Open collected event timeline','action secondary');timeline.onclick=()=>window.WeatherEvents?.openAlert(p.id||f.id);body.append(timeline);}
 }
 function closeDetail() { selected = null; $('detail').hidden = true; render(); }
 function updateTimeline() {

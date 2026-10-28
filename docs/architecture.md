@@ -56,6 +56,20 @@ queries round the search center to whole degrees for a shared cache and handle
 date-line splitting. Proximity is never treated as watershed membership or a
 flood inundation estimate at a saved place.
 
+`EventsService` stores CAP message identity separately from physical-event identity.
+The identifier is a stable SHA-256 of the NWS CAP identifier. `event_links` contains
+explicit directed source references and their first collection time. A timeline is
+the connected component of links already collected by the requested cutoff; it
+does not group alerts by a guessed storm footprint or by title similarity.
+`event_revisions` deduplicates immutable payloads; `event_transitions` records
+revision/presence changes and retrieval origin. `event_heads` supports current
+search and `event_collections` records actual successful complete active-feed
+collections. Writes share the alert collector's lease-guarded transaction. These
+tables survive the rolling map archive's pruning and currently have no automatic
+retention limit. Historical views cannot use later links, bodies or future checks.
+Physical outcomes remain unknown until separately sourced observations/reports are
+linked; neither alert expiry nor disappearance is outcome evidence.
+
 Every source product must carry provider, source URL, source issue time (nullable,
 never synthesized), collection time, valid time/range, spatial coverage, units,
 data kind (`forecast`, `observation`, `official-alert`, `reported-impact`), quality

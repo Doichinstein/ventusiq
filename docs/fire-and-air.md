@@ -62,3 +62,7 @@ allowlists, replay hiding, saved-place switching and NASA day selection. Browser
 automation remains blocked by the saved permission gate, so rendered interaction
 QA is still outstanding. Smoke transport forecasts, trends, gust-aware planning
 and evaluated exposure are subsequent work, not implemented by these layers.
+
+## Hourly monitor history
+
+The My weather workspace now adds [24-hour measured air-quality trends](air-trends.md). It retrieves rolling EPA monitor history, keeps reported AQI separate from PM2.5 concentration, and exposes missing data and source evidence. This provides recent measured context; it is not a smoke forecast or an exposure estimate.

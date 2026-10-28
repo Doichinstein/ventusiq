@@ -304,3 +304,9 @@ Date: 2026-10-28. This record distinguishes executed checks from deployment reci
 ## River revision production check (2026-10-28)
 
 The hosted AKFM7 comparison returned 70 matching future readings. Two additional hours in the current source product shared the same issue timestamp, with no change at the matching readings. This led to corrected coverage-aware wording and baseline selection that ignores expired samples at a common evaluation time. Regression cases cover horizon extension, timestamp formatting, expired samples and the direct browser-session baseline. Production API checks use documented Sites service authorization; rendered browser verification remains unavailable.
+
+## Measured air-quality trends (2026-10-28)
+
+- 204 Node tests and 16 Python tests passed, plus TypeScript checking and a production build. New coverage checks units, non-measured records, duplicate conflicts, location continuity, missing/latest values, exact endpoint comparisons, chart gaps, cache reuse, outage evidence and late-response isolation.
+- Direct EPA history returned 27 raw records for McMillan Reservoir (`110010043`). A first read had a missing latest concentration but an available AQI; the evaluator kept concentration change unknown. A later built-Worker check returned 27 records, 23 usable concentrations in the 24-hour window, and a 22:00 UTC reading of 4 µg/m³ with supplied AQI 16.
+- The local built `/api/air/history` route returned HTTP 200 with an immutable revision; an invalid monitor identifier returned HTTP 400. Browser rendering remains unverified because the saved browser permission restriction persists. DOM tests do not establish rendered layout or real provider browser CORS.

@@ -197,3 +197,7 @@ or retrieval. Report coverage, sample size and error by location/season/lead tim
 
 Each delivery must update `docs/verification.md` with observed results and limits.
 Do not substitute navigation placeholders or roadmap labels for working features.
+
+## Air-quality history
+
+`AirTrendsService` collects bounded raw EPA hourly histories for IDs present in the current measured-monitor feed, using the shared hazard archive and a 500-monitor admission cap. `air-trends-core.mjs` independently checks measurement flags, units, timestamps and location continuity; it computes six-hour endpoint differences and complete six-reading means without filling gaps. `air-trends.js` owns nearby-monitor selection, the chart/table, freshness handling and raw-evidence export in My weather. It reuses `WeatherHazards` discovery and refresh hooks and supports direct editions with the same adapter. See [measured air-quality trends](air-trends.md).

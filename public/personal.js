@@ -89,7 +89,7 @@
     target.replaceChildren(...nodes);
   }
   function render(){
-    const place=current();window.WeatherHazards?.updatePlace(place);window.WeatherRivers?.updatePlace(place);get('place-empty').hidden=!!place;get('place-content').hidden=!place;if(!place)return;
+    const place=current();window.WeatherHazards?.updatePlace(place);window.WeatherRivers?.updatePlace(place);window.WeatherObservations?.updatePlace(place);get('place-empty').hidden=!!place;get('place-content').hidden=!place;if(!place)return;
     const data=forecasts.get(place.id), props=data?.metadata?.properties||{};
     get('place-title').textContent=place.name;get('place-location').textContent=`${place.lat.toFixed(4)}, ${place.lon.toFixed(4)}${props.relativeLocation?.properties?.city?' · near '+props.relativeLocation.properties.city+', '+props.relativeLocation.properties.state:''}`;
     get('forecast-status').className=stale(data)?'warning-note':'small';

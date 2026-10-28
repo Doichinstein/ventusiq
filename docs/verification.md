@@ -2,6 +2,26 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Observation and forecast-comparison increment
+
+- Added a hosted NWS station archive and My weather observation card with station
+  selection, current measurements/QC, 24-hour chart and accessible readings table.
+- Retrospective comparison joins actual earlier forecast checks to later station
+  temperatures; it exposes missing coverage, sample counts and per-pair provenance.
+  Empty archives remain explicitly ungraded. No calibrated confidence is claimed.
+- New deterministic coverage checks units, nulls, failed QC, future observations,
+  station distance/date-line handling, pre-decision revision selection and rollback,
+  source lead/issue constraints, DST-safe valid hours, observation reuse, pagination,
+  partial collections, persistent outage retention, comparison arithmetic, UI
+  selection races, chart gaps, safe source text and evidence export.
+- Browser rendering remains unverified under the saved browser permission block.
+  DOM tests are state/interaction checks only. Full details: [observations](observations.md).
+- Regression suite: 91 Node and 16 Python tests passed (107 total); TypeScript and
+  the production build passed. The built Worker returned nine station candidates
+  for Washington, DC and 1,136 actual KDCA observations with no truncation. Its new
+  point correctly reported zero eligible pairs across 168 candidate hours. Invalid
+  coordinates, station identifiers and unrelated comparison stations returned 400.
+
 ## Persistent alert timeline increment
 
 - An additive migration creates five event tables and two indexes. It was inspected

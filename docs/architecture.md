@@ -94,6 +94,16 @@ bounded retries and explicit user opt-in. Never send from a page view alone.
 
 ## Durable archive
 
+`ObservationsService` discovers NWS-listed stations near a point and archives
+seven-day observation products with existing lease, revision and last-good-state
+semantics. `observations-core.mjs` normalizes units and QC, selects forecasts from
+successful checks available six hours before each valid hour, and compares later
+V/G station temperatures. `observations.js` owns the station selector, observed
+trend and exportable retrospective error report in My weather. This is a measured
+sample, not calibrated confidence; no percentage is inferred. See
+[the full method and limits](observations.md). Observation collections refresh on
+demand; the hourly alert task does not subscribe saved places to background work.
+
 The existing alert snapshots retain 24 hours. `forecast_revisions` separately stores
 immutable compressed raw hourly forecasts plus point metadata, first-seen time,
 issue time and content hash. Identical fetches deduplicate their payload.

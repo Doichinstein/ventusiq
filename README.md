@@ -27,6 +27,13 @@ history, retrieve available missing references, share a stable timeline link, an
 export the selected view as JSON. Disappearance is not called a cancellation or
 an all-clear. See [event archive semantics](docs/events.md).
 
+**Observations & track record** in hosted My weather adds nearby NWS station
+selection, current readings with quality flags, a 24-hour temperature chart and
+table, and retrospective comparisons against forecasts actually archived 6–24
+hours ahead. It shows sample size, missing coverage, errors and exportable evidence;
+new places need time to accumulate eligible forecasts. See [observation and
+comparison methods](docs/observations.md).
+
 Public source: https://github.com/Doichinstein/weather-commons
 
 The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal

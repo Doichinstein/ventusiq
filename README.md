@@ -16,6 +16,11 @@ conditions for saved places. Each product shows its own timestamp and coverage
 limits. Current layers hide during historical alert replay. See
 [fire and air sources](docs/fire-and-air.md) for provenance and remaining work.
 
+**Rivers** adds regional NOAA/NWPS gauge search, nearby gauges for saved places,
+observed and forecast hydrographs, highest upcoming forecast samples, threshold
+crossing windows and official stage-based impact statements. Gauge markers can
+be shown on the map and hide during alert replay. See [river data and timing](docs/rivers.md).
+
 Public source: https://github.com/Doichinstein/weather-commons
 
 The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal

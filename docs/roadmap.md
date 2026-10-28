@@ -9,7 +9,7 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | Meaningful updates | CAP-linked alert changes, forecast shifts, opt-in desktop notifications while page open | Persistent subscriptions, threshold triggers, closed-page push, feeds/webhooks and delivery records |
 | Activity windows | Duration, temperature, sustained wind and rain chance constraints; unknown/gap handling | Air quality/gust inputs, evaluated uncertainty and activity presets |
 | Fire and smoke | NIFC incident points/perimeters, AirNow PM2.5 monitors, NASA VIIRS daily imagery; saved-place proximity; seven-day hosted archive | Rendered QA, smoke forecasts, trends and evaluated exposure |
-| Flood timing | Source and module architecture specified | NWPS observations/forecasts, crest timing and documented impacts |
+| Flood timing | Regional NWPS gauges, observed/forecast hydrographs, forecast high and threshold windows, official impacts, nearby gauges and map markers | Rendered QA, watershed-aware associations, forecast updates and optional threshold subscriptions |
 | Journey weather | Route-time contracts specified | Route provider, segment sampling, departure alternatives and coverage |
 | Forecast confidence | Immutable point forecast revision archive | Ensemble ingestion, observations, grading and validated confidence |
 | Historical analogs | Decision-time archive prevents future leakage | Historical ingestion, local similarity and holdout evaluation |

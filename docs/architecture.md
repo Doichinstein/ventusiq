@@ -47,6 +47,15 @@ proximity summaries, with no inference that proximity proves exposure. Hazard
 revisions retain seven days plus the current last-good revision. Alert replay
 hides current hazard layers; historical hazard playback remains future work.
 
+`rivers-core.mjs` normalizes NOAA NWPS stages/flows and computes forecast highs and
+sample-bounded threshold windows. `rivers.js` owns regional search, gauge charts,
+official impacts and current map markers. `RiversService` reuses the hosted
+revision archive under `hazards/rivers/`; each raw source product retains its
+observed and forecast series, metadata, units and datum information. Regional
+queries round the search center to whole degrees for a shared cache and handle
+date-line splitting. Proximity is never treated as watershed membership or a
+flood inundation estimate at a saved place.
+
 Every source product must carry provider, source URL, source issue time (nullable,
 never synthesized), collection time, valid time/range, spatial coverage, units,
 data kind (`forecast`, `observation`, `official-alert`, `reported-impact`), quality

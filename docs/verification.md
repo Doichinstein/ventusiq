@@ -2,6 +2,31 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## River timing increment
+
+- Live NWPS adapters returned 262 gauges in the Missouri search region. LOLT2
+  supplied observations and no current forecast; AKFM7 supplied observations and
+  80 forecast samples at one check. Missing forecasts stay explicitly unavailable.
+- The new Rivers workspace includes regional and ID search, a source-linked
+  observed/forecast hydrograph with an accessible table, forecast high qualification,
+  threshold windows and official local impact statements. Saved places show nearby
+  gauges; current map markers hide during historical alert replay.
+- Regression suite: 57 Node and 16 Python tests passed (73 total). New cases cover
+  sentinel values, forecast age and source status, stage/flow conversion, mismatched
+  units, unknown datum context, missing samples, irregular thresholds, repeated
+  and terminal highs, forecast-only gauges, persistent revisions, outage retention,
+  gauge-switch races, chart/table semantics, marker refresh and replay.
+- TypeScript validation passed. These interaction tests use DOM/Leaflet doubles;
+  the existing saved browser permission block still prevents rendered visual QA.
+- The built Worker served the river UI/modules and both live river APIs. Regional
+  search returned 262 gauges; LOLT2 and AKFM7 returned 2,851 and 2,858 observed
+  samples respectively, with 0 and 80 forecast samples. Invalid coordinates and
+  identifiers returned HTTP 400. NWPS returned `Access-Control-Allow-Origin: *`
+  when an Origin header was supplied for the public Site and local Python origin.
+- River collection is on demand and does not alter the owner's hourly alert upkeep.
+  Watershed associations, threshold notifications and verified inundation or road
+  closure layers remain separate delivery work.
+
 ## Fire, air and hourly upkeep increment
 
 - Enabled the Sites task **VentusIQ hourly archive upkeep** after the owner chose

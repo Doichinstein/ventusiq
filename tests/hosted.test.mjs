@@ -4,6 +4,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
 import {WeatherService,pack,unpack,pointKey} from '../lib/weather-service.mjs';
 import {HazardsService} from '../lib/hazards-service.mjs';
+import {RiversService} from '../lib/rivers-service.mjs';
 function database(){
   const sqlite=new DatabaseSync(':memory:');
   for(const file of readdirSync(new URL('../drizzle/',import.meta.url)).filter(f=>f.endsWith('.sql')).sort())sqlite.exec(readFileSync(new URL('../drizzle/'+file,import.meta.url),'utf8'));
@@ -12,6 +13,14 @@ function database(){
 const alert=(id='one',extra={})=>({type:'Feature',id:'https://api.weather.gov/alerts/'+id,geometry:null,properties:{id,status:'Actual',messageType:'Alert',event:'Flood Warning',areaDesc:'Test',...extra}});
 const collection=(...features)=>({type:'FeatureCollection',features,updated:'2026-10-28T00:00:00Z'});
 const hourly=temp=>({properties:{updateTime:'2026-10-28T00:00:00Z',periods:[{startTime:'2026-10-28T01:00:00Z',endTime:'2026-10-28T02:00:00Z',temperature:temp,temperatureUnit:'F'}]}});
+test('river products persist across services and preserve raw forecast revisions through outages',async()=>{
+  const db=database();let now=1000,calls=0,broken=false,stage=5;
+  const fetcher=async url=>{calls++;if(broken)throw new Error('NWPS outage');return {ok:true,json:async()=>url.endsWith('/stageflow')?{observed:{data:[]},forecast:{issuedTime:'2026-10-28T00:00:00Z',data:[{validTime:'2026-10-28T06:00:00Z',primary:stage}]}}:{lid:'TEST1',flood:{}}};};
+  const service=()=>new RiversService(new WeatherService(db,{fetcher,clock:()=>now}));
+  const first=await service().gauge('TEST1');await service().gauge('TEST1');assert.equal(calls,2);now=2000;stage=10;const second=await service().gauge('TEST1');assert.notEqual(second.revision,first.revision);
+  const historical=await new WeatherService(db).read('hazards/rivers/gauge/TEST1',1500);assert.equal(historical.data.series.forecast.data[0].primary,5);
+  now=3000;broken=true;const stale=await service().gauge('TEST1');assert.equal(stale.stale,true);assert.equal(stale.series.forecast.data[0].primary,10);assert.equal(stale.checked_at,second.checked_at);db.close();
+});
 test('hazard snapshots survive service restart and outages retain timestamped last-good data',async()=>{
   const db=database();let now=1000,calls=0,broken=false;
   const fetcher=async url=>{calls++;if(broken)throw new Error('Provider unavailable');return {ok:true,json:async()=>url.includes('/query?')?{type:'FeatureCollection',features:[{type:'Feature',id:1,geometry:{type:'Point',coordinates:[-122,37]},properties:{OBJECTID:1,IncidentName:'Test fire',PercentContained:0}}]}:{}};};

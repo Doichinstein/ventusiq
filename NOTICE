@@ -28,6 +28,8 @@ VentusIQ Open Weather application code, not a relicensing of those dependencies.
 Fire incident locations and reported perimeters: NIFC / WFIGS.
 PM2.5 monitoring observations: US EPA / AirNow and its reporting agencies.
 Daily VIIRS NOAA-20 thermal-anomaly imagery: NASA FIRMS / GIBS.
+River observations, forecasts, gauge metadata and impact statements: NOAA NWPS
+and the observation agencies identified in its gauge products.
 These providers' public data services retain their own terms and attribution;
 their observations are not relicensed as original application code.
 

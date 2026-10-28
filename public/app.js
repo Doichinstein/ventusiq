@@ -323,6 +323,7 @@ async function replay(index) {
     if (gen !== snapshotGeneration) return;
     replayAt = snap.at;
     window.WeatherHazards?.setReplay(true);
+    window.WeatherRivers?.setReplay(true);
     $('live-button').classList.add('replaying');
     $('map-mode').textContent = 'COLLECTED HISTORY';
     $('timeline-time').textContent = dateText(snap.at,true);
@@ -336,6 +337,7 @@ async function replay(index) {
 function returnLive() {
   replayAt = null; replayLoading = false; snapshotGeneration++;
   window.WeatherHazards?.setReplay(false);
+  window.WeatherRivers?.setReplay(false);
   $('map-mode').textContent = 'LIVE CONDITIONS';
   $('live-button').classList.remove('replaying');
   $('timeline-time').textContent = 'Now';
@@ -372,6 +374,7 @@ window.addEventListener('resize', () => map.invalidateSize());
 // Small public interface keeps personal planning independent of map/replay state.
 window.WeatherMap = {
   instance: map,
+  goLive: returnLive,
   isReplay: () => !!replayAt,
   live: () => liveData,
   show: () => map.invalidateSize(),

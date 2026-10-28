@@ -2,6 +2,25 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## Journey weather increment
+
+- Added hosted route collection with persistent caching, database-wide provider
+  rate admission, last-good retention and bounded route/sampling sizes.
+- Added a Journey workspace with saved-place/map/coordinate inputs, three departure
+  comparisons, a route map, arrival-hour weather, timed alert intersections and JSON.
+- The 16 new tests cover duration scaling, coarse sampling, polygon intersections
+  between sample points, holes, overlapping geometries, the date line, alert-time
+  clipping, explicit missing coverage, arrival-hour selection, repeated DST hours,
+  route persistence/outages, concurrent provider admission, UI selection/cancellation,
+  safe text, partial forecast failures, and selected-scenario export.
+- Node regression suite: 107 tests passed. TypeScript checks passed. Rendered
+  browser verification remains unavailable under the saved permission setting.
+- Python regression suite: 16 tests passed (123 total checks). The production build
+  passed. A live built-server check returned a 62.8 km / 62-minute Washington–
+  Baltimore route with 1,262 road vertices and four weather samples. All four had
+  complete forecast fields in all three departure scenarios. With no browser map
+  cache, alert boundary coverage correctly remained incomplete, not an all-clear.
+
 ## Observation and forecast-comparison increment
 
 - Added a hosted NWS station archive and My weather observation card with station

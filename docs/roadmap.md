@@ -10,7 +10,7 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | Activity windows | Duration, temperature, sustained wind and rain chance constraints; unknown/gap handling | Air quality/gust inputs, evaluated uncertainty and activity presets |
 | Fire and smoke | NIFC incident points/perimeters, AirNow PM2.5 monitors, NASA VIIRS daily imagery; saved-place proximity; seven-day hosted archive | Rendered QA, smoke forecasts, trends and evaluated exposure |
 | Flood timing | Regional NWPS gauges, observed/forecast hydrographs, forecast high and threshold windows, official impacts, nearby gauges and map markers | Rendered QA, watershed-aware associations, forecast updates and optional threshold subscriptions |
-| Journey weather | Route-time contracts specified | Route provider, segment sampling, departure alternatives and coverage |
+| Journey weather | Cached OSRM driving routes, bounded distance/time sampling, three departure scenarios, full-road intersections with loaded alert boundaries, coverage and JSON export | Rendered QA, traffic/stops/via points, gust/smoke exposure, verified closure attribution and broader deployment capacity |
 | Forecast confidence | Immutable point forecasts; nearby station observations and retrospective 6–24h temperature errors with sample counts and evidence export | Ensemble ingestion, longer observation history, seasonal/lead grading and validated confidence |
 | Historical analogs | Decision-time archive prevents future leakage | Historical ingestion, local similarity and holdout evaluation |
 | Compound hazards | Explainable rule contract specified | Reviewed rules and temporal/spatial evaluation |

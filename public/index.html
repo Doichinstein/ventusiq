@@ -15,17 +15,34 @@
   <script type="module" src="/rivers.js"></script>
   <script type="module" src="/events.js"></script>
   <script type="module" src="/observations.js"></script>
+  <script type="module" src="/journey.js"></script>
 </head>
 <body>
   <a class="skip" href="#feed">Skip to alert list</a>
   <header class="header">
     <a href="/" class="brand" aria-label="VentusIQ Open Weather home"><img class="brand-icon" src="/assets/ventusiq-icon.png" alt="" width="42" height="42"><span class="brand-lockup"><img class="brand-wordmark" src="/assets/ventusiq-wordmark.png" alt="VentusIQ" width="205" height="41"><span class="brand-edition">OPEN WEATHER / COMMUNITY EDITION</span></span></a>
-    <nav aria-label="Main"><button id="nav-map" class="nav-active" aria-pressed="true">Live map</button><button id="nav-personal" aria-pressed="false">My weather</button><button id="nav-rivers" aria-pressed="false">Rivers</button><button id="nav-events" aria-pressed="false">Events</button><button id="about-open">About <span aria-hidden="true">↗</span></button></nav>
+    <nav aria-label="Main"><button id="nav-map" class="nav-active" aria-pressed="true">Live map</button><button id="nav-personal" aria-pressed="false">My weather</button><button id="nav-journey" aria-pressed="false">Journey</button><button id="nav-rivers" aria-pressed="false">Rivers</button><button id="nav-events" aria-pressed="false">Events</button><button id="about-open">About <span aria-hidden="true">↗</span></button></nav>
     <a class="source-link" href="https://github.com/Doichinstein/weather-commons" target="_blank" rel="noopener">〈 / 〉 <span>Get the code</span></a>
   </header>
   <section class="intro">
     <div><div class="eyebrow">VENTUSIQ / LIVE WEATHER INTELLIGENCE</div><h1>Weather intelligence. Open to everyone.</h1><p>Official US alerts, mapped as they unfold. Free, open source, and built on VentusIQ.</p></div>
     <div class="network"><span id="status-dot" class="status-dot loading"></span><div><strong id="status-label">Connecting to NWS</strong><small id="status-time">Waiting for the first update</small></div></div>
+  </section>
+  <section id="journey-workspace" class="personal-workspace" hidden aria-label="Journey weather">
+    <div class="personal-title"><div><span class="eyebrow">ON THE ROAD / AT THE RIGHT TIME</span><h2>Weather along your journey.</h2><p>Compare your departure with two later options. See what is forecast where you expect to be.</p></div></div>
+    <div class="journey-layout">
+      <aside class="places-panel"><form id="journey-form">
+        <h3>Start</h3><label>Saved place<select id="journey-from-place"><option value="">Choose a saved place…</option></select></label><div class="coordinate-fields"><label>Latitude<input id="journey-from-lat" type="number" min="-90" max="90" step="any" required></label><label>Longitude<input id="journey-from-lon" type="number" min="-180" max="180" step="any" required></label></div><button id="journey-from-map" type="button" class="text-button">Pick start on map ↗</button>
+        <h3>Destination</h3><label>Saved place<select id="journey-to-place"><option value="">Choose a saved place…</option></select></label><div class="coordinate-fields"><label>Latitude<input id="journey-to-lat" type="number" min="-90" max="90" step="any" required></label><label>Longitude<input id="journey-to-lon" type="number" min="-180" max="180" step="any" required></label></div><button id="journey-to-map" type="button" class="text-button">Pick destination on map ↗</button>
+        <label>Departure with timezone<input id="journey-departure" type="text" maxlength="35" required aria-describedby="journey-time-help" placeholder="2026-10-28T17:00-07:00"></label><p id="journey-time-help" class="small">Use ISO date/time with Z for UTC or an offset such as -07:00. Explicit offsets distinguish repeated daylight-saving hours. Choose within the next 48 hours.</p>
+        <button id="journey-submit" class="action" type="submit">Compare journey</button><button id="journey-example" type="button" class="text-button">Fill Washington → Baltimore example</button>
+      </form><p class="small">Driving routes up to 2,000 km / 24 hours. Coordinates are sent to our routing provider when you compare. Routes are cached on the shared server; place names stay on your device.</p><p class="small">Routing: <a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener">OSRM / FOSSGIS</a> · map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> · <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener">Fix the map</a></p></aside>
+      <div class="personal-content"><p id="journey-status" role="status">Choose endpoints and a departure to begin.</p><div id="journey-results" hidden>
+        <h3 id="journey-route-summary"></h3><p id="journey-route-note" class="small"></p><div id="journey-comparisons" class="journey-comparisons" role="group" aria-label="Departure comparisons"></div><p id="journey-coverage" class="warning-note"></p><div id="journey-map" class="journey-map" role="region" aria-label="Driving route and arrival-time weather samples"></div><p class="small">Blue points have complete sampled weather fields; amber points have missing data. Click a point for arrival-time weather.</p>
+        <h3>Weather at estimated arrival times</h3><p class="small">Each row uses the forecast hour containing arrival at that sample. Times use the forecast point's timezone where available; otherwise UTC. Wind is sustained, not gust speed. Values between points are not interpolated.</p><div class="hourly-scroll"><table class="hourly-table"><thead><tr><th>Route point</th><th>Coordinates</th><th>Arrival local time</th><th>Temperature</th><th>Wind</th><th>Rain chance</th><th>Forecast / coverage</th><th>Source times (UTC)</th></tr></thead><tbody id="journey-weather-body"></tbody></table></div>
+        <h3>Current alert intersections</h3><p class="small">Overlap windows below use UTC. They follow the route geometry and estimated timing through loaded alert polygons or official zones. Zones may be broader than the actual hazard.</p><div id="journey-alerts"></div><p id="journey-evaluated" class="small"></p><button id="journey-export" class="text-button" disabled>Export journey evidence JSON</button>
+      </div></div>
+    </div>
   </section>
   <section id="personal-workspace" class="personal-workspace" hidden aria-label="My weather">
     <div class="personal-title"><div><span class="eyebrow">YOUR PLACES / YOUR PLANS</span><h2>Weather that matters to you.</h2><p>Save a place, understand what is changing, and find a window that fits your plans.</p></div><button id="pick-on-map" class="action secondary">Choose on map ↗</button></div>

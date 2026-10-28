@@ -94,6 +94,15 @@ bounded retries and explicit user opt-in. Never send from a page view alone.
 
 ## Durable archive
 
+`JourneyService` caches OSRM geometry and segment durations with a shared provider
+rate gate. `journey-core.mjs` builds arrival-time samples, clips full road segments
+to polygon/zone alert geometry and official validity windows, and evaluates each
+departure against immutable forecast responses. `journey.js` owns the route form,
+map, departure cards, evidence table and export. Missing geometry/forecast coverage
+is explicit, including when map zone loading is incomplete. Route calculations
+do not establish traffic, road closures or evacuation suitability. See
+[journey methods](journeys.md).
+
 `ObservationsService` discovers NWS-listed stations near a point and archives
 seven-day observation products with existing lease, revision and last-good-state
 semantics. `observations-core.mjs` normalizes units and QC, selects forecasts from

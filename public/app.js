@@ -378,6 +378,7 @@ window.WeatherMap = {
   goLive: returnLive,
   isReplay: () => !!replayAt,
   live: () => liveData,
+  zoneGeometry: url => zoneCache.get(url)||null,
   show: () => map.invalidateSize(),
   focus: (lat,lon) => map.setView([lat,lon],9),
   pick: callback => map.once('click', e => callback(e.latlng.lat,((e.latlng.lng+180)%360+360)%360-180)),

@@ -27,6 +27,11 @@ history, retrieve available missing references, share a stable timeline link, an
 export the selected view as JSON. Disappearance is not called a cancellation or
 an all-clear. See [event archive semantics](docs/events.md).
 
+**Journey** in the hosted edition compares weather along an estimated driving
+route for three departure times. Choose endpoints from saved places, coordinates
+or the map; inspect arrival-hour forecasts, time-overlapping alert boundaries,
+missing coverage and exportable evidence. See [routing and exposure methods](docs/journeys.md).
+
 **Observations & track record** in hosted My weather adds nearby NWS station
 selection, current readings with quality flags, a 24-hour temperature chart and
 table, and retrospective comparisons against forecasts actually archived 6–24

@@ -4,6 +4,7 @@ import { HazardsService } from '../../../lib/hazards-service.mjs';
 import { RiversService } from '../../../lib/rivers-service.mjs';
 import { EventsService } from '../../../lib/events-service.mjs';
 import { ObservationsService } from '../../../lib/observations-service.mjs';
+import { JourneyService } from '../../../lib/journey-service.mjs';
 
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
@@ -11,6 +12,7 @@ export async function GET(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
+    if(path==='/api/journey/route')return json(await new JourneyService(service).route(url.searchParams.get('fromLat'),url.searchParams.get('fromLon'),url.searchParams.get('toLat'),url.searchParams.get('toLon')));
     if(path==='/api/observations/near')return json(await new ObservationsService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/observations/station')return json(await new ObservationsService(service).station(url.searchParams.get('id')));
     if(path==='/api/verification')return json(await new ObservationsService(service).verification(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('station')));

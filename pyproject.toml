@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "weather-commons"
+version = "0.1.0"
+description = "An open weather alert map with a resilient NWS collector"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+readme = "README.md"
+dependencies = []
+
+[project.scripts]
+weather-commons = "weathercommons.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["weathercommons*"]
+

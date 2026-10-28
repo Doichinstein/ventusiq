@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="A free, open-source map of US weather alerts. Explore official warnings, affected areas, and how conditions change.">
+  <meta name="theme-color" content="#111a1c">
+  <title>Weather Commons — a shared view of the weather</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/vendor/leaflet.css"><link rel="stylesheet" href="/style.css">
+  <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#feed">Skip to alert list</a>
+  <header class="header">
+    <a href="/" class="brand" aria-label="Weather Commons home"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18"/><path d="M7 17c7-10 12 10 26 0M7 23c7-10 12 10 26 0"/></svg><span>weather<span class="brand-light">commons</span></span></a>
+    <nav aria-label="Main"><span class="nav-active">Live map</span><button id="about-open">About the project <span aria-hidden="true">↗</span></button></nav>
+    <a class="source-link" href="https://github.com/Doichinstein/weather-commons" target="_blank" rel="noopener">〈 / 〉 <span>Get the code</span></a>
+  </header>
+  <section class="intro">
+    <div><div class="eyebrow">OPEN DATA. SHARED UNDERSTANDING.</div><h1>A shared view of the weather.</h1><p>Official US alerts, mapped as they unfold. Free and open to everyone.</p></div>
+    <div class="network"><span id="status-dot" class="status-dot loading"></span><div><strong id="status-label">Connecting to NWS</strong><small id="status-time">Waiting for the first update</small></div></div>
+  </section>
+  <main class="workspace">
+    <aside class="sidebar" aria-label="Weather alerts">
+      <div class="sidebar-head"><div><span class="eyebrow">NATIONAL OVERVIEW</span><h2>Weather alerts <span id="total" class="count">—</span></h2></div><button id="refresh" class="icon-button" title="Refresh display" aria-label="Refresh display">↻</button></div>
+      <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search event, state, or county" aria-label="Search event, state, or county"><kbd>/</kbd></label>
+      <div id="categories" class="categories" role="group" aria-label="Alert type">
+        <button data-category="all" class="active" aria-pressed="true">All</button><button data-category="Warning" aria-pressed="false">Warnings</button><button data-category="Watch" aria-pressed="false">Watches</button><button data-category="Advisory" aria-pressed="false">Advisories</button>
+      </div>
+      <div class="filter-row"><label for="severity">Severity</label><select id="severity"><option value="all">All severities</option><option>Extreme</option><option>Severe</option><option>Moderate</option><option>Minor</option><option>Unknown</option></select><button id="clear" hidden>Reset</button></div>
+      <div class="feed-tabs" role="group" aria-label="Feed view"><button id="alerts-tab" class="active" aria-pressed="true">Active alerts</button><button id="changes-tab" aria-pressed="false">Recent changes</button><span id="visible-count">Loading…</span></div>
+      <div id="feed" class="feed" tabindex="-1" aria-label="Alert results"><div class="empty"><span class="loader"></span><h3>Reading the sky</h3><p>Connecting to the National Weather Service…</p></div></div>
+      <div class="sidebar-foot"><span class="mini-dot"></span> National Weather Service <a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener">Source ↗</a></div>
+    </aside>
+    <section class="map-panel" aria-label="Interactive weather alert map">
+      <div id="map" role="region" aria-label="Map of US weather alerts"></div>
+      <div class="map-heading"><span class="eyebrow" id="map-mode">LIVE CONDITIONS</span><strong id="region-name">United States</strong><span id="map-subtitle">Official alerts · affected areas</span></div>
+      <div class="map-tools"><label class="sr-only" for="region">Map region</label><select id="region"><option value="conus">Lower 48</option><option value="alaska">Alaska</option><option value="hawaii">Hawaii</option><option value="puertorico">Puerto Rico / USVI</option><option value="guam">Guam / Marianas</option><option value="samoa">American Samoa</option></select><button id="fit" aria-label="Fit filtered alerts" title="Fit filtered alerts">⌖</button></div>
+      <div class="map-summary"><div><strong id="severe-count">—</strong><span>SEVERE / EXTREME</span></div><div><strong id="mapped-count">—</strong><span>ALERTS MAPPED</span></div></div>
+      <div id="map-notice" class="map-notice" role="status" hidden></div>
+      <div class="legend" aria-label="Map severity legend"><span><i class="extreme"></i>Extreme</span><span><i class="severe"></i>Severe</span><span><i class="moderate"></i>Moderate</span><span><i class="minor"></i>Minor / unknown</span></div>
+      <article id="detail" class="detail" hidden aria-label="Selected alert details"><button id="detail-close" class="detail-close" aria-label="Close alert details">×</button><div id="detail-body"></div></article>
+    </section>
+  </main>
+  <section class="timeline" aria-label="Alert history"><button id="live-button" class="live-button"><span class="mini-dot"></span>Live</button><div class="timeline-control"><label for="timeline" id="timeline-label">History begins with the first collection</label><input id="timeline" type="range" min="0" max="0" value="0" disabled aria-label="Choose a collected snapshot"></div><span id="timeline-time">Now</span><span id="history-mode" class="history-mode">24h retained history</span></section>
+  <footer><span>Built for the curious. Open for everyone.</span><span>Apache-2.0 <span class="divider">/</span> <button id="sources-open">Data & freshness</button><span class="divider">/</span> <a href="https://www.weather.gov/" target="_blank" rel="noopener">Official guidance ↗</a></span></footer>
+  <dialog id="about"><button id="about-close" class="detail-close" aria-label="Close about dialog">×</button><span class="eyebrow">THE WEATHER BELONGS TO EVERYONE</span><h2>Weather Commons</h2><p>A free, open-source view of US weather alerts. Explore what is happening, where it applies, and what has changed.</p><h3>Official data, visible provenance</h3><p>Alerts come from the National Weather Service. Areas use the alert's own polygon when provided; otherwise we load its official affected-zone boundaries. Zone boundaries describe the alert's coverage, not an observed storm footprint.</p><p id="mode-explainer"></p><h3>Know how fresh your view is</h3><p>We check the active alert feed about every 60 seconds. The status shows when collection last succeeded. During an outage, the last available alerts remain visible and are marked delayed. Alert issue time and collection time are different.</p><p>Alerts can describe current or upcoming conditions. Always follow official NWS and local emergency instructions. This independent project is not affiliated with NOAA or NWS.</p><h3>Use it. Build on it.</h3><p>The original code is licensed under Apache-2.0, including commercial reuse under its terms. Leaflet and map data retain their own licenses. The self-hosted Python daemon adapts VentusIQ's collector and freshness infrastructure.</p><div class="dialog-links"><a href="/source.zip" download>Download source ↗</a><a href="/LICENSE" target="_blank">Apache-2.0 license ↗</a><a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener">Report a map issue ↗</a></div></dialog>
+</body>
+</html>

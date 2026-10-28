@@ -1,0 +1,16 @@
+Weather Commons
+Copyright 2026 Weather Commons contributors
+
+The collector lane, source freshness, and latest-state architecture are adapted
+from VentusIQ's src/ingest/lane_runner.py, source_freshness.py, and latest_state.py,
+with authorization from the project owner. Changes include JSON payloads,
+transactional SQLite storage, alert-specific cadence, retries, health reporting,
+and bounded snapshot history. No trading logic, credentials, or private datasets
+are included.
+
+Leaflet 1.9.4 is distributed under its BSD 2-Clause license. Its license is retained
+at dist/vendor/LEAFLET-LICENSE. OpenStreetMap data is separately licensed under
+ODbL; visible attribution links to its copyright page. NWS data and external map
+services retain their own applicable terms. Apache-2.0 covers this project's
+original code, not a relicensing of third-party data or dependencies.
+

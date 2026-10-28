@@ -1,0 +1,29 @@
+services:
+  weather:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - weather_data:/app/data
+    environment:
+      NWS_USER_AGENT: ${NWS_USER_AGENT:-WeatherCommons/0.1 (self-hosted open-source alert map)}
+  caddy:
+    image: caddy:2-alpine
+    profiles: [domain]
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [weather]
+volumes:
+  weather_data:
+  caddy_data:
+  caddy_config:
+

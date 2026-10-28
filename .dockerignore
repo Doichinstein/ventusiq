@@ -1,0 +1,10 @@
+.git
+.openai
+data
+__pycache__
+**/__pycache__
+*.log
+*.tar.gz
+.env
+.venv
+

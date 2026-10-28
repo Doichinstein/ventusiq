@@ -2,6 +2,27 @@
 
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
+## River forecast revision increment
+
+- Added hosted archive selection of the preceding distinct primary forecast,
+  same-time future comparisons, shared-horizon maxima, threshold-crossing brackets,
+  metadata/reference guards, browser-session baselines and raw evidence export.
+  Methods and limits are documented in [river forecasts](rivers.md).
+- Eighteen new tests verify observation-only deduplication, immutable prior products,
+  cutoff exclusion of future checks, current-source failure, matched horizons,
+  no-interpolation behavior, threshold edits, gaps/nulls, unit conversion, changed
+  references, same-issue corrections, source age, UI selection races and export.
+- Full regression suite: 182 Node and 16 Python tests passed (198 total).
+  TypeScript and production build passed. No dependency or migration was added.
+- The built Worker returned a real AKFM7 forecast issued 2026-10-28 14:27 UTC,
+  revision `a472fcdb5c10ad28df4339c88b7c225ce15abd22b4ff75d30b434da85e11d0c3`.
+  The local archive had no preceding distinct product and correctly returned
+  `warming`, with zero comparison pairs. Positive-change paths are tested using
+  explicit fixtures, never inserted into the public archive.
+- Both comparison modules and the application returned HTTP 200. Browser layout
+  remains unverified under the saved permission setting. Hourly alert upkeep is
+  unchanged; river collection remains on demand.
+
 ## Activity-planning increment
 
 - Added archived NWS grid gust forecasts, full-window optional gust limits,

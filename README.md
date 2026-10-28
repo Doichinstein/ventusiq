@@ -250,3 +250,5 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
 Historical context: the hosted My weather briefing includes [comparable historical days](docs/historical-analogs.md), using ten years of NASA POWER grid data, explicit similarity limits, following-day distributions, chronological baseline tests and a reproducible evidence export. These are historical comparisons, not calibrated forecasts.
 
 [Activity planning](docs/activity-planning.md) supports editable presets, full-window gust limits, margin scenarios, timed alert context and JSON export. Current PM2.5 readings are shown separately; future air-quality coverage remains unknown.
+
+River gauge details can compare successive collected forecasts: matched-time level changes, shared-horizon highs, threshold-crossing brackets and complete source evidence. Observation updates alone do not become forecast revisions.

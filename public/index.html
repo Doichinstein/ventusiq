@@ -13,6 +13,7 @@
   <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
   <script type="module" src="/hazards.js"></script>
   <script type="module" src="/rivers.js"></script>
+  <script type="module" src="/river-changes.js"></script>
   <script type="module" src="/events.js"></script>
   <script type="module" src="/observations.js"></script>
   <script type="module" src="/journey.js"></script>
@@ -87,6 +88,7 @@
       <div class="personal-content"><p id="river-status" role="status">Choose a gauge to see its observations, forecast and impacts.</p><div id="river-detail" hidden>
         <div class="place-heading"><div><span class="eyebrow" id="river-code"></span><h2 id="river-title"></h2><p id="river-location" class="small"></p></div><button id="river-on-map" class="action secondary">Show gauge on map</button></div>
         <div id="river-summary" class="brief-grid"></div>
+        <section class="weather-card"><span class="eyebrow">FORECAST REVISIONS</span><h3>What changed in the river forecast?</h3><button id="river-change-run" class="action" disabled>Compare forecast revisions</button><button id="river-change-export" class="text-button" disabled>Export change evidence JSON</button><p id="river-change-status" role="status" class="small"></p><div id="river-change-results"></div><p class="small">Comparisons use the same gauge and shared future times. New observations alone do not count as a new forecast. Crossing brackets are sample-bounded estimates, not exact flood arrival times.</p></section>
         <section class="weather-card"><div class="section-top"><h3>Level through time</h3><a id="river-official" target="_blank" rel="noopener">Official gauge ↗</a></div><p class="small">Solid blue: observations. Dashed violet: forecasts. Times below use your device timezone. Gaps remain gaps.</p><div id="river-chart" class="river-chart"></div><p id="river-datum" class="small"></p><details><summary>Accessible data table</summary><div class="hourly-scroll"><table class="hourly-table"><thead><tr><th>Time</th><th>Product</th><th>Reading</th></tr></thead><tbody id="river-table"></tbody></table></div></details></section>
         <section class="weather-card"><h3>Threshold timing</h3><p class="small">Crossing windows use adjacent forecast samples, without estimating a more precise time. Action stage is a preparation threshold, not necessarily flooding.</p><div id="river-crossings"></div></section>
         <section class="weather-card"><h3>Official local impacts</h3><p class="small">These statements describe conditions associated with specified gauge levels. They are not verified current closures or impacts at your address.</p><div id="river-impacts"></div></section>

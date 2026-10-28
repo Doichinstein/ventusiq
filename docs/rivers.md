@@ -74,3 +74,53 @@ gauge-switch races, chart/table output, source-text safety, markers and replay.
 Real browser visual QA remains blocked by the existing permission gate. Watershed
 associations, notifications for threshold changes, calibrated probabilities and
 verified inundation/road-impact layers are not implemented by this release.
+
+## Forecast revision comparisons
+
+**Compare forecast revisions** in a gauge detail reads
+`GET /api/rivers/changes?id=<NWPS-ID>` in the hosted edition. It collects the current
+product through the existing cache and searches earlier successful checks in the
+seven-day retained archive. The baseline is the most recently checked product
+whose primary forecast identity differs: source issue time, primary quantity and
+units, or valid-time/value pairs. New observations, generated-time metadata and
+row reordering alone do not count as a different primary forecast. Same-issue
+corrections are labeled; backwards source issue times suppress a comparison.
+
+Archive selection is bounded to 128 earlier distinct raw products, loaded eight
+payloads at a time after a metadata query. A truncated scan is explicit, not proof
+that no earlier forecast exists. Only checks strictly before the current product's
+successful check are eligible. An archive with no earlier distinct forecast shows
+its actual baseline-building state; no synthetic history is inserted.
+
+The deterministic evaluator compares the same gauge and physical quantity, with
+unit conversion, at exactly matching future valid times. At least two matched
+samples are required. Different reported coordinates or stage reference details,
+ambiguous/duplicate timestamps, stale current data and incompatible units suppress
+numeric conclusions. Missing datum information is disclosed as an assumption of
+unchanged reference. Prior forecasts are historical products; they do not need to
+pass the current-issue age limit themselves.
+
+Highest samples use the matching times in the shared horizon, excluding newly
+extended tails. Sample counts and omitted coverage are displayed. They are not
+asserted to be unique or guaranteed crests. Threshold comparisons use each
+forecast's own samples inside the shared start/end times. Missing values or gaps
+over 12 hours prevent a claim that a threshold is not reached. Positive sampled
+exceedances remain evidence of a forecast exceedance even with partial coverage.
+A first sample above a level does not establish a crossing time.
+
+Crossings are brackets, with no interpolation. Where both revisions have a valid
+bracket, possible timing shift spans `new lower - old upper` through
+`new upper - old lower`. Overlapping/touching brackets do not establish earlier or
+later arrival. Changed/missing threshold values are identified separately and
+cannot be attributed to the forecast alone. Forecast changes do not establish
+observed flood impacts, improved skill or probabilities.
+
+The export contains both raw source products and their revisions/check times,
+matched samples, computed differences, threshold brackets, reference assumptions,
+archive scan coverage and method version. A new gauge selection or stale product
+clears the prior comparison. The main hydrograph receives the comparison's current
+product so its source does not silently lag behind the comparison.
+
+Static/Python editions retain distinct baselines only during the open browser
+session, bounded to 48 gauges. They do not claim access to the hosted archive or
+durable daemon river history. All editions share the same comparison evaluator.

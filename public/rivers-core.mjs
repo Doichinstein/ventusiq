@@ -35,13 +35,13 @@ export async function loadGauge(id,fetcher=fetch,signal=AbortSignal.timeout(4500
   if(gaugeId(metadata.lid)!==id||!metadata.flood||!series.observed||!series.forecast||!Array.isArray(series.observed.data)||!Array.isArray(series.forecast.data))throw new Error('Incomplete river product');
   return {metadata,series,source:'NOAA / NWPS',source_url:NWPS+'/gauges/'+id,official_url:'https://water.noaa.gov/gauges/'+id.toLowerCase(),updated:waterTime(series.forecast.issuedTime),data_kind:'observation-and-forecast'};
 }
-function dimension(name,unit){
+export function dimension(name,unit){
   const kind=/stage/i.test(name)?'stage':/flow|discharge/i.test(name)?'flow':null;
   const units=String(unit||'').toLowerCase().replaceAll(' ','');
   const factor=kind==='stage'?({ft:1,m:3.280839895,cm:.03280839895})[units]:kind==='flow'?({cfs:1,kcfs:1000,'m3/s':35.31466672,'cms':35.31466672})[units]:undefined;
   return {kind:factor===undefined?null:kind,unit:factor===undefined?unit:kind==='stage'?'ft':'cfs',factor:factor??1,name:name||'Primary reading'};
 }
-function normalizeSeries(raw){
+export function normalizeSeries(raw){
   const d=dimension(raw?.primaryName,raw?.primaryUnits),seen=new Map();
   for(const p of raw?.data||[]){const at=waterTime(p.validTime);if(!at)continue;const value=waterValue(p.primary);seen.set(at,{at,value:value===null?null:value*d.factor,generated_at:waterTime(p.generatedTime)});}
   return {...d,issued_at:waterTime(raw?.issuedTime),points:[...seen.values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at))};

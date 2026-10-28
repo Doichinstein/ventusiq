@@ -109,6 +109,13 @@ and exposes it through a small bridge. All editions use the evaluator; non-hoste
 editions fetch the official grid directly. Margin scenarios are not statistical
 confidence. See [activity planning](activity-planning.md).
 
+`RiversService.changes` selects the preceding distinct primary forecast from actual
+archived collection checks. `river-changes-core.mjs` aligns future samples and
+compares thresholds on a shared horizon, guarding units, references and missing
+coverage. `river-changes.js` owns the comparison/evidence card and updates the main
+hydrograph to the same current source. Browser-only editions maintain bounded
+session baselines. See [river revision methods](rivers.md).
+
 ## Durable archive
 
 `compound-core.mjs` evaluates six versioned rules over the selected place's current

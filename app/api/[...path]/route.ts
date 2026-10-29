@@ -10,6 +10,7 @@ import { JourneyService } from '../../../lib/journey-service.mjs';
 import { AnalogsService } from '../../../lib/analogs-service.mjs';
 import { PlanningService } from '../../../lib/planning-service.mjs';
 import { AirTrendsService } from '../../../lib/air-trends-service.mjs';
+import { SmokeService } from '../../../lib/smoke-service.mjs';
 import { EventReportsService } from '../../../lib/event-reports-service.mjs';
 import { EventObservationsService } from '../../../lib/event-observations-service.mjs';
 import { WatchService } from '../../../lib/watch-service.mjs';
@@ -32,6 +33,7 @@ export async function GET(request:Request){
       return result?json(result):json({error:'No collected event at this time'},404);
     }
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));
+    if(path==='/api/smoke/forecast')return json(await new SmokeService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/planning/grid'){
       try{return json(await new PlanningService(service).grid(url.searchParams.get('lat'),url.searchParams.get('lon')));}
       catch(error){const message=String((error as Error).message);return json({error:message},['Invalid coordinates','Coordinates are required'].includes(message)?400:503);}

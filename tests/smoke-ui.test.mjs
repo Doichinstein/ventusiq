@@ -1,0 +1,21 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {mountSmoke} from '../public/smoke.js';
+import {loadSmokePoint} from '../public/smoke-core.mjs';
+class Element{constructor(tag='div'){this.tag=tag;this.children=[];this.text='';this.attrs={};}set textContent(v){this.text=String(v);this.children=[];}get textContent(){return this.text+this.children.map(c=>c.textContent).join('');}append(...v){this.children.push(...v);}replaceChildren(...v){this.text='';this.children=v;}setAttribute(k,v){this.attrs[k]=v;}click(){this.onclick?.();}}
+const initial=Date.parse('2026-10-28T10:30:00Z'),issued=Date.parse('2026-10-28T03:00:00Z'),flush=()=>new Promise(r=>setImmediate(r));
+async function setup({held=false}={}){
+ const nodes=Object.fromEntries([...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element()]));let now=initial,place={lat:38.58,lon:-121.5},broken=false,release,exported,calls=0;
+ const attributes={objectid:1,idp_subset:'conus',idp_issueddate:issued,idp_validtime:issued+8*3600000};
+ const data={...await loadSmokePoint(place,{features:[{attributes}]},async()=>({ok:true,json:async()=>({samples:[{rasterId:1,attributes,value:'0.000000012',location:{x:place.lon,y:place.lat,spatialReference:{wkid:4326}}}]})}),undefined,initial),checked_at:new Date(initial).toISOString()};
+ const window={WEATHER_CONFIG:{mode:'hosted'},WeatherPersonal:{current:()=>place},setInterval(){},setTimeout:f=>f(),URL:{createObjectURL:b=>{exported=b;return 'blob:export';},revokeObjectURL(){}}};
+ const fetcher=async()=>{calls++;if(held)await new Promise(r=>release=r);if(broken)throw Error('Outage');return {ok:true,json:async()=>structuredClone(data)};};
+ const mounted=mountSmoke({document:{getElementById:id=>nodes[id],createElement:t=>new Element(t),createElementNS:(_,t)=>new Element(t)},window,fetcher,clock:()=>now});
+ return {nodes,mounted,data,calls:()=>calls,exported:()=>exported,place:p=>place=p,release:()=>{held=false;release();},break:()=>broken=true,advance:ms=>now+=ms};
+}
+test('smoke UI shows model range, available times, gap table and evidence export',async()=>{const s=await setup();await flush();assert.match(s.nodes['smoke-summary'].textContent,/12 to 12/);assert.match(s.nodes['smoke-summary'].textContent,/1 of the next 48/);assert.equal(s.nodes['smoke-table'].children.length,48);assert.match(s.nodes['smoke-table'].textContent,/Outside available/);assert.equal(s.nodes['smoke-chart'].children[0].attrs.role,'img');s.nodes['smoke-export'].onclick();const r=JSON.parse(await s.exported().text());assert.equal(r.evidence.raw_unit,'kg/m³');assert.equal(r.rows[0].smoke_ug_m3,12);});
+test('a delayed response cannot populate smoke for a deleted or uncovered place',async()=>{const s=await setup({held:true});s.place(null);s.mounted.refresh();s.release();await flush();assert.equal(s.nodes['smoke-summary'].textContent,'');assert.equal(s.nodes['smoke-export'].disabled,true);assert.match(s.nodes['smoke-status'].textContent,/Select/);});
+test('repeated refresh uses the current check deadline; failed refresh preserves warning',async()=>{const s=await setup();await flush();s.mounted.refresh();assert.equal(s.calls(),1);s.break();await s.mounted.load(true);assert.match(s.nodes['smoke-status'].textContent,/Updates delayed/);assert.match(s.nodes['smoke-status'].textContent,/Outage/);assert.match(s.nodes['smoke-summary'].textContent,/last available/);});
+test('export rechecks freshness and unsupported locations never request a forecast',async()=>{const s=await setup();await flush();s.advance(2*3600000);s.nodes['smoke-export'].onclick();assert.equal(JSON.parse(await s.exported().text()).fresh,false);s.place({lat:0,lon:0});s.mounted.refresh();assert.equal(s.calls(),1);assert.match(s.nodes['smoke-status'].textContent,/contiguous/);assert.equal(s.nodes['smoke-export'].disabled,true);});
+test('a mismatched response cannot display another point forecast',async()=>{const s=await setup();await flush();s.data.point.lat=40;await s.mounted.load(true);assert.match(s.nodes['smoke-status'].textContent,/does not match/);assert.match(s.nodes['smoke-summary'].textContent,/38.58/);});

@@ -22,6 +22,8 @@ limits. Current layers hide during historical alert replay. See
 [fire and air sources](docs/fire-and-air.md) for provenance and remaining work.
 My weather also shows [24-hour measured air-quality trends](docs/air-trends.md),
 with monitor selection, explicit gaps, six-hour endpoint changes and raw-evidence downloads.
+A separate [NOAA RAP smoke forecast](docs/smoke-forecasts.md) shows modeled near-surface
+concentrations at future hourly times, with coverage gaps, run age and evidence export.
 
 **Rivers** adds regional NOAA/NWPS gauge search, nearby gauges for saved places,
 observed and forecast hydrographs, highest upcoming forecast samples, threshold

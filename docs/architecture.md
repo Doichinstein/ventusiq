@@ -230,3 +230,13 @@ geometry to alert windows, filters QC/units and handles conflicting duplicate va
 inspectable table and raw-evidence export inside Events. Historical reads perform
 no collection and conservatively exclude the cutoff's partial second. See
 [station measurement methods](event-measurements.md).
+
+## Near-surface smoke forecasts
+
+`SmokeService` shares an hourly NOAA raster catalog and bounded rounded-point
+products through the hazard archive. `smoke-core.mjs` pins the RAP surface mass
+density contract, locks raster IDs and checks run/time/location metadata before
+conversion. `smoke.js` adds a separate My weather chart, gap-aware table and raw
+evidence export; direct editions reuse the source adapter. Forecasts remain
+separate from measured air and activity-window pass/fail logic. See
+[smoke forecast semantics](smoke-forecasts.md).

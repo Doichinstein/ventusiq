@@ -1,4 +1,5 @@
 import {ForecastStabilityService} from '../../../lib/forecast-stability-service.mjs';
+import {mapAlerts} from '../../../lib/map-alerts.mjs';
 import {RoadworkService} from '../../../lib/roadwork-service.mjs';
 import {FirmsService} from '../../../lib/firms-service.mjs';
 import {StationAnalogsService} from '../../../lib/station-analogs-service.mjs';
@@ -114,7 +115,7 @@ export async function GET(request:Request){
     if(path==='/api/hazards/firms')return json(await new FirmsService(service).get(url.searchParams.get('region')));
     if(path.startsWith('/api/hazards/')){
       const kind=path.slice('/api/hazards/'.length);
-      if(!['fires','air','satellite','perimeters'].includes(kind))return json({error:'Unknown hazard product'},404);
+      if(!['fires','air','aqi','satellite','perimeters'].includes(kind))return json({error:'Unknown hazard product'},404);
       return json(await new HazardsService(service).get(kind,url.searchParams.get('id')));
     }
     if(path==='/api/history/storms/catalog')return json(await new StormHistoryService(service).catalog());
@@ -123,6 +124,7 @@ export async function GET(request:Request){
     if(path==='/api/health'){const [health,upkeep]=await Promise.all([service.health(),new UpkeepService(service).status()]);return json({...health,upkeep});}
     if(path==='/api/alerts'){
       if(url.searchParams.has('at')){const result=await service.read('alerts/us',atTime(url.searchParams.get('at')));return result?json({...result.data,collected_at:result.checked_at}):json({error:'No collected snapshot at that time'},404);}
+      if(url.searchParams.get('view')==='map')return json(await mapAlerts(service,after,(result:any)=>upkeep(service,result)));
       let result;try{result=await service.alerts();}catch(error){after(()=>upkeep(service,null));throw error;}
       after(()=>upkeep(service,result));return json(result);
     }

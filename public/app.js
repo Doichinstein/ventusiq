@@ -18,6 +18,8 @@ let features = [], filtered = [], changes = [], snapshots = [], selected = null;
 let category = 'all', feedMode = 'alerts', replayAt = null, lastSuccess = null, lastError = null;
 let refreshing = false, replayLoading = false, snapshotGeneration = 0, nextFetch = 0, lastSourceUpdated = null, liveData = null;
 let upkeepStatus = null, upkeepStatusCheckedAt = 0;
+let autoRefresh = true, restoredCache = false, auxiliaryPending = false, geometryRevision = 0, drawnKey = '';
+const refreshInterval = config.mode === 'hosted' ? 30000 : 60000;
 const directHistory = [], geometry = new Map(), zoneCache = new Map(), zoneFailed = new Map();
 let zoneQueue = [], zonePending = new Set(), zoneActive = 0, geometryTimer = null;
 const map = L.map('map', {zoomControl: false, preferCanvas: true, minZoom: 2, maxZoom: 14, worldCopyJump: true});
@@ -107,26 +109,26 @@ async function refresh() {
       lastSuccess = data.collected_at;
       lastError = null;
     } else {
-      data = await request('/api/alerts');
-      const health = await request('/api/health');
-      lastSuccess = health.last_success ? new Date(health.last_success * 1000).toISOString() : null;
-      lastError = health.last_error;
-      upkeepStatus = health.upkeep || null;
-      upkeepStatusCheckedAt = Date.now();
-      const [history, changeData] = await Promise.all([request('/api/history'), request('/api/changes')]);
-      snapshots = history.snapshots;
-      changes = changeData.changes;
+      data = await request(config.mode === 'hosted' ? '/api/alerts?view=map' : '/api/alerts');
+      if (!data || data.type !== 'FeatureCollection' || !Array.isArray(data.features)) throw new Error('Invalid alert response');
+      lastSuccess = data.collected_at || null;
+      lastError = data.error || (data.stale ? 'Source collection delayed' : null);
     }
+    const changed = JSON.stringify(liveData?.features) !== JSON.stringify(data.features);
+    restoredCache = false;
     liveData = data;
     window.WeatherPersonal?.alertsUpdated(data);
-    nextFetch = Date.now() + 60000;
+    window.WeatherMapCache?.write('alerts', data);
+    nextFetch = Date.now() + refreshInterval;
     if (generation === snapshotGeneration && !replayAt && !replayLoading) {
       lastSourceUpdated = data.updated;
       features = data.features.filter(validFeature);
-      render();
+      if (changed) geometryRevision++;
+      if (changed) render();
       queueGeometry();
     }
     updateTimeline();
+    if (!direct) refreshAuxiliary();
   } catch (error) {
     lastError = error.message;
     nextFetch = Date.now() + 30000;
@@ -137,7 +139,31 @@ async function refresh() {
     updateHealth();
   }
 }
+async function refreshAuxiliary() {
+  if (auxiliaryPending) return;
+  auxiliaryPending = true;
+  try {
+    // Neither history nor health can delay the first alert render or erase it on failure.
+    await Promise.allSettled([
+      request('/api/health').then(health => {
+        upkeepStatus = health.upkeep || null; upkeepStatusCheckedAt = Date.now();
+        // Freshness describes the alert body actually displayed, not a newer server collection.
+        if (health.last_error) lastError = health.last_error;
+        updateHealth();
+      }),
+      request('/api/history').then(data => { snapshots = data.snapshots; updateTimeline(); }).catch(() => { $('timeline-label').textContent = 'History unavailable · retrying automatically'; }),
+      request('/api/changes').then(data => { changes = data.changes; if (feedMode === 'changes') renderChanges(); }).catch(() => { if (feedMode === 'changes') emptyFeed('Change feed unavailable', 'The alert map is still available. Retrying automatically.'); }),
+    ]);
+  } finally { auxiliaryPending = false; }
+}
+async function restoreMapCache() {
+  const data = await window.WeatherMapCache?.read('alerts', 15 * 60000);
+  if (liveData || replayAt || replayLoading || !data || data.type !== 'FeatureCollection' || !Array.isArray(data.features) || !data.features.every(validFeature)) return;
+  liveData = data; features = data.features; lastSuccess = data.collected_at; lastSourceUpdated = data.updated;
+  restoredCache = true; render(); queueGeometry(); updateHealth();
+}
 function updateHealth() {
+  $('auto-refresh-status').textContent = replayAt || replayLoading ? 'Auto paused · replay' : !autoRefresh ? 'Auto paused' : document.hidden ? 'Auto paused · hidden tab' : refreshing ? 'Checking alerts…' : `Auto · next check in ${Math.max(0,Math.ceil((nextFetch-Date.now())/1000))}s`;
   const upkeep = $('upkeep-status');
   upkeep.hidden = !upkeepStatus;
   if (upkeepStatus) {
@@ -149,12 +175,14 @@ function updateHealth() {
     upkeep.textContent = (stale ? 'Upkeep status unavailable; last known: ' : '') + (labels[state] || 'Upkeep status unavailable') + stamp;
   }
   const age = lastSuccess ? (Date.now() - Date.parse(lastSuccess)) / 1000 : Infinity;
-  const delayed = !!lastError || age > 90;
+  const delayed = restoredCache || !!lastError || age > 90;
   $('status-dot').className = `status-dot ${!lastSuccess ? 'loading' : delayed ? 'stale' : ''}`;
   $('status-label').textContent = !lastSuccess ? 'Waiting for NWS' : delayed ? 'Updates delayed' : 'Connected to NWS';
   $('status-time').textContent = lastSuccess ? `Collected ${dateText(lastSuccess)} · ${age < 60 ? 'less than a minute ago' : `${Math.floor(age/60)}m ago`}` : 'Retrying automatically';
   if (replayAt) {
     notice(`Replay · collected ${dateText(replayAt, true)}. This is a historical view.`);
+  } else if (restoredCache) {
+    notice('Showing the previous visit’s collection while checking for updates. Source times remain unchanged.');
   } else if (delayed) {
     notice(lastSuccess ? 'Updates are delayed. Showing the last successful collection; check official sources for current conditions.' : 'Connecting to the official alert feed. No live data is available yet.');
   } else {
@@ -238,7 +266,8 @@ function featureGeometry(f) {
 function drawMap() {
   const mapped = filtered.map(f => ({...f, geometry:featureGeometry(f)})).filter(f => f.geometry);
   // Severe alerts are drawn last so less urgent overlapping areas do not hide them.
-  alertLayer.clearLayers().addData([...mapped].reverse());
+  const drawKey = `${geometryRevision}|${selected}|${mapped.map(f=>f.id+':'+severity(f)).join('|')}`;
+  if (drawKey !== drawnKey) { alertLayer.clearLayers().addData([...mapped].reverse()); drawnKey = drawKey; }
   if (selected) alertLayer.eachLayer(layer => { if (layer.feature.id === selected) layer.bringToFront(); });
   $('mapped-count').textContent = mapped.length;
   const pending = filtered.length - mapped.length;
@@ -255,6 +284,7 @@ function scheduleGeometryDraw() {
   geometryTimer = setTimeout(() => {
     geometryTimer = null;
     features.filter(f => !f.geometry).forEach(combineZones);
+    geometryRevision++;
     drawMap();
     if (selected) { const f = features.find(f => f.id === selected); if (f) renderDetail(f); }
   }, 800);
@@ -279,7 +309,14 @@ function pumpZones() {
   while (zoneActive < 4 && zoneQueue.length) {
     const url = zoneQueue.shift();
     zoneActive++;
-    request(direct ? url : '/api' + new URL(url).pathname).then(data => {
+    (async () => {
+      const key = 'zone/' + new URL(url).pathname.slice('/zones/'.length);
+      const saved = await window.WeatherMapCache?.read(key, 30 * 86400000);
+      if (saved?.geometry) return saved;
+      const data = await request(direct ? url : '/api' + new URL(url).pathname);
+      if (data.geometry) window.WeatherMapCache?.write(key, {geometry:data.geometry});
+      return data;
+    })().then(data => {
       if (data.geometry) zoneCache.set(url, data.geometry);
       else zoneFailed.set(url, Date.now() + 300000);
     }).catch(() => zoneFailed.set(url, Date.now() + 300000)).finally(() => {
@@ -343,6 +380,7 @@ async function replay(index) {
     $('timeline-time').textContent = dateText(snap.at,true);
     lastSourceUpdated = data.updated;
     features = data.features;
+    geometryRevision++;
     render(); queueGeometry();
     updateHealth();
   } catch { notice('That snapshot could not be loaded. Return to Live or select another time.'); }
@@ -355,7 +393,7 @@ function returnLive() {
   $('map-mode').textContent = 'LIVE CONDITIONS';
   $('live-button').classList.remove('replaying');
   $('timeline-time').textContent = 'Now';
-  if (liveData) { features = liveData.features; lastSourceUpdated = liveData.updated; render(); queueGeometry(); updateTimeline(); }
+  if (liveData) { features = liveData.features; lastSourceUpdated = liveData.updated; geometryRevision++; render(); queueGeometry(); updateTimeline(); }
   updateHealth();
   refresh();
 }
@@ -369,6 +407,8 @@ $('categories').addEventListener('click', (event) => {
 });
 $('clear').onclick = () => { $('search').value = ''; $('severity').value = 'all'; $('categories').querySelector('button').click(); };
 $('refresh').onclick = () => { if (replayAt) returnLive(); else { render(); updateHealth(); refresh(); } };
+$('auto-refresh').onchange = () => { autoRefresh = $('auto-refresh').checked; updateHealth(); if (autoRefresh && !document.hidden) refresh(); };
+$('layer-alerts').onchange = () => { if ($('layer-alerts').checked) alertLayer.addTo(map); else map.removeLayer(alertLayer); };
 $('detail-close').onclick = closeDetail;
 $('region').onchange = () => { const region = regions[$('region').value]; $('region-name').textContent = region.name; map.fitBounds(region.bounds,{animate:false}); closeDetail(); };
 $('fit').onclick = () => { const bounds = alertLayer.getBounds(); if (bounds.isValid()) map.fitBounds(bounds, {padding:[45,70],maxZoom:9}); };
@@ -382,7 +422,7 @@ $('about-close').onclick = () => $('about').close();
 $('about').addEventListener('click', e => { if (e.target === $('about')) { const b = $('about').getBoundingClientRect(); if (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) $('about').close(); } });
 $('history-mode').textContent = direct ? 'History for this session' : '24h retained history';
 $('mode-explainer').textContent = direct ? 'This static public edition reads NWS directly from your browser. Replay and the change feed cover collections made while this page is open. Download the self-hosted edition for a shared background daemon and persistent 24-hour history.' : 'This edition reads from a shared background daemon. Collections continue even when nobody is viewing the map. Replay covers the last 24 hours collected since the daemon started; it does not invent earlier history.';
-if(config.mode==='hosted')$('mode-explainer').textContent='This edition reads a shared hosted collector and persistent archive. Visitors refresh alerts at most once per minute. An hourly archive-upkeep task is configured for periods with no visitors; check actual collection timestamps for freshness. History survives closing the browser. Fire and air feeds refresh when requested, at most once per 15 minutes. Opt-in browser push delivers saved-watch changes during hourly upkeep; delivery can be delayed. Smoke catalogs refresh on demand at most hourly.';
+if(config.mode==='hosted')$('mode-explainer').textContent='Visible tabs check shared alerts every 30 seconds. The shared NWS collector fetches at most once per minute. Last-collected alerts appear immediately while the server checks upstream. An hourly archive-upkeep task is configured for periods with no visitors; check actual timestamps for freshness. Fire, monitor and AQI-contour feeds refresh when enabled, at most once per 15 minutes; source editions can be hourly or slower. Smoke catalogs refresh at most hourly. Browser push runs during hourly upkeep and may be delayed.';
 document.addEventListener('keydown', e => {
   if (e.key === '/' && !e.defaultPrevented && !e.isComposing && !e.ctrlKey && !e.altKey && !e.metaKey &&
       !$('map-workspace').hidden && !$('about').open && !document.activeElement.isContentEditable &&
@@ -400,10 +440,13 @@ window.WeatherMap = {
   live: () => liveData,
   zoneGeometry: url => zoneCache.get(url)||null,
   show: () => map.invalidateSize(),
+  refresh,
   focus: (lat,lon) => map.setView([lat,lon],9),
   pick: callback => map.once('click', e => callback(e.latlng.lat,((e.latlng.lng+180)%360+360)%360-180)),
   selectAlert: id => { const f=features.find(f=>f.id===id); if(f)selectAlert(f); },
 };
-setInterval(() => { updateHealth(); if (!replayAt && lastSuccess) render(); }, 30000);
-setInterval(refresh, 5000);
+setInterval(() => { updateHealth(); if (!replayAt && lastSuccess && !document.hidden && filtered.some(f=>!activeAt(f,Date.now()))) render(); }, 5000);
+setInterval(() => { if (autoRefresh && !document.hidden) refresh(); }, 1000);
+document.addEventListener('visibilitychange', () => { updateHealth(); if (autoRefresh && !document.hidden) refresh(); });
+restoreMapCache();
 refresh();

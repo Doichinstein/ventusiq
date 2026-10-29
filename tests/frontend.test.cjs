@@ -26,7 +26,7 @@ class Element {
 }
 const fixture=(id,event='Flood Warning',severity='Severe',area='Test County')=>({type:'Feature',id:'https://api.weather.gov/alerts/'+id,geometry:{type:'Polygon',coordinates:[[[-100,40],[-99,40],[-99,41],[-100,40]]]},properties:{id,status:'Actual',event,severity,areaDesc:area,sent:new Date().toISOString(),expires:'2099-01-01T00:00:00Z',description:'Official <script>text</script>',instruction:'Seek higher ground',affectedZones:[]}});
 const payload=(features)=>({type:'FeatureCollection',features,updated:new Date().toISOString(),collected_at:new Date().toISOString()});
-async function setup(mode='direct') {
+async function setup(mode='direct',options={}) {
   const ids=[...fs.readFileSync(path.join(__dirname,'../public/index.html'),'utf8').matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
   const els=Object.fromEntries(ids.map(id=>[id,new Element()]));
   els.severity.value='all';els.region.value='conus';
@@ -35,26 +35,47 @@ async function setup(mode='direct') {
   const L={map:()=>map,tileLayer:()=>({addTo(){return this;},on(){return this;}}),control:{zoom:()=>({addTo(){}})},geoJSON(data,options){return {data:data||[],addTo(){return this;},clearLayers(){this.data=[];return this;},addData(d){this.data=d; for(const f of d)options?.onEachFeature?.(f,{bindTooltip(){},on(){}});return this;},eachLayer(fn){for(const f of this.data)fn({feature:f,bringToFront(){}});},getBounds(){return {isValid:()=>true};}};}};
   let current=payload([fixture('one'),fixture('two','Wind Advisory','Moderate','Other County')]);
   let error=false;
-  const stored=[];
+  const stored=[],requests=[],intervals=[];
+  let releaseAuxiliary;
+  const auxiliaryGate=new Promise(resolve=>releaseAuxiliary=resolve);
   const fetch=async(url)=>{
+    requests.push(url);
+    if(options.holdAuxiliary&&['/api/health','/api/history','/api/changes'].includes(url))await auxiliaryGate;
     if(error)throw new Error('Simulated outage');
     if(url.includes('/zones/'))return {ok:true,json:async()=>({geometry:fixture('zone').geometry})};
     let result=current;
     if(url==='/api/health')result={last_success:Date.now()/1000,last_error:null};
     if(url==='/api/history')result={snapshots:stored.map(s=>({at:s.collected_at}))};
     if(url==='/api/changes')result={changes:[]};
-    if(url.startsWith('/api/alerts?'))result=stored.find(s=>s.collected_at===decodeURIComponent(url.split('=')[1]));
+    if(url.startsWith('/api/alerts?at='))result=stored.find(s=>s.collected_at===decodeURIComponent(url.split('=')[1]));
     return {ok:true,json:async()=>result};
   };
   const documentListeners={};
   const doc={getElementById:id=>els[id],createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e;},createDocumentFragment:()=>new Element('fragment'),addEventListener(type,fn){documentListeners[type]=fn;},activeElement:new Element('body')};
-  const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,console,setInterval(){},setTimeout(){return 1;}});
+  const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout(){return 1;}});
   const run=code=>vm.runInContext(code,ctx);
   run(fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8'));
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(r=>setImmediate(r));};
   await settle();
-  return {els,run,settle,stored,doc,key:event=>documentListeners.keydown(event),setData(data){current=data;},fail(){error=true;}};
+  return {els,run,settle,stored,doc,requests,intervals,releaseAuxiliary,visibility:()=>documentListeners.visibilitychange(),key:event=>documentListeners.keydown(event),setData(data){current=data;},fail(){error=true;}};
 }
+
+test('hosted map paints alerts before slow history and status, without redrawing unchanged geometry',async()=>{
+  const s=await setup('hosted',{holdAuxiliary:true});
+  assert.equal(s.els.total.textContent,'2');assert.equal(s.els['mapped-count'].textContent,'2');
+  assert.equal(s.requests[0],'/api/alerts?view=map');assert.equal(s.run('refreshing'),false);
+  const version=s.run('geometryRevision');await s.run('nextFetch=0; refresh()');
+  assert.equal(s.run('geometryRevision'),version);assert.equal(s.els.total.textContent,'2');
+  s.releaseAuxiliary();await s.settle();
+});
+
+test('automatic checks pause in hidden tabs and during replay, resume on visibility, and can be switched off',async()=>{
+  const s=await setup('hosted');const poll=s.intervals.find(i=>i.ms===1000).fn;
+  s.run('nextFetch=0');s.doc.hidden=true;const count=s.requests.length;poll();await s.settle();assert.equal(s.requests.length,count);
+  s.doc.hidden=false;s.visibility();await s.settle();assert.ok(s.requests.length>count);
+  s.els['auto-refresh'].checked=false;s.els['auto-refresh'].onchange();s.run('nextFetch=0');const stopped=s.requests.length;poll();await s.settle();assert.equal(s.requests.length,stopped);
+  s.run("autoRefresh=true;replayAt='2026-10-28T00:00:00Z'");poll();await s.settle();assert.equal(s.requests.length,stopped);
+});
 
 test('slash search shortcut only acts in the visible map and preserves editing, dialogs and browser shortcuts',async()=>{
   const s=await setup();let prevented=0;

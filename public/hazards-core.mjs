@@ -3,6 +3,7 @@ export const SOURCES={
   fires:'https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Incident_Locations_Current/FeatureServer/0',
   perimeters:'https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters/FeatureServer/0',
   air:'https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/Air_Now_Current_Monitors_PM25/FeatureServer/0',
+  aqi:'https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/AirNowLatestContoursPM25/FeatureServer/0',
   airHistory:'https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/Air_Now_Monitors_PM25/FeatureServer/0',
   satellite:'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml',
 };
@@ -21,10 +22,11 @@ export async function sourceFetch(url,signal,fetcher=fetch){
   if(url===SOURCES.satellite)return response.text();
   const data=await response.json();if(data.error)throw new Error('Source rejected the query');return data;
 }
-export async function arcgis(base,{fields='*',where='1=1',idField='OBJECTID'}={},fetcher=fetch,signal=AbortSignal.timeout(45000)){
+export async function arcgis(base,{fields='*',where='1=1',idField='OBJECTID',maxAllowableOffset=null}={},fetcher=fetch,signal=AbortSignal.timeout(45000)){
   const metadata=await sourceFetch(base+'?f=json',signal,fetcher),features=[],seen=new Set();
   for(let page=0;page<20;page++){
     const query=new URLSearchParams({f:'geojson',where,outFields:fields,outSR:'4326',returnGeometry:'true',orderByFields:idField,resultRecordCount:'2000',resultOffset:String(features.length),geometryPrecision:'5'});
+    if(maxAllowableOffset!==null)query.set('maxAllowableOffset',String(maxAllowableOffset));
     const data=await sourceFetch(base+'/query?'+query,signal,fetcher);
     if(data.type!=='FeatureCollection'||!Array.isArray(data.features))throw new Error('Invalid geographic source response');
     for(const f of data.features){if(f?.type!=='Feature'||!f.properties)throw new Error('Invalid source feature');const id=f.id??f.properties[idField];if(id===undefined||seen.has(String(id)))throw new Error('Source pagination returned duplicate or missing identifiers');seen.add(String(id));features.push(f);}
@@ -44,6 +46,27 @@ export async function loadAir(fetcher=fetch,signal){
   const count=data.features.length;
   data.features=data.features.filter(f=>validPoint(f.geometry)).map(f=>{const p=f.properties;return {...f,id:String(p.AQSID||f.id),properties:{name:p.SiteName||'Unnamed monitor',agency:p.DataSource||'AirNow reporting agency',aqi:nonnegative(p.PM25_AQI),pm25:String(p.PM25_Unit).toUpperCase()==='UG/M3'?nonnegative(p.PM25):null,observed_at:stamp(p.ValidTime),monitor_type:p.MonitorType||'Not specified',status:p.Status||'Unknown'}};});
   return {...data,source:'US EPA / AirNow',data_kind:'observation',omitted_geometry:count-data.features.length};
+}
+export const AQI_BANDS = [
+  {code:1,label:'Good',range:'0–50',color:'#67c587'},
+  {code:2,label:'Moderate',range:'51–100',color:'#e7c579'},
+  {code:3,label:'Unhealthy for sensitive groups',range:'101–150',color:'#ffb270'},
+  {code:4,label:'Unhealthy',range:'151–200',color:'#ff7785'},
+  {code:5,label:'Very unhealthy',range:'201–300',color:'#c88ce4'},
+  {code:6,label:'Hazardous',range:'301+',color:'#d86a9a'},
+];
+export async function loadAqiContours(fetcher=fetch,signal){
+  // EPA's gridcode is a category (1–6), not a numerical AQI value.
+  const data=await arcgis(SOURCES.aqi,{fields:'OBJECTID,gridcode,Timestamp',maxAllowableOffset:0.01},fetcher,signal);
+  return {...data,source:'US EPA / AirNow',data_kind:'interpolated-pm25-aqi',geometry_tolerance_degrees:0.01,
+    features:data.features.filter(f=>['Polygon','MultiPolygon'].includes(f.geometry?.type)).map(f=>{
+      const band=AQI_BANDS.find(b=>b.code===f.properties.gridcode);
+      return {...f,properties:{category:band?.code??null,label:band?.label||'Unknown category',range:band?.range||'Unknown',color:band?.color||'#8b8b93',observed_at:stamp(f.properties.Timestamp)}};
+    })};
+}
+export function fireSymbolSize(acres){
+  if(typeof acres!=='number'||!Number.isFinite(acres)||acres<0)return 22;
+  return acres<100?24:acres<1000?30:acres<10000?38:46;
 }
 export async function loadPerimeters(id,fetcher=fetch,signal){
   id=incidentId(id);

@@ -17,7 +17,7 @@ async function setup(){
   let now=Date.parse('2026-10-28T20:00:00Z'),failure=false,hold=false;const pending=[];
   const map={removeLayer(layer){attached.delete(layer);},closePopup(){},fitBounds(){}};
   const layer=()=>({events:{},addTo(){attached.add(this);return this;},on(name,fn){this.events[name]=fn;return this;},clearLayers(){this.children=[];},children:[],getLayers(){return this.children;},addLayer(l){this.children.push(l);},getBounds(){return {isValid:()=>true};}});
-  const L={layerGroup:layer,geoJSON(data,options){return Object.assign(layer(),{data,options});},tileLayer:{wms(url,options){return Object.assign(layer(),{url,options});}}};
+  const L={layerGroup:layer,divIcon:options=>options,marker:(latlng,options)=>({latlng,options}),circleMarker:(latlng,options)=>({latlng,options}),geoJSON(data,options){return Object.assign(layer(),{data,options});},tileLayer:{wms(url,options){return Object.assign(layer(),{url,options});}}};
   const window={WEATHER_CONFIG:{mode:'hosted'},WeatherMap:{instance:map,isReplay:()=>false,focus(){}},WeatherPersonal:{current:()=>null},setInterval:fn=>timers.push(fn)};
   const fetcher=async url=>{requests.push(url);if(hold)await new Promise(r=>pending.push(r));if(failure)throw new Error('Unavailable');const stamp=new Date(now).toISOString();const kind=url.split('/').pop();return {ok:true,json:async()=>kind==='satellite'?{date:'2026-10-27',checked_at:stamp}:{type:'FeatureCollection',source:'Test provider',features:kind==='fires'?[fire('a')]:[{...fire('b'),properties:{name:'Monitor',aqi:151,pm25:56,observed_at:stamp}}],checked_at:stamp}};};
   const mounted=mountHazards({document:{getElementById:id=>nodes[id],createElement:()=>new Element()},window,L,fetcher,clock:()=>now});
@@ -29,6 +29,17 @@ test('map toggles, archive replay and source outages preserve honest last-good l
   s.window.WeatherHazards.setReplay(true);assert.equal(s.attached.size,0);assert.equal(s.nodes['hazard-replay'].hidden,false);
   s.window.WeatherHazards.setReplay(false);assert.equal(s.attached.size,1);
   s.advance(901000);s.fail();await s.mounted.load('fires');assert.equal(s.attached.size,1);assert.match(s.nodes['fires-status'].textContent,/Updates delayed/);const count=s.requests.length;await s.mounted.load('fires');assert.equal(s.requests.length,count);
+});
+
+test('fire icons encode reported acreage and AQI zones use their own pane and disappear during replay',async()=>{
+  const s=await setup();s.nodes['layer-fires'].checked=true;await s.mounted.load('fires');
+  const fires=[...s.attached][0],small=fires.options.pointToLayer(fire('small'),[37,-122]);
+  const large=fires.options.pointToLayer({...fire('large'),properties:{...fire('large').properties,acres:25000}},[37,-122]);
+  assert.equal(small.options.icon.iconSize[0],24);assert.equal(large.options.icon.iconSize[0],46);assert.match(small.options.icon.html,/<svg/);assert.doesNotMatch(small.options.icon.html,/<script>/);
+  s.nodes['layer-aqi'].checked=true;await s.mounted.load('aqi');
+  const zones=[...s.attached].find(l=>l.options.pane==='aqiContours');assert.ok(zones);assert.equal(s.nodes['aqi-map-key'].hidden,false);
+  const old={properties:{observed_at:'2026-10-27T12:00:00Z',color:'#ff7785'}};assert.equal(zones.options.style(old).color,'#8b8b93');
+  s.window.WeatherHazards.setReplay(true);assert.equal(s.attached.size,0);assert.equal(s.nodes['aqi-map-key'].hidden,true);
 });
 test('saved places use distance and recent measurements, never treating missing coverage as good air',async()=>{
   const s=await setup();s.window.WeatherHazards.updatePlace({lat:37,lon:-122});await Promise.all([s.mounted.load('fires'),s.mounted.load('air')]);

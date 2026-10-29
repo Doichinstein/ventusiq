@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#0a0a0c">
   <meta property="og:title" content="VentusIQ — Open Weather">
   <meta property="og:description" content="Weather intelligence. Open to everyone. Explore live US alerts and official affected areas.">
-  <meta property="og:image" content="https://weather-commons-live.doichinstein.chatgpt.site/assets/ventusiq-wordmark.png">
+  <meta property="og:image" content="https://ventusiq.com/assets/ventusiq-wordmark.png">
   <title>VentusIQ — Open Weather Map</title>
   <link rel="icon" href="/assets/ventusiq-icon.png" type="image/png">
   <link rel="stylesheet" href="/vendor/leaflet.css"><link rel="stylesheet" href="/style.css">
-  <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
+  <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/map-cache.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
   <script type="module" src="/hazards.js"></script>
   <script type="module" src="/firms.js"></script>
   <script type="module" src="/station-analogs.js"></script>
@@ -46,6 +46,7 @@
   <script type="module" src="/storm-history.js"></script>
   <script type="module" src="/station-history.js"></script>
   <script type="module" src="/workspace-navigation.mjs"></script>
+  <script type="module" src="/map-controls.js"></script>
 </head>
 <body>
   <a id="skip-workspace" class="skip" href="#workspace">Skip to current weather workspace</a>
@@ -155,14 +156,35 @@
   </section>
   <section id="hazard-workspace" class="hazard-workspace" aria-label="Fire and air layers">
     <div id="river-map-tools" class="section-top" hidden><p id="river-map-status" class="small"></p><button id="river-map-clear" class="text-button">Clear river markers</button></div>
-    <details id="hazard-controls"><summary><span class="eyebrow">FIRE & AIR</span><strong>Add context to the map</strong><span class="small">Incidents · monitors · satellite detections</span></summary>
+    <div class="map-control-bar">
+      <details id="layer-menu" class="layer-menu"><summary>Layers <span id="layer-count" class="count">1</span><span aria-hidden="true">⌄</span></summary>
+        <div class="layer-options"><p>Combine layers on the map</p>
+          <label><input type="checkbox" id="layer-alerts" checked><span><strong>Alerts</strong><small>Official weather areas</small></span><i class="layer-swatch alerts-swatch"></i></label>
+          <label><input type="checkbox" id="layer-fires"><span><strong>Fires</strong><small>Flames sized by reported acreage</small></span><i class="layer-swatch fires-swatch">♨</i></label>
+          <label><input type="checkbox" id="layer-aqi"><span><strong>AQI</strong><small>PM2.5 regional estimates</small></span><i class="layer-swatch aqi-swatch"></i></label>
+          <label><input type="checkbox" id="layer-air"><span><strong>Monitors</strong><small>Measured PM2.5 at stations</small></span><i class="layer-swatch monitors-swatch"></i></label>
+          <label><input type="checkbox" id="layer-smoke"><span><strong>Smoke</strong><small>Animated NOAA forecast</small></span><i class="layer-swatch smoke-swatch"></i></label>
+          <label><input type="checkbox" id="layer-satellite"><span><strong>Satellite</strong><small>Daily thermal imagery</small></span></label>
+          <label><input type="checkbox" id="layer-firms"><span><strong>Detections</strong><small>Individual satellite heat pixels</small></span></label>
+          <button id="layer-details" class="text-button" type="button">Source details &amp; forecast controls ↗</button>
+        </div>
+      </details>
+      <span id="active-layer-summary" class="active-layer-summary">Alerts</span>
+      <div class="refresh-controls"><label><input type="checkbox" id="auto-refresh" checked> Auto alerts</label><span id="auto-refresh-status">Checking alerts…</span></div>
+    </div>
+    <div class="map-layer-keys">
+      <div id="fire-map-key" class="map-layer-key" hidden><strong>Fires</strong><span>Flame size: &lt;100 · 100–999 · 1k–9,999 · 10k+ acres. Gray outline: size unknown. Symbols are not footprints; select a fire for its reported perimeter.</span><small id="fire-map-time" role="status"></small></div>
+      <div id="aqi-map-key" class="map-layer-key" hidden><strong>PM2.5 AQI zones</strong><div id="aqi-map-bands"></div><span>EPA regional estimates · unshaded = no contour coverage · gray = old or missing source time.</span><small id="aqi-map-time" role="status"></small></div>
+    </div>
+    <details id="hazard-controls"><summary><strong>Source details &amp; forecast controls</strong><span class="small">Freshness · fire search · smoke timeline</span></summary>
       <div class="hazard-grid">
-        <section><label class="layer-choice"><input type="checkbox" id="layer-fires"><strong>Reported wildfires</strong></label><p class="small">Orange points show reported incident locations. Select one to inspect its latest reported perimeter.</p><p id="fires-status" class="small" role="status">Enable to load NIFC incidents.</p><a href="https://data-nifc.opendata.arcgis.com/" target="_blank" rel="noopener">NIFC / WFIGS ↗</a></section>
-        <section><label class="layer-choice"><input type="checkbox" id="layer-air"><strong>PM2.5 observations</strong></label><p class="small">Colored circles show monitor AQI. Gray circles have missing or older observations; no interpolation between monitors.</p><p id="air-status" class="small" role="status">Enable to load AirNow monitors.</p><a href="https://www.airnow.gov/" target="_blank" rel="noopener">EPA / AirNow ↗</a></section>
-        <section><label class="layer-choice"><input type="checkbox" id="layer-satellite"><strong>Satellite heat detections</strong></label><p class="small">NASA's imagery shows VIIRS thermal anomalies for the available UTC day. These are detected pixels, not fire boundaries.</p><p id="satellite-status" class="small" role="status">Enable to check NASA's available date.</p><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS / GIBS ↗</a></section>
+        <section><h3>Reported wildfires</h3><p class="small">Flame symbols show incident locations, sized by reported acreage. Select a fire to load its reported perimeter: an orange dashed boundary, not an evacuation zone.</p><p id="fires-status" class="small" role="status">Enable to load NIFC incidents.</p><a href="https://data-nifc.opendata.arcgis.com/" target="_blank" rel="noopener">NIFC / WFIGS ↗</a></section>
+        <section><h3>PM2.5 observations</h3><p class="small">Small colored circles show measured monitor AQI. Gray indicates missing or older readings. Enable AQI separately for EPA’s estimated regional zones.</p><p id="air-status" class="small" role="status">Enable to load AirNow monitors.</p><a href="https://www.airnow.gov/" target="_blank" rel="noopener">EPA / AirNow ↗</a></section>
+        <section><h3>Satellite heat detections</h3><p class="small">NASA's imagery shows VIIRS thermal anomalies for the available UTC day. These are detected pixels, not fire boundaries.</p><p id="satellite-status" class="small" role="status">Enable to check NASA's available date.</p><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS / GIBS ↗</a></section>
       </div>
+      <section class="aqi-source-panel"><h3>PM2.5 AQI zones</h3><p class="small">EPA’s interpolated estimates between monitors, updated hourly by the source. These are not address-level measurements or total AQI across all pollutants. Boundaries are generalized to 0.01° for display.</p><p id="aqi-status" class="small" role="status">Enable AQI in Layers to load regional estimates.</p><a href="https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/AirNowLatestContoursPM25/FeatureServer/0" target="_blank" rel="noopener">EPA / AirNow contours ↗</a></section>
       <section class="smoke-map-panel" aria-label="Modeled smoke forecast map">
-        <label class="layer-choice"><input type="checkbox" id="layer-smoke"><strong>Animate forecast smoke</strong></label>
+        <h3>Animate forecast smoke</h3>
         <p class="small">NOAA RAP near-surface smoke · contiguous US · instantaneous model samples, separate from measured PM2.5 and AQI. Colors show concentration bands, not health categories. Transparent areas are unknown; gray means 0–&lt;1 µg/m³. Zooming enlarges a fixed regional image and adds no detail.</p>
         <p id="smoke-map-status" class="small" role="status">Enable to view NOAA RAP forecast smoke.</p>
         <div id="smoke-map-controls" hidden>
@@ -174,7 +196,7 @@
         </div>
       </section>
       <section class="firms-panel">
-        <label class="layer-choice"><input type="checkbox" id="layer-firms"><strong>Inspect satellite heat detections</strong></label>
+        <h3>Inspect satellite heat detections</h3>
         <p class="small">NASA FIRMS · NOAA-20 VIIRS · nominal 375 m pixels from the rolling 24-hour NRT file. Acquisition times reflect overpasses. Orange: nominal/high detection confidence; gray: low. Points are pixel centers, not unique fires or boundaries. Other satellites and US territories are not included.</p>
         <label>Source region <select id="firms-region"><option value="conus">Contiguous US and Hawaii</option><option value="alaska">Alaska</option></select></label>
         <label>Acquired within <select id="firms-hours"><option value="24">24 hours</option><option value="6">6 hours</option></select></label>
@@ -193,7 +215,7 @@
   </section>
   <section id="map-workspace" class="workspace" aria-label="Live weather map and alerts">
     <aside class="sidebar" aria-label="Weather alerts">
-      <div class="sidebar-head"><div><span class="eyebrow">NATIONAL OVERVIEW</span><h2>Weather alerts <span id="total" class="count">—</span></h2></div><button id="refresh" class="icon-button" title="Refresh display" aria-label="Refresh display">↻</button></div>
+      <div class="sidebar-head"><div><span class="eyebrow">NATIONAL OVERVIEW</span><h2>Weather alerts <span id="total" class="count">—</span></h2></div><button id="refresh" class="icon-button" title="Check for updates" aria-label="Check for updates">↻</button></div>
       <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search event, state, or county" aria-label="Search event, state, or county"><kbd>/</kbd></label>
       <div id="categories" class="categories" role="group" aria-label="Alert type">
         <button data-category="all" class="active" aria-pressed="true">All</button><button data-category="Warning" aria-pressed="false">Warnings</button><button data-category="Watch" aria-pressed="false">Watches</button><button data-category="Advisory" aria-pressed="false">Advisories</button>

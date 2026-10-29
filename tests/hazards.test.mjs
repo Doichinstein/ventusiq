@@ -1,9 +1,23 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
+import {loadAqiContours,fireSymbolSize} from '../public/hazards-core.mjs';
 import {arcgis,SOURCES,loadFires,loadAir,loadPerimeters,sourceFetch,incidentId,stamp,nearest,observationFresh,aqiCategory,satelliteMetadata,SATELLITE_LAYER} from '../public/hazards-core.mjs';
 const point=(id,properties={},coordinates=[-122,37])=>({type:'Feature',id,geometry:{type:'Point',coordinates},properties:{OBJECTID:id,...properties}});
 const response=data=>({ok:true,json:async()=>data});
 const fetchCollection=features=>async url=>response(url.includes('/query?')?{type:'FeatureCollection',features}:{editingInfo:{lastEditDate:1793200000000}});
+
+test('AQI polygons preserve category codes and source hour, never treating gridcode as numerical AQI',async()=>{
+  const geometry={type:'Polygon',coordinates:[[[-100,40],[-99,40],[-99,41],[-100,40]]]};
+  const data=await loadAqiContours(fetchCollection([{...point(1,{gridcode:3,Timestamp:1793200000000}),geometry},{...point(2,{gridcode:99,Timestamp:null}),geometry},point(3)]));
+  assert.equal(data.features.length,2);assert.equal(data.features[0].properties.label,'Unhealthy for sensitive groups');
+  assert.equal(data.features[0].properties.range,'101–150');assert.equal(data.features[0].properties.observed_at,'2026-10-28T15:06:40.000Z');
+  assert.equal(data.features[1].properties.category,null);assert.equal(data.features[1].properties.observed_at,null);
+  assert.equal(data.data_kind,'interpolated-pm25-aqi');assert.equal(data.geometry_tolerance_degrees,.01);
+});
+test('fire size distinguishes missing values, zero and acreage bands without unbounded icons',()=>{
+  assert.equal(fireSymbolSize(null),22);assert.equal(fireSymbolSize(NaN),22);assert.equal(fireSymbolSize(-1),22);
+  assert.deepEqual([0,99,100,999,1000,9999,10000,1e9].map(fireSymbolSize),[24,24,30,30,38,38,46,46]);
+});
 test('ArcGIS follows actual page sizes and rejects duplicate or incomplete pagination',async()=>{
   const offsets=[];const fetcher=async url=>{if(!url.includes('/query?'))return response({});const offset=new URL(url).searchParams.get('resultOffset');offsets.push(offset);return response({type:'FeatureCollection',features:offset==='0'?[point(1),point(2)]:[point(3)],properties:{exceededTransferLimit:offset==='0'}});};
   assert.equal((await arcgis(SOURCES.fires,{},fetcher)).features.length,3);assert.deepEqual(offsets,['0','2']);

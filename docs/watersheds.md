@@ -81,3 +81,12 @@ flowline/indexed point in blue and selection in white, beneath alert boundaries.
 The layer hides during alert replay and can be dismissed. Changing the selected
 place cancels outstanding requests and clears the old geography and exports.
 Minute updates only refresh age labels; the existing hourly upkeep is unchanged.
+
+
+## Linked monitoring sites
+
+An explicit [network-site lookup](watershed-sites.md) now navigates from the
+containing COMID, separates same-reach/direction ambiguity and compares returned
+station coordinates with this displayed basin. Users can resolve an exact NOAA
+station-ID mapping to open the existing gauge detail. This adds provider-network
+evidence; it does not turn nearby gauges into verified hydraulic predictors.

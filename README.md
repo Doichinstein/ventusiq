@@ -60,7 +60,10 @@ downloaded. See [address search](docs/address-search.md).
 **Watershed geography** links a selected place to its USGS catchment and indexed
 stream point, with an upstream-basin map, approximate areas and raw JSON/GeoJSON
 exports. It distinguishes local-only responses and unverified associations from
-full basin results. See [watershed methods and limits](docs/watersheds.md).
+full basin results. An explicit [network-site lookup](docs/watershed-sites.md)
+finds USGS monitoring locations upstream/downstream, checks their polygon inclusion
+and resolves exact NOAA station-ID mappings where available. See
+[watershed methods and limits](docs/watersheds.md).
 
 **Rivers** adds regional NOAA/NWPS gauge search, nearby gauges for saved places,
 observed and forecast hydrographs, highest upcoming forecast samples, threshold

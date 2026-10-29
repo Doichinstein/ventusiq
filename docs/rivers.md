@@ -190,3 +190,9 @@ catchment, indexed stream point, contributing-area polygon, approximate areas an
 JSON/GeoJSON exports. The map labels the indexed offset and local-only results.
 This does not connect a nearby NOAA gauge to the selected place; the existing
 proximity and network-association limitations still apply.
+
+
+My weather also provides [network-linked monitoring sites](watershed-sites.md)
+from a loaded catchment. Exact USGS-to-NOAA IDs can open this gauge workspace,
+with missing mappings and current data coverage kept separate. The network search
+is bounded and reach-based; it does not establish travel time or property exposure.

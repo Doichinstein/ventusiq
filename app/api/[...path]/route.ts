@@ -1,3 +1,4 @@
+import {WatershedSitesService} from '../../../lib/watershed-sites-service.mjs';
 import {GeocodeService,geocodePost} from '../../../lib/geocode-service.mjs';
 import {WatershedService} from '../../../lib/watershed-service.mjs';
 import {journeyStops} from '../../../public/journey-stops.mjs';
@@ -78,6 +79,8 @@ export async function GET(request:Request){
       const story=await events.story(id,url.searchParams.has('at')?atTime(url.searchParams.get('at')):undefined);
       return story?json({...story,resolution}):json({error:'No collected event at this time'},404);
     }
+    if(path==='/api/rivers/watershed-sites')return json(await new WatershedSitesService(service).network(url.searchParams.get('comid')));
+    if(path==='/api/rivers/usgs-site')return json(await new WatershedSitesService(service).gauge(url.searchParams.get('id')));
     if(path==='/api/rivers/watershed')return json(await new WatershedService(service).basin(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/rivers/near')return json(await new RiversService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/rivers/gauge')return json(await new RiversService(service).gauge(url.searchParams.get('id')));

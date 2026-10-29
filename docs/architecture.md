@@ -429,3 +429,16 @@ the same lookup contract with in-process quotas in `weathercommons/geocode.py`.
 export and cancellation. Selection fills the existing place form; saving remains
 an explicit device/account operation. Static editions link to Census's own UI
 because its API does not support CORS. No identity or scheduling change is needed.
+
+
+### Basin-network monitoring and NOAA identity bridge
+
+`watershed-sites-core.mjs` validates bounded USGS upstream/downstream navigation,
+classifies same-reach and direction ambiguity and independently evaluates station
+coordinates against the selected basin. `WatershedSitesService` shares immutable
+24-hour network/mapping collections with explicit admission limits. NOAA mappings
+require the exact USGS ID and canonical LID. `watershed-sites.js` consumes the
+selected basin from the existing watershed module, invalidates late replies and
+exports both evidence chains plus explicit NOAA resolutions. It reuses the river
+workspace for current observations/forecasts instead of inferring activity from
+network membership. No additional watches, schedules or schema are introduced.

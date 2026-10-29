@@ -795,3 +795,44 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   setting. Source contracts and interaction doubles do not establish rendered
   layout or real two-device account behavior. Existing hourly upkeep, runtime
   secrets and database schema are unchanged.
+
+
+## 2026-10-29 — Watershed monitoring network and NOAA gauge identities
+
+- Added explicit 100 km upstream-tributary/downstream-mainstem USGS site discovery
+  from the selected catchment, separate polygon-inclusion checks, same-reach and
+  direction ambiguity, source evidence export and exact USGS-to-NOAA gauge lookup.
+  Selecting a matching NOAA gauge reuses its existing observations/forecast detail.
+- Initial live Worker collection exposed unnamed USGS entries and a USEPA entry
+  inside the NWIS surface-water collection. Unnamed sites now use their IDs;
+  non-USGS agencies are excluded and audited with raw entries preserved. This
+  provider variant has a regression test. The existing two-minute failure backoff
+  remained effective after the repair; no cache reset was used to bypass it.
+- All 530 Node and 19 Python tests passed (549 total), including ten new tests for
+  direction/identity conflicts, polygon inclusion, bounded source contracts,
+  raw evidence, NOAA 404 versus outages, exact ID matching, shared collection,
+  quotas, no watch enrollment, optional lookup/open actions, async changes and
+  retained outage evidence. TypeScript and production builds passed.
+- Built Worker live verification returned 27 USGS downstream-mainstem sites for
+  COMID 22337721 at 2026-10-29T04:53:19Z, with one unnamed site and one excluded
+  non-USGS entry. Network revision:
+  `375e0303c6210b3555fef547d66393d3d202cf1a203e434fb24ccc7c47d59708`.
+- Madison COMID 13294318 returned 66 sites (55 upstream-network, 11 downstream)
+  at 2026-10-29T04:52:50Z, revision
+  `0351a93d1515255fbcdebffb0d4721718f5e8c133a83ff7f40cbc8c2703e15c0`.
+  Joining this result to basin revision
+  `2275af0cba2f4db924ecc130d8036326f38d7bd0af6521268af02e46b3a03759`
+  classified 55 reported site coordinates inside/on and 11 outside the displayed
+  basin. This two-location contract check does not establish national completeness,
+  site activity or the hydraulic relevance of every returned station.
+- NOAA mapped USGS-01646500 exactly to BRKM2 at 2026-10-29T04:52:52Z, revision
+  `2f258d62210679dc044a92744a07d0f0955e7d1fa8fb011a1a62e5e746a49871`.
+  USGS-05428500 returned no NOAA mapping, retained as a distinct negative response
+  at 04:52:55Z, revision
+  `9032a2250faef32324833c69c4d412a9332c06037e0e273b5f4dfa6f0da1a6a5`.
+  This absence says nothing about USGS measurements at that site.
+- Invalid catchment/site inputs returned HTTP 400; the page and both new modules
+  returned HTTP 200. No schema, secret or hourly upkeep changes were needed.
+  Direct-browser CORS and rendered controls remain unverified under the saved
+  browser restriction. Point-level hydraulic validation, broader provider coverage
+  evaluation and real closed-browser push display remain outstanding.

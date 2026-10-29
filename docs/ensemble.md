@@ -111,3 +111,47 @@ No account, paid credential or automatic source polling is introduced.
 
 This supplies provenance for a daily ensemble run. It does not establish calibrated
 probabilities, independent model votes, seasonal skill or lead-stratified accuracy.
+
+
+## Prospective temperature outcome comparison (v79)
+
+The observation card uses its selected NWS station for **Evaluate archived GEFS
+temperatures**. `GET /api/ensemble/verification?lat=39&lon=-77&station=KGAI`
+reads only retained identified-run forecasts; it never downloads a retrospective
+forecast to manufacture decision-time evidence. Station discovery and observations
+use their existing bounded collectors. No account or subscription is required.
+
+Every three-hour target in the preceding seven days must be at least 30 minutes
+in the past. Selection takes the latest archive check completed at least six hours
+before that target, then validates initialization before collection and a source
+lead of 6 through 120 hours. A latest rollback or unsuitable edition is not
+replaced by a more favorable older one. Seven-day ensemble retention can leave
+missing forecasts near the beginning of the comparison window. Collection is on
+demand; no claim of continuous prospective sampling is made.
+
+All 31 valid temperature members are required. Fahrenheit median and 10th/90th
+member percentiles are compared with the nearest station measurement within
+30 minutes, with ties resolved toward the earlier reading. Only QC V/G qualify;
+a nearer missing or rejected reading is not replaced by a more favorable one.
+Conflicting simultaneous measurements are excluded by the existing observation
+audit. Latest observation corrections are used; this view is not a historical
+evidence-cutoff replay.
+
+The report exposes median MAE/bias, range width, inclusion counts, distinct days
+and run initializations, three disjoint lead groups, daily summaries, exclusion
+counts, grid-to-station distance, matched members, forecast revision/snapshot and
+collection times, and the observation source edition. No matched pairs means null
+errors, never zero. Correlated members and times, station/grid representativeness,
+selective collection and a short sample prohibit treating inclusion counts as
+calibrated future probabilities or a model ranking. No fitted calibration is used.
+
+Validation: 35 targeted core/service/UI and existing observation/lead tests passed,
+including independent known-value arithmetic, collection-time leakage, rollback,
+missing members, QC, lead boundaries, station mismatch, stale response cancellation
+and export invalidation. A real nonempty prospective GEFS outcome sample must
+wait for forecasts collected in advance to mature.
+
+Local rendered QA: the public Washington test point selected College Park Airport
+(KCGS), completed the new comparison with 56 missing archive targets, and displayed
+null/unknown errors, collection-time requirements and model-grid distance. No
+browser warning or error was reported. Account testing remains owner-deferred.

@@ -1,3 +1,4 @@
+import {mountEnsembleVerification} from './ensemble-verification.js';
 import {persistenceNodes} from './verification-persistence-ui.mjs';
 import {leadAnalysisNodes} from './verification-leads-ui.mjs';
 import {observations,HOUR} from './observations-core.mjs';
@@ -7,7 +8,8 @@ export function mountObservations({document,window,fetcher=fetch,clock=()=>Date.
   const fmt=at=>{try{return new Date(at).toLocaleString(undefined,{timeZone:station?.time_zone||undefined,month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch{return new Date(at).toISOString();}};
   const number=(value,unit)=>value===null?'Unavailable':value.toFixed(1)+unit;
   async function json(path,ttl=0){const old=cache.get(path);if(old&&clock()-old.at<ttl)return old.data;const r=await fetcher(path,{signal:AbortSignal.timeout(60000)});const d=await r.json();if(!r.ok)throw Error(d.error||'Source returned HTTP '+r.status);if(!path.startsWith('/api/verification?'))cache.set(path,{at:clock(),data:d});return d;}
-  function clearReport(){report=null;reportGeneration++;get('verification-export').disabled=true;get('verification-results').replaceChildren(el('p','Compare this station with forecasts collected for your saved point before the weather occurred.'));}
+  const ensembleVerification=mountEnsembleVerification({document,window,fetcher,selection:()=>({place,station})});
+  function clearReport(){ensembleVerification.reset();report=null;reportGeneration++;get('verification-export').disabled=true;get('verification-results').replaceChildren(el('p','Compare this station with forecasts collected for your saved point before the weather occurred.'));}
   function chart(rows){
     const target=get('observation-chart');target.replaceChildren();const usable=rows.filter(r=>r.temperature!==null);if(!usable.length)return;
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 640 200');svg.setAttribute('role','img');svg.setAttribute('aria-label','Observed station temperature during the last 24 hours. Missing readings and gaps over 90 minutes break the line. Exact readings follow in the table.');

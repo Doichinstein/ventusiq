@@ -20,6 +20,7 @@ import {HrrrService} from '../../../lib/hrrr-service.mjs';
 import {PlacesService} from '../../../lib/places-service.mjs';
 import {placesGet,placesPost} from '../../../lib/places-http.mjs';
 import {EnsembleService} from '../../../lib/ensemble-service.mjs';
+import {EnsembleVerificationService} from '../../../lib/ensemble-verification-service.mjs';
 import {EventGaugesService} from '../../../lib/event-gauges-service.mjs';
 import { env } from 'cloudflare:workers';
 import { after } from 'next/server';
@@ -98,6 +99,7 @@ export async function GET(request:Request){
     if(path==='/api/observations/near')return json(await new ObservationsService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/observations/station')return json(await new ObservationsService(service).station(url.searchParams.get('id')));
     if(path==='/api/forecast/stability')return json(await new ForecastStabilityService(service).compare(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('hours')||24));
+    if(path==='/api/ensemble/verification')return json(await new EnsembleVerificationService(service).compare(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('station')));
     if(path==='/api/verification')return json(await new ObservationsService(service).verification(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('station'),url.searchParams.get('at')));
     if(path==='/api/events')return json(await new EventsService(service).list(url.searchParams.get('q')||'',url.searchParams.get('cursor')||''));
     if(path.startsWith('/api/events/')){

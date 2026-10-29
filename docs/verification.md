@@ -1898,3 +1898,20 @@ member arrays exactly. The browser source switch cleared rows and disabled the
 old export. Live QA caught an invalidly encoded lead-range separator; v78 replaces
 it with plain text. The archive version, source timing and daily-run limitation
 remain visible. These checks verify data handling, not forecast skill.
+
+
+## Prospective GEFS temperature comparison - v79
+
+- Added archive-only GEFS forecast matching against the selected NWS station.
+  Collection must precede the target by six hours; initialization alone is not
+  evidence that a forecast was available. All 31 members and QC V/G are required.
+- Reports median temperature errors, member-range inclusion counts, lead groups,
+  daily sample summaries, actual grid/station separation and downloadable evidence.
+  Empty history shows unknown errors and explains how prospective capture matures.
+- 35 targeted tests passed. Live nonempty GEFS matches and calibrated performance
+  remain unproven; no observation outcomes were fabricated or backfilled.
+
+Local rendered QA: the public Washington test point selected College Park Airport
+(KCGS), completed the new comparison with 56 missing archive targets, and displayed
+null/unknown errors, collection-time requirements and model-grid distance. No
+browser warning or error was reported. Account testing remains owner-deferred.

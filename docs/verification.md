@@ -495,3 +495,28 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   A repeat rounded-point request reused the same revision/check time. Page and both
   browser modules returned HTTP 200. Browser rendering and measured-exposure
   validation remain unverified; hourly upkeep is unchanged.
+
+## River connection increment
+
+- Added NOAA upstream/downstream associations to gauge details, related-gauge
+  navigation, raw evidence export, direction-conflict handling and delayed labels.
+  Uses the documented NWPS riverflow endpoint; full basin delineation and
+  address-to-watershed matching remain future work.
+- Eleven new tests cover provider ordering, identity/shape validation, empty
+  starting IDs, duplicate/self/conflicting links, response byte/row limits,
+  missing/future/stale checks, immutable revisions, source outages, explicit
+  loading, selection races, wrong-gauge responses and export-time freshness.
+- Full regression suite: 437 Node tests plus 16 Python tests passed (453 total).
+  TypeScript and production build passed. No dependency, migration or schedule
+  change was required.
+- Built Worker HTTP checks on 2026-10-29 at 03:14:41 UTC returned five upstream
+  and three downstream associations for BRKM2, three/five for PORM2 and six/two
+  for GTND2. BRKM2/PORM2 and BRKM2/GTND2 directions were reciprocal in these
+  source responses. Repeated BRKM2 reads reused the revision/check timestamp.
+  BRKM2 revision: `96bb3874c6f5950c698f5b214894877af9ac7cf0693251918da5b9369a8f4f23`.
+- An unsupported ID whose provider response had an empty starting point returned
+  HTTP 503 rather than claiming zero connections. A path-like ID returned 400.
+  The page and both new browser modules returned HTTP 200.
+- Browser rendering remains unverified under the saved permission setting;
+  DOM doubles and HTTP checks do not replace rendered QA. Hourly upkeep remains
+  unchanged. Connection lists do not predict flood arrival or local inundation.

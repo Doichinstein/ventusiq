@@ -72,9 +72,10 @@ levels with no current forecast at LOLT2, and both observations and forecasts at
 AKFM7. Tests cover sentinels, gaps, forecast age, units, inconsistent thresholds,
 terminal/repeated maxima, forecast-only gauges, archive revisions, source failure,
 gauge-switch races, chart/table output, source-text safety, markers and replay.
-Real browser visual QA remains blocked by the existing permission gate. Watershed
-associations, closed-browser push, calibrated probabilities and
-verified inundation/road-impact layers are not implemented by this release.
+Real browser visual QA remains blocked by the existing permission gate. Full basin
+delineation, address-to-watershed matching, closed-browser push, calibrated
+probabilities and verified inundation/road-impact layers remain unfinished.
+NOAA gauge associations are available as described below.
 
 ## Forecast revision comparisons
 
@@ -137,3 +138,46 @@ comparable forecast crossing-window changes and coverage interruptions. Manage,
 pause, delete, export or issue a private Atom feed in My weather. See the complete
 [watch method and delivery limits](watches.md#river-gauge-watches). These watches
 use existing hourly upkeep and do not deliver browser push or infer local inundation.
+
+## Upstream and downstream gauge connections
+
+**Load connected gauges** in a gauge detail requests
+`GET /api/rivers/network?id=<NWPS-ID>`. It uses NOAA's documented
+[`/gauges/{identifier}/riverflow`](https://api.water.noaa.gov/nwps/v1/docs/)
+product, with separate upstream and downstream lists. Each result opens the existing
+gauge detail, including that gauge's own observations, forecast, thresholds and
+watch controls. Loading connections does not create a watch or fetch every related
+hydrograph. The static edition requests NOAA directly.
+
+Lists preserve provider order without interpreting it as nearest-first or deriving
+river distance, travel time, flood arrival, a continuous stream path, comprehensive
+tributary coverage or a watershed polygon. A gauge association does not associate a
+saved address with that watershed. Stage values at different gauges use different
+references and are not compared. Tides, reservoirs and operations may affect levels.
+
+The collector checks the requested starting ID, both direction arrays, member IDs
+and names. An empty starting ID (observed for unsupported IDs even with HTTP 200)
+is unavailable, never a valid empty network. Empty arrays under a valid starting ID
+mean no associations were returned, with incomplete coverage still possible.
+Duplicate IDs within a direction and self references are omitted with audit counts;
+IDs in both directions appear separately as **Direction unresolved**. No direction
+is inferred from names, coordinates or relative gauge heights. Response bodies are
+bounded to 256 KiB and each direction to 1,000 entries; malformed or oversized
+responses fail without replacing a last-good revision.
+
+Hosted results share the existing 15-minute collector, source-failure backoff and
+seven-day revision retention at `hazards/rivers/network/<ID>`. Collection check time
+and source issue time are distinct: NOAA supplies no issue timestamp for this
+product. Old checks (over 22.5 minutes), failed updates, absent check times and
+implausibly future checks are labeled delayed. An explicit reload can refresh the
+source; minute UI updates only reevaluate age. There is no additional unattended
+schedule. Exports preserve the raw source, normalized lists, ambiguity audit,
+revision/check metadata, limitations and freshness evaluated when exported.
+
+Live NOAA verification on 2026-10-29 returned five upstream and three downstream
+associations for BRKM2 (Little Falls), including PORM2 upstream and GTND2 downstream.
+The reciprocal PORM2 and GTND2 queries placed BRKM2 in the expected downstream and
+upstream lists. This spot check establishes those provider responses, not complete
+network coverage. Tests cover malformed/ambiguous products, bounded reads, retained
+revisions, failures, async selection changes and evidence export. Rendered browser
+QA remains unavailable under the existing saved permission setting.

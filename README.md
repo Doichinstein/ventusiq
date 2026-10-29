@@ -38,6 +38,10 @@ forecasts, paired valid times, separate run ages and downloadable raw evidence.
 A separate [NOAA RAP smoke forecast](docs/smoke-forecasts.md) shows modeled near-surface
 concentrations at future hourly times, with coverage gaps, run age and evidence export.
 
+NOAA upstream/downstream [gauge connections](docs/rivers.md#upstream-and-downstream-gauge-connections)
+let users navigate related gauges and export the original associations. Direction
+conflicts, incomplete coverage and stale checks remain explicit.
+
 **Rivers** adds regional NOAA/NWPS gauge search, nearby gauges for saved places,
 observed and forecast hydrographs, highest upcoming forecast samples, threshold
 crossing windows and official stage-based impact statements. Gauge markers can

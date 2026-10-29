@@ -74,6 +74,7 @@ export async function GET(request:Request){
     }
     if(path==='/api/rivers/near')return json(await new RiversService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/rivers/gauge')return json(await new RiversService(service).gauge(url.searchParams.get('id')));
+    if(path==='/api/rivers/network')return json(await new RiversService(service).network(url.searchParams.get('id')));
     if(path==='/api/rivers/changes')return json(await new RiversService(service).changes(url.searchParams.get('id')));
     if(path.startsWith('/api/hazards/')){
       const kind=path.slice('/api/hazards/'.length);

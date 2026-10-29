@@ -59,6 +59,13 @@ observed and forecast series, metadata, units and datum information. Regional
 queries round the search center to whole degrees for a shared cache and handle
 date-line splitting. Proximity is never treated as watershed membership or a
 flood inundation estimate at a saved place.
+`river-network-core.mjs` validates NOAA's explicit upstream/downstream riverflow
+associations, retains raw evidence and separates conflicting directions.
+`RiversService.network` shares the 15-minute collection/archive under
+`hazards/rivers/network/`; `river-network.js` provides explicit loading, related-gauge
+navigation, age labels and JSON export. It makes no address-watershed, travel-time
+or between-gauge stage inference. Full basin delineation remains future work.
+
 
 `EventsService` stores CAP message identity separately from physical-event identity.
 The identifier is a stable SHA-256 of the NWS CAP identifier. `event_links` contains

@@ -574,3 +574,33 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   Repeated stop samples shared the same point revision. Page/modules returned 200.
 - Rendered browser QA and measured continuous-exposure evaluation remain
   unverified. Hourly upkeep is unchanged.
+
+## Forecast verification lead-time increment
+
+- Added 6–<12, 12–<24, 24–<48 and 48–72 hour temperature-error groups, per-group
+  coverage/exclusions, daily MAE/bias and comparisons on identical valid hours and
+  verifying observations. Exports retain cohort pairs and common-hour evidence.
+  Forecast reads now span ten days for seven days of outcomes, in bounded batches
+  of 32 with only required temperature periods retained in memory.
+- Nine new tests cover lead boundaries, late collection, rollback selection,
+  different coverage, shared-observation identity, missing-evidence nulls,
+  duplicate/ambiguous timestamps, older long-lead archives and UI/export behavior.
+  Forecast timestamps require timezones and unique valid-hour periods. Conflicting
+  observation temperatures and missing explicit timezones are audited/excluded.
+- Full regression suite: 469 Node and 16 Python tests passed (485 total).
+  TypeScript and production build passed. No dependency, migration or schedule
+  changes. Also corrected the ensemble card's provider privacy sentence, which
+  had inadvertently picked up journey-routing wording in an earlier text edit.
+- Built Worker live check on 2026-10-29 at 03:38:19 UTC selected KCGS near 39,-77.
+  The station collection was fresh and untruncated, with no excluded timezone or
+  conflicting-temperature records. Observation revision:
+  `fb3528138e1107e4c075bbc2a3ef124d0b213722889b61d23ec59780a5d27d61`.
+- That local point had no qualifying earlier forecast checks: all four groups
+  returned 168 eligible hours, zero pairs, null error metrics and explicit
+  no-archive counts; all common-hour differences were null. This verifies honest
+  warm-up behavior, not empirical forecast accuracy. Positive matching and error
+  arithmetic were verified with controlled real-archive service fixtures,
+  including a 60-hour forecast collected more than eight days before evaluation.
+- Page and both new modules returned HTTP 200. Rendered browser QA, longer-term
+  observation history, seasonal grading and calibrated confidence remain
+  unverified/unfinished. Hourly upkeep is unchanged.

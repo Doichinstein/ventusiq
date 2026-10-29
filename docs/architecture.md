@@ -352,3 +352,14 @@ results retain smoke completeness, limit results and issue times separately from
 NWS hourly/gust fields. `journey-smoke-ui.mjs` renders sample/source evidence.
 The smoke service admits new point datasets atomically under its 500-point cap.
 No interpolated ETA concentration, continuous exposure or AQI is inferred.
+
+### Forecast verification lead groups
+
+`verification-leads.mjs` selects four 6–72 hour source-lead cohorts using real
+pre-cutoff archive checks, validates station records and compares errors only on
+identical hours/observations when contrasting cohorts. `ObservationsService`
+reads ten days of forecast checks for seven days of verification hours, expands
+selected revisions in batches of 32 and retains only used temperature periods.
+`verification-leads-ui.mjs` renders coverage, error and daily tables; export keeps
+all cohort/common-hour pairs and audits. This does not create calibrated confidence,
+longer observation retention, subscriptions or new background collection.

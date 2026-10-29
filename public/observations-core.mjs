@@ -26,18 +26,22 @@ export function observations(collection,now=Date.now()){
   }return [...found.values()].sort((a,b)=>a.at-b.at);
 }
 export function verificationHours(now){const hours=[];for(let at=Math.ceil((now-7*24*HOUR)/HOUR)*HOUR;at<=now-HOUR/2;at+=HOUR)hours.push(at);return hours;}
-export function forecastChoices(checks,targets){
+function leadRange({minLead=6,maxLead=24,maxExclusive=false}={}){if(!Number.isFinite(minLead)||!Number.isFinite(maxLead)||minLead<0||maxLead<=minLead||maxLead>168)throw Error('Invalid verification lead range');return {minLead,maxLead,maxExclusive};}
+const explicitTime=value=>typeof value==='string'&&/(Z|[+-]\d{2}:\d{2})$/.test(value)?Date.parse(value):NaN;
+export function forecastChoices(checks,targets,options={}){
+  const {minLead,maxLead}=leadRange(options);
   const sorted=[...checks].sort((a,b)=>a.at-b.at),chosen=[];let index=-1;
-  for(const at of targets){while(index+1<sorted.length&&sorted[index+1].at*1000<=at-6*HOUR)index++;const check=sorted[index];if(check&&check.at*1000>=at-24*HOUR)chosen.push({at,check});}
+  for(const at of targets){while(index+1<sorted.length&&sorted[index+1].at*1000<=at-minLead*HOUR)index++;const check=sorted[index];if(check&&check.at*1000>=at-maxLead*HOUR)chosen.push({at,check});}
   return chosen;
 }
-export function compareTemperatures(targets,choices,forecasts,rows){
+export function compareTemperatures(targets,choices,forecasts,rows,options={}){
+  const {minLead,maxLead,maxExclusive}=leadRange(options);
   const pairs=[],skipped={no_archive:targets.length-choices.length,forecast_unavailable:0,observation_unavailable:0,quality_excluded:0};
   const used=new Set();
-  for(const {at,check} of choices){const archived=forecasts.get(check.revision),issue=Date.parse(archived?.forecast?.properties?.updateTime);
-    const p=archived?.forecast?.properties?.periods?.find(p=>Date.parse(p.startTime)===at&&Date.parse(p.endTime)-at===HOUR);
+  for(const {at,check} of choices){const archived=forecasts.get(check.revision),issue=explicitTime(archived?.forecast?.properties?.updateTime);
+    const periods=archived?.forecast?.properties?.periods?.filter(p=>explicitTime(p.startTime)===at&&explicitTime(p.endTime)-at===HOUR)||[],p=periods.length===1?periods[0]:null;
     const temp=typeof p?.temperature==='object'?quantity(p.temperature,'temperature'):quantity({value:p?.temperature,unitCode:'wmoUnit:deg'+p?.temperatureUnit},'temperature');
-    if(temp===null||!Number.isFinite(issue)||issue>check.at*1000||issue>at-6*HOUR||issue<at-24*HOUR){skipped.forecast_unavailable++;continue;}
+    if(temp===null||!Number.isFinite(issue)||issue>check.at*1000||check.at*1000>at-minLead*HOUR||issue>at-minLead*HOUR||issue<at-maxLead*HOUR||(maxExclusive&&issue===at-maxLead*HOUR)){skipped.forecast_unavailable++;continue;}
     const nearest=rows.filter(r=>!used.has(r.id)&&Math.abs(r.at-at)<=HOUR/2).sort((a,b)=>Math.abs(a.at-at)-Math.abs(b.at-at)||a.at-b.at)[0];
     if(!nearest||nearest.temperature===null){skipped.observation_unavailable++;continue;}
     if(!['V','G'].includes(nearest.temperature_qc)){skipped.quality_excluded++;continue;}

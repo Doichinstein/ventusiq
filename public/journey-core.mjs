@@ -1,5 +1,6 @@
 import {journeySmoke,journeySmokeLimit} from './journey-smoke.mjs';
 import {routeRoads} from './journey-roads.mjs';
+import {routeNetwork} from './journey-network.mjs';
 import {journeyGust,gustLimit,JOURNEY_METHOD} from './journey-gust.mjs';
 /* Route timing and explainable weather exposure. Apache-2.0. */
 const valid=p=>Array.isArray(p)&&p.length>=2&&Number.isFinite(p[0])&&Number.isFinite(p[1])&&Math.abs(p[0])<=180&&Math.abs(p[1])<=90;
@@ -27,7 +28,7 @@ export function normalizeRoute(data){
   }
   if(index!==coords.length-1||Math.abs(elapsed-r.duration)>1||Math.abs(distance-r.distance)>1)throw Error('Route leg totals or geometry are inconsistent');
   const route={vertices,legs:legInfo,duration:elapsed,distance,waypoints:data.waypoints.map(p=>({coordinate:p.location,snap_distance:p.distance,name:p.name||''})),timing_method:'Road-segment durations scaled within each leg, including estimated turn time; no live traffic'};
-  route.road_context=routeRoads(data,route);return route;
+  route.road_context=routeRoads(data,route);route.network_references=routeNetwork(data,route);return route;
 }
 export function sampleRoute(route){
   const v=route.vertices,cost=[0];for(let i=1;i<v.length;i++)cost.push(cost.at(-1)+Math.max((v[i].distance-v[i-1].distance)/50000,(v[i].elapsed-v[i-1].elapsed)/1800));

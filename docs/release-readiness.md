@@ -1,5 +1,24 @@
 # Ten-feature acceptance audit
 
+## Journey router-reference evidence (v85)
+
+OSRM node annotations and original per-leg driving geometry now survive in journey
+exports, with missing/invalid records, count mismatches and repeated IDs at distinct
+interior positions explicit. No coordinate identity, signed direction, agency
+crosswalk or closure attribution is marked verified. Cache upgrades retain the
+shared gate and failed-refresh backoff. Seventy-three focused journey/roadwork
+tests pass, including partial legs, planned stops, unavailable annotations without
+retry loops, legacy cache upgrade and rendered-view/export interactions. TypeScript
+checking passes.
+
+Local browser QA completed the Washington–Baltimore example with four hourly and
+gust samples. The downloadable evidence preserved the original route geometry and
+37 conflicting interior IDs; recomputing that diagnostic from the exported source
+lists agreed. This checks export consistency, not authoritative OSM identity.
+The evidence disclosure worked by keyboard and fit a 390×844 viewport without
+horizontal overflow; no browser errors were observed. The agency-to-road closure
+mapping remains an open requirement, described in [roadwork](journey-roadwork.md#router-network-references-and-the-remaining-closure-gap-v85).
+
 ## Prospective NASA ozone comparison (v84)
 
 The ozone workspace now explicitly selects CAMS bracket context or NASA hourly

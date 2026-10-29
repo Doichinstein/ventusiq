@@ -166,3 +166,35 @@ Application code remains Apache-2.0. Feed metadata is preserved; the
 requires public feed data to use CC0. The feature does not alter provider terms or
 promise availability. Live checks and browser-verification limits are recorded in
 [verification](verification.md).
+
+## Router network references and the remaining closure gap (v85)
+
+Routing now requests OSRM's optional `nodes` annotation. Each retained leg exports
+the original ordered node IDs alongside its original driving geometry, independently
+of vertices inserted for planned stops. Missing, invalid, unsafe-integer or oversized
+IDs leave weather routing usable and explicitly mark the leg unavailable. Count
+mismatches remain inspectable; they are not repaired by guessing an alignment.
+The route cache upgrades once on access under the existing rate gate and backoff.
+
+These references are evidence for future research, not verified node-to-coordinate
+identity. The [OSRM annotation contract](https://project-osrm.org/docs/v5.24.0/api/#annotation-object)
+describes OSM IDs. Its [geometry assembly](https://raw.githubusercontent.com/Project-OSRM/osrm-backend/master/include/engine/guidance/assemble_geometry.hpp)
+also uses bounding edge nodes for snapped endpoints and permits a repeated node
+ID at distinct positions. Consequently, equal list lengths alone cannot establish
+a network match. The UI and export flag repeated IDs at distinct interior positions;
+endpoint positions are excluded from that diagnostic. A zero conflict count is
+not proof of identity. The optional map-data version stays unknown when omitted.
+
+An October 29 Washington–Baltimore source probe returned 1,246 coordinates and
+1,246 IDs, including 31 adjacent repeated-ID pairs; examples had distinct coordinates
+and nonzero segment distances. The three current WZDx feeds supplied agency road
+labels, direction and geometry but no shared OSM identifiers. One Maryland
+all-lanes-closed record named US13/OCEAN HWY while describing a business-route
+bridge, illustrating why label or proximity agreement is insufficient.
+
+Verified closure attribution still needs an authoritative agency-road crosswalk,
+compatible versioned road geometry, carriageway/grade separation and designated
+traffic direction, plus incident validity and freshness. No supplied bearing,
+GPS verification flag, node ID, name match or corridor overlap is promoted to that
+claim. The current feature remains agency context near a route, without rerouting
+or live traffic timing.

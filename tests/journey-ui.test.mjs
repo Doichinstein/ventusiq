@@ -41,13 +41,22 @@ test('road-label view follows departure selection, uses text nodes and survives 
   const context={method:'2026-10-29.1',status:'available',data_version:null,unavailable_legs:[],direction_verified:false,segments:[{leg_index:0,step_index:0,start_vertex:0,end_vertex:1,start_elapsed:0,end_elapsed:3600,name:'<script>Main Street</script>',ref:'I 95',mode:'driving',source:{name:'<script>Main Street</script>'}}]};
   const s=setup('hosted',false,{...route,road_context:context});await s.mounted.run();
   assert.match(s.nodes['journey-roads-status'].textContent,/1 route steps/);assert.match(s.nodes['journey-roads-list'].textContent,/<script>Main Street<\/script>/);
-  assert.equal(s.nodes['journey-roads-list'].children[0].children.length,0);
+  assert.equal(s.nodes['journey-roads-list'].children[1].children.length,0);
   const first=s.nodes['journey-roads-list'].textContent;s.nodes['journey-comparisons'].children[1].onclick();assert.notEqual(s.nodes['journey-roads-list'].textContent,first);
   s.nodes['journey-export'].onclick();const data=JSON.parse(await s.exported().text());assert.deepEqual(data.route.road_context,context);assert.equal(data.selected_departure,1);
 });
 
 test('old routes disclose missing road labels while retaining weather comparisons',async()=>{
-  const s=setup();await s.mounted.run();assert.match(s.nodes['journey-roads-status'].textContent,/unavailable/);assert.equal(s.nodes['journey-roads-list'].children.length,0);assert.equal(s.nodes['journey-comparisons'].children.length,3);
+  const s=setup();await s.mounted.run();assert.match(s.nodes['journey-roads-status'].textContent,/unavailable/);assert.match(s.nodes['journey-roads-list'].textContent,/network references are unavailable/);assert.equal(s.nodes['journey-comparisons'].children.length,3);
+});
+
+test('router reference caveats are visible and original source evidence survives export',async()=>{
+  const network={status:'retained',coordinate_identity_verified:false,agency_crosswalk_verified:false,direction_verified:false,closure_attribution_verified:false,
+    legs:[{node_ids:[1,2,2,4],geometry_coordinates:[[-77,39],[-77,39.01],[-77,39.02],[-76,40]],counts_match:true,repeated_ids_at_distinct_interior_positions:[2]}]};
+  const s=setup('hosted',false,{...route,legs:[{}],network_references:network});await s.mounted.run();
+  assert.match(s.nodes['journey-roads-list'].textContent,/1\/1 legs/);assert.match(s.nodes['journey-roads-list'].textContent,/1 repeated-ID conflicts/);
+  assert.match(s.nodes['journey-roads-list'].textContent,/do not verify coordinate identity/);
+  s.nodes['journey-export'].onclick();const data=JSON.parse(await s.exported().text());assert.deepEqual(data.route.network_references,network);
 });
 
 test('agency card and export show shared road labels without promoting them to verified closures',async()=>{

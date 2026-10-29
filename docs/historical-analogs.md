@@ -164,3 +164,13 @@ Such differences remain visible; neither location nor variable was selected for 
 favorable headline. Seasonal groups contained only 12 test dates and yearly groups
 24, so effects may reflect a few weather events. The method was not changed after
 these results. Exact history revisions are recorded in [verification](verification.md).
+
+## Recorded impacts around comparable dates
+
+After calculating analogs, the adjacent Recorded impacts card can fill one
+comparable day and its following UTC day. Select a NOAA state/county separately
+and explicitly load [Storm Events context](storm-history.md). This returns
+reported event starts with original source fields and exportable raw evidence.
+It does not change ranking, baseline tests or weather distributions, and it does
+not infer an impact probability or damage at the saved point. NOAA records are
+delayed and may be revised; current retrieval is not decision-time evidence.

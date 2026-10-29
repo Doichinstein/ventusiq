@@ -1,5 +1,39 @@
 # Verification record
 
+## Recorded NOAA impact context — 2026-10-29
+
+- Added explicit NOAA Storm Events searches for one state/DC, optional county
+  and one to seven UTC dates, with comparable-date handoff from historical
+  analogs. No automatic point/county association or impact probability is inferred.
+  The view retains reported amounts and direct casualties without summing across
+  potentially overlapping records. Original body, query and exclusion audit export.
+- 600 Node and 19 Python tests passed (619 total), plus TypeScript and production
+  build. Thirteen new tests cover real-date validation, fixed source offsets,
+  duplicate/conflicting rows, missing/zero fields, bounded reads, archive reuse,
+  publication lag, source outages, request quotas, explicit UI actions, exports
+  and late-response invalidation. Existing analog UI checks also passed.
+- The built Worker returned 51 supported areas and deduplicated county choices.
+  NOAA's catalog reported January 1950 through July 2026. The Montgomery County,
+  Maryland search for June 5–6, 2024 UTC returned event IDs 1174095 and 1174096,
+  both in MONTGOMERY CO., with no excluded rows. Its source query used June 4–7
+  civil dates, then retained starts inside the selected UTC period.
+- Live collection at 2026-10-29T06:07:26Z had revision
+  `1c6c8409171bef6d61ef26636b4f8f44ea37ca8e1645f7af78236a623dd6bc46`.
+  NOAA's 18:01 and 18:27 EST-5 starts became 23:01 and 23:27 UTC. Reported property
+  fields remained `1000.00K` and `5000.00K`; missing crop fields stayed null.
+  These demonstrate provider integration, not independently verified losses.
+- The first live search response failed shape validation and returned 503; no
+  fabricated empty result was stored. Direct NOAA retrieval succeeded. After the
+  existing two-minute failure backoff expired, the built Worker collected the
+  valid response in 526 ms. The initial source error's cause was not established.
+- The page and both modules returned 200. An impossible date and an unpublished
+  October 2026 period returned 400 with specific explanations. No migration,
+  runtime secret, background subscription or schedule change was needed.
+- Browser rendering remains unverified under the saved permission restriction.
+  Source search completeness, historical decision-time availability, point-level
+  impact attribution and operational analog probabilities are not established.
+  See [source contract and limits](storm-history.md).
+
 ## Signed webhook delivery — 2026-10-29
 
 - Added explicit owned destinations, signed watch-change JSON, stable delivery

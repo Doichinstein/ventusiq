@@ -103,8 +103,7 @@ server watches with authenticated writes, ownership, deletion, bounded quotas,
 leased checks and retained evidence. `watch-core.mjs` evaluates state changes;
 `watch-http.mjs` serves owner APIs and revocable read-only Atom feeds. Live alert
 reads register due upkeep with `after()` so the existing hourly task checks enrolled
-places. Feed polling is separate from pushed delivery. Future push and webhooks
-need delivery records, idempotency keys and bounded retries. See [watches](watches.md).
+places. Feed polling is separate from pushed delivery. Push and webhooks now use delivery records, idempotency keys and bounded retries. See [watches](watches.md).
 
 `AnalogsService` archives NASA POWER daily reanalysis by native meteorology grid
 and ten-year window. `analogs-core.mjs` matches complete upcoming UTC forecast days
@@ -112,7 +111,9 @@ against fixed temperature/wind similarity rules and evaluates held-out years
 against seasonal and persistence baselines. `analogs.js` exposes source coverage,
 selected dates, following-day distributions, validation and reproducible export.
 Reanalysis outcomes are historical context, not operational forecast probabilities;
-station and reported-impact integration remain future work. See
+station integration and validated impact associations remain future work. An explicit
+NOAA area/date context lookup now supports the comparable dates without changing
+analog scores. See
 [the complete historical analog method](historical-analogs.md).
 
 `PlanningService` shares and archives NWS raw grid forecasts for gust coverage.
@@ -502,3 +503,14 @@ HTTP routes require same-origin JSON for mutations and keep secrets out of reads
 Push and webhook drains run concurrently after watch evaluation. See the
 [protocol, receiver example and limits](webhooks.md). Real external delivery and
 rendered/sign-in verification remain outstanding.
+
+### Recorded NOAA impact context
+
+`StormHistoryService` uses NOAA's current website JSON service through fixed
+operations and bounded shared collection. `storm-history-core.mjs` validates
+state/date inputs, explicit source UTC offsets, record IDs and missing values;
+conflicting records are excluded with an audit. `storm-history.js` owns explicit
+area/date selection and exact evidence export. `analogs.js` supplies comparable
+dates for an optional two-day lookup, without inferring area membership or
+impact probability. Existing seven-day hazard edition retention and leases apply;
+no new schema or schedule is needed. See [methods](storm-history.md).

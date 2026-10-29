@@ -1,3 +1,4 @@
+import {StormHistoryService} from '../../../lib/storm-history-service.mjs';
 import {WebhookService} from '../../../lib/webhook-service.mjs';
 import {webhookGet,webhookPost} from '../../../lib/webhook-http.mjs';
 import {PMComparisonService} from '../../../lib/pm-comparison-service.mjs';
@@ -98,6 +99,9 @@ export async function GET(request:Request){
       if(!['fires','air','satellite','perimeters'].includes(kind))return json({error:'Unknown hazard product'},404);
       return json(await new HazardsService(service).get(kind,url.searchParams.get('id')));
     }
+    if(path==='/api/history/storms/catalog')return json(await new StormHistoryService(service).catalog());
+    if(path==='/api/history/storms/counties')return json(await new StormHistoryService(service).counties(url.searchParams.get('state')));
+    if(path==='/api/history/storms')return json(await new StormHistoryService(service).search(Object.fromEntries(url.searchParams)));
     if(path==='/api/health')return json(await service.health());
     if(path==='/api/alerts'){
       if(url.searchParams.has('at')){const result=await service.read('alerts/us',atTime(url.searchParams.get('at')));return result?json({...result.data,collected_at:result.checked_at}):json({error:'No collected snapshot at that time'},404);}
@@ -114,7 +118,7 @@ export async function GET(request:Request){
       return json(await service.forecast(...point.split(',')));
     }
     return json({error:'Unknown API route'},404);
-  }catch(error){const message=String((error as Error).message);return json({error:message},/Invalid|Archive time/.test(message)?400:503);}
+  }catch(error){const message=String((error as Error).message);return json({error:message},(error as {status?:number}).status===400||/Invalid|Archive time/.test(message)?400:503);}
 }
 export async function POST(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);

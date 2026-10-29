@@ -56,6 +56,11 @@ readings and a previously archived persistence baseline. Missing hours, source
 revisions and raw evidence stay visible. These are diagnostic differences, not
 calibrated accuracy or exposure estimates. See [comparison methods](docs/particulate-comparison.md).
 
+**Recorded historical impacts** add explicit NOAA Storm Events area/date searches,
+original damage and casualty fields, official record links and raw evidence export.
+Reuse comparable dates while selecting the county separately. See
+[recorded impact methods](docs/storm-history.md).
+
 Historical analogs include seasonal and yearly held-out diagnostics, paired baseline
 errors and empirical spread coverage. See [analog validation](docs/historical-analogs.md#seasonal-and-yearly-diagnostic-breakdowns).
 

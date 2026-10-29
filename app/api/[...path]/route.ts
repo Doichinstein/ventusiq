@@ -73,7 +73,7 @@ export async function GET(request:Request){
     }
     if(path==='/api/air/comparison')return json(await new PMComparisonService(service).comparison(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('id')));
     if(path==='/api/air/ozone/near')return json(await new OzoneService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
-    if(path==='/api/air/ozone/history')return json(await new OzoneService(service).history(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('id'),url.searchParams.get('compare')==='1'));
+    if(path==='/api/air/ozone/history')return json(await new OzoneService(service).history(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('id'),url.searchParams.get('compare')==='1',url.searchParams.get('source')||'cams'));
     if(path==='/api/air/forecast')return json(await new AirForecastService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/air/geos-cf')return json(await new GeosCFService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));

@@ -1,5 +1,22 @@
 # Ten-feature acceptance audit
 
+## Prospective NASA ozone comparison (v84)
+
+The ozone workspace now explicitly selects CAMS bracket context or NASA hourly
+means. NASA differences use matching ppb measurement hours at the monitor's nearest
+cell, with actual pre-period archive checks, distinct run/collection leads and
+denominator counts. Current collections cannot backfill prior hours. Thirty-seven
+focused tests pass, including wrong-source/late-response rejection, latest-bad
+edition handling, completed-hour alignment, source QC and outage retention.
+TypeScript checking passes.
+
+Local browser QA at 39, -77 selected TakomaRec, returned 23/24 usable readings and
+zero eligible forecast pairs, and exported null differences with the correct
+first eligible hour. Source switching cleared results and export. Desktop and
+390×844 checks verified wrapping and keyboard-scrollable evidence; the revision
+ID no longer overflows the card. No live nonempty NASA pairing or calibrated
+forecast skill is claimed. Existing source, account and outcome gates remain.
+
 ## HRRR rendered verification (v83)
 
 The October 29 public browser check loaded the 18 UTC HRRR run at 39, -77,

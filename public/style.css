@@ -96,3 +96,5 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 .planner-air-limits:not([hidden]){display:contents}#plan-air-source-label{grid-column:1/-1;max-width:420px}
+
+#ozone-results>p{overflow-wrap:anywhere}#ozone-results th{min-width:80px}

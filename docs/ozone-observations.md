@@ -2,8 +2,9 @@
 
 Method `2026-10-29.1`. The hosted My weather workspace supports explicit nearby
 ozone-monitor discovery, a 24-hour completed-period history and JSON evidence
-export. The optional model action pairs earlier archived CAMS ozone samples with
-later monitor periods, preserving their different units. Neither action enrolls
+export. The optional model action selects earlier archived CAMS ozone samples or
+NASA GEOS-CF hourly means. CAMS retains distinct units; NASA supports diagnostic
+differences in ppb for matching completed hours. Neither action enrolls
 background collection or sends notifications.
 
 ## Primary sources and semantics
@@ -58,6 +59,8 @@ provider data rights and service terms remain separate.
 - `/api/air/ozone/near?lat=39&lon=-77`
 - `/api/air/ozone/history?lat=39&lon=-77&id=110010050`
 - Add `compare=1` to include earlier archived model context.
+- Add `source=geos` with `compare=1` for the NASA comparison; `source=cams`
+  remains the default. Other source values are rejected.
 
 Only two fixed EPA services can be fetched. Redirects fail, each response is capped
 at 2 MiB, current inventory at four pages of 2,000 records, and one monitor history
@@ -69,6 +72,45 @@ hazard retention applies. Model scans cap at 2,000 checks. No schema, secret or
 hourly upkeep change is required. The frontend clears results on place/monitor
 changes, rejects late responses, and expires displayed evidence after 30 minutes.
 
-Observed nitrogen dioxide, carbon monoxide and sulphur dioxide are not supplied
-by this ozone adapter. Matched gas evaluation with compatible physical units,
-identified forecast runs, validated exposure and browser rendering remain open.
+## NASA hourly-mean comparison (v84)
+
+`geos-ozone-comparison.mjs` uses the native 0.25° cell nearest the rounded monitor
+coordinates, rather than assuming the saved place and monitor share a cell.
+The report preserves the monitor coordinates, requested point, cell coordinates
+and grid-to-monitor distance. The existing [NASA adapter](geos-cf.md) validates the
+dated run, converts dry mol/mol to ppb and excludes source-time inconsistencies.
+AirNow concentrations and NASA means are aligned to the identical full UTC hour.
+No model interpolation, endpoint average or mass-to-mixing-ratio conversion occurs.
+
+For each of the 24 completed observation hours, choose the latest successful
+archive check 1–24 hours before its start. An invalid chosen revision, conflicting
+checks at the same time, missing mean or measurement stays unknown; no older
+edition is substituted. Run age at collection must be 0–48 hours, an application
+policy shared with NASA planning. Later re-collections and corrections cannot
+enter earlier forecast slots. Archived checks, chosen raw model editions, raw
+observations, flags and exact interval/run/collection leads remain in the export.
+
+The report gives matched-hour counts, mean absolute and signed differences in ppb
+(model minus monitor), and collection-lead groups of [1,6), [6,12), and [12,24]
+hours. Empty groups have null metrics, never zero error. Source-reported negative
+monitor readings remain in the calculation with their drift flags and a count.
+The model's dry-air basis, surface-layer/grid scale and the monitor's sampling
+remain distinct. These diagnostics do not prove calibrated accuracy, comparative
+model skill, personal exposure or regulatory compliance. No persistence benchmark
+or multi-season grading is supplied by this initial comparison.
+
+The explicit request also attempts a current NASA collection at the monitor
+point, through existing shared cache/budget limits. Its failure is disclosed
+without discarding eligible historical comparisons. The first possible target
+hour from that capture is rounded up from check time plus one hour; observations
+must subsequently complete and arrive. This timestamp is not a scheduled job or
+a guarantee of data. No watch or unattended subscription is created. The same
+2,000-check scan bound and seven-day retention apply; no schema or secret changes.
+
+The UI clears reports/exports on a source switch, rejects replies from the wrong
+source and late replies after selection changes, and provides keyboard-scrollable
+chart and evidence regions. Recorded v84 browser QA verifies real monitor discovery,
+NASA selection, empty prospective history, capture timing, export and mobile
+overflow handling. A live nonempty matched-hour result remains unverified until
+eligible observations arrive. Other observed gases and validated exposure remain
+outside this adapter.

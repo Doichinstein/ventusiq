@@ -58,7 +58,8 @@ NASA limits apply to PM2.5 at RH 35% in µg/m³, and ozone/NO2 in ppb. Existing 
 limits remain unchanged; switching source cannot reinterpret mass units as mole
 fractions. A changed source clears the displayed result and disables export until
 Compare windows applies the new source and limits. Loading uses only the chosen
-provider. Monitor comparisons continue to use CAMS.
+provider. Ozone monitor comparisons now explicitly select CAMS bracket context
+or NASA hourly means in ppb. See [prospective comparison methods](ozone-observations.md).
 
 The NASA evaluator checks every full-hour average whose interval overlaps the
 activity, including partially overlapping hours. It does not interpolate, compute

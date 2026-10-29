@@ -60,8 +60,9 @@ workspace, with dated-run provenance, interval averages, source-native unit
 conversions and explicit time-coordinate quality exclusions. It shares D1 leases
 and last-good retention without enrolling background watches. See
 [NASA forecast methods](geos-cf.md). Activity planning explicitly selects CAMS
-samples or NASA hourly means with separate persisted limits and units. Monitor
-comparisons retain their CAMS contract.
+samples or NASA hourly means with separate persisted limits and units. Ozone
+monitor comparisons explicitly select the existing CAMS bracket context or NASA
+hourly means in ppb, retaining archive check times and grid/monitor separation.
 
 `hazards-core.mjs` supplies the fire, air-monitor and NASA date adapters shared by
 hosted and direct editions. `lib/hazards-service.mjs` uses the existing collection
@@ -603,7 +604,8 @@ bounded pages and monitor quotas. `ozone-core.mjs` selects complete measurement
 hours, preserves gaps and negative source values, and pairs earlier model brackets
 without mixing ppb and µg/m³. `ozone.js` owns explicit discovery, station selection,
 chart/table, raw export and late-response isolation. Existing CAMS archive checks
-supply model context; current products cannot enter earlier forecast slots. No
+supply model context; a separate NASA path provides matched-hour diagnostic
+differences using identified runs. Current products cannot enter earlier forecast slots. No
 schema or schedule changes. See [ozone methods](ozone-observations.md).
 
 ### Portable event evidence

@@ -26,12 +26,27 @@ an error/90-second age warning. A genuinely slow or failed collection remains
 delayed until a successful alert body reaches the browser.
 
 The browser Cache API stores only public alerts and official zone geometries:
-at most 2,048 entries within a conservative 24 MiB payload budget, with a
+at most 2,048 entries within a 24 MiB stored-payload budget, with a
 3-million-character per-entry limit and a 15-minute restore limit for alerts
 and 30-day zone lifetime. A restored alert collection is explicitly labeled
 until a live request succeeds, preserves its original timestamp, and excludes
 expired alerts. Cache failure falls back to normal requests. Nothing from
 accounts, saved places, notification credentials or private APIs is cached here.
+Boundary entries use gzip when supported and smaller, with exact UTF-8/stored
+byte accounting. Alerts stay plain JSON. Legacy JSON entries remain readable;
+missing compression support or corrupt compressed entries fall back to normal
+requests. Compression changes storage size, never source coordinates.
+
+Hosted cache misses first use `/api/map/zones?ids=...`: up to 16 validated zone
+IDs per batch, with two concurrent batches. The endpoint only reads current
+public zone archives already collected within 30 days, with no source error.
+It neither starts upstream requests nor exposes arbitrary dataset names.
+Each stored gzip/base64 payload is capped at 350,000 characters (5.6 MB maximum
+for a batch); the browser independently limits decoded entries to 3 MB.
+Unsupported, missing, old, corrupt or oversized entries use the existing
+four-request single-zone queue. Cached local shapes bypass both queues, and
+selecting an alert promotes its pending boundaries. The shared collector's
+leases and 30-day boundary collection interval are unchanged.
 
 ## Visual meaning
 

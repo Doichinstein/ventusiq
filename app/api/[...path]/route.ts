@@ -1,5 +1,6 @@
 import {ForecastStabilityService} from '../../../lib/forecast-stability-service.mjs';
 import {mapAlerts} from '../../../lib/map-alerts.mjs';
+import {mapZones} from '../../../lib/map-zones.mjs';
 import {RoadworkService} from '../../../lib/roadwork-service.mjs';
 import {FirmsService} from '../../../lib/firms-service.mjs';
 import {StationAnalogsService} from '../../../lib/station-analogs-service.mjs';
@@ -131,6 +132,7 @@ export async function GET(request:Request){
     }
     if(path==='/api/history')return json({snapshots:await service.history('alerts/us'),retention_hours:24});
     if(path==='/api/changes')return json({changes:await service.changes()});
+    if(path==='/api/map/zones')return json(await mapZones(service,url.searchParams.get('ids')));
     if(path.startsWith('/api/zones/'))return json(await service.zone(path.slice(4)));
     if(path==='/api/forecast'||path==='/api/forecast/history'){
       let point;try{point=pointKey(url.searchParams.get('lat'),url.searchParams.get('lon'));}catch(error){return json({error:String((error as Error).message)},400);}

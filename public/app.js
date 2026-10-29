@@ -24,6 +24,11 @@ const directHistory = [], geometry = new Map(), zoneCache = new Map(), zoneFaile
 let geometryTimer = null;
 const zoneLoader = window.createZoneLoader({
   readCache: url => window.WeatherMapCache?.read('zone/' + new URL(url).pathname.slice('/zones/'.length), 30 * 86400000),
+  fetchBatch: config.mode === 'hosted' && typeof DecompressionStream !== 'undefined' ? async urls => {
+    const found = await window.fetchZoneBatch(urls,request);
+    for (const [url,data] of found) window.WeatherMapCache?.write('zone/' + new URL(url).pathname.slice('/zones/'.length),data);
+    return found;
+  } : null,
   async fetchZone(url) {
     const data = await request(direct ? url : '/api' + new URL(url).pathname);
     if (data.geometry) window.WeatherMapCache?.write('zone/' + new URL(url).pathname.slice('/zones/'.length), {geometry:data.geometry});

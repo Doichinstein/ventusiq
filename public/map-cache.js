@@ -14,7 +14,9 @@
         if (!response) return null;
         const saved = Number(response.headers.get('X-Saved-At'));
         if (!saved || saved > Date.now() || Date.now() - saved > maxAge) { await cache.delete(PREFIX + key); sizes?.delete(PREFIX + key); return null; }
-        return await response.json();
+        const decoded = response.headers.get('X-Cache-Encoding') === 'gzip'
+          ? new Response(response.body.pipeThrough(new DecompressionStream('gzip'))) : response;
+        return await decoded.json();
       } catch { return null; }
     },
     write(key, value) {
@@ -22,6 +24,13 @@
       writes = writes.then(async () => {
         const body = JSON.stringify(value);
         if (body.length > 3000000) return;
+        let payload = new Blob([body]), encoding = 'identity';
+        if (key.startsWith('zone/') && typeof CompressionStream !== 'undefined' && typeof DecompressionStream !== 'undefined') {
+          try {
+            const compressed = await new Response(payload.stream().pipeThrough(new CompressionStream('gzip'))).blob();
+            if (compressed.size < payload.size) { payload = compressed; encoding = 'gzip'; }
+          } catch { /* Plain JSON remains a supported cache format. */ }
+        }
         const cache = await root.caches.open(NAME);
         if (!sizes) {
           const entries = await Promise.all((await cache.keys()).map(async old => {
@@ -31,15 +40,14 @@
           sizes = new Map(entries);
         }
         await cache.delete(PREFIX + key);
-        // Three bytes per UTF-16 code unit conservatively bounds UTF-8 payload size.
-        const bytes = body.length * 3;
+        const bytes = payload.size;
         sizes.delete(PREFIX + key);
         let total = [...sizes.values()].reduce((a,b) => a+b, 0);
         for (const [old,size] of sizes) {
           if (sizes.size < MAX_ENTRIES && total + bytes <= MAX_BYTES) break;
           await cache.delete(old); sizes.delete(old); total -= size;
         }
-        await cache.put(PREFIX + key, new Response(body, {headers: {'Content-Type':'application/json', 'X-Saved-At':String(Date.now()), 'X-Cache-Bytes':String(bytes)}}));
+        await cache.put(PREFIX + key, new Response(payload, {headers: {'Content-Type':encoding === 'gzip' ? 'application/gzip' : 'application/json', 'X-Cache-Encoding':encoding, 'X-Saved-At':String(Date.now()), 'X-Cache-Bytes':String(bytes)}}));
         sizes.set(PREFIX + key, bytes);
       }).catch(() => { sizes = null; });
       return writes;

@@ -1803,3 +1803,25 @@ was exercised with bounded/missing/invalid hints, replay, daemon mode and networ
 failure. TypeScript and diff checks passed. Live rendered verification follows
 publication; automated tests do not establish complete-device usability or
 absence of genuine provider delays.
+
+## Shared boundary batches and compressed browser cache — October 29, v74
+
+A live v73 feed required 586 distinct official zones for 356 of its 364 alerts.
+Six sampled existing single-zone responses took 187–441 ms, with two geometries
+approximately 286 and 389 KB. The four-request queue therefore faces hundreds
+of HTTP round trips on a cache miss; this sample is not a full cold-load benchmark.
+
+Hosted cache misses now batch up to 16 already-retained public zone archives at
+once, with two concurrent batches and bounded payload/decode sizes. Missing,
+expired, corrupt, unsupported or oversized entries fall back individually. The
+batch endpoint is read-only and never starts an NWS request. Browser boundary
+cache writes use gzip when beneficial and account for actual stored bytes within
+the existing 24 MiB budget, keeping exact coordinates and legacy JSON support.
+
+Validation: 20 targeted tests passed across map-zones, zone-loader, map-cache,
+alert-renderer and map-geometry. Coverage includes read-only dataset scoping,
+expiry, oversized/corrupt entries, exact decoding, batch/concurrency limits,
+coalescing, selected-alert priority, storage failures, budget eviction and
+unchanged geometry rendering. TypeScript and diff checks passed. Live batch
+measurement and rendered QA follow publication; no browser cache was cleared
+and no new cold-browser timing is claimed from unit tests.

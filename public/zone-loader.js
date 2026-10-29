@@ -1,8 +1,8 @@
 /* Cache reads must not wait behind slow network misses. Public boundaries only. */
 (function (root) {
   'use strict';
-  root.createZoneLoader = function ({readCache, fetchZone, onResult, onError}) {
-    let cacheQueue = [], networkQueue = [], cacheActive = 0, networkActive = 0;
+  root.createZoneLoader = function ({readCache, fetchZone, fetchBatch, onResult, onError}) {
+    let cacheQueue = [], networkQueue = [], batchQueue = [], cacheActive = 0, networkActive = 0, batchActive = 0, batchTimer = null;
     const pending = new Set(), urgent = new Set();
     function finish(url, data, error) {
       try { if (error) onError(url, error); else onResult(url, data); }
@@ -16,12 +16,28 @@
           .finally(() => { networkActive--; pumpNetwork(); });
       }
     }
+    function pumpBatch() {
+      while (batchActive < 2 && batchQueue.length) {
+        const urls = batchQueue.splice(0,16); batchActive++;
+        Promise.resolve().then(() => fetchBatch(urls)).catch(() => null).then(found => {
+          for (const url of urls) {
+            const data = found?.get(url);
+            if (data?.geometry) finish(url,data);
+            else if (urgent.has(url)) networkQueue.unshift(url); else networkQueue.push(url);
+          }
+          pumpNetwork();
+        }).finally(() => { batchActive--; pumpBatch(); });
+      }
+    }
     function pumpCache() {
       while (cacheActive < 12 && cacheQueue.length) {
         const url = cacheQueue.shift(); cacheActive++;
         Promise.resolve().then(() => readCache(url)).catch(() => null).then(data => {
           if (data?.geometry) finish(url, data);
-          else { if (urgent.has(url)) networkQueue.unshift(url); else networkQueue.push(url); pumpNetwork(); }
+          else if (fetchBatch) {
+            if (urgent.has(url)) batchQueue.unshift(url); else batchQueue.push(url);
+            if (batchTimer === null) batchTimer = setTimeout(() => { batchTimer = null; pumpBatch(); },8);
+          } else { if (urgent.has(url)) networkQueue.unshift(url); else networkQueue.push(url); pumpNetwork(); }
         }).finally(() => { cacheActive--; pumpCache(); });
       }
     }
@@ -34,7 +50,7 @@
         }
         if (priority) {
           const promote = queue => [...queue.filter(url => requested.has(url)), ...queue.filter(url => !requested.has(url))];
-          cacheQueue = promote(cacheQueue); networkQueue = promote(networkQueue);
+          cacheQueue = promote(cacheQueue); batchQueue = promote(batchQueue); networkQueue = promote(networkQueue);
         }
         pumpCache(); pumpNetwork();
       },

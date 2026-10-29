@@ -41,12 +41,12 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
   }
   async function openGauge(id){
     try{id=gaugeId(id);}catch(error){get('river-status').textContent=error.message;return;}
-    show();const generation=++gaugeGeneration;selected=id;window.WeatherRiverChanges?.updateGauge(null);get('river-id').value=id;get('river-status').textContent='Loading '+id+' observations and forecast…';get('river-detail').hidden=true;renderList();
+    show();const generation=++gaugeGeneration;selected=id;window.WeatherWatches?.refreshGauge(null);window.WeatherRiverChanges?.updateGauge(null);get('river-id').value=id;get('river-status').textContent='Loading '+id+' observations and forecast…';get('river-detail').hidden=true;renderList();
     const entry=await load('gauge/'+id);if(generation!==gaugeGeneration)return;renderGauge(entry);
   }
   function renderGauge(entry){
     if(!entry?.data){get('river-detail').hidden=true;get('river-status').textContent=entry?.error||'Gauge data unavailable.';return;}
-    window.WeatherRiverChanges?.updateGauge(entry.data);const data=entry.data,m=data.metadata,s=riverSummary({...data,stale:old(data)},clock());get('river-detail').hidden=false;
+    window.WeatherWatches?.refreshGauge(entry.data);window.WeatherRiverChanges?.updateGauge(entry.data);const data=entry.data,m=data.metadata,s=riverSummary({...data,stale:old(data)},clock());get('river-detail').hidden=false;
     get('river-status').className=old(data)?'warning-note':'small';get('river-status').textContent=`${old(data)?'Updates delayed. ':''}NOAA / NWPS · checked ${time(data.checked_at)}${entry.error?' · '+entry.error:''}`;
     get('river-title').textContent=m.name;get('river-code').textContent=m.lid;get('river-location').textContent=[m.county,m.state?.name].filter(Boolean).join(', ');get('river-official').href=data.official_url;
     const obs=el('section',undefined,'weather-card'),forecast=el('section',undefined,'weather-card');obs.append(el('span','LATEST OBSERVATION','eyebrow'),el('p',s.latest?value(s.latest.value,s.observed.unit):'Unavailable','outlook-number'),el('p',s.latest?time(s.latest.at):'No valid observation.'));

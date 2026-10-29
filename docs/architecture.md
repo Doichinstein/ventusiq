@@ -121,6 +121,13 @@ coverage. `river-changes.js` owns the comparison/evidence card and updates the m
 hydrograph to the same current source. Browser-only editions maintain bounded
 session baselines. See [river revision methods](rivers.md).
 
+`river-watch-core.mjs` extends the persistent watch engine with explicit gauge and
+official-category selection, separate observed/forecast states, 72-hour sampled
+coverage and shared-horizon timing comparisons. `WatchService` uses `RiversService`
+for these watches without requesting NWS point forecasts. Existing ownership,
+leases, retention and private feeds apply; no schema change is needed. Metadata
+reference changes reset the comparison baseline. See [gauge watches](watches.md#river-gauge-watches).
+
 ## Durable archive
 
 `compound-core.mjs` evaluates six versioned rules over the selected place's current

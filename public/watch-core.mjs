@@ -1,17 +1,20 @@
 import {routePassages} from './journey-core.mjs';
-export const WATCH_METHOD='2026-10-28.1';
+import {riverWatchSetting,evaluateRiverWatch} from './river-watch-core.mjs';
+export const WATCH_METHOD='2026-10-28.2';
 const HOUR=3600000,finite=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const instant=v=>typeof v==='string'&&/(Z|[+-]\d\d:\d\d)$/.test(v)?Date.parse(v):NaN;
 export function watchSettings(input={}){
   if(!input||typeof input!=='object'||Array.isArray(input)||(input.alerts!==undefined&&typeof input.alerts!=='boolean'))throw Error('Invalid watch settings');
-  const result={alerts:input.alerts!==false};for(const [key,min,max] of [['windMph',0,200],['rainPercent',0,100],['hotF',-100,150],['coldF',-100,150]]){
+  const river=input.river===undefined||input.river===null?null:riverWatchSetting(input.river);
+  const result={alerts:input.alerts!==false&&!river};for(const [key,min,max] of [['windMph',0,200],['rainPercent',0,100],['hotF',-100,150],['coldF',-100,150]]){
     const value=input[key]===null||input[key]===undefined||input[key]===''?null:Number(input[key]);if(value!==null&&(!Number.isFinite(value)||value<min||value>max))throw Error('Invalid watch threshold');result[key]=value;
-  }if(!result.alerts&&Object.entries(result).every(([key,value])=>key==='alerts'||value===null))throw Error('Choose alerts or at least one threshold');return result;
+  }if(river){if(input.alerts===true||Object.entries(result).some(([k,v])=>k!=='alerts'&&v!==null))throw Error('Choose a separate river watch for gauge thresholds');result.river=river;}
+  if(!river&&!result.alerts&&Object.entries(result).every(([key,value])=>key==='alerts'||value===null))throw Error('Choose alerts or at least one threshold');return result;
 }
 function wind(v){if(typeof v==='object'&&v){const n=finite(v.value);return n===null||n<0?null:v.unitCode?.endsWith('mi_h-1')?n:v.unitCode?.endsWith('km_h-1')?n/1.609344:v.unitCode?.endsWith('m_s-1')?n*2.236936:null;}if(typeof v!=='string')return null;if(/^calm$/i.test(v))return 0;const m=/^(\d+(?:\.\d+)?)(?:\s+to\s+(\d+(?:\.\d+)?))?\s*(mph|km\/h)$/i.exec(v.trim());return m?Math.max(Number(m[1]),Number(m[2]||m[1]))/(m[3].toLowerCase()==='mph'?1:1.609344):null;}
 function hourly(forecast){return (forecast?.forecast?.properties?.periods||[]).map(p=>{const t=finite(p.temperature),rain=finite(p.probabilityOfPrecipitation?.value);return {start:instant(p.startTime),end:instant(p.endTime),temperature:t===null?null:p.temperatureUnit==='F'?t:p.temperatureUnit==='C'?t*9/5+32:null,wind:wind(p.windSpeed),rain:rain!==null&&rain>=0&&rain<=100&&p.probabilityOfPrecipitation?.unitCode==='wmoUnit:percent'?rain:null};}).filter(p=>Number.isFinite(p.start)&&Number.isFinite(p.end)&&p.end>p.start).sort((a,b)=>a.start-b.start);}
 async function fingerprint(value){return [...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value))))].map(v=>v.toString(16).padStart(2,'0')).join('');}
-export async function evaluateWatch({point,settings,forecast,alerts,previous=null,now=Date.now()}){
+export async function evaluateWatch({point,settings,forecast,alerts,river=null,previous=null,now=Date.now()}){
   const p=watchSettings(settings),[lat,lon]=point.split(',').map(Number),coordinate=[lon,lat],probe={vertices:[{coordinate,elapsed:0},{coordinate,elapsed:1}]};
   const sourceTime=instant(forecast?.issued_at||forecast?.forecast?.properties?.updateTime),checked=instant(forecast?.checked_at),alertTime=instant(alerts?.collected_at);
   const forecastFresh=!!forecast&&!forecast.stale&&!forecast.error&&checked<=now+60000&&now-checked<=900000&&sourceTime<=now+60000&&now-sourceTime<=24*HOUR;
@@ -35,5 +38,6 @@ export async function evaluateWatch({point,settings,forecast,alerts,previous=nul
     for(const lane of ['alerts','forecast'])if(previous.coverage[lane]!==snapshot.coverage[lane])changes.push({kind:'coverage',title:`${lane==='alerts'?'Alert':'Forecast'} coverage ${snapshot.coverage[lane]?'available again':'unknown or delayed'}`,before:previous.coverage[lane],after:snapshot.coverage[lane]});
   }
   for(const [key,c] of Object.entries(conditions))c.last_known=c.state??previous?.conditions?.[key]?.state??previous?.conditions?.[key]?.last_known??null;
+  if(p.river){const result=evaluateRiverWatch({setting:p.river,product:river,previous:previous?.river,now});snapshot.river=result.snapshot;snapshot.sources.river=result.snapshot.source;snapshot.coverage.river=result.covered;if(previous)changes.push(...result.changes);}
   return {snapshot,changes};
 }

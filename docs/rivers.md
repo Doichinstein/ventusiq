@@ -58,7 +58,8 @@ seven-day hazard revision retention. Last-good data survives failure; stale
 forecasts stop producing planning/timing recommendations. Gauge series and metadata
 are currently archived as compressed products. Storage should be monitored before
 wide rollout; deduplicated observation rows and longer-term export remain scaling
-work. This is on-demand collection, independent of the hourly alert-upkeep task.
+work. Reads refresh on demand. Explicitly enrolled gauge watches also use the
+hourly upkeep path; browsing or selecting a gauge never enrolls one.
 
 Python and static editions request the same public API directly from the browser.
 Their river snapshots are not yet stored in the Python daemon. Only regional search
@@ -72,7 +73,7 @@ AKFM7. Tests cover sentinels, gaps, forecast age, units, inconsistent thresholds
 terminal/repeated maxima, forecast-only gauges, archive revisions, source failure,
 gauge-switch races, chart/table output, source-text safety, markers and replay.
 Real browser visual QA remains blocked by the existing permission gate. Watershed
-associations, notifications for threshold changes, calibrated probabilities and
+associations, closed-browser push, calibrated probabilities and
 verified inundation/road-impact layers are not implemented by this release.
 
 ## Forecast revision comparisons
@@ -126,3 +127,13 @@ session, bounded to 48 gauges. They do not claim access to the hosted archive or
 durable daemon river history. All editions share the same comparison evaluator.
 
 Forecast revision selection uses one evaluation time for both products and ignores expired samples. Equivalent explicit-zone timestamp formats share an identity. Future coverage extensions remain distinct revisions; the comparison explicitly states when every shared reading is unchanged. Method version: `2026-10-28.2`.
+
+
+## Persistent threshold watches
+
+The hosted gauge detail now offers an explicit signed-in watch for one official
+threshold. It records separate observed and 72-hour forecast state changes,
+comparable forecast crossing-window changes and coverage interruptions. Manage,
+pause, delete, export or issue a private Atom feed in My weather. See the complete
+[watch method and delivery limits](watches.md#river-gauge-watches). These watches
+use existing hourly upkeep and do not deliver browser push or infer local inundation.

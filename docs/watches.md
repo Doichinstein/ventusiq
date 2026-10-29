@@ -9,7 +9,8 @@ enforced in the database. Watches are separate from device-local saved places.
 Choose official alert changes and optional sustained wind, precipitation probability,
 high-temperature or low-temperature thresholds. Forecast rules ask whether any
 usable interval in the next 24 hours meets the inclusive threshold. They do not
-estimate a new probability, a measured outcome, gusts or river-stage crossings.
+estimate a new probability, a measured outcome or gusts. Separate river watches
+use the gauge-specific method below.
 The first check records a baseline; later checks record meaningful state changes,
 official-message changes and source-coverage interruptions/restoration. CAP references
 join replacement alert messages. Missing geometry or unavailable data cannot imply
@@ -60,5 +61,49 @@ verified values. Never expose raw trusted-header authentication directly to the
 internet. The Python/static editions hide this hosted-only feature and retain their
 existing local places and operator-configured daemon watches.
 
-Core method version: `2026-10-28.1`. Real browser sign-in/rendering verification is
+Core method version: `2026-10-28.2`. Real browser sign-in/rendering verification is
 still outstanding; local Worker tests use explicit development identity fixtures.
+
+
+## River gauge watches
+
+In Rivers, open a gauge, choose one of its supplied action/minor/moderate/major
+thresholds, then explicitly create a watch. Gauge watches use the same account
+quota, owner-only controls, history and private feeds. They store the gauge's
+coordinates, not a nearby saved place; the server verifies that match. They do
+not also subscribe to point weather alerts. A gauge without a fresh product or
+compatible official thresholds cannot be enrolled. Normalizing stage to feet or
+flow to cfs does not invent missing category values.
+
+`river-watch-core.mjs` records independent observed and forecast states. The latest
+observation must have compatible units, an explicit valid time, and be no more than
+six hours old. A later missing reading is unknown; an older fallback is not treated
+as a newly lower level. Regressing observation timestamps stay unknown. Observed
+updates report whether the latest sample is above/below the official threshold;
+they do not assert a precise crossing instant or an observed impact at an address.
+
+Forecasts examine samples within a rolling 72-hour window. A supplied exceedance
+can establish a positive result despite partial coverage. A negative requires valid
+samples bracketing both window ends, no nulls and no inter-sample gaps over 12 hours.
+This says no forecast **sample** reaches the level, not that water is continuously
+below it. Forecast issue age is limited to 24 hours, collection age to 22.5 minutes,
+and stale/provider-not-current products are unknown. Duplicate or ambiguous valid
+times, issue-time regressions and forecasts over the 512-sample bound are unknown.
+
+Forecast crossing-window changes reuse the river revision comparison: same gauge,
+reference and threshold, at least two identical future sample times and the shared
+horizon bounded by the watch window. Both products need a below-to-above sample
+bracket. Merely expiring old samples, receiving new observations or extending an
+unchanged forecast tail does not imply a changed crossing time. Overlapping brackets
+do not prove earlier/later arrival. Changed thresholds, coordinates or reported
+vertical references establish a new baseline instead of a weather transition.
+Missing datum information assumes the reported reference has not changed; it does
+not establish a surveyed elevation.
+
+NWPS products share the existing cache/archive and hourly due-work path. Background
+work after watch management reads the cached national alert product rather than
+waiting on a new NWS fetch. Gauge checks can continue during a national-alert
+outage. No automatic watershed association, inundation inference or external push
+is added. Events retain source references; the latest usable forecast is also kept
+in the watch baseline for comparable future timing checks. River method version:
+`2026-10-28.1`.

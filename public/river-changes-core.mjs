@@ -1,5 +1,6 @@
 import {normalizeSeries,dimension,waterValue} from './rivers-core.mjs';
 const HOUR=3600000;
+export {sampleSeries,thresholds,datum};
 export const RIVER_CHANGE_METHOD='2026-10-28.2';
 function identityTime(raw){const at=Date.parse(raw);return Number.isFinite(at)&&/(Z|[+-]\d\d:\d\d)$/.test(raw||'')?new Date(at).toISOString():raw??null;}
 export function forecastIdentity(product,asOf=-Infinity){const f=product?.series?.forecast||{};return JSON.stringify({issued:identityTime(f.issuedTime),name:f.primaryName||null,units:f.primaryUnits||null,points:(f.data||[]).filter(p=>{const at=Date.parse(p.validTime);return !Number.isFinite(at)||!/(Z|[+-]\d\d:\d\d)$/.test(p.validTime||'')||at>=asOf;}).map(p=>[identityTime(p.validTime),p.primary??null]).sort((a,b)=>String(a[0]).localeCompare(String(b[0])))});}

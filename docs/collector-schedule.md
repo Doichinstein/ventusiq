@@ -25,9 +25,9 @@ republish the site, fabricate weather or modify visitors' preferences.
 Collection is idempotent within the source cadence and preserves last good data
 through outages. A schedule is background upkeep, not guaranteed emergency-alert
 delivery. Check actual timestamps rather than treating a scheduled time as proof
-that a run happened. Closed-browser push and subscriptions are separate work.
+that a run happened. Closed-browser push remains separate work.
 Live alert reads also register background evaluation of explicitly enrolled
-[persistent watches](watches.md), including their point forecasts. This reuses the
+[persistent watches](watches.md), including their point forecasts or explicitly chosen NWPS gauge products. This reuses the
 existing hourly task without enrolling any visitor automatically. Last-check times
 on individual watches show actual execution; `/api/health` describes shared source
 collection, not completion of every watch. Fire/air products and un-enrolled place

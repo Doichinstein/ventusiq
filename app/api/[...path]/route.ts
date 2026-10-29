@@ -58,7 +58,8 @@ export async function GET(request:Request){
     if(path==='/api/health')return json(await service.health());
     if(path==='/api/alerts'){
       if(url.searchParams.has('at')){const result=await service.read('alerts/us',atTime(url.searchParams.get('at')));return result?json({...result.data,collected_at:result.checked_at}):json({error:'No collected snapshot at that time'},404);}
-      const result=await service.alerts();after(()=>new WatchService(service).upkeep(result));return json(result);
+      let result;try{result=await service.alerts();}catch(error){after(()=>new WatchService(service).upkeep(null));throw error;}
+      after(()=>new WatchService(service).upkeep(result));return json(result);
     }
     if(path==='/api/history')return json({snapshots:await service.history('alerts/us'),retention_hours:24});
     if(path==='/api/changes')return json({changes:await service.changes()});
@@ -77,6 +78,10 @@ export async function POST(request:Request){
   if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);
   const service=new WeatherService(env.DB),watches=new WatchService(service),user=await getChatGPTUser();
   const response=await watchPost(request,watches,user?.userId||null);
-  if(response.ok)after(async()=>{await watches.upkeep(await service.alerts());});
+  if(response.ok)after(async()=>{
+    // Enrollment must not spend the background execution window waiting for an unrelated national source.
+    const cached=await service.read('alerts/us').catch(()=>null);
+    await watches.upkeep(cached?{...cached.data,collected_at:cached.checked_at,error:cached.error}:null);
+  });
   return response;
 }

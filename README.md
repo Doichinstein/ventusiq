@@ -26,7 +26,9 @@ with monitor selection, explicit gaps, six-hour endpoint changes and raw-evidenc
 **Rivers** adds regional NOAA/NWPS gauge search, nearby gauges for saved places,
 observed and forecast hydrographs, highest upcoming forecast samples, threshold
 crossing windows and official stage-based impact statements. Gauge markers can
-be shown on the map and hide during alert replay. See [river data and timing](docs/rivers.md).
+be shown on the map and hide during alert replay. The hosted edition also offers
+explicit gauge watches for observed/forecast threshold updates and changed crossing
+windows, using hourly upkeep and private feeds. See [river data and timing](docs/rivers.md).
 
 **Events** in the shared hosted edition preserves alert revisions beyond the map's
 24-hour replay. Follow explicit NWS message references, inspect collection-time

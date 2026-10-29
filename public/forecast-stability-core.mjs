@@ -1,5 +1,6 @@
 /* Same-valid-hour changes in previously collected NWS forecasts. Apache-2.0. */
-export const STABILITY_METHOD='2026-10-29.1';
+export const STABILITY_METHOD='2026-10-29.2';
+export const PREVIOUS_VERSION_DAYS=7;
 const HOUR=3600000;
 const stamp=value=>typeof value==='string'&&/(Z|[+-]\d\d:\d\d)$/.test(value)&&Number.isFinite(Date.parse(value))?Date.parse(value):null;
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
@@ -20,13 +21,15 @@ const grid=product=>{
   const url=product?.data?.source_url;
   return typeof url==='string'&&/^https:\/\/api\.weather\.gov\/gridpoints\/[A-Z0-9]+\/\d+,\d+\/forecast\/hourly$/.test(url)&&product.data.metadata?.properties?.forecastHourly===url?url:null;
 };
-export function forecastStability({point,current,earlier,now,lookback_hours}){
-  if(!Number.isSafeInteger(now)||![6,12,24].includes(lookback_hours))throw Error('Invalid forecast comparison window');
-  const cutoff=now-lookback_hours*HOUR,currentCheck=stamp(current?.checked_at),earlierCheck=stamp(earlier?.checked_at);
+export function forecastStability({point,current,earlier,now,lookback_hours,comparison_mode='cutoff'}){
+  const previous=comparison_mode==='previous_version';
+  if(!Number.isSafeInteger(now)||!['cutoff','previous_version'].includes(comparison_mode)||(!previous&&![6,12,24].includes(lookback_hours)))throw Error('Invalid forecast comparison window');
+  const cutoff=previous?null:now-lookback_hours*HOUR,currentCheck=stamp(current?.checked_at),earlierCheck=stamp(earlier?.checked_at);
   let reason=null;
   if(!current||currentCheck===null||currentCheck>now)reason='No forecast collected by the evaluation time';
-  else if(!earlier||earlierCheck===null||earlierCheck>cutoff)reason='No forecast collected by the earlier cutoff';
-  else if(cutoff-earlierCheck>3*HOUR)reason='The earlier archived check is more than three hours before the requested cutoff';
+  else if(previous&&(!earlier||earlierCheck===null||earlierCheck>=currentCheck||earlierCheck<now-PREVIOUS_VERSION_DAYS*24*HOUR||!current.revision||!earlier.revision||current.revision===earlier.revision))reason='No different earlier forecast version collected in the past seven days';
+  else if(!previous&&(!earlier||earlierCheck===null||earlierCheck>cutoff))reason='No forecast collected by the earlier cutoff';
+  else if(!previous&&cutoff-earlierCheck>3*HOUR)reason='The earlier archived check is more than three hours before the requested cutoff';
   else if(!grid(current)||grid(current)!==grid(earlier))reason='Forecast grid identity is missing or changed';
   else if([current,earlier].some(p=>stamp(p.issued_at)!==null&&stamp(p.issued_at)>stamp(p.checked_at)+60000))reason='A source issue time is later than its archived collection';
   const currentSeries=series(current),earlierSeries=series(earlier),start=Math.ceil(now/HOUR)*HOUR;
@@ -38,7 +41,9 @@ export function forecastStability({point,current,earlier,now,lookback_hours}){
   });
   const temperature=rows.filter(r=>r.temperature_change_f!==null),rain=rows.filter(r=>r.rain_change_percentage_points!==null);
   const issuedCurrent=stamp(current?.issued_at),issuedEarlier=stamp(earlier?.issued_at);
-  return {method:STABILITY_METHOD,point,evaluated_at:new Date(now).toISOString(),earlier_cutoff:new Date(cutoff).toISOString(),lookback_hours,
+  return {method:STABILITY_METHOD,point,evaluated_at:new Date(now).toISOString(),comparison_mode,earlier_cutoff:previous?null:new Date(cutoff).toISOString(),lookback_hours:previous?null:lookback_hours,
+    search_since:previous?new Date(now-PREVIOUS_VERSION_DAYS*24*HOUR).toISOString():null,
+    collection_gap_hours:currentCheck!==null&&earlierCheck!==null&&earlierCheck<currentCheck?(currentCheck-earlierCheck)/HOUR:null,
     status:reason?'unavailable':'compared',reason,current_delayed:currentCheck===null||now-currentCheck>2*HOUR||!!current?.error,
     same_revision:!!current&&!!earlier&&current.revision===earlier.revision,source_issue_moved_back:issuedCurrent!==null&&issuedEarlier!==null&&issuedCurrent<issuedEarlier,
     time_zone:current?.data?.metadata?.properties?.timeZone||null,rows,

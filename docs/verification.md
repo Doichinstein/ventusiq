@@ -1723,3 +1723,27 @@ validation and supported hosted database recovery remain separate open requireme
   across four pages suggested PAAK, PADK and ADKA2. Selecting PAAK returned two
   accepted timestamps. A prior cutoff used the original 500-record archive and
   suggested only ADKA2, explicitly labeled older and truncated.
+# Previous archived forecast version (October 29, v71)
+
+- A live Sacramento archive read at 19:14:46 UTC confirmed two real forecast
+  editions, but the 12-hour cutoff correctly withheld differences because its
+  earlier check (01:20:47 UTC) was outside the three-hour cutoff tolerance.
+- Added an explicit previous-version mode for irregular collection. It searches
+  retained checks within seven days, skips repeated current revisions and expands
+  only selected bodies. It does not relax fixed-cutoff comparisons or collect data.
+- Twelve core, real-SQLite service and UI tests passed, covering chronological
+  selection, rollback, repeated checks, later-product exclusion, age boundaries,
+  absent history, no upstream calls, no dataset enrollment, source identity,
+  units, DST-hour matching, exports and invalidation. TypeScript checking passed.
+- Post-publication browser results and downloaded evidence are recorded separately
+  in the workspace QA artifacts; these pre-publication checks do not establish
+  rendered acceptance or calibrated forecast confidence.
+
+# Compound coverage correction verified (October 29, v70)
+
+- Live Atka UI and downloaded JSON used rule set `2026-10-29.2`. The 41 hourly
+  precipitation/wind premises remained in two windows separated by six hours.
+- The national source audit retained the unlocated Law Enforcement Warning,
+  while the three unrelated alert-pair rules correctly became not detected.
+  Measured PM2.5 during heat remained unknown because no eligible monitor was
+  available. The temporary place was removed and Auto alerts remained enabled.

@@ -616,3 +616,8 @@ future hours, preserving units, missing/overlapping periods, grid identity, sour
 rollback and archive age. `forecast-stability.js` adds explicit comparison and export
 inside Forecast checks and invalidates account/place/window changes. It performs no
 provider collection or subscription. See [forecast stability](forecast-stability.md).
+
+An explicit previous-version selection also supports irregularly collected places.
+It chooses the latest distinct archived body before the current check within seven
+days, retains rollback/source identity and discloses actual spacing. Fixed-cutoff
+selection keeps its three-hour tolerance; neither mode creates missing history.

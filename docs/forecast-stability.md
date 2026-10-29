@@ -1,7 +1,8 @@
 # Changes in collected forecasts
 
 My weather → Forecast checks includes an explicit archive comparison for the same
-next 48 future hours. Choose a cutoff 6, 12 or 24 hours earlier. Temperature changes
+next 48 future hours. Choose a cutoff 6, 12 or 24 hours earlier, or the previous
+different archived version. Temperature changes
 are in °F; rain-chance changes are percentage points, not relative percentages.
 The largest absolute change and paired-hour denominators summarize the comparison;
 the expandable table retains every hour and both source values.
@@ -24,6 +25,20 @@ checks, not first-seen revision time or source issuance; this preserves upstream
 rollbacks. A check collected after either cutoff cannot repair that selection.
 The earlier check must be within three hours before its cutoff. The UI displays
 actual collection times, rather than claiming an exact 6/12/24-hour interval.
+
+Method `2026-10-29.2` also accepts `hours=previous`. It selects the latest successful
+check of a different revision strictly before the selected current check, within
+seven days of evaluation. Repeated checks of the current body are skipped; genuine
+upstream rollbacks remain eligible. Selection joins retained checks and revisions,
+then loads just the two selected bodies. It never fills a gap through a new provider
+request or searches arbitrary older history. Missing history stays unavailable.
+
+This mode has no requested earlier cutoff and no three-hour cutoff tolerance:
+it explicitly compares irregular collection checks. The view shows their actual
+spacing; export records `comparison_mode`, `collection_gap_hours`, `search_since`
+and both source editions. Different archived bodies can share an issue time and
+are not identified model runs. The existing fixed-cutoff mode keeps its original
+age and cutoff requirements. Grid, issue-time, unit and period checks apply to both.
 
 Both editions must identify the same official NWS hourly-grid URL, consistent with
 their point metadata. Grid changes withhold comparison. A source issue timestamp

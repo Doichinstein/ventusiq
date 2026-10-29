@@ -35,6 +35,47 @@ test('source rollback, same edition and delayed collection remain explicit and n
   const r=report(current,earlier);assert.equal(r.current_delayed,true);assert.equal(r.source_issue_moved_back,true);assert.equal(r.same_revision,true);
   assert.match(r.interpretation,/not measured errors or calibrated confidence/);assert.equal(report({...edition(),error:'source down'}).current_delayed,true);
 });
+test('previous-version selection permits irregular collection while preserving chronology, identity and age bounds',()=>{
+  const extra={comparison_mode:'previous_version',lookback_hours:null},r=report(edition(),edition(now-18*HOUR),extra);
+  assert.equal(r.status,'compared');assert.equal(r.earlier_cutoff,null);assert.equal(r.lookback_hours,null);assert.equal(r.collection_gap_hours,18);
+  assert.equal(r.search_since,iso(now-7*24*HOUR));assert.equal(r.summary.temperature_paired_hours,48);
+  for(const old of [null,edition(),edition(now+HOUR),edition(now-7*24*HOUR-1000),{...edition(now-HOUR),revision:edition().revision}]){
+    const bad=report(edition(),old,extra);assert.equal(bad.status,'unavailable');assert.equal(bad.summary.temperature_paired_hours,0);
+  }
+  assert.equal(report(edition(),edition(now-7*24*HOUR),extra).status,'compared');
+  const other=edition(now-HOUR);other.data.metadata.properties.forecastHourly='https://api.weather.gov/gridpoints/LWX/2,2/forecast/hourly';
+  assert.match(report(edition(),other,extra).reason,/grid identity/);
+  assert.throws(()=>report(edition(),edition(),{comparison_mode:'newest'}),/Invalid/);
+});
+
+test('previous-version service skips repeated checks, selects latest distinct collection and preserves rollbacks without fetching',async()=>{
+  const db=database();let clock=(now-8*24*HOUR)/1000,fetches=0;
+  const w=new WeatherService(db,{clock:()=>clock,fetcher:async()=>{fetches++;throw Error('No upstream calls');}}),key='forecast/39.0000,-77.0000',s=new ForecastStabilityService(w);
+  try{
+    const a=edition(now-8*24*HOUR,40).data,b=edition(now-18*HOUR,50).data;
+    await w.collect(key,1,async()=>a);
+    clock=(now-18*HOUR)/1000;const middle=await w.collect(key,1,async()=>b);
+    clock=now/1000;const current=await w.collect(key,1,async()=>a);
+    clock=(now+HOUR)/1000;await w.collect(key,1,async()=>a);
+    clock=(now+2*HOUR)/1000;await w.collect(key,1,async()=>edition(now+2*HOUR,90).data);
+    clock=(now+HOUR)/1000;const result=await s.compare(39,-77,'previous');
+    assert.equal(result.status,'compared');assert.equal(result.evidence.current.revision,current.revision);assert.equal(result.evidence.earlier.revision,middle.revision);
+    assert.equal(result.evidence.current.checked_at,iso(now+HOUR));assert.equal(result.collection_gap_hours,19);assert.equal(result.source_issue_moved_back,true);
+    assert.equal(result.rows[0].temperature_change_f,-10);assert.equal(fetches,0);
+    const missing=await s.compare(40,-77,'previous');assert.equal(missing.status,'unavailable');
+    assert.equal((await w.statement('SELECT COUNT(*) AS n FROM datasets WHERE name=?','forecast/40.0000,-77.0000').first()).n,0);
+  }finally{db.close();}
+});
+
+test('previous-version service does not revive a distinct edition outside the seven-day search',async()=>{
+  const db=database();let clock=(now-8*24*HOUR)/1000;
+  const w=new WeatherService(db,{clock:()=>clock}),key='forecast/39.0000,-77.0000',s=new ForecastStabilityService(w);
+  try{
+    await w.collect(key,1,async()=>edition(now-8*24*HOUR,40).data);
+    clock=now/1000;await w.collect(key,1,async()=>edition(now,50).data);
+    const r=await s.compare(39,-77,'previous');assert.equal(r.status,'unavailable');assert.equal(r.evidence.earlier,null);
+  }finally{db.close();}
+});
 test('archive service pins cutoffs, retains rollbacks, excludes later editions and performs no collection',async()=>{
   const db=database();let clock=(now-24*HOUR)/1000,fetches=0;
   const w=new WeatherService(db,{clock:()=>clock,fetcher:async()=>{fetches++;throw Error('No upstream call expected');}}),key='forecast/39.0000,-77.0000',s=new ForecastStabilityService(w);

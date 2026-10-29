@@ -24,7 +24,7 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
       catch(error){const entry={data:previous?.data?{...previous.data,stale:true}:null,retry:clock()+120000,error:error.message};cache.set(key,entry);return entry;}
       finally{pending.delete(key);if(cache.size>48){for(const candidate of cache.keys()){if(candidate!=='gauge/'+selected&&candidate!==region&&candidate!==(place?keyNear(place):null)){cache.delete(candidate);break;}}}}})();pending.set(key,work);return work;
   }
-  function show(){window.WeatherPersonal.show(false);visible=true;get('river-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;for(const [id,on] of [['nav-rivers',true],['nav-map',false],['nav-personal',false]]){get(id).classList.toggle('nav-active',on);get(id).setAttribute('aria-pressed',String(on));}}
+  function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);visible=true;get('river-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;for(const [id,on] of [['nav-rivers',true],['nav-map',false],['nav-personal',false]]){get(id).classList.toggle('nav-active',on);get(id).setAttribute('aria-pressed',String(on));}}
   function hide(){visible=false;get('river-workspace').hidden=true;get('nav-rivers').classList.toggle('nav-active',false);get('nav-rivers').setAttribute('aria-pressed','false');}
   async function search(point){
     let key;try{key=keyNear(point);}catch(error){get('river-list-status').textContent=error.message;return;}

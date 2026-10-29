@@ -14,6 +14,7 @@
   <script type="module" src="/hazards.js"></script>
   <script type="module" src="/air-trends.js"></script>
   <script type="module" src="/smoke.js"></script>
+  <script type="module" src="/smoke-map.js"></script>
   <script type="module" src="/rivers.js"></script>
   <script type="module" src="/river-changes.js"></script>
   <script type="module" src="/events.js"></script>
@@ -116,9 +117,21 @@
         <section><label class="layer-choice"><input type="checkbox" id="layer-air"><strong>PM2.5 observations</strong></label><p class="small">Colored circles show monitor AQI. Gray circles have missing or older observations; no interpolation between monitors.</p><p id="air-status" class="small" role="status">Enable to load AirNow monitors.</p><a href="https://www.airnow.gov/" target="_blank" rel="noopener">EPA / AirNow ↗</a></section>
         <section><label class="layer-choice"><input type="checkbox" id="layer-satellite"><strong>Satellite heat detections</strong></label><p class="small">NASA's imagery shows VIIRS thermal anomalies for the available UTC day. These are detected pixels, not fire boundaries.</p><p id="satellite-status" class="small" role="status">Enable to check NASA's available date.</p><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS / GIBS ↗</a></section>
       </div>
+      <section class="smoke-map-panel" aria-label="Modeled smoke forecast map">
+        <label class="layer-choice"><input type="checkbox" id="layer-smoke"><strong>Animate forecast smoke</strong></label>
+        <p class="small">NOAA RAP near-surface smoke · contiguous US · instantaneous model samples, separate from measured PM2.5 and AQI. Colors show concentration bands, not health categories. Transparent areas are unknown; gray means 0–&lt;1 µg/m³. Zooming enlarges a fixed regional image and adds no detail.</p>
+        <p id="smoke-map-status" class="small" role="status">Enable to view NOAA RAP forecast smoke.</p>
+        <div id="smoke-map-controls" hidden>
+          <div class="smoke-map-actions"><button id="smoke-map-play" class="action">Play hourly forecast</button><button id="smoke-map-refresh" class="text-button">Refresh model run</button><button id="smoke-map-fit" class="text-button">Show coverage region</button><button id="smoke-map-export" class="text-button" disabled>Export frame evidence</button></div>
+          <label for="smoke-map-hour">Forecast hour · next 48 hourly times</label><input id="smoke-map-hour" type="range" min="0" max="47" step="1" value="0" disabled><p id="smoke-map-time" class="small">No forecast selected</p>
+          <div id="smoke-map-legend" class="smoke-map-legend" aria-label="Modeled smoke concentration bands in micrograms per cubic metre"></div><p class="small">Bands in µg/m³; lower bound included, upper bound excluded. No interpolation between forecast hours or accumulation of exposure. The animation stops at the end; missing hours show no image.</p>
+          <label class="smoke-opacity">Overlay opacity <input id="smoke-map-opacity" type="range" min="10" max="90" step="5" value="55"><output id="smoke-map-opacity-value" for="smoke-map-opacity">55%</output></label>
+          <p class="small">Smoke valid time applies only to this overlay. Official alerts, fires and monitors retain their own timestamps. <a href="https://mapservices.weather.noaa.gov/raster/rest/services/air_quality/ndgd_smoke_sfc_1hr_avg_time/ImageServer" target="_blank" rel="noopener">NOAA source ↗</a></p>
+        </div>
+      </section>
       <p id="hazard-replay" class="warning-note" hidden>These layers show latest available data and are hidden during alert replay. Return to Live to restore them.</p>
       <div id="fire-browser" hidden><label class="hazard-search">Find a reported fire<input id="fire-search" type="search" placeholder="Incident, state or county"></label><p id="fire-count" class="small"></p><div id="fire-list" class="fire-list"></div></div>
-      <p class="small">Incident records and perimeters can lag conditions on the ground. Satellite overpasses, clouds and coverage gaps can hide fires. These layers do not show evacuation zones or a smoke forecast.</p>
+      <p class="small">Incident records and perimeters can lag conditions on the ground. Satellite overpasses, clouds and coverage gaps can hide fires. Fire and satellite layers do not show evacuation zones or predict spread. The separate smoke overlay shows model guidance.</p>
     </details>
   </section>
   <main id="map-workspace" class="workspace">
@@ -137,6 +150,7 @@
       <div id="map" role="region" aria-label="Map of US weather alerts"></div>
       <div class="map-heading"><span class="eyebrow" id="map-mode">LIVE CONDITIONS</span><strong id="region-name">United States</strong><span id="map-subtitle">Official alerts · affected areas</span></div>
       <div class="map-tools"><label class="sr-only" for="region">Map region</label><select id="region"><option value="conus">Lower 48</option><option value="alaska">Alaska</option><option value="hawaii">Hawaii</option><option value="puertorico">Puerto Rico / USVI</option><option value="guam">Guam / Marianas</option><option value="samoa">American Samoa</option></select><button id="fit" aria-label="Fit filtered alerts" title="Fit filtered alerts">⌖</button></div>
+      <div id="smoke-map-badge" class="smoke-map-badge" hidden></div>
       <div class="map-summary"><div><strong id="severe-count">—</strong><span>SEVERE / EXTREME</span></div><div><strong id="mapped-count">—</strong><span>ALERTS MAPPED</span></div></div>
       <div id="map-notice" class="map-notice" role="status" hidden></div>
       <div class="legend" aria-label="Map severity legend"><span><i class="extreme"></i>Extreme</span><span><i class="severe"></i>Severe</span><span><i class="moderate"></i>Moderate</span><span><i class="minor"></i>Minor / unknown</span></div>

@@ -60,9 +60,15 @@ Live adapters returned 253 fire incidents and 1,690 monitors on 2026-10-28. Auto
 tests cover pagination, units, missing values, freshness, outage retention, source
 allowlists, replay hiding, saved-place switching and NASA day selection. Browser
 automation remains blocked by the saved permission gate, so rendered interaction
-QA is still outstanding. Smoke transport forecasts, trends, gust-aware planning
-and evaluated exposure are subsequent work, not implemented by these layers.
+QA is still outstanding. Separate modules now provide smoke model guidance, measured monitor trends and
+gust-aware activity planning. Evaluated exposure remains unfinished.
 
 ## Hourly monitor history
 
 The My weather workspace now adds [24-hour measured air-quality trends](air-trends.md). It retrieves rolling EPA monitor history, keeps reported AQI separate from PM2.5 concentration, and exposes missing data and source evidence. This provides recent measured context; it is not a smoke forecast or an exposure estimate.
+
+## Smoke model overlay
+
+The same map now offers an opt-in [NOAA RAP smoke animation](smoke-forecasts.md#animated-smoke-map)
+with hourly selection, explicit concentration bands and a separate model valid time.
+Fire records, monitor measurements and satellite detections remain independent layers.

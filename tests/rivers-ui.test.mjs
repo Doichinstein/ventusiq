@@ -42,3 +42,5 @@ test('visible map gauges refresh while the river workspace is closed and label a
   const s=setup();await s.mounted.search({lat:37,lon:-91});s.nodes['river-region-map'].onclick();s.advance(901000);s.break();s.timers[0]();await s.mounted.load('near/37,-91');await Promise.resolve();
   assert.equal(s.attached.size,1);assert.match(s.nodes['river-map-status'].textContent,/updates delayed/);
 });
+
+test('entering this workspace suspends the main smoke animation',async()=>{const s=setup(),visibility=[];s.window.WeatherSmokeMap={setVisible:v=>visibility.push(v)};s.nodes['nav-rivers'].onclick();assert.deepEqual(visibility,[false]);});

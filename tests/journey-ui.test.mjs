@@ -36,3 +36,5 @@ test('unsupported editions do not expose a broken routing control',()=>{assert.e
 test('route-relevant alert zones load independently and retain official-zone attribution',async()=>{
   const s=setup('hosted',true);await s.mounted.run();assert.equal(s.requests.filter(p=>p==='/api/zones/forecast/ABC001').length,1);assert.match(s.nodes['journey-alerts'].textContent,/Wind Advisory/);assert.match(s.nodes['journey-alerts'].textContent,/Official zone coverage/);assert.doesNotMatch(s.nodes['journey-coverage'].textContent,/incomplete/);
 });
+
+test('entering this workspace suspends the main smoke animation',async()=>{const s=setup(),visibility=[];s.window.WeatherSmokeMap={setVisible:v=>visibility.push(v)};s.nodes['nav-journey'].onclick();assert.deepEqual(visibility,[false]);});

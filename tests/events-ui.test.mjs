@@ -31,3 +31,5 @@ test('reading a story stays stable across refresh ticks and leaving the workspac
 test('editions without a persistent hosted archive do not expose a broken archive control',()=>{
   const s=setup({mode:'direct'});assert.equal(s.mounted,null);assert.equal(s.nodes['nav-events'].hidden,true);
 });
+
+test('entering this workspace suspends the main smoke animation',async()=>{const s=setup(),visibility=[];s.window.WeatherSmokeMap={setVisible:v=>visibility.push(v)};s.nodes['nav-events'].onclick();assert.deepEqual(visibility,[false]);});

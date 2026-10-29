@@ -262,3 +262,14 @@ check after encryption. Suppression produces terminal `muted` history rather tha
 retrying after the interval. The shared wall-clock evaluator handles overnight
 and daylight-saving boundaries. Migration 0004 adds nullable policy fields, so
 existing subscriptions retain their prior behavior until users opt in.
+
+## Smoke forecast map
+
+`smoke-map-core.mjs` selects 48 explicit hourly slots from one catalog run,
+constructs a locked-raster NOAA export and validates the PNG envelope. A scaled
+floating-point raster feeds explicit concentration classification and color mapping.
+`smoke-map.js` owns opt-in animation, late-response isolation, six-frame memory,
+replay/navigation suspension and provenance export. The regional image lives below
+alert polygons in a non-interactive Leaflet pane. Its independent valid-time badge
+prevents a future smoke frame from relabeling current alert/monitor data. The hosted
+catalog endpoint shares existing D1 collection; source image pixels are not archived.

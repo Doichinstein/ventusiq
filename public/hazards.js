@@ -113,8 +113,8 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   window.WeatherHazards={
     snapshot(kind){const s=state[kind];return s?.data?{...s.data,stale:isDelayed(kind),error:s.error||s.data.error||null}:null;},
     updatePlace(value){place=value;renderPlace();window.WeatherAirTrends?.refresh();if(place){load('fires');load('air');}},
-    setReplay(value){replay=value;perimeterRequest++;map.closePopup();sync();},
-    showMap(value){get('hazard-workspace').hidden=!value;},
+    setReplay(value){window.WeatherSmokeMap?.setReplay(value);replay=value;perimeterRequest++;map.closePopup();sync();},
+    showMap(value){window.WeatherSmokeMap?.setVisible(value);get('hazard-workspace').hidden=!value;},
   };
   window.setInterval(()=>{for(const kind of Object.keys(sources)){if(get('layer-'+kind).checked||(place&&kind!=='satellite'))load(kind);status(kind);}if(state.air.data)draw('air');renderPlace();},60000);
   sync();window.WeatherHazards.showMap(!get('map-workspace').hidden);window.WeatherHazards.updatePlace(window.WeatherPersonal?.current());

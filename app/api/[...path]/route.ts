@@ -38,6 +38,7 @@ export async function GET(request:Request){
       return result?json(result):json({error:'No collected event at this time'},404);
     }
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));
+    if(path==='/api/smoke/catalog')return json(await new SmokeService(service).catalog());
     if(path==='/api/smoke/forecast')return json(await new SmokeService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/planning/grid'){
       try{return json(await new PlanningService(service).grid(url.searchParams.get('lat'),url.searchParams.get('lon')));}

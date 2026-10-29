@@ -62,7 +62,50 @@ This is a freshness convention, not a calibrated model accuracy score.
 The [activity planner](activity-planning.md) can now compare an optional ceiling
 against hourly smoke samples spanning each activity window. This uses the same
 product and does not certify continuous air conditions or personal exposure.
-There is no animated smoke map, Alaska/Hawaii adapter, HRRR comparison or validated
-exposure model yet. Browser rendering remains unverified because the saved
+The map now includes an optional hourly smoke animation, described below. An
+Alaska/Hawaii adapter, HRRR comparison and validated exposure model remain unfinished. Browser rendering remains unverified because the saved
 browser access setting blocks automated inspection. Numeric, source-contract,
 cache and UI state behavior have automated tests.
+
+## Animated smoke map
+
+Under **Fire & air**, enable **Animate forecast smoke**. The next 48 hourly times
+are selectable with a slider or a play/pause control. One latest non-future model
+run supplies the sequence; unavailable hours clear the overlay and explicitly
+remain unknown. The animation stops after its last hour and pauses when navigating
+away, hiding the browser tab or entering historical alert replay. A map badge
+shows the smoke valid time and model issue time independently of official alerts.
+The regional image covers 24–50°N and 125–66°W; zooming adds no spatial detail.
+
+`GET /api/smoke/catalog` reuses the shared hourly catalog already collected for
+point forecasts. No new schedule or database migration is required. Image requests
+go directly to NOAA from the browser. Each uncached frame first verifies its
+current catalog ID, subset, issue and valid time, then uses a locked-raster export
+with the same attribute filter. The catalog may survive in the shared archive
+longer than NOAA retains its images; expired or changed IDs are rejected.
+
+The renderer explicitly multiplies the raw field by 1e9 using floating-point
+Arithmetic before Remap and Colormap. Bands are 0–<1, 1–<5, 5–<15, 15–<40,
+40–<100 and 100–<1,000,000 µg/m³. Gray is the lowest band; transparent NoData or
+unsupported values mean unknown. These are display bands, not AQI or health
+categories. Direct classification of the tiny raw values produced incorrect
+colors in live verification, so scaling precedes classification. The default
+provider palette is not used. No interpolation between times or exposure integral
+is computed; spatial export uses nearest-neighbour resampling.
+
+Exports use an explicit Web Mercator extent with aspect adjustment disabled and
+1024×600 PNG output. Responses must have PNG signatures and matching dimensions;
+JSON error bodies mislabeled as PNG are rejected. Each download is bounded to
+5 MiB and 25 seconds. The browser holds at most six image URLs, releasing them on
+eviction, refresh or disabling. Frames load sequentially during playback with
+1.5 seconds between completed displays. No background prefetch runs after pause.
+
+**Export frame evidence** records the run, valid time, catalog revision, image
+request, bounds, scale, concentration bands and collection/loading times. It does
+not archive image pixels or guarantee future reproduction after the provider
+rotates data. A provider mutation between metadata validation and export remains
+a source-side consistency limit. Rendered browser interaction is still unverified.
+
+API contracts: [Esri Export Image](https://developers.arcgis.com/rest/services-reference/enterprise/export-image/),
+[Mosaic rules](https://developers.arcgis.com/rest/services-reference/enterprise/mosaic-rules/),
+and [raster functions](https://developers.arcgis.com/rest/services-reference/enterprise/raster-function-objects/).

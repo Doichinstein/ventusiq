@@ -64,7 +64,7 @@ associations, retains raw evidence and separates conflicting directions.
 `RiversService.network` shares the 15-minute collection/archive under
 `hazards/rivers/network/`; `river-network.js` provides explicit loading, related-gauge
 navigation, age labels and JSON export. It makes no address-watershed, travel-time
-or between-gauge stage inference. Full basin delineation remains future work.
+or between-gauge stage inference. Selected-place catchment and indexed-point basin delineation are now implemented separately; see [watershed methods](watersheds.md).
 
 
 `EventsService` stores CAP message identity separately from physical-event identity.
@@ -404,3 +404,15 @@ premise evidence without replicating full national polygons. Existing watch sett
 serialize unchanged when no compound rule is selected; no schema migration or
 new scheduler is needed. Shared forecast-rule validation now rejects ambiguous
 hour schedules, unsupported probability units and malformed wind inputs.
+
+
+### Selected-place watershed delineation
+
+`watershed-core.mjs` validates USGS point association, stream indexing and upstream
+geometry as a single evidence chain, retaining each raw product and request.
+`WatershedService` adds a bounded, explicit 24-hour cache using existing collector
+transactions and seven-day hazard retention. `watershed.js` renders provenance,
+JSON/GeoJSON exports and a separate map pane that clears with place changes and
+hides during replay. Shared request/daily limits protect the public processor;
+no schema, identity, subscription or scheduler change is needed. Address geocoding
+and basin-to-gauge validation remain separate from the geographic association.

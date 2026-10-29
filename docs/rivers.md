@@ -181,3 +181,12 @@ upstream lists. This spot check establishes those provider responses, not comple
 network coverage. Tests cover malformed/ambiguous products, bounded reads, retained
 revisions, failures, async selection changes and evidence export. Rendered browser
 QA remains unavailable under the existing saved permission setting.
+
+
+## Selected-place watersheds
+
+My weather now offers a separate [USGS watershed lookup](watersheds.md): containing
+catchment, indexed stream point, contributing-area polygon, approximate areas and
+JSON/GeoJSON exports. The map labels the indexed offset and local-only results.
+This does not connect a nearby NOAA gauge to the selected place; the existing
+proximity and network-association limitations still apply.

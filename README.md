@@ -52,6 +52,11 @@ NOAA upstream/downstream [gauge connections](docs/rivers.md#upstream-and-downstr
 let users navigate related gauges and export the original associations. Direction
 conflicts, incomplete coverage and stale checks remain explicit.
 
+**Watershed geography** links a selected place to its USGS catchment and indexed
+stream point, with an upstream-basin map, approximate areas and raw JSON/GeoJSON
+exports. It distinguishes local-only responses and unverified associations from
+full basin results. See [watershed methods and limits](docs/watersheds.md).
+
 **Rivers** adds regional NOAA/NWPS gauge search, nearby gauges for saved places,
 observed and forecast hydrographs, highest upcoming forecast samples, threshold
 crossing windows and official stage-based impact statements. Gauge markers can

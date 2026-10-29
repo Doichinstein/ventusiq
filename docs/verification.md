@@ -717,3 +717,42 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   unavailable under the saved browser restriction. Independent domain review,
   outcomes-based validation and additional compound-provider combinations remain
   roadmap work. Existing hourly upkeep and runtime secret revision are unchanged.
+
+
+## 2026-10-29 — Selected-place watershed geography
+
+- Added explicit USGS catchment/indexed-stream basin lookup in My weather, map
+  overlays and JSON/GeoJSON exports. Association requires matching COMIDs,
+  matching requested coordinates and catchment membership. Local-only polygons
+  remain distinct from full upstream basins; no gauge connection is inferred.
+- All 510 Node tests and 16 Python tests passed (526 total), including 14 new
+  watershed tests for source identity, malformed/oversized geometry, holes,
+  redirects, cache limits, outages, place-change races, exports and replay.
+  TypeScript and the production build passed.
+- The first built-Worker check found that the edge runtime rejects fetch's
+  `redirect: error`. The adapter now uses `manual` and rejects unsuccessful
+  statuses, including redirects. The complete regression suite passed after repair.
+- Built Worker HTTP checks using live USGS products succeeded at 39,-77 on
+  2026-10-29T04:32:15Z: COMID 22337721, indexed offset 107.36 m and upstream basin
+  approximately 1.6882 square km. Revision:
+  `67ea51b4a3ea9c1b1bc77736db48ed3e0eb39fc6fecd59aa563a08e98bc76f43`.
+- Madison at 43.0864,-89.35 succeeded at 2026-10-29T04:32:29Z: COMID 13294318,
+  indexed offset 325.12 m and upstream basin approximately 609.9654 square km.
+  Revision:
+  `2275af0cba2f4db924ecc130d8036326f38d7bd0af6521268af02e46b3a03759`.
+  Both selected points were inside the displayed basin. This is a two-location
+  provider-contract check, not a national accuracy or hydrologic validation.
+- Independent pyproj 3.8.0 WGS84 ellipsoidal polygon calculations gave 1.6896 and
+  611.0658 square km, respectively. The dashboard's approximate spherical areas
+  were 0.084% and 0.180% smaller. This checks the area calculation on those
+  geometries; it does not validate the source boundaries.
+- Sacramento at 38.5816,-121.4944 remained unavailable. Both lookup/index calls
+  succeeded, but USGS's split-catchment process returned HTTP 400 with an internal
+  five-second upstream read-timeout error. The dashboard endpoint returned 503
+  and did not substitute invented geometry. No successful Sacramento delineation
+  is claimed. Unsupported Hawaii coordinates returned HTTP 400; the page and both
+  new client modules returned HTTP 200.
+- No schema, scheduler, sign-in or runtime-secret changes were needed. Existing
+  hourly upkeep is unchanged. Browser rendering and direct-edition CORS verification
+  remain unavailable under the saved browser permission restriction. Interface
+  doubles and HTTP checks do not replace rendered map/control verification.

@@ -134,3 +134,21 @@ CAMS Global hourly samples with unknown model-run age. Blank limits preserve
 existing ranking; requested limits need current retrieval and complete bracketing
 samples to pass. Evidence retains raw arrays, selected samples and each limit
 result. No PM2.5 health threshold, AQI or continuous exposure is inferred.
+
+
+## Ozone and nitrogen-dioxide sample ceilings
+
+Optional ozone and NO₂ limits use the same explicit CAMS collection as PM2.5.
+Both fields are blank initially and are preserved across weather presets only
+when the user supplies them. Enter mass concentration in µg/m³; no default health
+threshold, ppb/ppm conversion or AQI is provided. Each requested pollutant checks
+all hourly samples from floor(start) through ceil(end), independently of smoke
+and particles. A known exceedance fails even if another sample is missing;
+incomplete or stale data cannot pass. Blank fields do not affect ranking.
+
+The report includes separate maxima, sample tables, coverage flags and raw source
+evidence. Gas limits do not change with temperature/wind/rain margin scenarios.
+A window fit covers the selected numeric checks, not total air-quality safety,
+continuous exposure or model accuracy. SO₂, CO and PM10 remain forecast context
+in this release; they have no activity ceiling fields. The source's regional
+resolution and unknown model-run age remain explicit.

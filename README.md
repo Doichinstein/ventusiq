@@ -38,10 +38,11 @@ forecasts, paired valid times, separate run ages and downloadable raw evidence.
 A separate [NOAA RAP smoke forecast](docs/smoke-forecasts.md) shows modeled near-surface
 concentrations at future hourly times, with coverage gaps, run age and evidence export.
 
-**Total particulate forecasts** add explicit CAMS Global PM2.5/PM10 loading,
-48-hour sample ranges/tables and an optional total-PM2.5 ceiling for activity
+**Particle and gas forecasts** add explicit CAMS Global PM2.5, PM10, ozone, NO₂,
+SO₂ and CO loading, per-pollutant 48-hour ranges/coverage and optional PM2.5,
+ozone and NO₂ sample ceilings for activity
 windows. The source is separate from smoke and measured monitor data; model-run
-age is unknown. See [particulate methods and provider terms](docs/particulate-forecasts.md).
+age is unknown. See [air-quality methods and provider terms](docs/particulate-forecasts.md).
 
 **Archived PM2.5 comparisons** pair earlier forecasts with later nearby monitor
 readings and a previously archived persistence baseline. Missing hours, source

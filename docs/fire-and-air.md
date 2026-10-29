@@ -78,7 +78,12 @@ with hourly selection, explicit concentration bands and a separate model valid t
 Fire records, monitor measurements and satellite detections remain independent layers.
 
 
-My weather now provides [modeled total PM2.5 and PM10](particulate-forecasts.md)
+My weather now provides [modeled particles and gases](particulate-forecasts.md)
 through an explicit CAMS Global/Open-Meteo load. These concentrations are separate
 from measured AirNow values and smoke-only products. Source-run age is unknown;
 provider attribution and noncommercial API access terms are visible in the UI.
+
+The air-quality card includes PM2.5, PM10, ozone, nitrogen dioxide, sulphur dioxide
+and carbon monoxide with separate ranges, hourly samples and coverage. All use
+µg/m³; these modeled gas fields are not measured gas monitors or AQI. Optional
+ozone and NO₂ ceilings join activity planning; SO₂ and CO remain context.

@@ -467,3 +467,15 @@ An explicit hosted card exports sources, coverage and exclusions; collection is
 on demand under the existing provider quotas, with no new schema or schedule.
 Regional instantaneous samples and preliminary monitor concentrations have
 different spatial and temporal support. See [method and limitations](particulate-comparison.md).
+
+
+### Six-pollutant source and gas activity checks
+
+Air-forecast method `2026-10-29.2` requests PM2.5, PM10, O₃, NO₂, SO₂ and CO in one
+fixed global-source call. New collections require coherent arrays and µg/m³ units
+for all six variables. Older particle-only archives remain readable with unknown
+gas values; first explicit access upgrades the cache under existing quotas and
+preserves immutable earlier checks. The card gives per-pollutant coverage and raw
+exports. Planning adds independent optional ozone/NO₂ sample ceilings, evidence
+and coverage while leaving full air-quality/exposure coverage unproven. No new
+schema or unattended collection is introduced.

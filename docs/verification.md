@@ -910,3 +910,37 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   support; model-run age remains unknown. Broader independent evaluation remains
   open. No schema, secret, watch or hourly upkeep changes were introduced.
 - Browser rendering remains unverified under the saved permission restriction.
+
+## Particle and gas forecasts — 2026-10-29
+
+- Extended the fixed CAMS Global request to six pollutants: PM2.5, PM10, O₃,
+  NO₂, SO₂ and CO. New responses require all six aligned arrays and µg/m³ units.
+  The card displays separate ranges, 49-hour-position coverage and exact hourly
+  values, preserving missing samples. Old particle-only editions remain readable
+  with unknown gas fields. No AQI, ppb/ppm conversion or health threshold is added.
+- Optional ozone and NO₂ ceilings join activity ranking, window sample tables
+  and source exports. Empty limits are not requested; zero is a real limit.
+  Missing/stale/wrong-place data cannot pass; known exceedances remain failures
+  despite gaps. Each pollutant is evaluated separately, without adding gases,
+  particles or smoke together. Full air-quality/exposure coverage remains false.
+- The first explicit request upgrades an older cached method under the existing
+  lease and provider quotas, retaining immutable prior checks. Failed upgrades
+  keep labeled old evidence and respect the two-minute retry backoff. No schema,
+  secret or unattended upkeep change was needed.
+- 563 Node and 19 Python tests passed (582 total), including ten new checks for
+  gas-unit substitutions, missing and invalid samples, old-edition compatibility,
+  fresh-response contracts, sample bracketing, independent ranking, optional
+  preferences, explicit UI persistence/export and successful/failed cache upgrades.
+  TypeScript and the production build passed.
+- Built Worker live-source check at 39,-77 returned HTTP 200, method
+  `2026-10-29.2`, checked at 2026-10-29T05:25:18Z, revision
+  `0eb34a426a8013f4927c579334c0a7ec2abc87878b0a8aac4322834822576df0`.
+  All six pollutants had 72 valid hourly samples and reported µg/m³. The two-hour
+  test activity was bracketed by 05:00–08:00Z samples: O₃ 34,35,35,33 and NO₂
+  24.3,21.5,20.7,21.7. The arbitrary test ceilings 60 and 10 respectively produced
+  a numerical fit and exceedance. These are integration checks, not recommended
+  health limits or measured model accuracy; run age stayed unknown.
+- The page and modified UI modules returned HTTP 200; invalid forecast
+  coordinates returned 400. Browser rendering/direct-source CORS remain
+  unverified under the saved permission restriction. Observed gas evaluation,
+  identified model runs and continuous exposure assessment remain outstanding.

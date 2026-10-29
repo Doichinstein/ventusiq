@@ -1,4 +1,9 @@
 import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
+export const upkeepStatus = sqliteTable('upkeep_status', {
+  id:integer('id').primaryKey(), startedAt:integer('started_at'), completedAt:integer('completed_at'),
+  outcome:text('outcome'), phases:text('phases'), nextRun:integer('next_run').notNull().default(0),
+  leaseToken:text('lease_token'), leaseUntil:integer('lease_until').notNull().default(0),
+});
 export const placeLibraries = sqliteTable('place_libraries',{
   owner:text('owner').primaryKey(),revision:text('revision').notNull(),places:text('places').notNull(),updatedAt:integer('updated_at').notNull(),
 });

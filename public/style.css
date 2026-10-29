@@ -50,3 +50,5 @@
 .watershed-map-key{position:absolute;z-index:450;left:18px;bottom:130px;max-width:310px;background:#0a0a0cf0;border:1px solid #c88ce4;border-radius:5px;padding:10px 12px;font-size:11px;line-height:1.5}.watershed-map-key button{display:block;margin-top:7px}.watershed-map-key[hidden]{display:none}#watershed-results td,#watershed-results th{white-space:normal;overflow-wrap:anywhere}@media(max-width:700px){.watershed-map-key{left:12px;right:12px;bottom:125px;max-width:none;font-size:10px}}
 
 #address-card{margin:18px 0;border-top:1px solid #303038;padding-top:14px}#address-form label{display:block;font-size:12px}#address-input{width:100%;margin:6px 0 10px;padding:9px;background:#101014;color:inherit;border:1px solid #555563;border-radius:4px}.address-match{padding:10px 0;border-bottom:1px solid #303038;overflow-wrap:anywhere}.address-match strong{font-size:12px}.address-match button{margin-top:6px}
+
+#upkeep-status{max-width:380px;line-height:1.5}@media(max-width:700px){.network>div{flex-wrap:wrap}#upkeep-status{flex-basis:100%;max-width:none}}

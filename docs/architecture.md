@@ -42,6 +42,12 @@ forecast cache currently admits up to approximately 1,000 distinct requested poi
 watches enforce four per owner and 64 globally. Broader rollout needs a capacity
 review and archive retention/export.
 
+`UpkeepService` adds a shared 90-second lease and 60-second completion cooldown
+around watch evaluation and push/webhook processing. A singleton `upkeep_status`
+row preserves completion and coarse phase outcomes without public account data.
+Health reads remain passive; dispatcher completion does not establish individual
+delivery or watch coverage. See [upkeep semantics](collector-schedule.md#shared-processing-status).
+
 ## Data contracts shared by the ten features
 
 `hazards-core.mjs` supplies the fire, air-monitor and NASA date adapters shared by

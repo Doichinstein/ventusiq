@@ -17,6 +17,7 @@ const regions = {
 let features = [], filtered = [], changes = [], snapshots = [], selected = null;
 let category = 'all', feedMode = 'alerts', replayAt = null, lastSuccess = null, lastError = null;
 let refreshing = false, replayLoading = false, snapshotGeneration = 0, nextFetch = 0, lastSourceUpdated = null, liveData = null;
+let upkeepStatus = null, upkeepStatusCheckedAt = 0;
 const directHistory = [], geometry = new Map(), zoneCache = new Map(), zoneFailed = new Map();
 let zoneQueue = [], zonePending = new Set(), zoneActive = 0, geometryTimer = null;
 const map = L.map('map', {zoomControl: false, preferCanvas: true, minZoom: 2, maxZoom: 14, worldCopyJump: true});
@@ -110,6 +111,8 @@ async function refresh() {
       const health = await request('/api/health');
       lastSuccess = health.last_success ? new Date(health.last_success * 1000).toISOString() : null;
       lastError = health.last_error;
+      upkeepStatus = health.upkeep || null;
+      upkeepStatusCheckedAt = Date.now();
       const [history, changeData] = await Promise.all([request('/api/history'), request('/api/changes')]);
       snapshots = history.snapshots;
       changes = changeData.changes;
@@ -135,6 +138,16 @@ async function refresh() {
   }
 }
 function updateHealth() {
+  const upkeep = $('upkeep-status');
+  upkeep.hidden = !upkeepStatus;
+  if (upkeepStatus) {
+    const completed = upkeepStatus.completed_at == null ? null : upkeepStatus.completed_at * 1000;
+    const stamp = completed == null ? '' : ` · last finished ${dateText(completed, true)}`;
+    const labels = {never:'Upkeep awaiting its first run',running:'Upkeep processing',interrupted:'Upkeep interrupted; awaiting retry',partial:'Upkeep finished with a processing error',overdue:'Upkeep has not finished in over 75 minutes',finished:'Upkeep finished'};
+    const stale = Date.now() - upkeepStatusCheckedAt > 90000;
+    const state = completed != null && upkeepStatus.state === 'finished' && Date.now() - completed > 4500000 ? 'overdue' : upkeepStatus.state;
+    upkeep.textContent = (stale ? 'Upkeep status unavailable; last known: ' : '') + (labels[state] || 'Upkeep status unavailable') + stamp;
+  }
   const age = lastSuccess ? (Date.now() - Date.parse(lastSuccess)) / 1000 : Infinity;
   const delayed = !!lastError || age > 90;
   $('status-dot').className = `status-dot ${!lastSuccess ? 'loading' : delayed ? 'stale' : ''}`;

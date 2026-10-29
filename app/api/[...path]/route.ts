@@ -1,4 +1,5 @@
 import {RoadworkService} from '../../../lib/roadwork-service.mjs';
+import {UpkeepService} from '../../../lib/upkeep-service.mjs';
 import {StationHistoryService} from '../../../lib/station-history-service.mjs';
 import {OzoneService} from '../../../lib/ozone-service.mjs';
 import {StormHistoryService} from '../../../lib/storm-history-service.mjs';
@@ -36,7 +37,10 @@ import { pushGet,pushPost } from '../../../lib/push-http.mjs';
 import { watchGet,watchPost } from '../../../lib/watch-http.mjs';
 
 function pushService(weather:WeatherService){let jwk=null;try{jwk=JSON.parse(env.VENTUSIQ_VAPID_PRIVATE_JWK||'null');}catch{}return new PushService(weather,{jwk});}
-async function upkeep(weather:WeatherService,alerts:any){await new WatchService(weather).upkeep(alerts);await Promise.all([pushService(weather).dispatch(),new WebhookService(weather).dispatch()]);}
+async function upkeep(weather:WeatherService,alerts:any){return new UpkeepService(weather,{
+  watches:(value:any)=>new WatchService(weather).upkeep(value),
+  push:()=>pushService(weather).dispatch(),webhooks:()=>new WebhookService(weather).dispatch(),
+}).run(alerts);}
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
 export async function GET(request:Request){
@@ -110,7 +114,7 @@ export async function GET(request:Request){
     if(path==='/api/history/storms/catalog')return json(await new StormHistoryService(service).catalog());
     if(path==='/api/history/storms/counties')return json(await new StormHistoryService(service).counties(url.searchParams.get('state')));
     if(path==='/api/history/storms')return json(await new StormHistoryService(service).search(Object.fromEntries(url.searchParams)));
-    if(path==='/api/health')return json(await service.health());
+    if(path==='/api/health'){const [health,upkeep]=await Promise.all([service.health(),new UpkeepService(service).status()]);return json({...health,upkeep});}
     if(path==='/api/alerts'){
       if(url.searchParams.has('at')){const result=await service.read('alerts/us',atTime(url.searchParams.get('at')));return result?json({...result.data,collected_at:result.checked_at}):json({error:'No collected snapshot at that time'},404);}
       let result;try{result=await service.alerts();}catch(error){after(()=>upkeep(service,null));throw error;}

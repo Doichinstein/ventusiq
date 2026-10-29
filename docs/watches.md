@@ -54,8 +54,8 @@ responses omit the token, owner ID and exact coordinates and disable caching/ind
 Replacing, revoking or deleting the watch invalidates the previous link. Paused
 watches retain readable history until expiry. Feed readers decide when to poll;
 the feed itself is not push delivery. A separate [browser push](browser-push.md)
-control explicitly enrolls devices for future watch changes. Email, SMS and
-webhooks are not implemented.
+control explicitly enrolls devices for future watch changes. Email and SMS are
+not implemented. Signed webhooks require separate explicit enrollment below.
 
 Self-hosters using the Worker edition must replace the Sites identity integration
 with a trusted identity gateway that strips incoming identity headers and injects

@@ -83,6 +83,20 @@ test('outage retains alerts and marks data delayed',async()=>{
   assert.match(els['map-notice'].textContent,/last successful/);
 });
 
+test('upkeep status distinguishes processing, errors, overdue and stale health without claiming delivery',async()=>{
+  const {els,run}=await setup('hosted');
+  assert.equal(els['upkeep-status'].hidden,true);
+  run("upkeepStatus={state:'running',completed_at:null};upkeepStatusCheckedAt=Date.now();updateHealth()");
+  assert.equal(els['upkeep-status'].hidden,false);assert.match(els['upkeep-status'].textContent,/processing/);
+  run("upkeepStatus={state:'partial',completed_at:Date.now()/1000};updateHealth()");
+  assert.match(els['upkeep-status'].textContent,/processing error/);
+  run("upkeepStatus={state:'finished',completed_at:Date.now()/1000-4501};updateHealth()");
+  assert.match(els['upkeep-status'].textContent,/75 minutes/);
+  run('upkeepStatusCheckedAt=Date.now()-91000;updateHealth()');
+  assert.match(els['upkeep-status'].textContent,/status unavailable; last known/);
+  assert.doesNotMatch(els['upkeep-status'].textContent,/delivered|all.clear/);
+});
+
 test('session replay returns to cached live state without extra upstream fetch',async()=>{
   const {els,run,setData}=await setup();
   const newData=payload([fixture('three','Tornado Warning','Extreme')]);

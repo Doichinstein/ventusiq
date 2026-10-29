@@ -31,8 +31,8 @@ Live alert reads also register background evaluation of explicitly enrolled
 existing hourly task without enrolling any visitor automatically. Last-check times
 on individual watches show actual execution. The subsequent push queue drain is
 bounded and does not confirm device display; see [browser push](browser-push.md).
-`/api/health` describes shared source
-collection, not completion of every watch. Fire/air products and un-enrolled place
+`/api/health` describes shared source collection and the latest upkeep pass,
+not completion of every watch. Fire/air products and un-enrolled place
 forecasts continue to refresh on demand.
 
 During setup, direct service requests to the production alert, health and forecast
@@ -46,3 +46,38 @@ their owner's watches. Initial baselines stay quiet. Existing upkeep drains the
 webhook and push queues concurrently after watch evaluation; no additional schedule
 is needed. Destination pauses cancel queued updates, and browser push quiet hours
 do not apply to webhooks. HTTP acceptance does not prove downstream execution.
+
+## Shared processing status
+
+`UpkeepService` coordinates the watch, push and webhook pass through one D1 row
+in migration `0007`. A 90-second lease prevents overlapping passes across
+isolates; a 60-second cooldown starts at completion. Individual watch and delivery
+leases still guard their own work. A terminated Worker leaves an expired lease,
+reported as `interrupted`; a later request can reclaim it. A superseded Worker
+cannot overwrite a newer pass's completion. Watch creation may wait for this
+cooldown or the next alert request before its first evaluation.
+
+Watch evaluation runs first. Push and webhook processing then run concurrently,
+even if the watch phase threw. Each phase records `finished` or `failed`; errors
+are not exposed publicly. `finished` means the bounded dispatcher returned. It
+does not mean every due watch was evaluated, every provider succeeded, a queue is
+empty, or a notification arrived. Per-watch coverage and owned delivery records
+remain the authority for those outcomes. Direct dispatch after push/webhook
+management remains independently protected by per-delivery leases and is not a
+full upkeep pass.
+
+Read-only `/api/health.upkeep` returns `state`, `started_at`, `completed_at`,
+`last_outcome`, `phases` and `age_seconds`. Times are Unix seconds. Before the first
+pass, times and phases are null and state is `never`. State can also be `running`,
+`interrupted`, `finished`, `partial`, or `overdue` (no completed pass for over
+75 minutes). During a new pass, completion and phases describe the previous pass.
+The singleton retains the latest completion, not an execution history. No account
+counts, locations, destinations, credentials or raw errors appear in this response.
+
+The dashboard shows upkeep separately from NWS collection freshness and marks its
+cached status unavailable after 90 seconds without a successful health read.
+Reading health does not initiate collection or upkeep. For operational verification,
+request alerts through the authorized task path, then read health after background
+processing finishes. Check both source timestamps and upkeep completion. A run
+does not identify whether its caller was a visitor or the hourly task, so it cannot
+alone prove unattended scheduling. The existing hourly schedule is unchanged.

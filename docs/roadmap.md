@@ -20,6 +20,9 @@ The hosted runtime now includes shared collection and a persistent D1 archive.
 Collection runs on demand with an hourly Sites archive-upkeep task configured for
 the public deployment. Scheduled execution must be checked using actual collection
 timestamps. Explicit owned watches now reuse this upkeep; see [watches](watches.md).
+A shared pass lease and public completion/interruption status now expose background
+processing health separately from source freshness. Actual unattended task execution
+and individual notification delivery still need independent verification.
 Browser push is implemented but real closed-browser display remains unverified.
 Signed [webhooks](webhooks.md) are implemented; real external receiver delivery remains unverified.
 Self-hosted Python supports `--watch LAT,LON` background point-forecast collection.

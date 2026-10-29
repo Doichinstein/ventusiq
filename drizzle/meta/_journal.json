@@ -50,6 +50,13 @@
       "when": 1793252511830,
       "tag": "0006_bright_iron_man",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1793257639591,
+      "tag": "0007_illegal_tarot",
+      "breakpoints": true
     }
   ]
 }

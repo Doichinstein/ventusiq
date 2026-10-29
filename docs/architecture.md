@@ -514,3 +514,15 @@ area/date selection and exact evidence export. `analogs.js` supplies comparable
 dates for an optional two-day lookup, without inferring area membership or
 impact probability. Existing seven-day hazard edition retention and leases apply;
 no new schema or schedule is needed. See [methods](storm-history.md).
+
+### Agency work-zone proximity
+
+`RoadworkService` collects three fixed agency WZDx feeds under shared leases,
+stream/geometry bounds and bounded edition retention. `roadwork-core.mjs` preserves
+source semantics and uses a route-segment bounding-volume tree plus capsule
+intersections to find approximate 250 m proximity intervals, including stops.
+Each departure applies source event dates and freshness without inferring roadway
+identity or a route closure. `journey-roadwork.mjs` renders records and source
+geometry and keeps failed sources separate from available weather. The main
+journey export includes every selected raw feed edition. No schema, runtime
+secret or schedule changes were needed. See [methods](journey-roadwork.md).

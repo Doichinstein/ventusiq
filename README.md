@@ -67,6 +67,11 @@ errors and empirical spread coverage. See [analog validation](docs/historical-an
 Forecast track records now separate 6–72 hour lead groups and compare errors on
 identical observation hours, with coverage and daily summaries. See [verification methods](docs/observations.md#forecast-errors-by-lead-time).
 
+Optional [agency work-zone context](docs/journey-roadwork.md) adds Maryland, Iowa
+and Washington feed evidence near the timed route, with source geometry, lane
+status, freshness, date verification and raw exports. Proximity does not establish
+closure of the route's road or direction.
+
 Journey planning supports up to three ordered via points with timed stops, including
 weather samples during each stay and stop-aware alert overlaps. Optional RAP smoke
 samples bracket travel times, with separate coverage, user limits and source exports. See [journey methods](docs/journeys.md).

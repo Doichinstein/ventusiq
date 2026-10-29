@@ -1,5 +1,44 @@
 # Verification record
 
+## Agency work-zone journey context — 2026-10-29
+
+- Added optional Maryland DOT SHA, Iowa DOT and Washington State DOT WZDx sources,
+  shared collection, full timed-route proximity, departure/stop-aware date windows,
+  map geometry, source records and raw-feed export. All-lanes-closed, partial-lane
+  and other impacts retain agency direction; route road identity is not inferred.
+- 613 Node and 19 Python tests passed (632 total), plus TypeScript and production
+  build. Thirteen new tests cover source contracts, duplicate conflicts, unknown
+  source IDs, narrow/parallel crossings, stops, endpoint-only geometry, date windows,
+  stale/future timestamps, cancellation and flag precedence, date-line omission,
+  capacity, cache outages/retention and optional UI/export integration.
+- Built Worker live collection at 2026-10-29T06:20:13Z loaded 102 Maryland,
+  866 Iowa and 449 Washington source records. Maryland and Iowa were within the
+  freshness limits. Washington's generated time was 2026-10-28T20:54:22.339Z and
+  was correctly treated as delayed despite its successful new collection.
+- Every Maryland record's `data_source_id` differed from the ID listed in its
+  feed header; all 102 were flagged as unlisted rather than silently resolved.
+  Four conflicting Washington rows were excluded. Fixed source-feed attribution
+  remains separate from those per-record identity issues.
+- A real cached OSRM Washington–Baltimore route covered 62.8115 km with 1,262
+  vertices. The evaluator performed 24 candidate segment checks in 15 ms in the
+  Node QA process and found two Maryland records near the projected passage.
+  The first was `2400be20893601ce006ad32ec4235c0a_E`, US50 / JOHN HANSON HWY,
+  reporting some lanes closed. Its approximate passage window was
+  2026-10-29T07:33:26.555Z–07:33:41.259Z. This is a proximity integration result,
+  not verification that the route uses the affected road or direction.
+- Maryland revision:
+  `99de056f60bc02405800aab50a9a135ed2d3c5c3fe92253082c24153ad273112`;
+  Iowa: `c9d945af3f2c839833e6cad7967abac5ca29fba4887e5273999d68dc5988a0df`;
+  Washington: `0fe274a9c6bf67c67069a8ad0c1067cff968d92fc9c335214dc5c25f19d6951b`.
+  The route revision was
+  `3e0c5ca9f8ad005b045e0d368e1e0d4dd9cc8d67f1be9bac53bbb1a725db11a1`.
+- The page and new browser modules returned 200. Unknown provider names, including
+  `constructor`, returned 400 without an arbitrary outbound request. No migration,
+  secrets, schedules or visitor subscriptions were added. Browser rendering remains
+  unverified under the saved permission restriction. Broader coverage, road-network
+  matching and confirmed route closure attribution remain open; see
+  [source semantics and proximity limits](journey-roadwork.md).
+
 ## Recorded NOAA impact context — 2026-10-29
 
 - Added explicit NOAA Storm Events searches for one state/DC, optional county

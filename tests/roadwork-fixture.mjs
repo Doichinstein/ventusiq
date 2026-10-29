@@ -1,0 +1,4 @@
+export const roadNow=Date.parse('2026-10-29T06:00:00Z');
+export function roadFeature(id='work-1',geometry={type:'LineString',coordinates:[[-77.01,39],[-76.99,39]]}){return {type:'Feature',id,geometry,properties:{core_details:{event_type:'work-zone',data_source_id:'agency',road_names:['Test road'],direction:'eastbound',description:'Agency closure <b>record</b>',update_date:new Date(roadNow).toISOString()},vehicle_impact:'all-lanes-closed',start_date:new Date(roadNow).toISOString(),end_date:new Date(roadNow+3600000).toISOString(),is_start_date_verified:true,is_end_date_verified:false}};}
+export function roadRaw(features=[roadFeature()]){return {type:'FeatureCollection',feed_info:{publisher:'Maryland DOT SHA',version:'4.1',update_date:new Date(roadNow).toISOString(),data_sources:[{data_source_id:'agency'}]},features};}
+export const roadRoute={vertices:[{coordinate:[-77,38.99],elapsed:0},{coordinate:[-77,39.01],elapsed:1200}],duration:1200};

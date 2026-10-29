@@ -74,9 +74,11 @@ journey refreshes them explicitly.
 ## Limits and next work
 
 This is weather exposure planning, not navigation, an evacuation route or a
-verified road-closure service. No closure source is currently integrated, and
-the UI makes no closure/open-road claim. Evaluated personal smoke exposure,
-road-surface conditions, traffic-aware timing and closure attribution remain
+verified road-closure service. Optional agency work-zone feeds now provide
+reported lane impacts near the timed route, with explicit source attribution.
+Proximity does not establish route road/direction identity or open-road status.
+Evaluated personal smoke exposure, road-surface conditions, traffic-aware timing
+and verified route closure attribution remain
 future additions. Automated rendered QA is still unavailable. The Python/static
 editions do not yet expose hosted routing.
 
@@ -201,3 +203,12 @@ those limitations; refresh the comparison for newer sources. HRRR is not fetched
 for every route point in this increment; its separate place comparison remains
 available. Measured-exposure evaluation and total-air-quality forecasts remain
 future work.
+
+## Agency work zones
+
+Select Maryland, Iowa or Washington before comparing to include agency work-zone
+reports near the full timed route and stops. All three departures share the same
+source editions, with date-window intersections, source age, reported lane status,
+geometry display and raw evidence export. Endpoint-only records remain separate
+locations. Missing, stale, cancelled and unknown coverage cannot establish an open
+road. See [proximity methods, attribution and limits](journey-roadwork.md).

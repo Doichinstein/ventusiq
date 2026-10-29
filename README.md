@@ -242,16 +242,26 @@ dependency-free and does not require a frontend build. For the hosted edition:
 ```sh
 npm ci
 npm run build
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_daily_thor.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_polite_mentallo.sql
-node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_mixed_dexter_bennett.sql
+npm run db:local
 npm start
 ```
 
-Apply a migration once to each local database. Additional schema changes use
-`npm run db:generate`; applied migrations are immutable. Production migrations
-are packaged by the retained Sites integration and applied during publication.
-Never copy local `.wrangler` state or secrets into a deployment archive.
+`npm run db:local` applies every pending migration and verifies the resulting
+schema. Run it again after pulling schema changes and rebuilding; repeated runs
+are safe. Stop local servers before upgrading. A fresh setup needs no Cloudflare
+account, deployment, or production credentials.
+
+For a database created with the earlier manual SQL instructions, run
+`node scripts/migrate-local.mjs --adopt-existing` once. This verifies an exact
+historical schema, creates an integrity-checked local SQLite backup, records the
+recognized migrations and applies only the remaining ones. Existing weather
+records are retained. A schema mismatch stops the upgrade. See
+[local development and recovery](docs/local-development.md) for details.
+
+Additional schema changes use `npm run db:generate`; applied migrations are
+immutable. Production migrations are packaged by the retained Sites integration
+and applied during publication. Never copy local `.wrangler` state, backups or
+secrets into a deployment archive.
 
 ## Deploy the daemon edition to your domain
 

@@ -1915,3 +1915,25 @@ Local rendered QA: the public Washington test point selected College Park Airpor
 (KCGS), completed the new comparison with 56 missing archive targets, and displayed
 null/unknown errors, collection-time requirements and model-grid distance. No
 browser warning or error was reported. Account testing remains owner-deferred.
+
+
+## Repeatable local D1 setup - v80
+
+- Replaced the README's first-three-only manual SQL recipe with `npm run db:local`,
+  which discovers and validates the complete Drizzle journal and delegates pending
+  local migrations to Wrangler. Production schema/publication behavior is unchanged.
+- Legacy manual databases require explicit adoption of one exact schema prefix.
+  Unknown schema/ledger changes and unverifiable data migrations stop the command.
+  Existing databases receive integrity-checked SQLite snapshots before upgrades.
+- Seven automated tests cover every current prefix, idempotency, drift, data-change
+  refusal, record preservation and rejected remote flags. Real local D1 drills
+  passed fresh eight-migration setup, adoption of three existing migrations,
+  preservation of a sentinel in both backup and upgraded database, and no-op reruns.
+- The actual checkout was two migrations into the journal. All six pending
+  migrations applied, with hashes of all 4,229 pre-existing application rows across
+  nine tables unchanged. The former upkeep-status table error is gone; local
+  alerts and health HTTP requests returned 200. These checks do not verify real
+  signed-in sync or notification delivery, which remain owner-deferred.
+- A follow-up local health request reported fresh alert data and a finished
+  upkeep pass, with watch, push and webhook processing phases all finished on the
+  empty local account queues. No missing-table error appeared in server logs.

@@ -1,3 +1,4 @@
+import {airFixture} from './air-forecast-fixture.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -35,3 +36,5 @@ test('mounted smoke panel refreshes planner on collection and clears evidence on
  await s.settle();assert.match(s.nodes['plan-results'].textContent,/smoke-sample ceiling met/);assert.equal(s.window.WeatherSmoke.snapshot().revision,'smoke-fixture');
  s.context.place=null;panel.refresh();assert.equal(s.window.WeatherSmoke.snapshot(),null);assert.equal(s.nodes['plan-results'].textContent,'');assert.equal(s.nodes['plan-export'].disabled,true);
 });
+
+test('total PM2.5 opt-in survives presets, changes the plan and keeps its own evidence',async()=>{const s=await setup(),p=airFixture(Date.parse(s.context.forecast.checked_at));s.window.WeatherAirForecast={snapshot:()=>p};s.nodes['plan-pm25'].value=10;s.nodes['planner-form'].onsubmit({preventDefault(){}});assert.equal(s.prefs().pm25,10);assert.match(s.nodes['plan-results'].textContent,/PM2.5 sample ceiling met/);assert.match(s.nodes['plan-results'].textContent,/Model-run age is unknown/);s.nodes['plan-preset'].value='walk';s.nodes['plan-preset'].onchange();assert.equal(s.nodes['plan-pm25'].value,10);s.nodes['plan-export'].onclick();assert.equal(JSON.parse(await s.exported().text()).sources.air_forecast.revision,'air-fixture');p.stale=true;s.mounted.refresh();assert.match(s.nodes['plan-results'].textContent,/Modeled total PM2.5 samples: missing/);s.nodes['plan-pm25'].value='';s.nodes['planner-form'].onsubmit({preventDefault(){}});assert.equal(s.prefs().pm25,null);});

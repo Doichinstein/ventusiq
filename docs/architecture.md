@@ -442,3 +442,16 @@ selected basin from the existing watershed module, invalidates late replies and
 exports both evidence chains plus explicit NOAA resolutions. It reuses the river
 workspace for current observations/forecasts instead of inferring activity from
 network membership. No additional watches, schedules or schema are introduced.
+
+
+### Total particulate forecasts in planning
+
+`air-forecast-core.mjs` fixes the CAMS Global source contract, validates raw
+location/time/unit metadata and compares bracketing PM2.5 samples with optional
+user limits. `AirForecastService` reuses bounded D1 collection and revision storage;
+no background enrollment is introduced. `air-forecast.js` explicitly loads and
+exports the product and notifies the planner on updates, removals or failure.
+`planning-core.mjs` adds a separate PM2.5 check/coverage field and source evidence;
+smoke, monitor observations and total particulate concentrations remain distinct.
+Missing model-run identity is carried through the view and exports. The card and
+planner retain provider attribution; application and data-access terms stay separate.

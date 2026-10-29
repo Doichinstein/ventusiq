@@ -38,6 +38,11 @@ forecasts, paired valid times, separate run ages and downloadable raw evidence.
 A separate [NOAA RAP smoke forecast](docs/smoke-forecasts.md) shows modeled near-surface
 concentrations at future hourly times, with coverage gaps, run age and evidence export.
 
+**Total particulate forecasts** add explicit CAMS Global PM2.5/PM10 loading,
+48-hour sample ranges/tables and an optional total-PM2.5 ceiling for activity
+windows. The source is separate from smoke and measured monitor data; model-run
+age is unknown. See [particulate methods and provider terms](docs/particulate-forecasts.md).
+
 Historical analogs include seasonal and yearly held-out diagnostics, paired baseline
 errors and empirical spread coverage. See [analog validation](docs/historical-analogs.md#seasonal-and-yearly-diagnostic-breakdowns).
 

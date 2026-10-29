@@ -72,3 +72,9 @@ The My weather workspace now adds [24-hour measured air-quality trends](air-tren
 The same map now offers an opt-in [NOAA RAP smoke animation](smoke-forecasts.md#animated-smoke-map)
 with hourly selection, explicit concentration bands and a separate model valid time.
 Fire records, monitor measurements and satellite detections remain independent layers.
+
+
+My weather now provides [modeled total PM2.5 and PM10](particulate-forecasts.md)
+through an explicit CAMS Global/Open-Meteo load. These concentrations are separate
+from measured AirNow values and smoke-only products. Source-run age is unknown;
+provider attribution and noncommercial API access terms are visible in the UI.

@@ -124,3 +124,13 @@ gaps/overlaps, source age, optional gust limits, margin sensitivity, alert overl
 nearest-observation selection, preference persistence, asynchronous selection,
 raw-source archive/replay and source failures. DOM test doubles do not establish
 browser layout or real notification behavior. See [verification](verification.md).
+
+
+## Total PM2.5 sample ceiling
+
+An optional [total particulate forecast](particulate-forecasts.md) can now constrain
+activity windows independently of RAP smoke. The explicit source load returns
+CAMS Global hourly samples with unknown model-run age. Blank limits preserve
+existing ranking; requested limits need current retrieval and complete bracketing
+samples to pass. Evidence retains raw arrays, selected samples and each limit
+result. No PM2.5 health threshold, AQI or continuous exposure is inferred.

@@ -836,3 +836,46 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   Direct-browser CORS and rendered controls remain unverified under the saved
   browser restriction. Point-level hydraulic validation, broader provider coverage
   evaluation and real closed-browser push display remain outstanding.
+
+
+## 2026-10-29 — Total particulate forecasts and PM2.5 planning limits
+
+- Added explicit CAMS Global/Open-Meteo PM2.5/PM10 loading, 48-hour range/table
+  display, missing-sample coverage and raw evidence export. A separate optional
+  PM2.5 ceiling joins activity-window evaluation using hourly samples bracketing
+  both endpoints. Blank limits preserve existing behavior. Smoke concentrations,
+  total particles, monitor AQI and weather margin checks remain separate.
+- The source request fixes global domain, UTC epoch timestamps, nearest-cell
+  selection and three days. Validation bounds input, response size, coordinate
+  displacement, array lengths, units and time ordering. No initialization timestamp
+  is inferred from generationtime_ms. Run age remains explicitly unknown even
+  after a current retrieval. Attribution, data licence and noncommercial API
+  access limits are disclosed in the card, planner and documentation.
+- 541 Node and 19 Python tests passed (560 total), including eleven new tests for
+  malformed units/times/locations, missing samples, bracketing, zero limits,
+  stale/future check times, wrong-place rejection, shared cache and quota behavior,
+  absence of watches, explicit loading, late replies, outages, optional preferences,
+  ranking changes and complete raw source exports. TypeScript and builds passed.
+- Built Worker live checks at 39,-77 on 2026-10-29T05:01:58Z returned 72 raw hourly
+  timestamps, revision
+  `8b030ec7aa116dbee282ae99785fc981abfb3e4160a5c0b928e1021c8e630478`.
+  The two-hour test window was bracketed by 05:00–08:00Z samples of 9.1, 8.8, 8.9
+  and 9.6 micrograms/m3, all below the arbitrary test ceiling of 10. This is a
+  numerical source check, not a health threshold or forecast accuracy claim.
+- Los Angeles input 34.05,-118.25 was requested at rounded 34.0,-118.3 and returned
+  72 samples at 2026-10-29T05:02:03Z, revision
+  `84d33d18e724b1ec17ab37623bc3c25ad7832d4a4949be08a4dbf3c800ed1473`.
+  The same bracketing hours contained 23.5, 24.7, 25.3 and 26.3 micrograms/m3,
+  correctly exceeding the test limit. Both responses retained unknown run age.
+- Invalid coordinates returned HTTP 400; the page and both modules returned
+  HTTP 200. No schema, runtime secret or hourly upkeep change was needed.
+  Browser rendering/direct CORS remain unverified under the saved permission
+  restriction. Other pollutants, identified model runs, comparison with measured
+  outcomes and continuous exposure assessment remain outstanding.
+
+- A full live-data planning check at 2026-10-29T05:04:10Z combined the Washington
+  particulate revision above with NWS forecast revision
+  `f914f920bd32e414f80397cccad7092f9dd9ffdb1a538651ff987acea87e4d15`.
+  Broad test weather bounds isolated the optional PM2.5 comparison: 49 candidate
+  windows produced 21 fits and 28 exceedances. Run age stayed unknown. These
+  counts are transient integration evidence, not recommendations or skill scores.

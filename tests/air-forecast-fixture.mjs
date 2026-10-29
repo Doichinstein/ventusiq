@@ -1,0 +1,2 @@
+import {airPoint,AIR_FORECAST_METHOD,AIR_MODEL} from '../public/air-forecast-core.mjs';
+export function airFixture(now=Date.parse('2026-10-29T06:00:00Z')){const point=airPoint(39,-77);return {method:AIR_FORECAST_METHOD,model:AIR_MODEL,point,checked_at:new Date(now).toISOString(),issued_at:null,revision:'air-fixture',raw:{latitude:39,longitude:-77,utc_offset_seconds:0,hourly_units:{time:'unixtime',pm2_5:'μg/m³',pm10:'μg/m³'},hourly:{time:Array.from({length:72},(_,i)=>Math.floor(now/3600000)*3600+i*3600),pm2_5:Array(72).fill(8),pm10:Array(72).fill(12)}}};}

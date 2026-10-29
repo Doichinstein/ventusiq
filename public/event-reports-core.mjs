@@ -23,10 +23,10 @@ export async function parseStormReports(text,day){
   if(sections.size!==3)throw Error('Incomplete storm report sections');
   return {day,source:'NOAA / Storm Prediction Center',source_url:reportURL(day),source_page:reportURL(day).replace('_rpts.csv','_rpts.html'),data_kind:'preliminary-report',issued_at:null,raw_csv:text,reports,invalid_rows:invalid,duplicate_rows:duplicates};
 }
-export function alertReportScope(story,now){
+export function alertReportScope(story,now,{supported=SUPPORTED}={}){
   const unique=new Map();for(const t of story.transitions){if(t.present!==0)unique.set(t.id+':'+t.revision,t);}
   const all=[...unique.values()],windows=[],unsupported=new Set();let invalid=0;
-  for(const t of all){const p=t.feature.properties;if(p.status!=='Actual'||p.messageType==='Cancel')continue;if(!SUPPORTED.has(p.event)){unsupported.add(p.event);continue;}
+  for(const t of all){const p=t.feature.properties;if(p.status!=='Actual'||p.messageType==='Cancel')continue;if(supported&&!supported.has(p.event)){unsupported.add(p.event);continue;}
     const sent=Date.parse(p.sent),onset=Date.parse(p.onset||p.effective||p.sent),expiry=Date.parse(p.ends||p.expires),start=Math.max(sent,onset);let end=expiry;
     if(![sent,onset,expiry].every(Number.isFinite)||expiry<=start){invalid++;continue;}
     const cap=capId(p.id||t.feature.id);

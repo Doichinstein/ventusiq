@@ -69,7 +69,9 @@ standalone Python and static editions retain their existing map history and hide
 the hosted archive control; a Python event-store adapter remains future portability
 work. All new source is Apache-2.0 and included in the download and public repository.
 
-Linked measured observations, official impact reports and forecast-to-outcome
-verification remain unfinished. An expired alert or missing report is not proof
+Matched quality-controlled station observations are now available through the
+[measured event context](event-measurements.md) panel. Linked gauge measurements,
+verified impact reports and evaluated forecast-to-outcome verification remain
+unfinished. An expired alert or missing report is not proof
 that an event ended safely or never happened. The browser permission gate still
 prevents rendered visual QA; automated interaction tests are not a substitute for it.

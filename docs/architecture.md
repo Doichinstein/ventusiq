@@ -217,3 +217,16 @@ Do not substitute navigation placeholders or roadmap labels for working features
 ## Reported event outcomes
 
 `EventReportsService` links the selected immutable alert snapshot with bounded daily SPC report editions. `event-reports-core.mjs` parses the three source sections, maps 12Z report days to UTC occurrence times, follows explicit successor timing and matches validated alert/zone geography. `event-reports.js` adds an on-demand report panel and complete evidence export to Events without refreshing the timeline under a reader. Historical retrieval uses only editions and boundaries available at the cutoff, with explicit millisecond availability for report bodies. These are preliminary spatiotemporal associations, not verified alert outcomes. See [event report methods](event-reports.md).
+
+
+## Measured event context
+
+`EventObservationsService` holds the selected alert snapshot fixed while discovering
+bounded station candidates or reading one station's archived measurements. It shares
+`eventAreas` with preliminary report associations and the existing observation
+collector. `event-observations-core.mjs` joins measurement time and reported point
+geometry to alert windows, filters QC/units and handles conflicting duplicate values.
+`event-observations.js` owns discovery, station selection, sampled summaries, an
+inspectable table and raw-evidence export inside Events. Historical reads perform
+no collection and conservatively exclude the cutoff's partial second. See
+[station measurement methods](event-measurements.md).

@@ -34,7 +34,10 @@ windows, using hourly upkeep and private feeds. See [river data and timing](docs
 24-hour replay. Follow explicit NWS message references, inspect collection-time
 history, retrieve available missing references, share a stable timeline link, and
 export the selected view as JSON. Disappearance is not called a cancellation or
-an all-clear. See [event archive semantics](docs/events.md).
+an all-clear. Discover stations inside collected alert boundaries and match
+quality-controlled temperature, wind and gust readings to alert windows, with
+raw-evidence export. See [event archive semantics](docs/events.md) and
+[measured event context](docs/event-measurements.md).
 
 **Journey** in the hosted edition compares weather along an estimated driving
 route for three departure times. Choose endpoints from saved places, coordinates

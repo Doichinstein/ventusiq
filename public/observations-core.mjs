@@ -4,7 +4,7 @@ export const HOUR=3600000;
 const finite=n=>typeof n==='number'&&Number.isFinite(n)?n:null;
 export function stationId(value){const id=String(value||'').toUpperCase();if(!/^[A-Z0-9]{3,8}$/.test(id))throw Error('Invalid station identifier');return id;}
 export function quantity(q,kind){
-  const n=finite(q?.value),u=q?.unitCode?.split(':').at(-1);if(n===null)return null;
+  const n=finite(q?.value),u=typeof q?.unitCode==='string'?q.unitCode.split(':').at(-1):null;if(n===null)return null;
   if(kind==='temperature')return u==='degC'?n*9/5+32:u==='degF'?n:null;
   if(kind==='wind')return n<0?null:u==='km_h-1'?n/1.609344:u==='m_s-1'?n*2.2369362921:u==='mi_h-1'?n:u==='kn'?n*1.150779448:null;
   return null;

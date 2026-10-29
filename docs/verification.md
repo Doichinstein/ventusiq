@@ -2013,3 +2013,24 @@ showed unavailable benchmark metrics. The shared table identifies the HRRR
 1–48-hour range, keeps source leads disjoint, and supports keyboard scrolling on
 a 390×844 viewport without overflowing its 282 px parent. Browser errors were
 empty. No account, subscription or scheduled collection was used.
+
+
+## Public HRRR benchmark and complete automated suite - v90/v91
+
+The public KCGS report matched October 29 21 and 22 UTC targets from a 12 UTC
+HRRR run captured at 19:33:12 UTC. The baseline edition was collected at
+19:31:34 UTC and contained a QC V reading at 18:55 UTC of 71.42°F. HRRR absolute
+errors averaged 4.6123846436°F; holding that reading constant averaged 0.81°F
+on the same two outcomes. Independent arithmetic checked raw unit conversions,
+QC, source IDs, capture ordering and both error summaries. Selected evidence is
+in `evidence/hrrr-persistence-live-2026-10-29.json`; it is not a broad skill study.
+Public desktop/mobile checks had no captured browser errors or panel overflow.
+The temporary public place was removed and the viewport reset.
+
+The v91 unified runner discovers all JavaScript test files, then runs Python
+unittest discovery and TypeScript checking. The actual local run passed all
+884 JavaScript tests and all 30 Python tests with zero skips or failures;
+TypeScript checking passed. The workflow adds Linux/Windows checks and a hosted
+build without deployment credentials or account enrollment. A green local run
+does not establish external CI execution, real delivery, route-closure identity
+or calibrated forecast performance. The source download includes the workflow.

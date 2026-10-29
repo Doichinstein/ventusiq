@@ -319,22 +319,38 @@ instant, including source rollbacks; it never uses a later collection.
 
 ## Development and verification
 
+Use Node.js 22.13 or later and Python 3.11 or later. From the repository root:
+
 ```sh
-python -m unittest discover -s tests -v
-node --check public/app.js
-node --test tests/*.test.cjs
-node --test tests/hosted.test.mjs
+npm ci
+npm test
 python scripts/package_source.py
+npm run build
 ```
 
-The last command creates `public/source.zip` from an explicit source allowlist. It
-excludes private runtime data, Git metadata, secrets, and hosting identity. Run it
-after source changes before shipping the static site. Leaflet is vendored at
-1.9.4 with its license. There is no JavaScript build step.
+`npm test` discovers every `*.test.mjs` and `*.test.cjs` file under `tests/`,
+runs them with bounded concurrency, then runs the Python daemon tests and
+TypeScript checking. It stops with a nonzero exit code on any failure. Set
+`PYTHON` to a Python executable path if it is not available under the default
+command. Tests use fixtures and temporary databases; real account sign-in,
+notification delivery, live provider behavior and rendered layouts need separate
+verification.
 
-See `docs/verification.md` for current checks and known limitations, and
-`docs/roadmap.md` and `docs/architecture.md` for the ten public decision-support
-features, their implementation status, source contracts and acceptance criteria.
+[GitHub Actions](https://github.com/Doichinstein/ventusiq/actions/workflows/verify.yml)
+runs this sequence on Linux and Windows for pushes to main and pull requests.
+The workflow has read-only repository access and does not deploy the site.
+
+The packaging command creates `public/source.zip` from an explicit source
+allowlist, including the verification workflow. It excludes private runtime data,
+Git metadata, secrets and hosting identity. Run it after source changes before
+shipping. The standalone static map has no JavaScript build step; the hosted
+application uses the separate `npm run build` command. Leaflet is vendored at
+1.9.4 with its license.
+
+See [verification](docs/verification.md) for observed checks and known limits,
+and [roadmap](docs/roadmap.md) and [architecture](docs/architecture.md) for the ten
+public features and their acceptance criteria. Passing automated checks alone
+does not establish model skill, road-closure identity or notification delivery.
 
 ## Data, mapping, and licensing
 
@@ -353,7 +369,8 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
 - Geist, Geist Mono, Geist Pixel Line, and Geist Pixel Square are self-hosted
   copies from VentusIQ's existing assets, under SIL OFL 1.1. Font licenses are
   retained in `public/assets/fonts/`. No external font requests are made. Visitors
-  contact NWS (static mode) and the tile service; there are no analytics or accounts.
+  contact NWS (static mode) and the tile service. The hosted edition also offers
+  optional account features; ordinary public weather browsing does not require sign-in.
 
 
 Historical context: the hosted My weather briefing includes [comparable historical days](docs/historical-analogs.md), using ten years of NASA POWER grid data, explicit similarity limits, following-day distributions, chronological baseline tests and a reproducible evidence export. These are historical comparisons, not calibrated forecasts.

@@ -1,5 +1,22 @@
 # Ten-feature acceptance audit
 
+## Repeatable automated verification (v91)
+
+The complete local suite passes 884 JavaScript tests, 30 Python daemon tests and
+TypeScript checking on Node 24.19.0 / Python 3.13.12. `npm test` now discovers all
+JavaScript test files rather than relying on the earlier README’s small subset.
+The GitHub workflow runs the same checks and the hosted build on Linux and
+Windows using Node 22 and Python 3.12. Remote workflow results must be inspected
+separately; the local pass does not prove them.
+
+All ten modules have executable implementation and automated checks. Full release
+acceptance remains unproven: the owner deferred account testing; closed-page
+push and external webhook receipt need real receivers; agency road references
+have not established closure of the routed carriageway; prospective GEFS/NASA
+and analog cohorts still need later outcomes. Calibrated regional/seasonal skill
+cannot be inferred from existing spot checks. The original ten-feature scope
+and the detailed evidence limits below remain intact.
+
 ## HRRR persistence benchmark (v90)
 
 The HRRR station comparison now includes a collection-time persistence baseline
@@ -9,8 +26,12 @@ unknown and cannot change the full HRRR sample metrics. Twenty-five focused
 HRRR/persistence tests and TypeScript checking pass. Local desktop/mobile QA
 verified the empty-history display and keyboard-scrollable table: 583 px content
 inside 282 px, with no panel overflow at 390×844 and no captured browser errors.
-Local HRRR outcomes had not matured; a live nonempty benchmark and broader
-seasonal performance remain unproven by these checks.
+Local HRRR outcomes had not matured. Subsequent public QA matched two hours at
+KCGS: HRRR MAE 4.6124°F versus persistence 0.81°F on identical outcomes. Independent
+arithmetic reproduced both, and baseline collection preceded model capture.
+The [retained evidence](evidence/hrrr-persistence-live-2026-10-29.json) includes
+selected raw baseline and outcome readings. These two hours do not establish
+broader seasonal performance.
 
 ## Planner draft consistency (v89)
 

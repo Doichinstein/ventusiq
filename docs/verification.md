@@ -1489,3 +1489,68 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - Real account/device flows, notification delivery, route-closure attribution,
   future forecast outcomes and supported hosted database recovery remain open.
   These are separate from the now-working browser access.
+
+## Rendered public-feature flows (October 29, v62)
+
+Checks ran against `https://ventusiq.com/`, source commit
+`0ce3d6fe812390c7fa295557bc876d51d9ed03ac`, through the in-app browser.
+No source code changed during these checks. This entry records their evidence
+and supersedes earlier blanket browser-blocked statements for these flows.
+
+- Post-publication map checks confirmed the v62 incident styles and zoom sizing:
+  the selected 30,144-acre incident used a 25-pixel overview marker and a 35-pixel
+  marker after zooming. Containment, source age and perimeter details rendered.
+  All 358 alerts eventually mapped; later live collection showed 360. Boundary
+  loading still progressed after cards appeared, so this is not a claim that all
+  loading delay is eliminated. Desktop and narrow mobile checks found no
+  document-level horizontal overflow.
+- Local My Places: saved a clearly labeled test place at public Washington
+  coordinates, loaded NWS hourly/gust forecasts and nearby measured air, reloaded
+  to confirm persistence, then removed it and confirmed removal after reload.
+  Account sync stayed off. Washington times displayed as EDT while the browser
+  used PDT. Original planner limits and Live map/Auto state were restored.
+- Activity windows: four-hour duration plus a zero-gust ceiling produced rejected
+  windows with gust reasons. A requested PM2.5 ceiling without a loaded forecast
+  produced unknown coverage rather than a passing window. Restored two-hour
+  preferences produced 49 candidate windows in the downloaded evidence. The JSON
+  parsed and retained preferences and source bodies. At a 390-pixel viewport,
+  document width was 375 pixels. This is desktop responsive QA, not phone testing.
+- Historical station research: manual date 2020-10-29 and station 72405013743
+  (KDCA) returned two daily records. The separate 2016–2025 station evaluation
+  displayed 3,526 usable means from 3,653 expected dates and 40 scored test dates
+  from 48 scheduled dates; eight were missing. The rendered mean absolute errors
+  were 3.594°F for analogs, 6.167°F for seasonal medians and 3.562°F for persistence.
+  These single-station retrospective results do not validate current forecast
+  transfer. Both evidence downloads parsed; manual selection provenance remained
+  explicit. Narrow tables scrolled inside their containers without document overflow.
+- Compound rules: all six rule definitions and coverage explanations expanded;
+  the live test had zero established overlaps and complete inputs for the six
+  checks. Evidence export parsed. This does not establish rendered behavior for a
+  positive overlap or an owned compound watch.
+- Events: Coastal Palm Beach search returned ten collected messages. The current
+  advisory chain showed three transitions across two messages. A cutoff before
+  the selected update returned no collected event; selecting the earlier message
+  at 09:00 PDT retained one transition and excluded the later update. Keyboard
+  activation of Skip preserved the event/cutoff URL. SPC coverage explicitly
+  excluded coastal-flood outcomes rather than treating no reports as no event.
+- The prepared historical bundle included the report panel and explicitly marked
+  station/gauge panels not loaded. JSON and HTML downloads succeeded. Running
+  `node scripts/verify_event_bundle.mjs` on the downloaded JSON passed checksum,
+  cutoff and snapshot checks: one chronology row at cutoff
+  `2026-10-29T16:00:00.000Z`, checksum
+  `e4ea28090bd80485a210b4fe15f317a8009da8e4b7b1253dc4fcf7a1866154fb`.
+  Changing to the latest view disabled both prepared-export controls. This is
+  bundle integrity evidence, not source attestation or verified physical impacts.
+- The browser URL policy rejected opening the downloaded HTML because `file:` is
+  unsupported. No alternate transport or browser was used to evade that decision.
+  Static inspection found no scripts, embedded objects or source-asset attributes;
+  **offline HTML rendering remains unverified**.
+- Captured browser warning/error logs were empty in these flows. Disposable places
+  were removed, viewport overrides reset, and Live map with Auto alerts restored.
+  Account testing was explicitly deferred by the owner; no account import, push
+  enrollment, webhook send or external notification occurred.
+
+The documentation-only follow-up updates readiness claims and the downloadable
+Apache-2.0 source. It changes no runtime behavior, permissions, schema or schedule.
+Real account/device delivery, verified route closure attribution, forecast outcome
+validation and supported hosted database recovery remain separate open requirements.

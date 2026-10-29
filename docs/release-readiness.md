@@ -1,7 +1,8 @@
 # Ten-feature acceptance audit
 
-Audit baseline: v58 source, including navigation, agency-field corrections and
-same-hour forecast stability. This
+Audit baseline: v62 source and October 29 rendered browser checks, including
+navigation, map follow-up, local places, activity planning, station history,
+compound-rule inspection and event evidence. This
 document preserves the ten feature boundaries and completion evidence in
 [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence).
 It is not a declaration that the release has passed all acceptance checks.
@@ -12,20 +13,21 @@ establish specific implementation behavior. They do not prove rendered layouts,
 real account synchronization, device notification display, external message
 receipt, field closure identity or calibrated forecast performance. The original
 map and alert-details view was confirmed by the owner earlier; subsequent views
-and changes have not inherited that confirmation.
+and changes have not inherited that confirmation. The specific v62 browser
+results below supply new evidence; they do not certify untested flows.
 
 | Feature | Dashboard entry and existing evidence | Acceptance still unproven |
 |---|---|---|
-| 1. My Places | My weather; `personal.test.cjs`, place-service and account-sync tests cover persistence, changes of account scope, conflicts and source matching; live forecast checks are recorded in verification | Desktop/mobile operation and real signed-in synchronization on two devices |
+| 1. My Places | My weather; persistence/source-matching tests plus v62 browser save, reload, live forecast and removal at public Washington coordinates; mobile planner checked | Real signed-in synchronization on two devices; account testing deferred by owner |
 | 2. Meaningful updates | My weather → Watch alerts; watch, push and webhook tests cover ownership, baseline suppression, changes, quiet periods, retry and deduplication | Real closed-page notification display; real external webhook delivery/retry; signed-in controls |
-| 3. Activity windows | My weather → Activity windows; planning tests cover full durations, missing hours, unit/time handling, sustained wind/gust separation and optional model ceilings | Rendered complete user flow and practical interpretation of incomplete coverage; no calibrated probability is established |
-| 4. Fire and smoke | Live map layers and My weather → Fire and air; provider/service/core tests and recorded live feed checks cover incidents, detections, monitors, modeled smoke, provenance and missing data | Rendered layer selection, point details, charts and mobile interactions; modeled or nearby measurements do not verify personal exposure |
-| 5. Flood timing | Rivers; river/network/gauge tests and live checks cover IDs, units, datum, observations versus forecasts, source revisions and official impacts | Rendered gauge selection, hydrographs and impact links. Address-level inundation and hydraulic travel times remain outside the current evidence |
-| 6. Journey weather | Journey; tests and live routes cover geometry/time alignment, stops, DST, gaps, agency proximity and source road labels | **Verified route closure attribution is still missing.** Shared labels do not resolve network identity, carriageway, signed direction or grade-separated crossings; rendered journey/map controls also need verification |
+| 3. Activity windows | Planning tests plus rendered v62 duration/limit changes, rejection by gust ceiling, unknown unloaded PM2.5 coverage, local EDT times, persistence and evidence download | Broader real-device usability and source-outage scenarios; no calibrated probability is established |
+| 4. Fire and smoke | Provider/core tests and live feeds; browser checks cover all seven map layers, fire perimeter/details, age/containment styles, smoke playback and replay hiding | HRRR comparison and additional air diagnostic charts still need complete rendered flows; modeled or nearby measurements do not verify personal exposure |
+| 5. Flood timing | River/network/gauge tests and live checks cover IDs, units, datum and revisions; browser opened LOLT2 observations with unavailable forecast timing explicit | Forecast hydrograph/revision and impact-link browser flows. Address-level inundation and hydraulic travel times remain outside the current evidence |
+| 6. Journey weather | Tests and live routes cover geometry/time alignment, stops, DST, gaps, agency proximity and source road labels; browser compared three Washington–Baltimore departures with live forecasts | **Verified route closure attribution is still missing.** Shared labels do not resolve network identity, carriageway, signed direction or grade-separated crossings; timed-stop and agency-panel rendered flows remain |
 | 7. Forecast confidence | My weather → Forecast checks, plus ensemble card; observed temperature outcomes, source-lead groups, earlier persistence baselines, same-case comparisons and same-hour forecast revision changes have automated coverage | Rendered diagnostics; run identification and broader seasonal skill remain incomplete. Available diagnostics/model spread do not justify calibrated confidence claims |
-| 8. Historical analogs | My weather → Historical dates / Comparable days; grid and station tests cover chronological holdout, fixed candidates, sample counts, exclusions, baseline comparisons and export; actual station spot checks are recorded | Rendered date/station/research flow; transfer from current forecasts to historical analogs and broader regional/climate-drift performance remain unvalidated |
-| 9. Compound hazards | My weather → Compound hazards; six documented source-reviewed rules, exact premises, overlap, missing-state behavior and export have automated coverage | Rendered rule evidence/watch controls; source review is not independent domain endorsement or observed outcome validation |
-| 10. Event timeline | Events; CAP graph/replay, station/gauge/report association and portable evidence tests, plus actual restored-database story comparisons | Rendered search, cutoff, evidence and offline-report flows. Preliminary associations do not establish verified physical-event impacts |
+| 8. Historical analogs | Grid/station tests plus rendered v62 manual-date discovery, two daily records, station holdout diagnostics and both exports; mobile tables scroll within their containers | Current-forecast grid-analog browser flow; forecast-to-history transfer and broader regional/climate-drift performance remain unvalidated |
+| 9. Compound hazards | Six source-reviewed rules with overlap/missing-state tests; rendered v62 rule coverage and evidence export for a zero-overlap case | Live positive-overlap rendering and owned watch controls; source review is not independent domain endorsement or observed outcome validation |
+| 10. Event timeline | CAP/replay and association tests plus rendered v62 search, historical cutoff, shared-link preservation, unsupported-report coverage, JSON/HTML download and export invalidation; downloaded JSON passes independent verifier | Offline HTML rendering blocked by browser file-URL policy; combined station/gauge browser flow and verified physical-event impacts remain unproven |
 
 The test filenames above identify relevant suites, not a promise that each suite
 proves every part of its row. Detailed runs, data revisions and limitations are in
@@ -56,9 +58,13 @@ These are structural/DOM-double checks, not screen-reader or rendered-browser QA
 
 ## Browser verification handoff
 
-Saved browser access settings currently block automated browser verification.
-Once access is available, check the actual deployed release at desktop and narrow
-mobile widths. Record the release, browser, viewport, steps and observed result.
+Browser access to `https://ventusiq.com/` works. Earlier failures do not establish
+a continuing permission block. The completed checks are recorded in
+[verification](verification.md#rendered-public-feature-flows-october-29-v62).
+Continue the remaining cases below without treating this list as all untested.
+Account testing is deferred at the owner's request. Opening downloaded `file:`
+HTML is specifically blocked by the browser URL policy; its rendering is not
+verified by successful download, static inspection or JSON verification.
 
 1. Use only the keyboard to reach Skip, switch through all five main views and
    follow My weather shortcuts. Focus must remain visible and reach visible

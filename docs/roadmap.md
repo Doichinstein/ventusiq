@@ -3,6 +3,13 @@
 All ten decision-support features are public Apache-2.0 scope. The implementation
 sequence and acceptance criteria are specified in [architecture](architecture.md).
 
+The public deployment is live at [ventusiq.com](https://ventusiq.com). Browser
+access is working. Specific v62 map, local-place, activity, historical-station,
+compound-rule and event-export checks are recorded in [verification](verification.md#rendered-public-feature-flows-october-29-v62).
+The table's remaining QA items refer to untested cases, not a blanket browser
+block. Account testing is deferred at the owner's request. Research and operational
+requirements remain open where the available evidence does not establish them.
+
 | Feature | Current implementation | Remaining delivery |
 |---|---|---|
 | My Places | Device-local places and opt-in private account lists with cross-device polling, explicit import and conflict protection; explicit Census street-address search with map review and evidence export, map selection, official alerts, hourly outlook and share links | Rendered/sign-in QA with two real devices |
@@ -35,9 +42,11 @@ self-hosting. Use as a portfolio project with inspectable source and architectur
 
 ## Public domain launch
 
-Choose the final project name and domain. Deploy the shared daemon edition to a
-server with persistent storage, configure DNS and HTTPS, and establish the map tile
-and hosting budget. The static edition can run on Sites or any static host now.
+VentusIQ is published on Sites at `ventusiq.com` with HTTPS and a shared D1 archive.
+The accepted unattended upkeep cadence is hourly; visible tabs check alerts more
+frequently within source limits. A separately owned deployment remains an option
+for greater collection control, supported database recovery and capacity planning.
+Map tiles and upstream data retain their provider terms and limits.
 
 ## Later data layers
 

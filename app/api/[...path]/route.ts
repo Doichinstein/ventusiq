@@ -1,3 +1,4 @@
+import {ForecastStabilityService} from '../../../lib/forecast-stability-service.mjs';
 import {RoadworkService} from '../../../lib/roadwork-service.mjs';
 import {FirmsService} from '../../../lib/firms-service.mjs';
 import {StationAnalogsService} from '../../../lib/station-analogs-service.mjs';
@@ -93,6 +94,7 @@ export async function GET(request:Request){
     }
     if(path==='/api/observations/near')return json(await new ObservationsService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/observations/station')return json(await new ObservationsService(service).station(url.searchParams.get('id')));
+    if(path==='/api/forecast/stability')return json(await new ForecastStabilityService(service).compare(url.searchParams.get('lat'),url.searchParams.get('lon'),Number(url.searchParams.get('hours')||24)));
     if(path==='/api/verification')return json(await new ObservationsService(service).verification(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('station'),url.searchParams.get('at')));
     if(path==='/api/events')return json(await new EventsService(service).list(url.searchParams.get('q')||'',url.searchParams.get('cursor')||''));
     if(path.startsWith('/api/events/')){

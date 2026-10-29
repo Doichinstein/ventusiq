@@ -1,6 +1,7 @@
 # Ten-feature acceptance audit
 
-Audit baseline: source v55, with the v56 navigation fix described below. This
+Audit baseline: v58 source, including navigation, agency-field corrections and
+same-hour forecast stability. This
 document preserves the ten feature boundaries and completion evidence in
 [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence).
 It is not a declaration that the release has passed all acceptance checks.
@@ -21,7 +22,7 @@ and changes have not inherited that confirmation.
 | 4. Fire and smoke | Live map layers and My weather → Fire and air; provider/service/core tests and recorded live feed checks cover incidents, detections, monitors, modeled smoke, provenance and missing data | Rendered layer selection, point details, charts and mobile interactions; modeled or nearby measurements do not verify personal exposure |
 | 5. Flood timing | Rivers; river/network/gauge tests and live checks cover IDs, units, datum, observations versus forecasts, source revisions and official impacts | Rendered gauge selection, hydrographs and impact links. Address-level inundation and hydraulic travel times remain outside the current evidence |
 | 6. Journey weather | Journey; tests and live routes cover geometry/time alignment, stops, DST, gaps, agency proximity and source road labels | **Verified route closure attribution is still missing.** Shared labels do not resolve network identity, carriageway, signed direction or grade-separated crossings; rendered journey/map controls also need verification |
-| 7. Forecast confidence | My weather → Forecast checks, plus ensemble card; observed temperature outcomes, source-lead groups, earlier persistence baselines and same-case comparisons have automated coverage | Rendered diagnostics; run identification and broader seasonal skill remain incomplete. Available diagnostics/model spread do not justify calibrated confidence claims |
+| 7. Forecast confidence | My weather → Forecast checks, plus ensemble card; observed temperature outcomes, source-lead groups, earlier persistence baselines, same-case comparisons and same-hour forecast revision changes have automated coverage | Rendered diagnostics; run identification and broader seasonal skill remain incomplete. Available diagnostics/model spread do not justify calibrated confidence claims |
 | 8. Historical analogs | My weather → Historical dates / Comparable days; grid and station tests cover chronological holdout, fixed candidates, sample counts, exclusions, baseline comparisons and export; actual station spot checks are recorded | Rendered date/station/research flow; transfer from current forecasts to historical analogs and broader regional/climate-drift performance remain unvalidated |
 | 9. Compound hazards | My weather → Compound hazards; six documented source-reviewed rules, exact premises, overlap, missing-state behavior and export have automated coverage | Rendered rule evidence/watch controls; source review is not independent domain endorsement or observed outcome validation |
 | 10. Event timeline | Events; CAP graph/replay, station/gauge/report association and portable evidence tests, plus actual restored-database story comparisons | Rendered search, cutoff, evidence and offline-report flows. Preliminary associations do not establish verified physical-event impacts |

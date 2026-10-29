@@ -1369,3 +1369,34 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - These corrections do not establish network identity, roadway direction or route
   closure. The closure-attribution acceptance requirement remains open. Browser,
   real-identity and real-notification verification limits remain unchanged.
+
+
+## Same-hour forecast changes (v58)
+
+- All 726 Node tests and TypeScript checking pass. Eight new tests cover unit
+  conversion, zero values, signed changes, percentage-point semantics, exact UTC
+  hours across the daylight-saving transition, missing/duplicate/overlapping
+  periods, unsupported units, invalid timing, grid changes, cutoff age, future
+  checks and issue times, rollbacks, delayed collection and source evidence.
+  Real SQLite selection excludes later editions and makes no upstream calls.
+  UI doubles exercise explicit loading, escaping, exports, failure and late-response
+  isolation across window, place and account-scope changes. Python is unchanged.
+- Built Worker HTTP checks at 2026-10-29T09:08:26.798Z returned the HTML controls and
+  JavaScript module with HTTP 200 and appropriate content types. Comparisons for
+  39,-77 at 6 and 24 hours returned an explicit missing-earlier-archive state, zero
+  paired hours and null change summaries. Latest local revision:
+  `f914f920bd32e414f80397cccad7092f9dd9ffdb1a538651ff987acea87e4d15`.
+  An unsupported eight-hour cutoff returned HTTP 400. These checks do not establish
+  a live paired result or rendered-browser behavior.
+- No new provider collection, subscription, schema, secret or schedule is involved.
+  The source JSON export retains both original editions and the frozen evaluation
+  time. Method and limits are in [forecast stability](forecast-stability.md).
+- Ensemble run identity remains open. The provider's
+  [model-update contract](https://open-meteo.com/en/docs/model-updates) warns that
+  metadata and serving nodes can update at different times; a latest-run status
+  cannot attest the run of a particular response. Its
+  [single-run forecast interface](https://open-meteo.com/en/docs/single-runs-api)
+  documents explicit initialization selection, but this investigation did not
+  establish that interface returns the required GEFS member products. The two
+  tested UCAR GEFS catalog paths returned HTTP 404. No timestamp was inferred or
+  substituted into ensemble products. Browser and other acceptance gaps remain open.

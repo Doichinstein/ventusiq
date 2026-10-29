@@ -599,3 +599,13 @@ offline HTML. `event-bundle.js` reads existing panel bridges, invalidates prepar
 exports on source/view changes and performs no fetches. The source distribution
 includes a Node verifier. Existing archives and schedules are unchanged. See
 [bundle and retention semantics](event-evidence-bundles.md).
+
+
+### Same-hour forecast stability
+
+`ForecastStabilityService` reads two existing point-forecast editions selected by
+successful collection cutoffs. `forecast-stability-core.mjs` pairs exactly matched
+future hours, preserving units, missing/overlapping periods, grid identity, source
+rollback and archive age. `forecast-stability.js` adds explicit comparison and export
+inside Forecast checks and invalidates account/place/window changes. It performs no
+provider collection or subscription. See [forecast stability](forecast-stability.md).

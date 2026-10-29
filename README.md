@@ -33,6 +33,8 @@ My weather also shows [24-hour measured air-quality trends](docs/air-trends.md),
 with monitor selection, explicit gaps, six-hour endpoint changes and raw-evidence downloads.
 An optional map animation adds hourly smoke frames, explicit concentration bands,
 missing-hour states and frame evidence exports.
+An explicit [HRRR/RAP comparison](docs/hrrr-smoke.md) adds native-grid HRRR point
+forecasts, paired valid times, separate run ages and downloadable raw evidence.
 A separate [NOAA RAP smoke forecast](docs/smoke-forecasts.md) shows modeled near-surface
 concentrations at future hourly times, with coverage gaps, run age and evidence export.
 

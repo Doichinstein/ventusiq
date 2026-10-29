@@ -465,3 +465,33 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   The arrival matched its 01:00–05:00 UTC interval (7.408 km/h / about 4.6 mph).
   Page and journey modules returned HTTP 200. Rendered browser verification is
   still unavailable under the saved permission setting. Hourly upkeep is unchanged.
+
+## HRRR smoke comparison increment
+
+- Added bounded native-grid HRRR smoke point collection from the University of
+  Utah Zarr archive, independent run/time/grid/precision checks, an original
+  Blosc/LZ4 reader, exact-valid-time RAP comparisons, explicit gaps and exports.
+  Source byte limits, atomic cache admission and request/day budgets bound usage.
+- Sixteen new tests cover independent codec fixtures, malformed buffers, PROJ
+  reference coordinates, archive contracts, source hashes, chunk outages, cache
+  reuse, budget/capacity limits, paired horizons, stale/wrong-location sources,
+  explicit loading, async place changes and retained evidence.
+- Full regression suite: 426 Node and 16 Python tests passed (442 total).
+  TypeScript and production build passed. No runtime dependency or migration was
+  added. Temporary independent Python codec/projection tools live outside the repo.
+- Independent numcodecs decoding matched the full 8,640,000-byte live smoke chunk
+  and two coordinate chunks byte-for-byte. Projection values matched PROJ at
+  Washington, Sacramento and the projection origin; details in [HRRR methods](hrrr-smoke.md).
+- Built Worker live comparison at 2026-10-29 03:04:32 UTC used HRRR's 00:00 UTC run
+  and RAP's 2026-10-28 03:00 UTC run. There were 45 usable HRRR and 27 usable RAP
+  future times, with 27 current exact-time pairs. At 04:00 UTC, HRRR was 0.048
+  µg/m³ and RAP was zero; the difference is model disagreement, not verified error.
+  Native HRRR cell (1485,613) was at 38.995660,-76.995815, approximately 603 m from
+  the rounded point in projected coordinates. The compressed chunk was 5,472,099 bytes.
+- HRRR revision:
+  `384537334ad6a857f9914878b1a196eccf35b8642fadf429d0c0ffaa2152d704`.
+  RAP revision:
+  `bcf4f846c231bff907cecc19ca3d0a3fc59a5b47fa631ad9af350a455d2e789e`.
+  A repeat rounded-point request reused the same revision/check time. Page and both
+  browser modules returned HTTP 200. Browser rendering and measured-exposure
+  validation remain unverified; hourly upkeep is unchanged.

@@ -314,3 +314,13 @@ within a run and limits collection to three concurrent sample workers.
 explicit gust interval. `evaluateJourney` retains separate hourly/gust coverage
 and optional user-limit exceedance counts. Table, map, departure cards and raw
 source exports share one evaluated snapshot. See [journey methods](journeys.md).
+
+## HRRR smoke comparison
+
+`HrrrService` uses the shared D1 collector and bounded public collection budgets.
+`hrrr-reader.mjs` validates the University of Utah archive's run/array contract,
+projects a selected point to the native grid and decodes one regional chunk with
+`blosc-lz4.mjs`. `hrrr-core.mjs` pairs exact valid times with the existing RAP
+product and withholds differences for stale or missing sources. `hrrr.js` provides
+explicit collection, separate source ages, gaps and raw point evidence exports.
+See [HRRR methods and independent decoder checks](hrrr-smoke.md).

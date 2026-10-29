@@ -46,3 +46,8 @@ NOAA GEFS ensemble weather data provided by Open-Meteo.com
 (https://creativecommons.org/licenses/by/4.0/). VentusIQ selects grid cells,
 samples timestamps and computes empirical member quantiles and threshold counts.
 The free API has separate noncommercial service terms; see docs/ensemble.md.
+
+HRRR near-surface smoke: NOAA operational HRRR, distributed in Zarr format by
+the University of Utah through its public hrrrzarr AWS archive. Native point
+selection and unit conversion are performed by VentusIQ. See docs/hrrr-smoke.md
+for data methods, attribution and independent decoding/projection checks.

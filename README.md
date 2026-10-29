@@ -4,7 +4,7 @@ A free, Apache-2.0 weather map and personal planning workspace. A small Python d
 National Weather Service active feed, retains 24 hours of snapshots, and serves a
 responsive map with filters, official alert details, replay, and a change feed.
 
-**My weather** adds device-local saved places, geographic alert matching, a 48-hour
+**My weather** adds device-local saved places, optional private [account places](docs/places-sync.md) across devices, geographic alert matching, a 48-hour
 hourly outlook, meaningful alert/forecast changes, optional desktop notifications
 while the page is open, share links, and configurable activity windows. Planning
 checks duration, temperature, sustained wind, gusts and hourly rain probability.

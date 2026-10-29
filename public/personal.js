@@ -3,18 +3,20 @@
   'use strict';
   const core=window.WeatherCore, get=id=>document.getElementById(id), mode=window.WEATHER_CONFIG?.mode||'direct';
   const key='ventusiq.personal.v1', forecasts=new Map(), baselines=new Map(), inFlight=new Set(), retryAt=new Map();
+  let accountPlaces=null, scopeGeneration=0;
+  const listPlaces=()=>accountPlaces??stored.places;
   let selected=null, personal=false, updates=[], notificationPermission='default';
   let stored={places:[],preferences:{duration:2,minTemp:40,maxTemp:85,wind:15,rain:30}};
   try{const value=JSON.parse(localStorage.getItem(key));if(value?.version===1){stored={places:(Array.isArray(value.places)?value.places:[]).filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string'&&core.coordinate(p.lat,p.lon)).slice(0,12),preferences:{...stored.preferences,...value.preferences},notifications:value.notifications===true};}}catch{}
   if(stored.notifications&&typeof Notification!=='undefined')notificationPermission=Notification.permission;
   const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
   function save(){try{localStorage.setItem(key,JSON.stringify({...stored,version:1}));}catch{get('place-message').textContent='Device storage is unavailable. Keep this page open to retain places.';}}
-  function current(){return stored.places.find(p=>p.id===selected);}
+  function current(){return listPlaces().find(p=>p.id===selected);}
   function timezone(){return forecasts.get(selected)?.metadata?.properties?.timeZone;}
   function stale(data){return !data||data.stale||!data.checked_at||Date.now()-Date.parse(data.checked_at)>900000;}
   function time(stamp,full=true){try{return new Date(stamp).toLocaleString(undefined,{timeZone:timezone(),...(full?{weekday:'short',month:'short',day:'numeric'}:{}),hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch{return new Date(stamp).toLocaleString();}}
   function show(value){window.WeatherRivers?.hide();window.WeatherEvents?.hide();window.WeatherJourney?.hide();personal=value;get('personal-workspace').hidden=!value;get('map-workspace').hidden=value;get('map-timeline').hidden=value;window.WeatherHazards?.showMap(!value);for(const [id,on] of [['nav-personal',value],['nav-map',!value]]){get(id).classList.toggle('nav-active',on);get(id).setAttribute('aria-pressed',String(on));}if(!value)window.WeatherMap?.show();else render();}
-  function places(){get('place-list').replaceChildren(...stored.places.map(p=>{const b=el('button',p.name,'place-choice');b.setAttribute('aria-pressed',String(p.id===selected));b.onclick=()=>{selected=p.id;places();render();load(p);};return b;}));}
+  function places(){get('place-list').replaceChildren(...listPlaces().map(p=>{const b=el('button',p.name,'place-choice');b.setAttribute('aria-pressed',String(p.id===selected));b.onclick=()=>{selected=p.id;places();render();load(p);};return b;}));}
   async function json(url){const response=await fetch(url,{headers:{Accept:'application/geo+json, application/json'},signal:AbortSignal.timeout(30000)});if(!response.ok)throw new Error(`Source returned HTTP ${response.status}`);return response.json();}
   async function forecast(place){
     if(mode!=='direct')return json(`/api/forecast?lat=${place.lat}&lon=${place.lon}`);
@@ -44,18 +46,20 @@
   }
   async function load(place){
     if(inFlight.has(place.id)||Date.now()<(retryAt.get(place.id)||0))return;
+    const scope=scopeGeneration;
     inFlight.add(place.id);retryAt.set(place.id,Date.now()+600000);
     if(place.id===selected)get('forecast-status').textContent='Loading the official hourly forecast…';
     try{
       const data=await forecast(place);
-      if(!stored.places.some(p=>p.id===place.id))return;
+      if(scope!==scopeGeneration||!listPlaces().some(p=>p.id===place.id&&p.lat===place.lat&&p.lon===place.lon))return;
       const previous=forecasts.get(place.id);
       if(!data.stale)addUpdates(place,core.forecastChanges(previous,data));
       forecasts.set(place.id,data);applyAlerts(place);
     }catch(error){
+      if(scope!==scopeGeneration)return;
       const cached=forecasts.get(place.id);
       forecasts.set(place.id,{...cached,stale:true,error:error.message});retryAt.set(place.id,Date.now()+120000);
-    }finally{inFlight.delete(place.id);if(place.id===selected)render();}
+    }finally{if(scope===scopeGeneration){inFlight.delete(place.id);if(place.id===selected)render();}}
   }
   function renderAlerts(place,data){
     const target=get('place-alerts'), live=window.WeatherMap?.live();
@@ -102,28 +106,29 @@
     get('hourly-body').replaceChildren(...hours.map(h=>{const row=el('tr');for(const value of [time(h.start),h.summary,h.temperature===null?'Unknown':Math.round(h.temperature)+'°F',h.wind===null?'Unknown':Math.round(h.wind)+' mph',h.rain===null?'Unknown':Math.round(h.rain)+'%'])row.append(el('td',value));return row;}));
     get('point-source').href=`https://forecast.weather.gov/MapClick.php?lat=${place.lat}&lon=${place.lon}`;
   }
-  function addPlace(name,lat,lon){
+  async function addPlace(name,lat,lon){
     if(!core.coordinate(lat,lon))throw new Error('Enter valid latitude and longitude.');
-    if(stored.places.length>=12)throw new Error('Remove a place before adding another.');
-    const existing=stored.places.find(p=>Math.abs(p.lat-lat)<0.00005&&Math.abs(p.lon-lon)<0.00005);
+    if(listPlaces().length>=12)throw new Error('Remove a place before adding another.');
+    const existing=listPlaces().find(p=>Math.abs(p.lat-lat)<0.00005&&Math.abs(p.lon-lon)<0.00005);
     if(existing){selected=existing.id;show(true);places();return;}
     const place={id:crypto.randomUUID(),name:(name.trim()||'Selected place').slice(0,60),lat,lon};
+    if(accountPlaces!==null){if(!await window.WeatherPlaceSync.add(place))throw Error('Place list changed while saving. Review the current list.');selected=place.id;places();show(true);load(place);return;}
     stored.places.push(place);selected=place.id;save();places();show(true);load(place);
   }
   get('nav-personal').onclick=()=>show(true);get('nav-map').onclick=()=>show(false);
-  get('place-form').onsubmit=e=>{e.preventDefault();try{addPlace(get('place-name').value,Number(get('place-lat').value),Number(get('place-lon').value));get('place-message').textContent='Place saved on this device.';}catch(error){get('place-message').textContent=error.message;}};
+  get('place-form').onsubmit=async e=>{e.preventDefault();try{await addPlace(get('place-name').value,Number(get('place-lat').value),Number(get('place-lon').value));get('place-message').textContent=accountPlaces!==null?'Account place saved.':'Place saved on this device.';}catch(error){get('place-message').textContent=error.message;}};
   get('use-location').onclick=()=>{if(!navigator.geolocation){get('place-message').textContent='Location is unavailable. Enter coordinates or choose on the map.';return;}get('place-message').textContent='Requesting your location…';navigator.geolocation.getCurrentPosition(p=>{get('place-lat').value=p.coords.latitude.toFixed(4);get('place-lon').value=p.coords.longitude.toFixed(4);get('place-message').textContent='Location filled in. Name it and save.';},()=>{get('place-message').textContent='Location could not be read. Choose on the map or enter coordinates.';},{timeout:12000});};
   get('pick-on-map').onclick=()=>{show(false);get('map-notice').hidden=false;get('map-notice').textContent='Click the map to choose a place.';window.WeatherMap?.pick((lat,lon)=>{get('place-lat').value=lat.toFixed(4);get('place-lon').value=lon.toFixed(4);show(true);get('place-name').focus();get('place-message').textContent='Point selected. Name it and save.';});};
-  get('remove-place').onclick=()=>{stored.places=stored.places.filter(p=>p.id!==selected);forecasts.delete(selected);baselines.delete(selected);selected=stored.places[0]?.id||null;save();places();render();};
+  get('remove-place').onclick=async()=>{try{if(accountPlaces!==null){await window.WeatherPlaceSync.remove(selected);return;}stored.places=stored.places.filter(p=>p.id!==selected);forecasts.delete(selected);baselines.delete(selected);selected=stored.places[0]?.id||null;save();places();render();}catch(error){get('place-message').textContent=error.message;}};
   get('share-place').onclick=async()=>{const p=current(),url=new URL(location.origin+location.pathname);url.hash=new URLSearchParams({place:p.name,lat:p.lat.toFixed(4),lon:p.lon.toFixed(4)}).toString();try{await navigator.clipboard.writeText(url.href);get('place-message').textContent='Briefing link copied. It includes the place name and coordinates.';}catch{get('place-message').replaceChildren(el('span','Share this link: '));const a=el('a',url.href);a.href=url.href;get('place-message').append(a);}};
   get('clear-updates').onclick=()=>{updates=updates.filter(c=>c.place!==selected);renderUpdates();};
   get('planner-form').onsubmit=e=>{e.preventDefault();stored.preferences={duration:Number(get('plan-duration').value),minTemp:Number(get('plan-min').value),maxTemp:Number(get('plan-max').value),wind:Number(get('plan-wind').value),rain:Number(get('plan-rain').value)};save();renderPlan();};
   get('notify-enable').onclick=async()=>{if(typeof Notification==='undefined'){get('notify-status').textContent='This browser does not support desktop notifications. Updates remain in the page.';return;}try{if(stored.notifications){stored.notifications=false;notificationPermission='default';get('notify-status').textContent='Desktop updates disabled. Updates remain in the page.';}else{notificationPermission=await Notification.requestPermission();stored.notifications=notificationPermission==='granted';get('notify-status').textContent=stored.notifications?'Desktop updates enabled while this page is open. Keep official emergency alerts enabled on your devices.':'Desktop updates were not enabled. Updates remain in the page.';}get('notify-enable').textContent=stored.notifications?'Disable desktop updates':'Enable desktop updates';save();}catch{get('notify-status').textContent='Desktop updates are unavailable here.';}};
   if(notificationPermission==='granted'){get('notify-enable').textContent='Disable desktop updates';get('notify-status').textContent='Desktop updates enabled while this page is open. For closed-page notifications, enroll a device under Browser push.';}
   for(const [id,k] of [['plan-duration','duration'],['plan-min','minTemp'],['plan-max','maxTemp'],['plan-wind','wind'],['plan-rain','rain']])get(id).value=stored.preferences[k];
-  window.WeatherPersonal={current,preferences:()=>({...stored.preferences}),setPreferences(value){stored.preferences={...stored.preferences,...value};save();},context:()=>({place:current(),forecast:forecasts.get(selected),alerts:window.WeatherMap?.live()}),places:()=>stored.places.map(p=>({...p})),show,alertsUpdated(){for(const p of stored.places)applyAlerts(p);if(personal)render();}};
-  selected=stored.places[0]?.id||null;places();for(const place of stored.places)load(place);
+  window.WeatherPersonal={setAccountPlaces(value){const next=value===null?null:value.map(p=>({...p}));if(JSON.stringify(next)===JSON.stringify(accountPlaces))return;accountPlaces=next;scopeGeneration++;forecasts.clear();baselines.clear();inFlight.clear();retryAt.clear();updates=[];if(!listPlaces().some(p=>p.id===selected))selected=listPlaces()[0]?.id||null;places();render();for(const place of listPlaces())load(place);},devicePlaces:()=>stored.places.map(p=>({...p})),current,preferences:()=>({...stored.preferences}),setPreferences(value){stored.preferences={...stored.preferences,...value};save();},context:()=>({place:current(),forecast:forecasts.get(selected),alerts:window.WeatherMap?.live()}),places:()=>listPlaces().map(p=>({...p})),show,alertsUpdated(){for(const p of listPlaces())applyAlerts(p);if(personal)render();}};
+  selected=stored.places[0]?.id||null;places();for(const place of listPlaces())load(place);
   const shared=new URLSearchParams(location.hash.slice(1));
   if(shared.has('lat')&&shared.has('lon')){get('place-name').value=(shared.get('place')||'Shared place').slice(0,60);get('place-lat').value=shared.get('lat');get('place-lon').value=shared.get('lon');show(true);get('place-message').textContent='Shared coordinates loaded. Save this place to open its briefing.';}
-  setInterval(()=>{for(const p of stored.places)load(p);if(personal)render();},60000);
+  setInterval(()=>{for(const p of listPlaces())load(p);if(personal)render();},60000);
 })();

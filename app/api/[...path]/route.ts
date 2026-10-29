@@ -1,3 +1,5 @@
+import {PlacesService} from '../../../lib/places-service.mjs';
+import {placesGet,placesPost} from '../../../lib/places-http.mjs';
 import {EnsembleService} from '../../../lib/ensemble-service.mjs';
 import {EventGaugesService} from '../../../lib/event-gauges-service.mjs';
 import { env } from 'cloudflare:workers';
@@ -28,6 +30,7 @@ export async function GET(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
+    if(path==='/api/places')return placesGet(new PlacesService(service),(await getChatGPTUser())?.userId||null);
     if(path==='/api/push')return pushGet(pushService(service),(await getChatGPTUser())?.userId||null);
     if(path==='/api/watches')return watchGet(request,new WatchService(service),(await getChatGPTUser())?.userId||null);
     if(path.startsWith('/api/watch-feed/'))return watchGet(request,new WatchService(service),null);
@@ -95,6 +98,7 @@ export async function GET(request:Request){
 }
 export async function POST(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
+  if(new URL(request.url).pathname==='/api/places')return placesPost(request,new PlacesService(new WeatherService(env.DB)),(await getChatGPTUser())?.userId||null);
   if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,(await getChatGPTUser())?.userId||null);if(response.ok)after(()=>service.dispatch());return response;}
   if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);
   const service=new WeatherService(env.DB),watches=new WatchService(service),user=await getChatGPTUser();

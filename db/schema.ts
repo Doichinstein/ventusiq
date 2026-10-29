@@ -1,4 +1,7 @@
 import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
+export const placeLibraries = sqliteTable('place_libraries',{
+  owner:text('owner').primaryKey(),revision:text('revision').notNull(),places:text('places').notNull(),updatedAt:integer('updated_at').notNull(),
+});
 export const datasets = sqliteTable('datasets', {
   name: text('name').primaryKey(), revision: text('revision'),
   lastSuccess: integer('last_success'), nextFetch: integer('next_fetch').notNull().default(0),

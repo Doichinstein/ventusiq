@@ -5,7 +5,7 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 
 | Feature | Current implementation | Remaining delivery |
 |---|---|---|
-| My Places | Device-local places, map selection, official alerts, hourly outlook and share links | Rendered QA; full saved-place synchronization (owned watches already persist across devices) |
+| My Places | Device-local places and opt-in private account lists with cross-device polling, explicit import and conflict protection; map selection, official alerts, hourly outlook and share links | Rendered/sign-in QA with two real devices |
 | Meaningful updates | CAP-linked changes, opt-in tab notifications, owned persistent watches, forecast threshold crossings, retained evidence, revocable Atom feeds, opt-in encrypted browser push with retries, per-device quiet hours and delivery-attempt records | Rendered/sign-in QA, real closed-browser display verification, webhooks |
 | Activity windows | Editable presets, duration/temperature/wind/rain/gust checks across full windows, user margin tests, timed alerts, current PM2.5 context, optional RAP smoke-sample ceilings, exact sample evidence and export | Rendered QA, total air forecasts, continuous exposure evaluation, calibrated uncertainty and observation-based evaluation |
 | Fire and smoke | NIFC incident points/perimeters, AirNow PM2.5 monitors, NASA VIIRS daily imagery; saved-place proximity; 24-hour measured monitor trends; NOAA RAP point forecasts and animated map with gaps, run age, explicit bands and evidence export; seven-day hosted catalog/point archive | Rendered QA, HRRR comparison and evaluated exposure |

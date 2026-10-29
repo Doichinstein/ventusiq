@@ -8,7 +8,8 @@ their existence does not establish forecasting skill in this application.
 ## Execution and ownership
 
 The map remains a standalone view. `personal.js` owns the My weather workspace,
-device-local places, preferences, and notification consent. `weather-core.js`
+device-local places, preferences, and notification consent; `places-sync.js` adds
+explicit account-mode synchronization and scope changes. `weather-core.js`
 contains deterministic geographic matching, normalization, comparisons, and
 planning rules, without browser or network dependencies. `app.js` exposes a small
 `WeatherMap` bridge; personal briefings always consume the live collection, never
@@ -24,7 +25,8 @@ refreshes on demand with database leases across isolates. The frontend retains
 device-local preferences. The public deployment has an hourly Sites upkeep task;
 its execution is separate from on-demand refresh and must be verified using
 collection timestamps. Explicit hosted watches have signed-in ownership; the
-rest of the saved-place workspace remains device-local. Closed-browser push
+saved-place workspace supports separate optional account lists; preferences remain
+device-local. Closed-browser push
 remains a delivery requirement.
 The Python edition archives point forecasts and can watch configured points while
 no browser is open. Minute-by-minute hosted unattended collection is deferred by
@@ -294,3 +296,12 @@ complete-set empirical quantiles. `ensemble.js` provides explicit loading,
 accessible tables, a spread chart and raw-evidence exports in My weather.
 Model initialization is unknown and member counts are not calibrated probabilities.
 See [ensemble method, terms and limits](ensemble.md).
+
+## Account place libraries
+
+`PlacesService` owns bounded private place snapshots and atomic revision checks.
+`places-http.mjs` enforces the signed-in boundary, same-origin JSON mutations and
+private response caching. `places-sync.js` exposes opt-in account mode, explicit
+imports, minute polling and conflict recovery. `personal.js` keeps the local list
+separate and invalidates in-flight forecasts across scope changes. See
+[account places](places-sync.md) for retention, capacity and verification limits.

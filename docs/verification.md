@@ -418,3 +418,24 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   setting. Hourly upkeep is unchanged; ensemble loading is explicit and cached.
   Provider terms, attribution and commercial-fork requirements are documented in
   [ensemble method and limits](ensemble.md).
+
+## Account-place synchronization increment
+
+- Added separate device and private account lists, explicit import, account-mode
+  add/remove, minute/focus refresh, account-change clearing and revision conflict
+  protection. Account places are not written into browser storage or watches.
+- Seventeen new tests cover persisted service instances, owner isolation, atomic
+  capacity, simultaneous edits, stale resurrection after deletion, retry semantics,
+  bounded inputs and HTTP boundaries, opt-in/import, failed writes, account switches,
+  late responses, local storage separation and forecast scope changes.
+- Full regression suite: 401 Node and 16 Python tests passed (417 total).
+  TypeScript and production build passed. Migration `0005_windy_tag.sql` adds
+  `place_libraries`; local application succeeded. No dependency was added.
+- Built Worker loopback checks returned 200 for page/module and authenticated
+  create/read/clear, 401 for anonymous access and 409 for a stale save. A second
+  development identity saw an empty list; private no-store headers were present.
+  Test locations were cleared after verification. Development identity headers were
+  used only on loopback, never sent to the public site.
+- Rendered sign-in and two real browser sessions remain unverified under the saved
+  browser permission setting. [Account-place methods](places-sync.md) document this
+  limit and the distinction between device preferences and account locations.

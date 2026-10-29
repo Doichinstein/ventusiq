@@ -100,5 +100,9 @@ the report/export and ignore late replies. The evidence table is keyboard-scroll
 These are descriptive station differences. Grid/terrain/elevation and observation
 timing can differ, adjacent hours are correlated, and there is no persistence or
 climatology benchmark in this HRRR report. It is not a model ranking, calibrated
-confidence or a claim of address-level accuracy. A nonempty live comparison remains
-to be demonstrated after eligible source captures and observations are available.
+confidence or a claim of address-level accuracy. The October 29 public check
+verified one nonempty match, retained with its source records in the
+[evidence bundle](evidence/hrrr-live-2026-10-29.json). Its capture preceded the target,
+unit conversion and error arithmetic reproduce, and the downloaded native chunk
+matches the captured hash. This establishes that path for one case, not general
+forecast skill or independent decoding of the native grid.

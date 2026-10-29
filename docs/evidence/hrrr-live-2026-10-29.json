@@ -1,0 +1,640 @@
+{
+  "schema": "ventusiq-hrrr-live-example/1",
+  "source_commit": "4cd258af9b7689147638f9a5d4ef078f4457997a",
+  "generated_at": "2026-10-29T22:28:26.000Z",
+  "point": {
+    "lat": 39,
+    "lon": -77
+  },
+  "station": {
+    "id": "KCGS",
+    "name": "College Park Airport",
+    "lat": 38.9806,
+    "lon": -76.9223,
+    "distance_km": 7.053314273678285,
+    "time_zone": "America/New_York",
+    "elevation_m": 14.9352,
+    "source_url": "https://api.weather.gov/stations/KCGS"
+  },
+  "candidate_count": 167,
+  "skipped": {
+    "no_archive": 166,
+    "forecast_unavailable": 0,
+    "observation_unavailable": 0,
+    "quality_excluded": 0
+  },
+  "archive_checks": [
+    {
+      "at": 1793302392,
+      "revision": "dc776a4c63d379ef9a7d8905cc08dcffb0b7e7741fac25126bf0368b5ac7c132"
+    },
+    {
+      "at": 1793310070,
+      "revision": "66c8268cacaa43a887a4f5d195730ea9b2e8a11e4a525bc77331faa0a4015f6d"
+    }
+  ],
+  "forecast": {
+    "revision": "dc776a4c63d379ef9a7d8905cc08dcffb0b7e7741fac25126bf0368b5ac7c132",
+    "product": {
+      "method": "2026-10-29.1",
+      "model": "NOAA HRRR",
+      "point": {
+        "lat": 39,
+        "lon": -77
+      },
+      "cell": {
+        "x": 1485,
+        "y": 613,
+        "lat": 38.99565994809633,
+        "lon": -76.99581511079373,
+        "chunk": "0.4.9",
+        "point_offset": 2085,
+        "projection_distance_m": 603.10613606943
+      },
+      "issued_at": "2026-10-29T12:00:00.000Z",
+      "source_url": "https://hrrrzarr.s3.amazonaws.com/sfc/20261029/20261029_12z_fcst.zarr/2m_above_ground/TMP/2m_above_ground/TMP/0.4.9",
+      "chunk_sha256": "9d7e361d7df0ff7dff73120f6e5840f6a4150c68c820e2e1ade3fb2a4863ffb1",
+      "chunk_bytes": 1508674,
+      "samples": [
+        {
+          "at": "2026-10-29T13:00:00.000Z",
+          "lead_hours": 1,
+          "raw_kelvin": 286.9908142089844
+        },
+        {
+          "at": "2026-10-29T14:00:00.000Z",
+          "lead_hours": 2,
+          "raw_kelvin": 287.9515380859375
+        },
+        {
+          "at": "2026-10-29T15:00:00.000Z",
+          "lead_hours": 3,
+          "raw_kelvin": 289.17279052734375
+        },
+        {
+          "at": "2026-10-29T16:00:00.000Z",
+          "lead_hours": 4,
+          "raw_kelvin": 289.95458984375
+        },
+        {
+          "at": "2026-10-29T17:00:00.000Z",
+          "lead_hours": 5,
+          "raw_kelvin": 291.2317810058594
+        },
+        {
+          "at": "2026-10-29T18:00:00.000Z",
+          "lead_hours": 6,
+          "raw_kelvin": 291.9022216796875
+        },
+        {
+          "at": "2026-10-29T19:00:00.000Z",
+          "lead_hours": 7,
+          "raw_kelvin": 292.84820556640625
+        },
+        {
+          "at": "2026-10-29T20:00:00.000Z",
+          "lead_hours": 8,
+          "raw_kelvin": 293.6236267089844
+        },
+        {
+          "at": "2026-10-29T21:00:00.000Z",
+          "lead_hours": 9,
+          "raw_kelvin": 293.4454040527344
+        },
+        {
+          "at": "2026-10-29T22:00:00.000Z",
+          "lead_hours": 10,
+          "raw_kelvin": 291.02972412109375
+        },
+        {
+          "at": "2026-10-29T23:00:00.000Z",
+          "lead_hours": 11,
+          "raw_kelvin": 289.32659912109375
+        },
+        {
+          "at": "2026-10-30T00:00:00.000Z",
+          "lead_hours": 12,
+          "raw_kelvin": 288.37890625
+        },
+        {
+          "at": "2026-10-30T01:00:00.000Z",
+          "lead_hours": 13,
+          "raw_kelvin": 287.37689208984375
+        },
+        {
+          "at": "2026-10-30T02:00:00.000Z",
+          "lead_hours": 14,
+          "raw_kelvin": 286.65887451171875
+        },
+        {
+          "at": "2026-10-30T03:00:00.000Z",
+          "lead_hours": 15,
+          "raw_kelvin": 286.2330627441406
+        },
+        {
+          "at": "2026-10-30T04:00:00.000Z",
+          "lead_hours": 16,
+          "raw_kelvin": 285.79046630859375
+        },
+        {
+          "at": "2026-10-30T05:00:00.000Z",
+          "lead_hours": 17,
+          "raw_kelvin": 285.48553466796875
+        },
+        {
+          "at": "2026-10-30T06:00:00.000Z",
+          "lead_hours": 18,
+          "raw_kelvin": 285.1747741699219
+        },
+        {
+          "at": "2026-10-30T07:00:00.000Z",
+          "lead_hours": 19,
+          "raw_kelvin": 284.5438232421875
+        },
+        {
+          "at": "2026-10-30T08:00:00.000Z",
+          "lead_hours": 20,
+          "raw_kelvin": 284.1489562988281
+        },
+        {
+          "at": "2026-10-30T09:00:00.000Z",
+          "lead_hours": 21,
+          "raw_kelvin": 284.1326599121094
+        },
+        {
+          "at": "2026-10-30T10:00:00.000Z",
+          "lead_hours": 22,
+          "raw_kelvin": 284.216796875
+        },
+        {
+          "at": "2026-10-30T11:00:00.000Z",
+          "lead_hours": 23,
+          "raw_kelvin": 284.35552978515625
+        },
+        {
+          "at": "2026-10-30T12:00:00.000Z",
+          "lead_hours": 24,
+          "raw_kelvin": 284.14202880859375
+        },
+        {
+          "at": "2026-10-30T13:00:00.000Z",
+          "lead_hours": 25,
+          "raw_kelvin": 286.670166015625
+        },
+        {
+          "at": "2026-10-30T14:00:00.000Z",
+          "lead_hours": 26,
+          "raw_kelvin": 290.02911376953125
+        },
+        {
+          "at": "2026-10-30T15:00:00.000Z",
+          "lead_hours": 27,
+          "raw_kelvin": 291.7592468261719
+        },
+        {
+          "at": "2026-10-30T16:00:00.000Z",
+          "lead_hours": 28,
+          "raw_kelvin": 293.32855224609375
+        },
+        {
+          "at": "2026-10-30T17:00:00.000Z",
+          "lead_hours": 29,
+          "raw_kelvin": 294.2406005859375
+        },
+        {
+          "at": "2026-10-30T18:00:00.000Z",
+          "lead_hours": 30,
+          "raw_kelvin": 294.8448486328125
+        },
+        {
+          "at": "2026-10-30T19:00:00.000Z",
+          "lead_hours": 31,
+          "raw_kelvin": 295.4890441894531
+        },
+        {
+          "at": "2026-10-30T20:00:00.000Z",
+          "lead_hours": 32,
+          "raw_kelvin": 295.30035400390625
+        },
+        {
+          "at": "2026-10-30T21:00:00.000Z",
+          "lead_hours": 33,
+          "raw_kelvin": 293.8377380371094
+        },
+        {
+          "at": "2026-10-30T22:00:00.000Z",
+          "lead_hours": 34,
+          "raw_kelvin": 290.6929626464844
+        },
+        {
+          "at": "2026-10-30T23:00:00.000Z",
+          "lead_hours": 35,
+          "raw_kelvin": 288.754638671875
+        },
+        {
+          "at": "2026-10-31T00:00:00.000Z",
+          "lead_hours": 36,
+          "raw_kelvin": 287.1829833984375
+        },
+        {
+          "at": "2026-10-31T01:00:00.000Z",
+          "lead_hours": 37,
+          "raw_kelvin": 285.98858642578125
+        },
+        {
+          "at": "2026-10-31T02:00:00.000Z",
+          "lead_hours": 38,
+          "raw_kelvin": 285.0716552734375
+        },
+        {
+          "at": "2026-10-31T03:00:00.000Z",
+          "lead_hours": 39,
+          "raw_kelvin": 284.447265625
+        },
+        {
+          "at": "2026-10-31T04:00:00.000Z",
+          "lead_hours": 40,
+          "raw_kelvin": 283.89190673828125
+        },
+        {
+          "at": "2026-10-31T05:00:00.000Z",
+          "lead_hours": 41,
+          "raw_kelvin": 283.1783447265625
+        },
+        {
+          "at": "2026-10-31T06:00:00.000Z",
+          "lead_hours": 42,
+          "raw_kelvin": 282.53704833984375
+        },
+        {
+          "at": "2026-10-31T07:00:00.000Z",
+          "lead_hours": 43,
+          "raw_kelvin": 281.72802734375
+        },
+        {
+          "at": "2026-10-31T08:00:00.000Z",
+          "lead_hours": 44,
+          "raw_kelvin": 281.2737121582031
+        },
+        {
+          "at": "2026-10-31T09:00:00.000Z",
+          "lead_hours": 45,
+          "raw_kelvin": 280.681884765625
+        },
+        {
+          "at": "2026-10-31T10:00:00.000Z",
+          "lead_hours": 46,
+          "raw_kelvin": 280.1529235839844
+        },
+        {
+          "at": "2026-10-31T11:00:00.000Z",
+          "lead_hours": 47,
+          "raw_kelvin": 279.8592529296875
+        },
+        {
+          "at": "2026-10-31T12:00:00.000Z",
+          "lead_hours": 48,
+          "raw_kelvin": 279.52740478515625
+        }
+      ],
+      "raw_unit": "K",
+      "height_m": 2,
+      "temporal_semantics": "instantaneous",
+      "metadata": {
+        "metadata": {
+          ".zattrs": {},
+          ".zgroup": {
+            "zarr_format": 2
+          },
+          "2m_above_ground/.zgroup": {
+            "zarr_format": 2
+          },
+          "2m_above_ground/TMP/.zarray": {
+            "chunks": [
+              48,
+              150,
+              150
+            ],
+            "compressor": {
+              "blocksize": 0,
+              "clevel": 9,
+              "cname": "lz4",
+              "id": "blosc",
+              "shuffle": 1
+            },
+            "dtype": "<f4",
+            "fill_value": -9999,
+            "filters": null,
+            "order": "C",
+            "shape": [
+              48,
+              1059,
+              1799
+            ],
+            "zarr_format": 2
+          },
+          "2m_above_ground/TMP/.zattrs": {
+            "GRIB_PARAM": [
+              2,
+              0,
+              0,
+              0
+            ],
+            "_ARRAY_DIMENSIONS": [
+              "time",
+              "projection_y_coordinate",
+              "projection_x_coordinate"
+            ],
+            "coordinates": "forecast_reference_time forecast_period",
+            "long_name": "2m_above_ground/TMP",
+            "units": "K"
+          },
+          "forecast_period/.zarray": {
+            "chunks": [
+              48
+            ],
+            "compressor": {
+              "blocksize": 0,
+              "clevel": 5,
+              "cname": "lz4",
+              "id": "blosc",
+              "shuffle": 1
+            },
+            "dtype": "<i8",
+            "fill_value": null,
+            "filters": null,
+            "order": "C",
+            "shape": [
+              48
+            ],
+            "zarr_format": 2
+          },
+          "forecast_period/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+              "time"
+            ],
+            "standard_name": "forecast_period",
+            "units": "hours"
+          },
+          "forecast_reference_time/.zarray": {
+            "chunks": [],
+            "compressor": null,
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [],
+            "zarr_format": 2
+          },
+          "forecast_reference_time/.zattrs": {
+            "_ARRAY_DIMENSIONS": [],
+            "calendar": "gregorian",
+            "standard_name": "forecast_reference_time",
+            "units": "hours since 1970-01-01"
+          },
+          "projection_x_coordinate/.zarray": {
+            "chunks": [
+              1799
+            ],
+            "compressor": {
+              "blocksize": 0,
+              "clevel": 5,
+              "cname": "lz4",
+              "id": "blosc",
+              "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+              1799
+            ],
+            "zarr_format": 2
+          },
+          "projection_x_coordinate/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+              "projection_x_coordinate"
+            ],
+            "standard_name": "projection_x_coordinate",
+            "units": "m"
+          },
+          "projection_y_coordinate/.zarray": {
+            "chunks": [
+              1059
+            ],
+            "compressor": {
+              "blocksize": 0,
+              "clevel": 5,
+              "cname": "lz4",
+              "id": "blosc",
+              "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+              1059
+            ],
+            "zarr_format": 2
+          },
+          "projection_y_coordinate/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+              "projection_y_coordinate"
+            ],
+            "standard_name": "projection_y_coordinate",
+            "units": "m"
+          },
+          "time/.zarray": {
+            "chunks": [
+              48
+            ],
+            "compressor": {
+              "blocksize": 0,
+              "clevel": 5,
+              "cname": "lz4",
+              "id": "blosc",
+              "shuffle": 1
+            },
+            "dtype": "<f8",
+            "fill_value": "NaN",
+            "filters": null,
+            "order": "C",
+            "shape": [
+              48
+            ],
+            "zarr_format": 2
+          },
+          "time/.zattrs": {
+            "_ARRAY_DIMENSIONS": [
+              "time"
+            ],
+            "calendar": "gregorian",
+            "long_name": "time",
+            "units": "hours since 1970-01-01"
+          }
+        },
+        "zarr_consolidated_format": 1
+      },
+      "array_hashes": {
+        "projection_y_coordinate": "f8b955dbfc985a08b76e5643c2f7fe09a9fc617cf81d341a9b1ee53d9a14c70e",
+        "time": "3f311392544446f2d59a173deff00d2764e0e5428931251be4bd2f067a613c29",
+        "forecast_reference_time": "ba2db1396d144a366ab33e6f5de6534b5686324cc881b94657d371bab4248654",
+        "forecast_period": "c1c0fc97139e21f56ffa7769f93a99fddb9acad1ec2ce3fe52c36d10ade0d428",
+        "projection_x_coordinate": "993a76cf606f879a6263b3d28e5d79ec0b46aec55518e6ff9baeba68e6e79a07"
+      },
+      "selection": "Latest available six-hour cycle at least two hours old; up to two older cycles checked on metadata 404 only",
+      "provider": "University of Utah HRRR Zarr archive"
+    }
+  },
+  "observation": {
+    "id": "https://api.weather.gov/stations/KCGS/observations/2026-10-29T20:55:00+00:00",
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -76.92,
+        38.97
+      ]
+    },
+    "properties": {
+      "@id": "https://api.weather.gov/stations/KCGS/observations/2026-10-29T20:55:00+00:00",
+      "@type": "wx:ObservationStation",
+      "elevation": {
+        "unitCode": "wmoUnit:m",
+        "value": 15
+      },
+      "station": "https://api.weather.gov/stations/KCGS",
+      "stationId": "KCGS",
+      "stationName": "College Park Airport",
+      "timestamp": "2026-10-29T20:55:00+00:00",
+      "rawMessage": "KCGS 292055Z AUTO 16004KT 10SM CLR 22/12 A3016 RMK AO2 T02210123",
+      "textDescription": "Clear",
+      "icon": "https://api.weather.gov/icons/land/day/skc?size=medium",
+      "presentWeather": [],
+      "temperature": {
+        "unitCode": "wmoUnit:degC",
+        "value": 22.1,
+        "qualityControl": "V"
+      },
+      "dewpoint": {
+        "unitCode": "wmoUnit:degC",
+        "value": 12.3,
+        "qualityControl": "V"
+      },
+      "windDirection": {
+        "unitCode": "wmoUnit:degree_(angle)",
+        "value": 160,
+        "qualityControl": "V"
+      },
+      "windSpeed": {
+        "unitCode": "wmoUnit:km_h-1",
+        "value": 7.56,
+        "qualityControl": "V"
+      },
+      "windGust": {
+        "unitCode": "wmoUnit:km_h-1",
+        "value": null,
+        "qualityControl": "Z"
+      },
+      "barometricPressure": {
+        "unitCode": "wmoUnit:Pa",
+        "value": 102130,
+        "qualityControl": "V"
+      },
+      "seaLevelPressure": {
+        "unitCode": "wmoUnit:Pa",
+        "value": null,
+        "qualityControl": "Z"
+      },
+      "visibility": {
+        "unitCode": "wmoUnit:m",
+        "value": 16090,
+        "qualityControl": "C"
+      },
+      "maxTemperatureLast24Hours": {
+        "unitCode": "wmoUnit:degC",
+        "value": null
+      },
+      "minTemperatureLast24Hours": {
+        "unitCode": "wmoUnit:degC",
+        "value": null
+      },
+      "precipitationLastHour": {
+        "unitCode": "wmoUnit:mm",
+        "value": null,
+        "qualityControl": "Z"
+      },
+      "precipitationLast3Hours": {
+        "unitCode": "wmoUnit:mm",
+        "value": null,
+        "qualityControl": "Z"
+      },
+      "precipitationLast6Hours": {
+        "unitCode": "wmoUnit:mm",
+        "value": null,
+        "qualityControl": "Z"
+      },
+      "relativeHumidity": {
+        "unitCode": "wmoUnit:percent",
+        "value": 53.790821750593,
+        "qualityControl": "V"
+      },
+      "windChill": {
+        "unitCode": "wmoUnit:degC",
+        "value": null,
+        "qualityControl": "V"
+      },
+      "heatIndex": {
+        "unitCode": "wmoUnit:degC",
+        "value": 21.770093679043335,
+        "qualityControl": "V"
+      },
+      "cloudLayers": [
+        {
+          "base": {
+            "unitCode": "wmoUnit:m",
+            "value": null
+          },
+          "amount": "CLR"
+        }
+      ]
+    }
+  },
+  "pair": {
+    "valid_at": "2026-10-29T21:00:00.000Z",
+    "initialization_at": "2026-10-29T12:00:00.000Z",
+    "lead_hours": 9,
+    "collection_lead_hours": 1.4466666666666668,
+    "forecast_checked_at": "2026-10-29T19:33:12.000Z",
+    "forecast_revision": "dc776a4c63d379ef9a7d8905cc08dcffb0b7e7741fac25126bf0368b5ac7c132",
+    "forecast_f": 68.53172729492192,
+    "raw_kelvin": 293.4454040527344,
+    "observed_f": 71.78,
+    "error_f": -3.2482727050780795,
+    "observation_at": "2026-10-29T20:55:00.000Z",
+    "observation_id": "https://api.weather.gov/stations/KCGS/observations/2026-10-29T20:55:00+00:00",
+    "quality": "V",
+    "cell": {
+      "x": 1485,
+      "y": 613,
+      "lat": 38.99565994809633,
+      "lon": -76.99581511079373,
+      "chunk": "0.4.9",
+      "point_offset": 2085,
+      "projection_distance_m": 603.10613606943
+    },
+    "grid_station_distance_km": 6.570819645199607,
+    "source_url": "https://hrrrzarr.s3.amazonaws.com/sfc/20261029/20261029_12z_fcst.zarr/2m_above_ground/TMP/2m_above_ground/TMP/0.4.9",
+    "chunk_sha256": "9d7e361d7df0ff7dff73120f6e5840f6a4150c68c820e2e1ade3fb2a4863ffb1"
+  },
+  "validation": {
+    "independent_kelvin_and_celsius_conversion": true,
+    "independent_time_order_check": true,
+    "downloaded_chunk_hash": "9d7e361d7df0ff7dff73120f6e5840f6a4150c68c820e2e1ade3fb2a4863ffb1",
+    "downloaded_chunk_bytes": 1508674,
+    "independent_native_grid_decode": false
+  },
+  "interpretation": "One deliberately inspected station/forecast pair, not a calibration or representative skill sample. Archive checks are application records, not independently notarized timestamps. Original provider data retain their terms."
+}

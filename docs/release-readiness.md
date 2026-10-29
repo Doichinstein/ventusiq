@@ -16,8 +16,19 @@ October 29 at 23 UTC; its observation window ends at 23:30 UTC, subject to later
 source availability and QC. The download reproduces both selection and report
 from retained evidence. Station switching clears results/export. The panel fits
 390×844 without horizontal overflow and its evidence table scrolls by keyboard;
-no browser errors were observed. These checks do not establish a nonempty live
-HRRR outcome sample or calibrated skill. No background collection was scheduled.
+no browser errors were observed. No background collection was scheduled.
+
+The subsequent public v86 check did return one match from older production history:
+the October 29 12 UTC run, collected at 19:33:12 UTC, forecast 68.5317°F for 21 UTC.
+KCGS reported 22.1°C (71.78°F), QC V, at 20:55 UTC. Independent conversion and
+timestamp checks reproduce a −3.2483°F error; the freshly downloaded native source
+chunk matches its recorded SHA-256. The grid is 6.57 km from the station. Public
+desktop/mobile rendering and JSON export show that same pair, with 166 other
+candidate hours lacking eligible captures. The temporary device place was removed
+and remained absent after reload. Source records and checks are preserved in the
+[one-pair evidence bundle](evidence/hrrr-live-2026-10-29.json). This closes the
+nonempty live HRRR-path check, not independent native-grid decoding, representative
+sampling, seasonal evaluation, model ranking or calibrated skill.
 
 ## Journey router-reference evidence (v85)
 

@@ -756,3 +756,42 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   hourly upkeep is unchanged. Browser rendering and direct-edition CORS verification
   remain unavailable under the saved browser permission restriction. Interface
   doubles and HTTP checks do not replace rendered map/control verification.
+
+
+## 2026-10-29 — Explicit Census address search
+
+- Added street-address lookup to hosted and Python editions, candidate review,
+  an approximate-point map marker, form filling and raw JSON evidence export.
+  Search runs only on submit. Choosing a candidate does not save a place, enroll
+  a watch or trigger a watershed request. Existing device/account saving is reused.
+- Shared hosted rate counters retain no address or result. Python uses locked
+  process-memory counters. Same-origin JSON POST, bounded input and provider
+  response sizes, fixed upstream URLs, redirect rejection and generic provider
+  errors protect the lookup contract. Static builds offer an official external
+  geocoder link because Census does not support direct browser CORS.
+- 520 Node and 19 Python tests passed (539 total); TypeScript and the production
+  build passed. Ten new Node and three new Python tests cover request validation,
+  exact raw evidence, ambiguous candidates, malformed coordinates, input echo,
+  rate limits and rollover, absence of archive writes, provider-error privacy,
+  map review, explicit selection, no typing requests, stale reply suppression,
+  export invalidation and daemon HTTP behavior.
+- Built Worker live checks at 2026-10-29T04:40:18–25Z returned HTTP 200 for public
+  building examples: 4600 Silver Hill Rd (38.84505589808,-76.92836638093),
+  1600 Pennsylvania Ave NW (38.898702605245,-77.035189204737), and 1315 10th St,
+  Sacramento (38.576770901007,-121.494921447183). Census returned no match for the
+  deliberately nonexistent test address. These are provider matches, not a
+  verification of actual building positions or watershed membership.
+- A real Python-daemon HTTP lookup at 2026-10-29T04:41:21Z returned the same
+  Silver Hill Rd coordinates and benchmark. It used no external dependencies.
+  The request path was POST /api/geocode; input text was not part of that path.
+- Built Worker negative checks returned 403 for a foreign origin, 404 for GET
+  lookup and 413 for an oversized body. The page and both new modules returned
+  HTTP 200. The original QA client completed after a slow local asset response (about
+  97 seconds). A bounded repeat timed out on GET /api/geocode, which the local
+  runtime later logged as 404 after about 24 seconds. Separate page/module
+  checks then read complete bodies in 6–62 ms. The cause of the transient local
+  latency is unproven; these checks do not establish production latency.
+- Browser rendering remains unverified under the existing saved permission
+  setting. Source contracts and interaction doubles do not establish rendered
+  layout or real two-device account behavior. Existing hourly upkeep, runtime
+  secrets and database schema are unchanged.

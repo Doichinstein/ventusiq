@@ -11,13 +11,15 @@ import time
 from .freshness import Policy
 from .nws import BASE, ZONE, fetch_json
 from .forecast import ForecastService, point_key
+from .geocode import GeocodeService, GeocodeError
 
 ROOT = Path(__file__).resolve().parent.parent / "public"
 log = logging.getLogger(__name__)
 
 
-def make_server(store, host="127.0.0.1", port=8765, policy=Policy(), forecasts=None):
+def make_server(store, host="127.0.0.1", port=8765, policy=Policy(), forecasts=None, geocoder=None):
     forecasts = forecasts or ForecastService(store)
+    geocoder = geocoder or GeocodeService()
     zone_lock = threading.Lock()
     zone_gate = threading.BoundedSemaphore(4)
     locks = {}
@@ -39,6 +41,37 @@ def make_server(store, host="127.0.0.1", port=8765, policy=Policy(), forecasts=N
 
         def do_HEAD(self):
             self.do_GET()
+
+        def do_POST(self):
+            if urlparse(self.path).path != '/api/geocode':
+                self.send(404, {'error': 'Unknown API route'})
+                return
+            self.close_connection = True
+            try:
+                origin = urlparse(self.headers.get('Origin', ''))
+                if (origin.scheme not in ('http', 'https') or origin.netloc != self.headers.get('Host')
+                        or origin.path or origin.query or origin.fragment
+                        or self.headers.get('Content-Type', '').split(';')[0].strip() != 'application/json'):
+                    raise GeocodeError('Same-origin JSON request required.', 403)
+                if self.headers.get('Transfer-Encoding'):
+                    raise GeocodeError('Content-Length required.', 411)
+                length = self.headers.get('Content-Length', '')
+                if not length.isdigit():
+                    raise GeocodeError('Content-Length required.', 411)
+                if not 0 < int(length) <= 1024:
+                    raise GeocodeError('Address request is too large.', 413)
+                self.connection.settimeout(10)
+                try:
+                    value = json.loads(self.rfile.read(int(length)))
+                except (ValueError, OSError):
+                    raise GeocodeError('Invalid JSON.') from None
+                if not isinstance(value, dict) or set(value) - {'address'}:
+                    raise GeocodeError('Invalid address request.')
+                self.send(200, geocoder.search(value.get('address')), cache='private, no-store')
+            except GeocodeError as exc:
+                self.send(exc.status, {'error': str(exc)}, cache='private, no-store')
+            except Exception:
+                self.send(503, {'error': 'Address search is unavailable.'}, cache='private, no-store')
 
         def do_GET(self):
             url = urlparse(self.path)

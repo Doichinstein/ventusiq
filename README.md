@@ -52,6 +52,11 @@ NOAA upstream/downstream [gauge connections](docs/rivers.md#upstream-and-downstr
 let users navigate related gauges and export the original associations. Direction
 conflicts, incomplete coverage and stale checks remain explicit.
 
+**Address search** finds Census street-address matches in the hosted and Python
+editions. Review the approximate point on the map, then fill the existing place
+form and save explicitly. Searches are not archived; raw match evidence can be
+downloaded. See [address search](docs/address-search.md).
+
 **Watershed geography** links a selected place to its USGS catchment and indexed
 stream point, with an upstream-basin map, approximate areas and raw JSON/GeoJSON
 exports. It distinguishes local-only responses and unverified associations from

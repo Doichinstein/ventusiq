@@ -1,3 +1,4 @@
+import {GeocodeService,geocodePost} from '../../../lib/geocode-service.mjs';
 import {WatershedService} from '../../../lib/watershed-service.mjs';
 import {journeyStops} from '../../../public/journey-stops.mjs';
 import {HrrrService} from '../../../lib/hrrr-service.mjs';
@@ -107,6 +108,7 @@ export async function GET(request:Request){
 }
 export async function POST(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
+  if(new URL(request.url).pathname==='/api/geocode')return geocodePost(request,new GeocodeService(new WeatherService(env.DB)));
   if(new URL(request.url).pathname==='/api/places')return placesPost(request,new PlacesService(new WeatherService(env.DB)),(await getChatGPTUser())?.userId||null);
   if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,(await getChatGPTUser())?.userId||null);if(response.ok)after(()=>service.dispatch());return response;}
   if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);

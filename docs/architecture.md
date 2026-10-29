@@ -414,5 +414,18 @@ geometry as a single evidence chain, retaining each raw product and request.
 transactions and seven-day hazard retention. `watershed.js` renders provenance,
 JSON/GeoJSON exports and a separate map pane that clears with place changes and
 hides during replay. Shared request/daily limits protect the public processor;
-no schema, identity, subscription or scheduler change is needed. Address geocoding
-and basin-to-gauge validation remain separate from the geographic association.
+no schema, identity, subscription or scheduler change is needed. Address geocoding now supplies reviewed saved-place coordinates; basin-to-gauge
+validation remains separate from the geographic association.
+
+
+### Explicit street-address lookup
+
+`geocode-core.mjs` validates Census's current address-range response and retains
+raw match evidence in the response only. `GeocodeService` uses D1 solely for
+shared request/day counters. `geocodePost` bounds same-origin JSON uploads and
+keeps search text out of archive keys and errors. The Python daemon implements
+the same lookup contract with in-process quotas in `weathercommons/geocode.py`.
+`geocode.js` owns submit-only search, candidate selection, a map review marker,
+export and cancellation. Selection fills the existing place form; saving remains
+an explicit device/account operation. Static editions link to Census's own UI
+because its API does not support CORS. No identity or scheduling change is needed.

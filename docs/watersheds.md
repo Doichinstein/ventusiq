@@ -24,8 +24,9 @@ polygon is not an acceptance requirement. All returned geometry is retained.
 
 This is drainage geography, not a flood-inundation footprint, address-level flood
 prediction, travel-time estimate or proof that a nearby NOAA gauge is connected.
-Storm sewers, small drainage features and infrastructure may be absent. Address
-search, basin-to-gauge validation and hydraulic modeling remain separate work.
+Storm sewers, small drainage features and infrastructure may be absent. [Address search](address-search.md) now fills a place from an approximate Census
+street-range point. Basin-to-gauge validation and hydraulic modeling remain
+separate work. A geocoded address does not establish property-level drainage.
 
 ## Source contract
 

@@ -1554,3 +1554,31 @@ The documentation-only follow-up updates readiness claims and the downloadable
 Apache-2.0 source. It changes no runtime behavior, permissions, schema or schedule.
 Real account/device delivery, verified route closure attribution, forecast outcome
 validation and supported hosted database recovery remain separate open requirements.
+
+## Forecast and smoke browser flow (October 29, v63; v64 chart correction)
+
+- A temporary public-coordinate Washington place loaded KDCA observations and its
+  chart. The 6-hour and 24-hour forecast-revision comparisons explicitly reported
+  no archived earlier edition. Temperature evaluation reported zero pairs out of
+  168 eligible hours, with unavailable errors rather than invented skill. These
+  checks verify the missing-history flow, not nonempty forecast-error diagnostics.
+- HRRR/RAP comparison loaded 43/48 and 37/48 hourly values respectively, with 37
+  current matched pairs. The chart distinguished the model symbols, native-grid
+  location and different initialization times. Its JSON download succeeded.
+- GEFS displayed all 31 members for each of 24 three-hour samples. Switching from
+  temperature to sustained wind changed units and threshold direction. Entering
+  10 mph displayed member counts with a denominator of 31; these remain correlated
+  model counts, not calibrated probabilities. The provider still supplies no model
+  initialization time. Source/member and forecast diagnostic downloads succeeded.
+- The wind chart exposed a negative axis tick caused by generic lower padding,
+  despite nonnegative speed data. The v64 change clamps only the wind scale's
+  lower bound to zero; temperature scales retain negative values. It also repairs
+  a non-UTF-8 degree symbol in the pre-load temperature threshold label. Raw source
+  data, member values, quantiles and exports are unchanged.
+- The grid-analog browser flow loaded 20 comparable days, showed all 3,653 history
+  inputs, 610 seasonal candidates and 301 pre-spacing matches, and distinguished
+  historical variation from a forecast interval. It explicitly reported that wind
+  and precipitation did not improve over the seasonal baseline in its held-out
+  historical test. This does not validate transfer from current forecasts.
+- All 15 existing ensemble core, service and UI tests pass after the chart/encoding
+  correction. Post-publication rendering of the changed scale is checked separately.

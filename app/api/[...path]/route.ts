@@ -1,5 +1,6 @@
 import {RoadworkService} from '../../../lib/roadwork-service.mjs';
 import {StationHistoryService} from '../../../lib/station-history-service.mjs';
+import {OzoneService} from '../../../lib/ozone-service.mjs';
 import {StormHistoryService} from '../../../lib/storm-history-service.mjs';
 import {WebhookService} from '../../../lib/webhook-service.mjs';
 import {webhookGet,webhookPost} from '../../../lib/webhook-http.mjs';
@@ -60,6 +61,8 @@ export async function GET(request:Request){
       return result?json(result):json({error:'No collected event at this time'},404);
     }
     if(path==='/api/air/comparison')return json(await new PMComparisonService(service).comparison(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('id')));
+    if(path==='/api/air/ozone/near')return json(await new OzoneService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
+    if(path==='/api/air/ozone/history')return json(await new OzoneService(service).history(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('id'),url.searchParams.get('compare')==='1'));
     if(path==='/api/air/forecast')return json(await new AirForecastService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));
     if(path==='/api/ensemble')return json(await new EnsembleService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));

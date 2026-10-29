@@ -111,7 +111,7 @@ against fixed temperature/wind similarity rules and evaluates held-out years
 against seasonal and persistence baselines. `analogs.js` exposes source coverage,
 selected dates, following-day distributions, validation and reproducible export.
 Reanalysis outcomes are historical context, not operational forecast probabilities;
-station integration and validated impact associations remain future work. An explicit
+full station-based evaluation and validated impact associations remain future work. Explicit nearby GSOD station context is available. An explicit
 NOAA area/date context lookup now supports the comparable dates without changing
 analog scores. See
 [the complete historical analog method](historical-analogs.md).
@@ -535,3 +535,14 @@ coordinates upstream. Explicit station/date retrieval uses shared cache admissio
 request spacing, daily budgets and last-good editions. `station-history.js` receives
 analog context and resets evidence when place/date/station changes. No schema,
 secret or hourly schedule changes. See [methods](station-history.md).
+
+
+### Measured ozone
+
+`OzoneService` collects fixed EPA current/history services through shared leases,
+bounded pages and monitor quotas. `ozone-core.mjs` selects complete measurement
+hours, preserves gaps and negative source values, and pairs earlier model brackets
+without mixing ppb and µg/m³. `ozone.js` owns explicit discovery, station selection,
+chart/table, raw export and late-response isolation. Existing CAMS archive checks
+supply model context; current products cannot enter earlier forecast slots. No
+schema or schedule changes. See [ozone methods](ozone-observations.md).

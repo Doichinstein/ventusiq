@@ -1112,3 +1112,36 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   sign-in, two-device synchronization and closed-browser notification delivery
   remain unverified from earlier work. Station continuity and a full station-based
   holdout evaluation remain roadmap items.
+
+
+## Completed hourly ozone context (2026-10-29, v48)
+
+- All 643 Node and 19 Python tests passed, with TypeScript and production build.
+  Fifteen ozone tests cover bounded feeds, exact monitor identity/location,
+  completed-period cutoffs, source flags/units, negative readings, missing/conflicting
+  rows, archive selection before observation, no invented unit conversion, source
+  failures, capacity/budget, explicit UI requests and late-response isolation.
+- An additional PM2.5 regression proves that an outcome hour must be complete at
+  its observation collection and that a baseline hour must be complete in the
+  edition preceding its forecast check. PM comparison method is now 2026-10-29.2;
+  prior exports are not retroactively relabeled. This fixes timestamp-only pairing
+  using the AirNow field definition that timestamps mark period starts.
+- Built Worker HTTP checks at 2026-10-29T06:46:13.455844+00:00 returned 200 for the
+  page, both ozone modules, discovery and history/model-context endpoint. Empty
+  latitude and unlisted monitor returned 400.
+- At 39,-77, five nearby monitors were returned. TakomaRec (110010050), 3.625 km
+  away, supplied 23 of 24 completed hourly concentrations. One period had an
+  unrecognized/missing unit and remained unknown. Latest completed period was
+  2026-10-29 05:00–06:00 UTC: 7 ppb and source ozone NowCast AQI 9.
+  Observation revision `2612736c6bedacade586a44c0ff1549af845fdb38284ef3b7c8ef645e02bce0f`;
+  discovery revision `4b2909d062b18c6c536b041fe492cbafe27a38a14df02af80a2ea961035c98ae`.
+- The live archive had zero eligible earlier model checks and zero paired hours.
+  Current CAMS collection succeeded with revision
+  `ad741caee0ee6ba649ec9186a79a1b4b57aade963df4bd579c086b0468505bd3` but was correctly
+  excluded from earlier observation periods. Controlled archive fixtures verified
+  actual pairing and rejection of later model corrections; these are not live
+  evidence of model skill. No ozone error metric is computed across ppb and µg/m³.
+- No schema, runtime secret, unattended schedule or notification changes. Browser
+  rendering remains unverified under the saved permission restriction. Compatible
+  gas-unit evaluation, identified model runs, exposure validation and additional
+  pollutant observations remain open.

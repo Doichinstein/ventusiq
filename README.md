@@ -359,3 +359,6 @@ stay quiet; missing inputs never produce an all-clear. See
 
 Historical analogs now connect to [nearby NOAA daily station records](docs/station-history.md),
 with explicit station choice, reporting flags, missing values and raw evidence export.
+
+The hosted air-quality workspace includes [completed hourly ozone readings](docs/ozone-observations.md),
+source NowCast AQI, gap-aware charts and optional earlier CAMS model context in original units.

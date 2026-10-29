@@ -83,7 +83,7 @@ The planning export retains the raw particle/gas product, revision/check metadat
 selected samples, maximum, limit and comparison result for every candidate window.
 Changing place clears old evidence; late replies cannot restore another point's
 forecast. [Archived PM2.5 diagnostic comparisons](particulate-comparison.md) now pair earlier model samples with later monitor readings. Broader independent evaluation, run-identified products,
-observed gas comparisons and continuous exposure remain roadmap work.
+compatible-unit gas evaluation and continuous exposure remain roadmap work. [Observed ozone context](ozone-observations.md) now includes completed hourly readings and earlier model brackets in their distinct source units.
 
 
 ## Cache upgrade and reproducibility

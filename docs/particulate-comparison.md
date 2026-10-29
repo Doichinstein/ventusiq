@@ -8,9 +8,10 @@ or new unattended task. A new point can legitimately have zero eligible pairs.
 
 ## What is compared
 
-Method `2026-10-29.1` considers 24 whole-hour UTC timestamps ending at the current
-hour. A reading at a timestamp is not a claim that the current hourly period is
-complete. For each target, select the latest successful CAMS Global forecast
+Method `2026-10-29.2` considers the last 24 completed UTC observation hours.
+AirNow timestamps mark the beginning of a measurement period. Each hour must
+have ended by the observation edition’s collection time as well as evaluation
+time. For each period start, select the latest successful CAMS Global forecast
 check collected from 24 hours through one hour before that timestamp, inclusive.
 Selection happens before examining values. A missing or invalid chosen revision
 does not cause a search for a more favorable earlier forecast. Post-target
@@ -24,7 +25,7 @@ measured flag, microgram/m3 units, numeric nonnegative concentrations, and no
 conflicting duplicate records. Negative values are conservatively excluded by
 this application; they are not necessarily invalid instrument observations.
 Off-hour readings are not rounded into pairs, and missing values are not filled.
-Zero remains a valid value. Readings after their collection time are excluded.
+Zero remains a valid value. Periods not complete by collection are excluded.
 
 Results report paired-hour count, mean absolute difference and mean signed
 difference (model minus monitor), with 1–6, 6–12 and 12–24-hour collection-lead
@@ -36,7 +37,8 @@ boundary. Each target also has a reason when no pair can be formed.
 
 For each selected forecast check, read the latest monitor-history edition
 archived strictly before that check. Use its latest valid measurement, provided
-the measurement was already available in that edition and no more than three
+the full measurement hour had ended by that edition’s collection and its start
+was no more than three
 hours old at forecast collection. An edition collected at the same second is
 excluded because its order cannot be established. Current corrected readings
 cannot become historical baseline inputs. Model and persistence mean absolute
@@ -74,3 +76,5 @@ Model data retains Open-Meteo/CAMS CC BY 4.0 attribution and the provider's
 noncommercial free-API limits. Code remains Apache-2.0. Longer independent
 evaluation, identified model runs, aligned temporal averages, broader monitor
 coverage and outcome-based validation remain future work.
+
+The completed-hour rule follows [AirNow’s hourly timestamp definition](https://docs.airnowapi.org/docs/HourlyAQObsFactSheet.pdf). Method 2026-10-29.2 corrects the earlier timestamp-only check; old exported method versions retain their original semantics.

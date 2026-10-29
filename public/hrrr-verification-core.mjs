@@ -2,7 +2,8 @@
 import {hrrrTemperatureView} from './hrrr-temperature-core.mjs';
 import {forecastChoices,HOUR} from './observations-core.mjs';
 import {distanceKm} from './hazards-core.mjs';
-export const HRRR_VERIFICATION_METHOD='2026-10-29.1';
+export const HRRR_VERIFICATION_METHOD='2026-10-29.2';
+export const HRRR_LEAD_GROUPS=[{label:'1 to under 6 hours',min:1,max:6},{label:'6 to under 12 hours',min:6,max:12},{label:'12 to under 24 hours',min:12,max:24},{label:'24 to 48 hours',min:24,max:49}];
 export function hrrrChoices(checks,targets){
   const groups=new Map();
   for(const c of checks)if(Number.isSafeInteger(c.at)&&c.at>0&&typeof c.revision==='string'&&c.revision){
@@ -40,7 +41,7 @@ export function compareHrrr(targets,choices,products,observations,point,station)
       observed_f:observed.temperature,error_f:row.temperature_f-observed.temperature,observation_at:new Date(observed.at).toISOString(),observation_id:observed.id,quality:observed.temperature_qc,
       cell:view.cell,grid_station_distance_km:distanceKm(view.cell.lat,view.cell.lon,station.lat,station.lon),source_url:product.source_url,chunk_sha256:product.chunk_sha256});
   }
-  const groups=[{label:'1 to under 6 hours',min:1,max:6},{label:'6 to under 12 hours',min:6,max:12},{label:'12 to under 24 hours',min:12,max:24},{label:'24 to 48 hours',min:24,max:49}].map(g=>({label:g.label,...stats(pairs.filter(p=>p.lead_hours>=g.min&&p.lead_hours<g.max))}));
+  const groups=HRRR_LEAD_GROUPS.map(g=>({label:g.label,...stats(pairs.filter(p=>p.lead_hours>=g.min&&p.lead_hours<g.max))}));
   const daily=[...new Set(pairs.map(p=>p.valid_at.slice(0,10)))].map(date=>({date,...stats(pairs.filter(p=>p.valid_at.startsWith(date)))}));
   return {method_version:HRRR_VERIFICATION_METHOD,eligible_hours:targets.length,skipped,pairs,groups,daily,...stats(pairs)};
 }

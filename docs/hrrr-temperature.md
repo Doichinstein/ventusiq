@@ -98,11 +98,35 @@ model budget increase, watch or background task is added. Selection changes clea
 the report/export and ignore late replies. The evidence table is keyboard-scrollable.
 
 These are descriptive station differences. Grid/terrain/elevation and observation
-timing can differ, adjacent hours are correlated, and there is no persistence or
-climatology benchmark in this HRRR report. It is not a model ranking, calibrated
+timing can differ and adjacent hours are correlated. The persistence benchmark
+below adds a same-outcome reference; there is no climatology benchmark. It is not a model ranking, calibrated
 confidence or a claim of address-level accuracy. The October 29 public check
 verified one nonempty match, retained with its source records in the
 [evidence bundle](evidence/hrrr-live-2026-10-29.json). Its capture preceded the target,
 unit conversion and error arithmetic reproduce, and the downloaded native chunk
 matches the captured hash. This establishes that path for one case, not general
 forecast skill or independent decoding of the native grid.
+
+## Collection-time persistence benchmark (v90)
+
+The HRRR report now reuses the station-edition persistence evaluator used by the
+NWS report. For each matched target, it selects the latest station edition
+archived strictly before the HRRR capture. The edition and its latest reading
+must be within three hours; only temperature QC V/G qualifies. A later corrected
+reading cannot replace that archived value. Invalid latest readings are not
+skipped for a more favorable older baseline.
+
+The baseline holds that reading constant through the target time. HRRR and
+persistence errors are calculated on exactly the same later observations, with
+separate counts for the complete HRRR sample and the benchmark subset. Results
+include overall and disjoint model-lead groups, signed error, MAE, RMSE and the
+MAE difference (HRRR minus persistence). Negative differences describe lower
+HRRR error on this subset; they do not establish future skill or calibrated
+confidence. This is a capture-time benchmark, not an initialization-time study.
+
+The export includes baseline IDs, QC, observation and collection times, selected
+raw source records, paired errors and reasons for missing baselines. It scans
+at most 2,000 existing observation checks and expands eight editions at a time.
+Missing history, scan limits or read failure leave baseline metrics unavailable
+while preserving the existing HRRR comparison. No extra model or station source
+request, schedule, subscription or database schema is introduced.

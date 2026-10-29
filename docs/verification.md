@@ -1976,3 +1976,40 @@ Five focused tests and TypeScript checking passed; local browser error logs were
 empty. Public and local temporary places were removed; the viewport was reset.
 Evidence is retained in the workspace browser-qa-2026-10-29 directory as
 `hrrr-temperature-export-audit-v83.json`, raw source bytes and desktop/mobile images.
+
+
+## Recent public verification and planner fixes - v86–v89
+
+The v86/v87 public HRRR check matched one captured forecast to KCGS; native-unit
+conversion, capture ordering and error arithmetic were independently reproduced.
+Selected source evidence is retained in `evidence/hrrr-live-2026-10-29.json`.
+The v88 public AKFM7 river comparison matched 50 future timestamps between two
+distinct issues. All were unchanged at 0.6 ft; the newer forecast extended beyond
+the shared horizon. Raw evidence is in `evidence/river-revisions-AKFM7-2026-10-29.json`.
+Eighteen focused river tests passed; public mobile checks confirmed keyboard
+scrolling and timezone labels without captured browser errors. These examples
+do not prove forecast skill, changing river levels or flood impacts.
+
+V89 reproduced and fixed planner exports retaining prior settings while fields
+were edited. Forty-three focused tests passed, including late grid arrival and
+source-outage behavior. Local browser QA applied a zero-wind limit, rejected all
+49 candidate windows, and independently checked the exported zero limit. Preset
+and blank-field drafts cleared results and disabled export. At 390×844 the card
+fit its container; original preferences were restored and no browser errors were
+captured. These checks do not establish broad real-device/outage behavior.
+
+## HRRR persistence integration - v90
+
+Twenty-five focused core/service/UI tests and TypeScript checking pass. SQLite
+integration preserves a 62°F pre-capture reading despite a later correction to
+99°F: against a 64°F outcome, the 68°F HRRR forecast has 4°F absolute error and
+persistence 2°F. Both use the identical observation. Tests also cover same-second
+exclusion, bad-QC latest readings, missing history, bounded scans and a baseline
+read failure that leaves HRRR metrics available. These are deterministic test
+values, not observed live model performance.
+
+Local rendered QA at 39, -77/KCGS had no eligible HRRR outcome yet and correctly
+showed unavailable benchmark metrics. The shared table identifies the HRRR
+1–48-hour range, keeps source leads disjoint, and supports keyboard scrolling on
+a 390×844 viewport without overflowing its 282 px parent. Browser errors were
+empty. No account, subscription or scheduled collection was used.

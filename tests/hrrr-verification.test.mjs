@@ -56,3 +56,19 @@ test('service uses captured products and later station QC without requesting an 
     await assert.rejects(()=>service.compare(39,-77,'KBBB'),/Invalid station/);assert.ok(requests.length>=3);
   }finally{db.close();}
 });
+
+test('HRRR persistence scores identical outcomes using the earlier archived reading, not later corrections',async()=>{
+  const db=database();let time=check.at-60,calls=0;const weather=new WeatherService(db,{clock:()=>time,fetcher:async()=>{calls++;throw Error('No provider request expected');}});
+  const name='observations/station/KAAA',iso=t=>new Date(t).toISOString(),feature=(at,value,id)=>({type:'Feature',id,properties:{station:'https://api.weather.gov/stations/KAAA',timestamp:iso(at),temperature:{value,unitCode:'wmoUnit:degF',qualityControl:'V'}}}),sample=features=>({station:'KAAA',type:'FeatureCollection',features});
+  try{
+    const prior=await weather.collect(name,0,async()=>sample([feature(init+H,62,'prior')]));
+    time=check.at;await weather.collect('hazards/hrrr-temperature/39,-77',0,async()=>product());
+    time=(target+H)/1000-1;await weather.collect(name,1800,async()=>sample([feature(init+H,99,'prior'),feature(target,64,'outcome')]));
+    await weather.collect('observations/near/39.0000,-77.0000',86400,async()=>({stations:[{id:'KAAA',name:'Test',lat:39,lon:-77}]}));time++;
+    const service=new HrrrVerificationService(weather),r=await service.compare(39,-77,'KAAA'),b=r.persistence;
+    assert.equal(r.sample_count,1);assert.equal(r.mae_f,4);assert.equal(b.overall.sample_count,1);assert.equal(b.overall.forecast.mae_f,4);assert.equal(b.overall.persistence.mae_f,2);assert.equal(b.overall.mae_difference_f,2);
+    assert.equal(b.overall.pairs[0].observation_id,r.pairs[0].observation_id);assert.equal(b.overall.pairs[0].baseline.temperature_f,62);assert.equal(b.sources[0].revision,prior.revision);assert.equal(b.sources[0].records[0].properties.temperature.value,62);assert.deepEqual(b.groups.map(g=>g.sample_count),[0,1,0,0]);assert.equal(calls,0);
+    const original=weather.statement.bind(weather);weather.statement=(sql,...args)=>{if(sql.startsWith('SELECT at,revision FROM checks')&&args[0]===name)throw Error('Simulated baseline read failure');return original(sql,...args);};
+    const unavailable=await service.compare(39,-77,'KAAA');assert.equal(unavailable.mae_f,4);assert.equal(unavailable.persistence.overall.sample_count,0);assert.equal(unavailable.persistence.overall.persistence.mae_f,null);assert.match(unavailable.persistence.error,/could not be read/);
+  }finally{db.close();}
+});

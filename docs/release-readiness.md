@@ -1,5 +1,17 @@
 # Ten-feature acceptance audit
 
+## HRRR persistence benchmark (v90)
+
+The HRRR station comparison now includes a collection-time persistence baseline
+on identical outcomes, overall and by model lead. It reuses earlier archived
+station editions rather than later corrected readings. Missing baselines remain
+unknown and cannot change the full HRRR sample metrics. Twenty-five focused
+HRRR/persistence tests and TypeScript checking pass. Local desktop/mobile QA
+verified the empty-history display and keyboard-scrollable table: 583 px content
+inside 282 px, with no panel overflow at 390×844 and no captured browser errors.
+Local HRRR outcomes had not matured; a live nonempty benchmark and broader
+seasonal performance remain unproven by these checks.
+
 ## Planner draft consistency (v89)
 
 Editing limits or loading a preset now clears the prior report and disables its

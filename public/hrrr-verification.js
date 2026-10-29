@@ -1,3 +1,4 @@
+import {persistenceNodes} from './verification-persistence-ui.mjs';
 import {HRRR_VERIFICATION_METHOD} from './hrrr-verification-core.mjs';
 export function mountHrrrVerification({document,window,selection,fetcher=fetch}){
   const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;},num=n=>Number.isFinite(n)?n.toFixed(1):'Unknown';
@@ -14,7 +15,7 @@ export function mountHrrrVerification({document,window,selection,fetcher=fetch})
       else if(result.archive?.scanned_checks)nodes.push(el('p',`Successful collection checks retained: ${result.archive.scanned_checks}. No eligible matches yet. Earliest target allowed by the first retained collection: ${result.archive.earliest_target_by_collection_rule}; its observation window ends ${result.archive.earliest_observation_window_end}. Forecast coverage, station readings and QC must also qualify. These times do not schedule collection.`));
       else nodes.push(el('p','Load HRRR temperature above to begin collecting evidence. Only later weather can verify that capture; today’s loading cannot create past predictions.'));
       if(result.stale||result.observations_truncated)nodes.push(el('p','Station collection is delayed or partial. Available historical matches remain inspectable.','warning-note'));
-      nodes.push(el('p',result.interpretation,'small'));
+      nodes.push(el('p',result.interpretation,'small'),...persistenceNodes(document,result.persistence,{overallLabel:'1–48 hours · HRRR'}));
       const details=el('details'),scroll=el('div',undefined,'hourly-scroll'),table=el('table',undefined,'hourly-table'),head=el('thead'),hr=el('tr'),body=el('tbody');
       scroll.setAttribute('tabindex','0');scroll.setAttribute('role','region');scroll.setAttribute('aria-label','HRRR observation comparison table; scroll horizontally for source times');
       for(const title of ['Target UTC','Forecast °F','Observed °F','Error °F','Observation UTC / QC','Run UTC','Captured UTC','Model / collection lead h','Grid to station km'])hr.append(el('th',title));head.append(hr);

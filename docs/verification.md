@@ -1145,3 +1145,30 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   rendering remains unverified under the saved permission restriction. Compatible
   gas-unit evaluation, identified model runs, exposure validation and additional
   pollutant observations remain open.
+
+
+## Portable event evidence (2026-10-29, v49)
+
+- All 654 Node and 19 Python tests passed, plus TypeScript and production build.
+  Eleven new tests cover original-body preservation, explicit unloaded panels,
+  independent time sorting, mismatched snapshots/modes, later source/boundary
+  collections, future outcomes, checksum changes, safe HTML, local CLI verification,
+  UI invalidation and changes during asynchronous preparation.
+- Built Worker served the page and both new modules with HTTP 200. An actual
+  archived Anchorage Hillside / Eagle River Wind Advisory was loaded at
+  2026-10-29T06:58:31.739Z, followed by bounded station discovery and
+  explicit ARCA2 and SPC report lookups. Seventeen candidate stations were returned.
+  ARCA2 supplied no matching usable measurements; SPC provided no supported wind-
+  advisory report window. The bundle retained those results and marked the gauge
+  panel not loaded. It did not fabricate a measured outcome.
+- The resulting actual-source JSON passed both in-process and standalone Node CLI
+  verification. Event `72b22471e118a5daef0a364d3b0fc8587ea804b84f6175a2dc56ebf3be6b9581`, checksum
+  `c7a1ccadd8963dd749a5679b8a134cfa033789516c920274e3755909b9a17ccb`. The offline HTML was 104179 UTF-8 bytes
+  with one alert chronology entry and complete embedded evidence. Controlled
+  fixtures separately exercised matched station/gauge/report entries and differing
+  occurrence/collection orders. Neither check is a rendered browser inspection.
+- No network calls occur during bundle creation, verification or export. No schema,
+  server retention, runtime secret, schedule or notification changes. New HTML and
+  dashboard rendering remain unverified under the saved browser restriction.
+  Database-wide backups/capacity review and broader verified outcome evaluation
+  remain outstanding; a portable selected record is not a complete archive backup.

@@ -2,7 +2,7 @@ export function mountEventReports({document,window,fetcher=fetch}){
   const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
   let story=null,asof=null,report=null,generation=0;
   const time=t=>t?new Date(t).toLocaleString():'unavailable';
-  function updateStory(next,at=null){generation++;story=next;asof=at;report=null;get('event-reports-results').replaceChildren();get('event-reports-export').disabled=true;get('event-reports-run').disabled=!next;get('event-reports-status').textContent=!next?'Select a collected event.':at?'Historical view: only report editions and zone boundaries already collected by this cutoff can be used.':'Find preliminary tornado, wind and hail reports within this alert chain’s areas and times.';}
+  function updateStory(next,at=null){generation++;story=next;asof=at;report=null;window.WeatherEventBundle?.refresh();get('event-reports-results').replaceChildren();get('event-reports-export').disabled=true;get('event-reports-run').disabled=!next;get('event-reports-status').textContent=!next?'Select a collected event.':at?'Historical view: only report editions and zone boundaries already collected by this cutoff can be used.':'Find preliminary tornado, wind and hail reports within this alert chain’s areas and times.';}
   function render(){
     const r=report,nodes=[];get('event-reports-status').textContent=`${r.matched_count} overlapping preliminary reports in the available editions. Report view ${time(r.as_of)} · alert archive ${time(r.alert_as_of)}.`;
     if(r.scope.unsupported_events.length)nodes.push(el('p','SPC tornado, wind and hail reports do not cover these alert types: '+r.scope.unsupported_events.join(', ')+'. Their outcomes remain unknown.','small'));
@@ -19,12 +19,12 @@ export function mountEventReports({document,window,fetcher=fetch}){
     }
     nodes.push(el('p',r.interpretation,'small'));get('event-reports-results').replaceChildren(...nodes);get('event-reports-export').disabled=false;
   }
-  async function run(){if(!story)return;const token=++generation;report=null;get('event-reports-export').disabled=true;get('event-reports-results').replaceChildren();get('event-reports-run').disabled=true;get('event-reports-status').textContent=asof?'Reading report editions collected by this cutoff…':'Collecting the relevant NOAA report days and official boundaries…';
-    try{const params=new URLSearchParams({id:story.id});if(asof)params.set('at',asof);else params.set('alertAt',story.as_of);const response=await fetcher('/api/event-reports?'+params,{signal:AbortSignal.timeout(60000)}),data=await response.json();if(token!==generation)return;if(!response.ok)throw Error(data.error||'Report lookup failed');report=data;render();}
+  async function run(){if(!story)return;const token=++generation;report=null;window.WeatherEventBundle?.refresh();get('event-reports-export').disabled=true;get('event-reports-results').replaceChildren();get('event-reports-run').disabled=true;get('event-reports-status').textContent=asof?'Reading report editions collected by this cutoff…':'Collecting the relevant NOAA report days and official boundaries…';
+    try{const params=new URLSearchParams({id:story.id});if(asof)params.set('at',asof);else params.set('alertAt',story.as_of);const response=await fetcher('/api/event-reports?'+params,{signal:AbortSignal.timeout(60000)}),data=await response.json();if(token!==generation)return;if(!response.ok)throw Error(data.error||'Report lookup failed');report=data;render();window.WeatherEventBundle?.refresh();}
     catch(error){if(token===generation)get('event-reports-status').textContent='Reported outcomes unavailable: '+error.message;}
     finally{if(token===generation)get('event-reports-run').disabled=false;}
   }
   get('event-reports-run').onclick=run;get('event-reports-export').onclick=()=>{if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-event-reports-'+story.id.slice(0,12)+'.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherEventReports={updateStory};const current=window.WeatherEvents?.context?.();updateStory(current?.story||null,current?.asof||null);return {updateStory,run};
+  window.WeatherEventReports={updateStory,context:()=>({report})};const current=window.WeatherEvents?.context?.();updateStory(current?.story||null,current?.asof||null);return {updateStory,run};
 }
 if(typeof window!=='undefined'){const start=()=>mountEventReports({document,window});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}

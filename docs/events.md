@@ -70,8 +70,14 @@ the hosted archive control; a Python event-store adapter remains future portabil
 work. All new source is Apache-2.0 and included in the download and public repository.
 
 Matched quality-controlled station observations are now available through the
-[measured event context](event-measurements.md) panel. Linked gauge measurements,
-verified impact reports and evaluated forecast-to-outcome verification remain
+[measured event context](event-measurements.md) panel. Linked [gauge measurements](event-gauges.md) and [portable combined evidence](event-evidence-bundles.md) are available. Verified impact reports and evaluated forecast-to-outcome verification remain
 unfinished. An expired alert or missing report is not proof
 that an event ended safely or never happened. The browser permission gate still
 prevents rendered visual QA; automated interaction tests are not a substitute for it.
+
+## Portable evidence record
+
+The combined record joins the selected alert snapshot with currently loaded
+station, gauge and preliminary-report results, preserving separate time axes and
+coverage. JSON has a local integrity verifier; an HTML rendering works offline.
+See [bundle format and archive policy](event-evidence-bundles.md).

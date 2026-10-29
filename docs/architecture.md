@@ -546,3 +546,12 @@ without mixing ppb and µg/m³. `ozone.js` owns explicit discovery, station sele
 chart/table, raw export and late-response isolation. Existing CAMS archive checks
 supply model context; current products cannot enter earlier forecast slots. No
 schema or schedule changes. See [ozone methods](ozone-observations.md).
+
+### Portable event evidence
+
+`event-bundle-core.mjs` validates matching alert snapshots and panel cutoffs,
+builds a combined chronology and generates checksum-bearing JSON plus script-free
+offline HTML. `event-bundle.js` reads existing panel bridges, invalidates prepared
+exports on source/view changes and performs no fetches. The source distribution
+includes a Node verifier. Existing archives and schedules are unchanged. See
+[bundle and retention semantics](event-evidence-bundles.md).

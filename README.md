@@ -362,3 +362,6 @@ with explicit station choice, reporting flags, missing values and raw evidence e
 
 The hosted air-quality workspace includes [completed hourly ozone readings](docs/ozone-observations.md),
 source NowCast AQI, gap-aware charts and optional earlier CAMS model context in original units.
+
+Event stories offer a [portable combined evidence record](docs/event-evidence-bundles.md)
+with a chronology, original source data, JSON checksum verification and offline HTML.

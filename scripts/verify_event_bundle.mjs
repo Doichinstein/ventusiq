@@ -1,0 +1,3 @@
+import {readFile,stat} from 'node:fs/promises';
+import {EVENT_BUNDLE_LIMIT,verifyEventBundle} from '../public/event-bundle-core.mjs';
+try{const path=process.argv[2];if(!path||process.argv.length!==3)throw Error('Usage: node scripts/verify_event_bundle.mjs <event-evidence.json>');if((await stat(path)).size>EVENT_BUNDLE_LIMIT)throw Error('Evidence file exceeds 20 MiB');const result=await verifyEventBundle(JSON.parse(await readFile(path,'utf8')));process.stdout.write(JSON.stringify({valid:true,...result},null,2)+'\n');}catch(error){process.stderr.write(String(error.message)+'\n');process.exitCode=1;}

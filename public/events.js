@@ -15,10 +15,10 @@ export function mountEvents({document,window,fetcher=fetch}){
     }catch(error){if(gen===listGeneration)get('event-list-status').textContent=error.message;}finally{if(gen===listGeneration)get('event-more').disabled=false;}
   }
   async function openStory(nextId,nextAt=null,{resolve=false}={}){
-    show();const gen=++generation;window.WeatherEventReports?.updateStory(null);window.WeatherEventObservations?.updateStory(null);window.WeatherEventGauges?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
+    show();const gen=++generation;story=null;window.WeatherEventBundle?.refresh();window.WeatherEventReports?.updateStory(null);window.WeatherEventObservations?.updateStory(null);window.WeatherEventGauges?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
     id=nextId;asof=nextAt;story=null;get('event-detail').hidden=true;get('event-status').textContent=resolve?'Retrieving up to five referenced messages from NWS…':'Reading the collected timeline…';
     const params=new URLSearchParams({event:id});if(asof)params.set('at',asof);window.history.replaceState(null,'',window.location.pathname+window.location.search+'#'+params);
-    try{const data=await request('/api/events/'+id+(asof?'?at='+encodeURIComponent(asof):resolve?'?resolve=1':''));if(gen!==generation)return;story=data;render();}
+    try{const data=await request('/api/events/'+id+(asof?'?at='+encodeURIComponent(asof):resolve?'?resolve=1':''));if(gen!==generation)return;story=data;render();window.WeatherEventBundle?.refresh();}
     catch(error){if(gen===generation){get('event-status').textContent=error.message+' Earlier views cannot use messages or links collected later.';get('event-detail').hidden=true;}}
   }
   function render(){

@@ -235,6 +235,13 @@ or retrieval. Report coverage, sample size and error by location/season/lead tim
 Each delivery must update `docs/verification.md` with observed results and limits.
 Do not substitute navigation placeholders or roadmap labels for working features.
 
+The offline [frozen forecast-input evaluator](analog-forward-validation.md)
+reproduces registered analog targets and selections from their immutable source
+editions before collecting later UTC outcomes. It compares analog and seasonal
+medians on identical cases, weights shared grid/day outcomes equally, and reports
+pending/missing outcomes explicitly. This is an operator validation path, not an
+accuracy badge or a substitute for the forecast-outcome acceptance evidence.
+
 ## Station temperature evaluation
 
 `StationAnalogsService` collects a bounded, fixed-window daily temperature series

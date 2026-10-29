@@ -1400,3 +1400,59 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   establish that interface returns the required GEFS member products. The two
   tested UCAR GEFS catalog paths returned HTTP 404. No timestamp was inferred or
   substituted into ensemble products. Browser and other acceptance gaps remain open.
+
+## Map controls, progressive loading and custom domain (v59–v60)
+
+- `ventusiq.com` has active custom-domain verification and HTTPS. The v59 public
+  check at approximately 2026-10-29T16:32Z returned the new Layers and refresh
+  controls with HTTP 200, 358 alerts in approximately 655 ms, and 135 EPA PM2.5
+  contour features. This is one API timing sample, not a page-load benchmark.
+  The v60 cache module was retrieved from the custom domain with HTTP 200 after
+  deployment and contains the expanded 2,048-entry / 24 MiB payload budget.
+- A 734-test Node suite passed during the map implementation. Subsequent focused
+  tests passed for layer-preference restoration, acreage symbols, independent AQI
+  panes, replay hiding and the expanded cache byte budget. TypeScript and the v59
+  and v60 production builds passed. The local built Worker returned the new map
+  modules, cached alert response and normalized live EPA contour response.
+- Visible hosted tabs check alerts every 30 seconds; shared NWS collection remains
+  capped at once per minute. Historical replay and hidden tabs pause automatic
+  alert checks. The original endpoint still serves scheduled collection callers.
+  History/status requests no longer hold up alert rendering. Browser storage
+  retains only public alert bodies and official boundaries, with explicit expiry
+  and previous-visit labels. Source times are not replaced by cache-read times.
+- AQI polygons are EPA regional PM2.5 estimates, distinct from measured monitors,
+  smoke model guidance, official alert areas and reported fire perimeters.
+  Source/category normalization, missing data and stale styles have automated
+  coverage. The new UI has not passed rendered desktop/mobile QA because the
+  saved browser-access setting remains blocked. Native preview handoff and HTTP
+  success are not evidence of rendered correctness.
+- Account sync, real closed-page push/webhook receipt, verified road-closure
+  attribution, independent forecast outcomes and hosted database recovery remain
+  open. The custom domain and UI release do not resolve those acceptance gates.
+
+## Frozen forecast-input validation readiness (v61)
+
+- All 745 Node tests and TypeScript checking pass. The eight evaluator/CLI tests
+  also pass after tightening the single-clock collection-window snapshot.
+- The operator evaluator checks the separately pinned cohort hash, every source
+  revision, input availability, registration timing, the original forecast target,
+  recomputed analog selection and all pre-registered grid/day group memberships.
+  Later source editions retain raw payloads and timestamps. Duplicate outcome
+  captures, wrong coordinates/units/time standards, incomplete days and changed
+  artifacts cannot silently enter the score.
+- Focused tests cover input tampering, future-day request suppression, equal
+  group weighting, shared outcomes, identical-case baseline comparisons, missing
+  variables, valid zeros, insufficient predictions, source failures/redirects,
+  midnight crossings, exclusive output creation and offline reproduction.
+- The actual retained v58 cohort was independently reproduced by the new command:
+  **27 point/date cases, four grid/outcome-day groups, one unique grid**. Running
+  with `--fetch-outcomes` before the first complete outcome day made no requests,
+  retained zero source editions, and reported all 27 cases pending for each of
+  the four variables. All MAE fields are null. Its frozen cohort SHA-256 remains
+  `d8d68bd4a6dfcb9690f237701b6b4819c91bf1d84a5ac3e65f9ba948b681848f`.
+- The first outcome day ends 2026-10-31 at 00:00 UTC; compatible NASA publication
+  may arrive later. The local readiness artifact remains outside the public
+  source tree and is not an accuracy result. This command changes no hosted
+  schedule, subscription, database, authentication or delivery settings.
+- See [method, commands and limits](analog-forward-validation.md). The broader
+  goal remains incomplete until its outstanding acceptance evidence exists.

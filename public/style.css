@@ -54,3 +54,5 @@
 #upkeep-status{max-width:380px;line-height:1.5}@media(max-width:700px){.network>div{flex-wrap:wrap}#upkeep-status{flex-basis:100%;max-width:none}}
 .firms-panel{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}.firms-panel>label{display:inline-flex;align-items:center;gap:8px;margin:8px 14px 8px 0;font-size:12px}.firms-panel>.layer-choice{display:flex}#firms-list{max-height:260px;overflow:auto}
 .analog-controls input[type=date]{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:4px;padding:7px;max-width:100%}
+
+.workspace-jumps{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 20px;padding:14px;border:1px solid var(--line);border-radius:7px;background:var(--panel);font-size:12px}.workspace-jumps>span{flex-basis:100%;color:var(--muted);font-size:11px}.workspace-jumps a{display:inline-block;padding:6px 9px;border:1px solid var(--line);border-radius:5px;color:var(--accent);text-decoration:none}.workspace-jumps a:hover{text-decoration:underline}

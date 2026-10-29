@@ -5,6 +5,11 @@ this plan is reserved for a commercial edition. Existing VentusIQ adapters and
 analytics may be adapted after checking their dependencies and assumptions;
 their existence does not establish forecasting skill in this application.
 
+The current requirement-by-requirement evidence and unresolved gates are tracked
+in [release readiness](release-readiness.md). Dashboard navigation now uses one
+persistent main landmark, visible-workspace focus and My weather tool shortcuts;
+it preserves existing view ownership, explicit loading and share URLs.
+
 ## Execution and ownership
 
 The map remains a standalone view. `personal.js` owns the My weather workspace,

@@ -20,7 +20,7 @@ class Element {
   querySelectorAll(tag){return this.children.filter(c=>c.tagName===tag.toUpperCase());}
   querySelector(tag){return this.querySelectorAll(tag)[0];}
   closest(){return this;}
-  focus(){}
+  focus(){this.focusCount=(this.focusCount||0)+1;}
   showModal(){this.open=true;}
   close(){this.open=false;}
 }
@@ -46,14 +46,27 @@ async function setup(mode='direct') {
     if(url.startsWith('/api/alerts?'))result=stored.find(s=>s.collected_at===decodeURIComponent(url.split('=')[1]));
     return {ok:true,json:async()=>result};
   };
-  const doc={getElementById:id=>els[id],createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e;},createDocumentFragment:()=>new Element('fragment'),addEventListener(){},activeElement:new Element('body')};
+  const documentListeners={};
+  const doc={getElementById:id=>els[id],createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e;},createDocumentFragment:()=>new Element('fragment'),addEventListener(type,fn){documentListeners[type]=fn;},activeElement:new Element('body')};
   const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,console,setInterval(){},setTimeout(){return 1;}});
   const run=code=>vm.runInContext(code,ctx);
   run(fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8'));
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(r=>setImmediate(r));};
   await settle();
-  return {els,run,settle,stored,setData(data){current=data;},fail(){error=true;}};
+  return {els,run,settle,stored,doc,key:event=>documentListeners.keydown(event),setData(data){current=data;},fail(){error=true;}};
 }
+
+test('slash search shortcut only acts in the visible map and preserves editing, dialogs and browser shortcuts',async()=>{
+  const s=await setup();let prevented=0;
+  const key=extra=>s.key({key:'/',preventDefault(){prevented++;},...extra});
+  key();assert.equal(s.els.search.focusCount,1);assert.equal(prevented,1);
+  s.els['map-workspace'].hidden=true;key();s.els['map-workspace'].hidden=false;
+  s.els.about.open=true;key();s.els.about.open=false;
+  for(const tag of ['input','textarea','select']){s.doc.activeElement=new Element(tag);key();}
+  s.doc.activeElement=new Element('div');s.doc.activeElement.isContentEditable=true;key();s.doc.activeElement=new Element('body');
+  for(const option of ['ctrlKey','altKey','metaKey','isComposing','defaultPrevented'])key({[option]:true});
+  assert.equal(s.els.search.focusCount,1);assert.equal(prevented,1);
+});
 
 test('live data, filters, safe official text, and detail selection',async()=>{
   const {els,run}=await setup();

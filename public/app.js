@@ -383,7 +383,14 @@ $('about').addEventListener('click', e => { if (e.target === $('about')) { const
 $('history-mode').textContent = direct ? 'History for this session' : '24h retained history';
 $('mode-explainer').textContent = direct ? 'This static public edition reads NWS directly from your browser. Replay and the change feed cover collections made while this page is open. Download the self-hosted edition for a shared background daemon and persistent 24-hour history.' : 'This edition reads from a shared background daemon. Collections continue even when nobody is viewing the map. Replay covers the last 24 hours collected since the daemon started; it does not invent earlier history.';
 if(config.mode==='hosted')$('mode-explainer').textContent='This edition reads a shared hosted collector and persistent archive. Visitors refresh alerts at most once per minute. An hourly archive-upkeep task is configured for periods with no visitors; check actual collection timestamps for freshness. History survives closing the browser. Fire and air feeds refresh when requested, at most once per 15 minutes. Opt-in browser push delivers saved-watch changes during hourly upkeep; delivery can be delayed. Smoke catalogs refresh on demand at most hourly.';
-document.addEventListener('keydown', e => { if (e.key === '/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {e.preventDefault();$('search').focus();} if (e.key === 'Escape' && !$('about').open) closeDetail(); });
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !e.defaultPrevented && !e.isComposing && !e.ctrlKey && !e.altKey && !e.metaKey &&
+      !$('map-workspace').hidden && !$('about').open && !document.activeElement.isContentEditable &&
+      !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
+    e.preventDefault();$('search').focus();
+  }
+  if (e.key === 'Escape' && !$('about').open) closeDetail();
+});
 window.addEventListener('resize', () => map.invalidateSize());
 // Small public interface keeps personal planning independent of map/replay state.
 window.WeatherMap = {

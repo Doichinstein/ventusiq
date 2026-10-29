@@ -1317,3 +1317,25 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   remains open. Rendered map/card/date interactions remain unverified under the
   saved browser permission setting. No schema, secret, subscription, retention or
   hourly task changed.
+
+## Shared dashboard navigation (v56)
+
+- All 712 Node tests pass, including seven new navigation/keyboard behavior tests. TypeScript
+  checking passes. The tests cover each of the five view switches, current-view
+  skip behavior, URL preservation, hidden/unsupported targets, selected-place
+  visibility, refreshes without focus changes, rapid/failed navigation and cleanup.
+  Slash search is restricted to the visible map and preserves dialogs, editing,
+  composition, already-handled events and browser modifier shortcuts.
+- A source-level HTML audit verified one persistent main landmark containing all
+  five workspaces, ten valid My weather shortcut targets, 100 labeled static form
+  controls, no duplicate IDs and no broken ARIA target references. The audit found
+  no unlabeled controls before the edit; the actual defects fixed were the hidden
+  main landmark and a skip destination that could be hidden in other views.
+- The module observes visibility only and performs no provider or identity calls.
+  It never enables a hidden card, changes shared event/place hashes, enrolls a watch
+  or requests notification permission. Existing active-view handlers remain owners
+  of data loading and view state.
+- Actual keyboard/screen-reader behavior and desktop/mobile layout remain
+  unverified under the saved browser permission setting. Structural and DOM-double
+  checks do not replace that gate. The [release-readiness audit](release-readiness.md)
+  records outstanding evidence for all ten features and a concrete browser checklist.

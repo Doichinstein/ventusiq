@@ -54,6 +54,51 @@ hosted archive control. NOAA and the University of Utah are attributed in the vi
 currently identify initialization in each returned product. Its
 [model-update metadata](https://open-meteo.com/en/docs/model-updates) describes
 an eventually consistent processing fleet and cannot establish the exact run
-behind an individual response. That existing GEFS view therefore retains unknown
-run identity. HRRR initialization is not assigned to GEFS, and the two products
+behind an individual response. That Open-Meteo option therefore retains unknown
+run identity; the separate [identified daily GEFS option](ensemble.md#identified-daily-gefs-runs-v77)
+uses the Dynamical archive. HRRR initialization is not assigned to GEFS, and the two products
 are not independent votes or a calibrated multi-model confidence interval.
+
+## Captured HRRR versus later station temperatures (v86)
+
+The observation card includes an expandable **How did captured HRRR temperatures
+compare?** panel. Select an NWS station and explicitly evaluate the existing
+archive. `GET /api/forecast/hrrr-verification?lat=39&lon=-77&station=KCGS` reads
+retained HRRR products and updates the normal cached station observations. It
+never fetches a new model run or reconstructs an earlier forecast from today's run.
+The station must belong to the place's existing within-50-km discovery results.
+
+The seven-day window uses whole UTC target hours only after their entire ±30-minute
+observation matching window has finished. For each target, select the latest
+successful collection at least one hour earlier, within 48 hours. Conflicting
+checks at that instant stay unknown. If the selected edition is bad, an older
+favorable edition is not substituted. A model's initialization must precede its
+capture; run age at capture is limited to the existing 18-hour display policy.
+The exact instantaneous sample must have a consistent 1–48-hour model lead, valid
+Kelvin temperature, source path, chunk hash and grid reference. Collection lead
+and initialization lead are separate fields.
+
+The nearest station reading within 30 minutes is selected before examining its
+temperature/QC. Only finite temperatures with V or G flags qualify. A closer bad
+reading is not skipped in favor of a better one, and a reading cannot verify two
+target hours. The shared observation audit excludes missing timezone information
+and conflicting temperatures at one timestamp. Latest available corrections are
+used; this is not a reconstruction of what observers knew at the forecast cutoff.
+
+Reports include MAE, signed bias, RMS error, matched/eligible counts, distinct days
+and runs, daily summaries and disjoint initialization-lead groups: 1–<6, 6–<12,
+12–<24 and 24–48 hours. No matches gives null metrics. Each pair retains the actual
+grid-to-station distance, source Kelvin value, run/capture times, IDs and hashes.
+Export includes selected raw model products, checks and observation evidence for
+recalculation. Collection eligibility times are informational, not a schedule.
+
+Queries scan at most 2,000 checks over nine days and decode four selected editions
+at a time. Existing seven-day HRRR retention can leave early-window gaps. No schema,
+model budget increase, watch or background task is added. Selection changes clear
+the report/export and ignore late replies. The evidence table is keyboard-scrollable.
+
+These are descriptive station differences. Grid/terrain/elevation and observation
+timing can differ, adjacent hours are correlated, and there is no persistence or
+climatology benchmark in this HRRR report. It is not a model ranking, calibrated
+confidence or a claim of address-level accuracy. A nonempty live comparison remains
+to be demonstrated after eligible source captures and observations are available.

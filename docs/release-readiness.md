@@ -1,5 +1,24 @@
 # Ten-feature acceptance audit
 
+## Captured HRRR temperature comparisons (v86)
+
+The observation card now compares retained HRRR forecasts with later QC-qualified
+station readings. It keeps collection and model leads separate, chooses only
+pre-target captures, preserves missing denominators and exports the raw selection
+checks, model products and station evidence. Fifty-eight focused HRRR/observation/
+verification tests and TypeScript checking pass. Tests include nonempty arithmetic,
+latest-bad editions, archive conflicts, source identity, incomplete samples, QC,
+lead boundaries, one-reading reuse prevention, service integration and UI races.
+
+Local browser QA at 39, -77/KCGS found one archive check and no eligible pairs for
+167 completed candidate windows. Its earliest collection-eligible target is
+October 29 at 23 UTC; its observation window ends at 23:30 UTC, subject to later
+source availability and QC. The download reproduces both selection and report
+from retained evidence. Station switching clears results/export. The panel fits
+390×844 without horizontal overflow and its evidence table scrolls by keyboard;
+no browser errors were observed. These checks do not establish a nonempty live
+HRRR outcome sample or calibrated skill. No background collection was scheduled.
+
 ## Journey router-reference evidence (v85)
 
 OSRM node annotations and original per-leg driving geometry now survive in journey

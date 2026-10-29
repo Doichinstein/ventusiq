@@ -2109,3 +2109,39 @@ one Windows `ConnectionAbortedError` during the geocode oversized-request check.
 The focused geocode rerun passed all three tests; a subsequent complete Python
 run passed all 30 tests, and TypeScript checking passed. The original failed log
 is retained alongside the rerun evidence; this was not a first-run clean suite.
+
+## October 29, 2026 — source download and activity outage browser QA (v94)
+
+Release v93 passed Windows and Linux CI, including the complete automated suite,
+source packaging and hosted build (Actions run 40973713149). The normal public
+About → Download source browser action downloaded 3,294,476 bytes with 476 ZIP
+entries. The station experiment bundle and offline verifier matched local v93
+bytes. ZIP SHA-256: `bb37768d7bad61dbf0ef74f4a53abc497c1b83e17e6984add58a0d08ed903fd3`.
+This verifies that browser flow; the earlier raw Python HTTP request returned 403.
+
+The actual application was served unchanged at an isolated local origin with
+explicit synthetic HTTP responses. With a 25 mph gust ceiling, fresh 60°F hourly
+conditions, 5 mph sustained winds and 10 mph gusts produced 11 matching two-hour
+windows. A gust HTTP 503 replaced passing cards with unknown coverage. The
+downloaded JSON contained 12 candidate windows, all unknown, with `grid_fresh`
+false and the requested 25 mph ceiling. No stale passing recommendation survived.
+Manual refresh after restoring the gust endpoint recovered matches.
+
+A retained hourly response with `stale: true` paused planning while all 12 hourly
+rows stayed visible. A first-load hourly HTTP 503 also paused planning. Restoring
+the source and reloading recovered matches. The failure and recovery checks at
+a 390 × 844 viewport both had client/scroll widths of 375 pixels. This is viewport
+emulation, not a physical-phone check. The unchanged application was tested; no
+browser script injected forecasts or modified application state. The synthetic
+server was stopped after QA.
+
+Retained evidence: [browser observations](evidence/planner-outage-browser-2026-10-29.json)
+and [gust-failure download](evidence/planner-gust-outage-export-2026-10-29.json).
+The local fixture returned explicit failures for unrelated APIs; those intentional
+failures do not establish provider availability. This release changes evidence
+and acceptance notes only. Account testing remains deferred.
+
+The public AKFM7 revision comparison was also rechecked: 71 matching future
+timestamps still had zero level change. A coverage extension under the same
+issue time was labeled correctly. This does not close the nonzero level or
+threshold-timing revision evidence gap.

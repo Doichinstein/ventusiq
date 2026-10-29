@@ -1,5 +1,21 @@
 # Ten-feature acceptance audit
 
+## Activity source-outage browser checks (v94)
+
+The unchanged v93 application passed controlled local HTTP failure/recovery checks:
+fresh gust/hourly products gave matching windows; a gust HTTP 503 changed all
+windows to unknown, including the evidence export; refreshing a restored gust
+source recovered matching windows. A retained stale hourly product kept its table
+visible but paused planning. An initial hourly HTTP 503 also paused planning, and
+a fresh product after reload restored matches. Phone-width checks had no page
+overflow. These synthetic checks strengthen outage coverage but do not prove all
+real-provider failures or physical-device usability. See the retained
+[browser observations](evidence/planner-outage-browser-2026-10-29.json).
+
+The public About → Download source flow succeeded in the in-app browser. Its ZIP
+contained 476 entries and matched the v93 station evidence and offline verifier.
+The earlier raw HTTP 403 did not reproduce through the normal browser download.
+
 ## Broader retrospective station checks (v93)
 
 Six additional fixed station locations produced 237 scored cases from 288 scheduled

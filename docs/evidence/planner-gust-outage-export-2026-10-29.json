@@ -1,0 +1,1900 @@
+{
+  "method_version": "2026-10-29.3",
+  "evaluated_at": "2026-10-29T23:37:31.462Z",
+  "place": {
+    "id": "b7dcf9e3-99c4-4240-81bf-c08b057facd9",
+    "name": "Synthetic QA",
+    "lat": 38.9,
+    "lon": -77.04
+  },
+  "preferences": {
+    "airSource": "cams",
+    "geosPm25": null,
+    "geosOzone": null,
+    "geosNo2": null,
+    "ozone": null,
+    "no2": null,
+    "pm25": null,
+    "duration": 2,
+    "minTemp": 40,
+    "maxTemp": 85,
+    "wind": 15,
+    "rain": 30,
+    "gust": 25,
+    "tempMargin": 3,
+    "windMargin": 5,
+    "rainMargin": 10,
+    "smoke": null
+  },
+  "forecast_fresh": true,
+  "grid_fresh": false,
+  "windows": [
+    {
+      "start": "2026-10-29T23:37:31.462Z",
+      "end": "2026-10-30T01:37:31.462Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793314800000,
+          "end": 1793318400000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-29T23:00:00+00:00"
+        },
+        {
+          "start": 1793318400000,
+          "end": 1793322000000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T00:00:00+00:00"
+        },
+        {
+          "start": 1793322000000,
+          "end": 1793325600000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T01:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T00:00:00.000Z",
+      "end": "2026-10-30T02:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793318400000,
+          "end": 1793322000000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T00:00:00+00:00"
+        },
+        {
+          "start": 1793322000000,
+          "end": 1793325600000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T01:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T01:00:00.000Z",
+      "end": "2026-10-30T03:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793322000000,
+          "end": 1793325600000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T01:00:00+00:00"
+        },
+        {
+          "start": 1793325600000,
+          "end": 1793329200000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T02:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T02:00:00.000Z",
+      "end": "2026-10-30T04:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793325600000,
+          "end": 1793329200000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T02:00:00+00:00"
+        },
+        {
+          "start": 1793329200000,
+          "end": 1793332800000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T03:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T03:00:00.000Z",
+      "end": "2026-10-30T05:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793329200000,
+          "end": 1793332800000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T03:00:00+00:00"
+        },
+        {
+          "start": 1793332800000,
+          "end": 1793336400000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T04:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T04:00:00.000Z",
+      "end": "2026-10-30T06:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793332800000,
+          "end": 1793336400000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T04:00:00+00:00"
+        },
+        {
+          "start": 1793336400000,
+          "end": 1793340000000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T05:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T05:00:00.000Z",
+      "end": "2026-10-30T07:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793336400000,
+          "end": 1793340000000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T05:00:00+00:00"
+        },
+        {
+          "start": 1793340000000,
+          "end": 1793343600000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T06:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T06:00:00.000Z",
+      "end": "2026-10-30T08:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793340000000,
+          "end": 1793343600000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T06:00:00+00:00"
+        },
+        {
+          "start": 1793343600000,
+          "end": 1793347200000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T07:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T07:00:00.000Z",
+      "end": "2026-10-30T09:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793343600000,
+          "end": 1793347200000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T07:00:00+00:00"
+        },
+        {
+          "start": 1793347200000,
+          "end": 1793350800000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T08:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T08:00:00.000Z",
+      "end": "2026-10-30T10:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793347200000,
+          "end": 1793350800000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T08:00:00+00:00"
+        },
+        {
+          "start": 1793350800000,
+          "end": 1793354400000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T09:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T09:00:00.000Z",
+      "end": "2026-10-30T11:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance",
+          "status": "fits"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "fits"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "fits"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "fits"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": true,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793350800000,
+          "end": 1793354400000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T09:00:00+00:00"
+        },
+        {
+          "start": 1793354400000,
+          "end": 1793358000000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T10:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    },
+    {
+      "start": "2026-10-30T10:00:00.000Z",
+      "end": "2026-10-30T12:00:00.000Z",
+      "status": "unknown",
+      "checks": [
+        {
+          "label": "Temperature",
+          "status": "unknown"
+        },
+        {
+          "label": "Sustained wind",
+          "status": "unknown"
+        },
+        {
+          "label": "Rain chance",
+          "status": "unknown"
+        },
+        {
+          "label": "Wind gust",
+          "status": "unknown"
+        }
+      ],
+      "margin_checks": [
+        {
+          "label": "Temperature margin",
+          "status": "unknown"
+        },
+        {
+          "label": "Sustained wind margin",
+          "status": "unknown"
+        },
+        {
+          "label": "Rain chance margin",
+          "status": "unknown"
+        },
+        {
+          "label": "Gust margin",
+          "status": "unknown"
+        }
+      ],
+      "passes_margin": false,
+      "values": {
+        "min_temperature_f": 60,
+        "max_temperature_f": 60,
+        "sustained_wind_mph": 5,
+        "rain_percent": 0,
+        "gust_mph": null
+      },
+      "coverage": {
+        "nasa_hourly_averages": null,
+        "hourly": false,
+        "gust": false,
+        "alerts": true,
+        "air_forecast": false,
+        "ozone_samples": false,
+        "no2_samples": false,
+        "pm25_samples": false,
+        "smoke_samples": false
+      },
+      "nasa": null,
+      "smoke": {
+        "method": "2026-10-28.2",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly instantaneous samples bracketing the window",
+        "continuous_coverage": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "Smoke forecast unavailable"
+      },
+      "pm25": {
+        "method": "2026-10-29.2",
+        "pollutant": "pm2_5",
+        "status": "not_requested",
+        "limit_ug_m3": null,
+        "scope": "hourly PM2.5 samples bracketing the activity window",
+        "continuous_coverage": false,
+        "run_age_known": false,
+        "complete": false,
+        "fresh": false,
+        "samples": [],
+        "maximum_ug_m3": null,
+        "reason": "PM2.5 forecast not loaded"
+      },
+      "gases": {
+        "ozone": {
+          "method": "2026-10-29.2",
+          "pollutant": "ozone",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Ozone (O₃) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Ozone (O₃) forecast not loaded"
+        },
+        "no2": {
+          "method": "2026-10-29.2",
+          "pollutant": "nitrogen_dioxide",
+          "status": "not_requested",
+          "limit_ug_m3": null,
+          "scope": "hourly Nitrogen dioxide (NO₂) samples bracketing the activity window",
+          "continuous_coverage": false,
+          "run_age_known": false,
+          "complete": false,
+          "fresh": false,
+          "samples": [],
+          "maximum_ug_m3": null,
+          "reason": "Nitrogen dioxide (NO₂) forecast not loaded"
+        }
+      },
+      "alerts": [],
+      "source_hours": [
+        {
+          "start": 1793354400000,
+          "end": 1793358000000,
+          "temperature": 60,
+          "wind": 5,
+          "rain": 0,
+          "summary": "Synthetic QA conditions",
+          "startTime": "2026-10-30T10:00:00+00:00"
+        }
+      ],
+      "source_gust_intervals": []
+    }
+  ],
+  "air": {
+    "status": "unknown",
+    "future_coverage": "unknown",
+    "source_url": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/Air_Now_Current_Monitors_PM25/FeatureServer/0",
+    "revision": null,
+    "checked_at": null,
+    "monitor": null,
+    "category": null,
+    "note": "Latest nearby measured PM2.5 only. It is not a future AQI forecast, an exposure estimate at this place, or a check of other pollutants."
+  },
+  "sources": {
+    "geos_cf": null,
+    "air_forecast": null,
+    "smoke": null,
+    "hourly": {
+      "revision": "synthetic-hourly",
+      "issued_at": "2026-10-29T23:00:00+00:00",
+      "checked_at": "2026-10-29T23:37:07.398894+00:00",
+      "source_url": null,
+      "periods": [
+        {
+          "number": 1,
+          "startTime": "2026-10-29T23:00:00+00:00",
+          "endTime": "2026-10-30T00:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 2,
+          "startTime": "2026-10-30T00:00:00+00:00",
+          "endTime": "2026-10-30T01:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 3,
+          "startTime": "2026-10-30T01:00:00+00:00",
+          "endTime": "2026-10-30T02:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 4,
+          "startTime": "2026-10-30T02:00:00+00:00",
+          "endTime": "2026-10-30T03:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 5,
+          "startTime": "2026-10-30T03:00:00+00:00",
+          "endTime": "2026-10-30T04:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 6,
+          "startTime": "2026-10-30T04:00:00+00:00",
+          "endTime": "2026-10-30T05:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 7,
+          "startTime": "2026-10-30T05:00:00+00:00",
+          "endTime": "2026-10-30T06:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 8,
+          "startTime": "2026-10-30T06:00:00+00:00",
+          "endTime": "2026-10-30T07:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 9,
+          "startTime": "2026-10-30T07:00:00+00:00",
+          "endTime": "2026-10-30T08:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 10,
+          "startTime": "2026-10-30T08:00:00+00:00",
+          "endTime": "2026-10-30T09:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 11,
+          "startTime": "2026-10-30T09:00:00+00:00",
+          "endTime": "2026-10-30T10:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        },
+        {
+          "number": 12,
+          "startTime": "2026-10-30T10:00:00+00:00",
+          "endTime": "2026-10-30T11:00:00+00:00",
+          "temperature": 60,
+          "temperatureUnit": "F",
+          "windSpeed": "5 mph",
+          "windDirection": "N",
+          "shortForecast": "Synthetic QA conditions",
+          "probabilityOfPrecipitation": {
+            "value": 0
+          }
+        }
+      ]
+    },
+    "gust": {
+      "revision": "synthetic-grid",
+      "issued_at": "2026-10-29T23:00:00+00:00",
+      "checked_at": "2026-10-29T23:37:07.478640+00:00",
+      "source_url": null,
+      "layer": {
+        "uom": "wmoUnit:mi_h-1",
+        "values": [
+          {
+            "validTime": "2026-10-29T23:00:00+00:00/PT12H",
+            "value": 10
+          }
+        ]
+      }
+    },
+    "alerts": {
+      "revision": null,
+      "collected_at": "2026-10-29T23:37:31.195266+00:00"
+    }
+  },
+  "uncertainty": "Particles and gases use CAMS Global hourly output with unknown model-run age. Margin tests are user-chosen sensitivity scenarios, not error bounds, ensemble spread or calibrated confidence. A fit means weather preferences and any requested pollutant or smoke checks are met in the available products. These checks are not a full air-quality assessment. Smoke checks apply only to hourly samples bracketing the window, not continuous concentrations, total PM2.5 or health-safe conditions. Alert coverage remains separate."
+}

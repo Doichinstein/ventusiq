@@ -1,0 +1,50 @@
+{
+  "schema": "ventusiq-planner-browser-outage-evidence/1",
+  "release_tested": 93,
+  "source_commit": "26db3d927e8f10c6a01feee0ec922deae0fb3ad3",
+  "scope": "Synthetic local HTTP responses with the unchanged public application. Desktop and 390x844 viewport emulation; not real-device or upstream-provider outage evidence.",
+  "cases": {
+    "fresh": {
+      "results": "11 candidate windows meet your numeric limits. Windows that also pass your extra margins appear first.\n\nThu, 7:37 PM EDT \u00e2\u20ac\u201c Thu, 9:37 PM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nThu, 10:00 PM EDT \u00e2\u20ac\u201c Fri, 12:00 AM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nFri, 12:00 AM EDT \u00e2\u20ac\u201c Fri, 2:00 AM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nParticles and gases use CAMS Global hourly output with unknown model-run age. Margin tests are user-chosen sensitivity scenarios, not error bounds, ensemble spread or calibrated confidence. A fit means weather preferences and any requested pollutant or smoke checks are met in the available products. These checks are not a full air-quality assessment. Smoke checks apply only to hourly samples bracketing the window, not continuous concentrations, total PM2.5 or health-safe conditions. Alert coverage remains separate.",
+      "status": "Gust grid issued Thu, 7:00 PM EDT \u00c2\u00b7 checked Thu, 7:37 PM EDT"
+    },
+    "gustFailure": {
+      "results": "No full window can be confirmed against every requested limit. Check the reasons below.\n\nThu, 7:37 PM EDT \u00e2\u20ac\u201c Thu, 9:37 PM EDT\n\nSome requested checks are unknown\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust unknown \u00c2\u00b7 rain chance 0%\n\nWind gust: missing, stale or incomplete coverage\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nThu, 10:00 PM EDT \u00e2\u20ac\u201c Fri, 12:00 AM EDT\n\nSome requested checks are unknown\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust unknown \u00c2\u00b7 rain chance 0%\n\nWind gust: missing, stale or incomplete coverage\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nFri, 12:00 AM EDT \u00e2\u20ac\u201c Fri, 2:00 AM EDT\n\nSome requested checks are unknown\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust unknown \u00c2\u00b7 rain chance 0%\n\nWind gust: missing, stale or incomplete coverage\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nParticles and gases use CAMS Global hourly output with unknown model-run age. Margin tests are user-chosen sensitivity scenarios, not error bounds, ensemble spread or calibrated confidence. A fit means weather preferences and any requested pollutant or smoke checks are met in the available products. These checks are not a full air-quality assessment. Smoke checks apply only to hourly samples bracketing the window, not continuous concentrations, total PM2.5 or health-safe conditions. Alert coverage remains separate.",
+      "status": "Gust updates delayed: Gust source returned HTTP 503"
+    },
+    "gustRecovery": {
+      "status": "Gust grid issued Thu, 7:00 PM EDT \u00c2\u00b7 checked Thu, 7:37 PM EDT",
+      "results": "11 candidate windows meet your numeric limits. Windows that also pass your extra margins appear first.\n\nThu, 7:37 PM EDT \u00e2\u20ac\u201c Thu, 9:37 PM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nThu, 10:00 PM EDT \u00e2\u20ac\u201c Fri, 12:00 AM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nFri, 12:00 AM EDT \u00e2\u20ac\u201c Fri, 2:00 AM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nParticles and gases use CAMS Global hourly output with unknown model-run age. Margin tests are user-chosen sensitivity scenarios, not error bounds, ensemble spread or calibrated confidence. A fit means weather preferences and any requested pollutant or smoke checks are met in the available products. These checks are not a full air-quality assessment. Smoke checks apply only to hourly samples bracketing the window, not continuous concentrations, total PM2.5 or health-safe conditions. Alert coverage remains separate."
+    },
+    "staleHourly": {
+      "status": "Updates delayed \u00e2\u20ac\u201d showing last available forecast. Issued Thu, Oct 29, 7:00 PM EDT \u00c2\u00b7 checked Thu, Oct 29, 7:38 PM EDT \u00c2\u00b7 Synthetic upstream outage; retained forecast",
+      "results": "Planning is paused while the hourly forecast is missing, stale or has no current issue time.",
+      "hourlyRows": 13
+    },
+    "hourlyFailure": {
+      "status": "Source returned HTTP 503",
+      "results": "Planning is paused while the hourly forecast is missing, stale or has no current issue time.",
+      "widths": {
+        "client": 375,
+        "scroll": 375
+      }
+    },
+    "hourlyRecovery": {
+      "status": "Issued Thu, Oct 29, 7:00 PM EDT \u00c2\u00b7 checked Thu, Oct 29, 7:39 PM EDT",
+      "results": "11 candidate windows meet your numeric limits. Windows that also pass your extra margins appear first.\n\nThu, 7:39 PM EDT \u00e2\u20ac\u201c Thu, 9:39 PM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nThu, 10:00 PM EDT \u00e2\u20ac\u201c Fri, 12:00 AM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nFri, 12:00 AM EDT \u00e2\u20ac\u201c Fri, 2:00 AM EDT\n\nLimits and extra margins met\n\n60\u00e2\u20ac\u201c60\u00c2\u00b0F \u00c2\u00b7 sustained wind 5 mph \u00c2\u00b7 gust 10 mph \u00c2\u00b7 rain chance 0%\n\nSmoke forecast unavailable.\n\nSmoke samples do not establish health-safe air, AQI or personal exposure during this window.\n\nParticles and gases use CAMS Global hourly output with unknown model-run age. Margin tests are user-chosen sensitivity scenarios, not error bounds, ensemble spread or calibrated confidence. A fit means weather preferences and any requested pollutant or smoke checks are met in the available products. These checks are not a full air-quality assessment. Smoke checks apply only to hourly samples bracketing the window, not continuous concentrations, total PM2.5 or health-safe conditions. Alert coverage remains separate.",
+      "widths": {
+        "client": 375,
+        "scroll": 375
+      }
+    }
+  },
+  "export_audit": {
+    "file": "planner-gust-outage-export-2026-10-29.json",
+    "windows": 12,
+    "statuses": [
+      "unknown"
+    ],
+    "gust_limit_mph": 25,
+    "grid_fresh": false
+  }
+}

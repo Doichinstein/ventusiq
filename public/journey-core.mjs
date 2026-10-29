@@ -1,3 +1,4 @@
+import {journeyGust,gustLimit,JOURNEY_METHOD} from './journey-gust.mjs';
 /* Route timing and explainable weather exposure. Apache-2.0. */
 const valid=p=>Array.isArray(p)&&p.length>=2&&Number.isFinite(p[0])&&Number.isFinite(p[1])&&Math.abs(p[0])<=180&&Math.abs(p[1])<=90;
 const finite=n=>typeof n==='number'&&Number.isFinite(n);
@@ -59,7 +60,8 @@ export function prepareRouteAlerts(route,features){
     const p=f.properties,start=Date.parse(p.onset||p.effective||p.sent),end=Date.parse(p.ends||p.expires);entries.push({id:f.id,event:p.event,severity:p.severity,coverage:f.coverage||'Alert polygon',start,end,spans,instruction:p.instruction||'',time_unknown:!Number.isFinite(start)||!Number.isFinite(end)||end<start});}
   return {entries,unknown_geometry:unknownGeometry};
 }
-export function evaluateJourney(route,samples,forecasts,prepared,departure,{now=Date.now(),alertCheckedAt=null}={}){
+export function evaluateJourney(route,samples,forecasts,prepared,departure,{now=Date.now(),alertCheckedAt=null,grids=[],gustCeiling=null}={}){
+  const ceiling=gustLimit(gustCeiling);
   const rows=samples.map((s,i)=>{const data=forecasts[i],at=departure+s.elapsed*1000,old=!data||data.stale||!Number.isFinite(Date.parse(data.checked_at))||now-Date.parse(data.checked_at)>900000;
     const p=data?.forecast?.properties?.periods?.find(p=>Date.parse(p.startTime)<=at&&Date.parse(p.endTime)>at);
     let temperature=null,wind=null,rain=null;if(!old&&p){const t=p.temperature;if(finite(t))temperature=p.temperatureUnit==='F'?t:p.temperatureUnit==='C'?t*1.8+32:null;else if(finite(t?.value))temperature=t.unitCode==='wmoUnit:degC'?t.value*1.8+32:t.unitCode==='wmoUnit:degF'?t.value:null;
@@ -67,9 +69,10 @@ export function evaluateJourney(route,samples,forecasts,prepared,departure,{now=
       const q=p.probabilityOfPrecipitation?.value;if(finite(q)&&q>=0&&q<=100)rain=q;
     }
     if(wind!==null&&wind<0)wind=null;
-    return {...s,at:new Date(at).toISOString(),temperature,wind,rain,summary:old?(data?.forecast?'Forecast collection delayed':'Forecast unavailable'):!p?'No forecast for this arrival hour':p.shortForecast||'',missing:old||!p||temperature===null||wind===null||rain===null,error:data?.error||null,time_zone:data?.metadata?.properties?.timeZone||null,forecast_revision:data?.revision||null,forecast_checked_at:data?.checked_at||null,forecast_issued_at:data?.issued_at||null,source_url:data?.source_url||null};
+    const gust=journeyGust(grids[i],data,at,now),hourlyMissing=old||!p||temperature===null||wind===null||rain===null;
+    return {...s,at:new Date(at).toISOString(),temperature,wind,rain,gust:gust.value,gust_evidence:gust,gust_exceeds:ceiling===null||gust.value===null?null:gust.value>ceiling,hourly_missing:hourlyMissing,summary:old?(data?.forecast?'Forecast collection delayed':'Forecast unavailable'):!p?'No forecast for this arrival hour':p.shortForecast||'',missing:hourlyMissing||gust.value===null,error:data?.error||null,time_zone:data?.metadata?.properties?.timeZone||null,forecast_revision:data?.revision||null,forecast_checked_at:data?.checked_at||null,forecast_issued_at:data?.issued_at||null,source_url:data?.source_url||null};
   });
   const alerts=[];for(const entry of prepared.entries){const spans=entry.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>entry.time_unknown?[a,b]:[Math.max(a,entry.start),Math.min(b,entry.end)]).filter(([a,b])=>b>a||(b===a&&(entry.time_unknown||a>=entry.start&&a<entry.end)));if(spans.length)alerts.push({...entry,spans:spans.map(([a,b])=>[new Date(a).toISOString(),new Date(b).toISOString()])});}
   const max=key=>{const values=rows.map(r=>r[key]).filter(finite);return values.length?Math.max(...values):null;};
-  return {departure:new Date(departure).toISOString(),arrival:new Date(departure+route.duration*1000).toISOString(),rows,alerts,covered_samples:rows.filter(r=>!r.missing).length,total_samples:rows.length,max_wind:max('wind'),max_rain:max('rain'),unknown_geometry:prepared.unknown_geometry,alert_collection_stale:!Number.isFinite(Date.parse(alertCheckedAt))||now-Date.parse(alertCheckedAt)>240000,alert_checked_at:alertCheckedAt};
+  return {method_version:JOURNEY_METHOD,gust_limit_mph:ceiling,covered_gust_samples:rows.filter(r=>r.gust!==null).length,gust_exceedance_samples:ceiling===null?null:rows.filter(r=>r.gust_exceeds===true).length,max_gust:max('gust'),departure:new Date(departure).toISOString(),arrival:new Date(departure+route.duration*1000).toISOString(),rows,alerts,covered_samples:rows.filter(r=>!r.hourly_missing).length,total_samples:rows.length,max_wind:max('wind'),max_rain:max('rain'),unknown_geometry:prepared.unknown_geometry,alert_collection_stale:!Number.isFinite(Date.parse(alertCheckedAt))||now-Date.parse(alertCheckedAt)>240000,alert_checked_at:alertCheckedAt};
 }

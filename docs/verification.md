@@ -439,3 +439,29 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - Rendered sign-in and two real browser sessions remain unverified under the saved
   browser permission setting. [Account-place methods](places-sync.md) document this
   limit and the distinction between device preferences and account locations.
+
+## Journey gust increment
+
+- Added ETA-matched NWS gust intervals, separate hourly/gust coverage, optional
+  user gust ceilings, sample exceedance counts, map/table context and raw gust
+  source exports. Grid requests deduplicate within a comparison and reuse the
+  existing planning collector across users and departure scenarios.
+- Nine new tests cover DST boundaries, exclusive interval ends, unit conversion,
+  zero/null/invalid values, overlaps, stale/future/timezone-free metadata, wrong
+  grid identity, source issue consistency, partial coverage, threshold semantics,
+  grid-request deduplication, outages and exported evidence. Existing journey UI
+  fixtures now include independent hourly and gust source products.
+- Full regression suite: 410 Node and 16 Python tests passed (426 total).
+  TypeScript and production build passed. No dependency or migration was added.
+- Built Worker live integration at 2026-10-29 02:50:57 UTC evaluated the 62.8115 km
+  Washington-to-Baltimore route, revision
+  `3e0c5ca9f8ad005b045e0d368e1e0d4dd9cc8d67f1be9bac53bbb1a725db11a1`.
+  All four samples had hourly and gust coverage for 03:00, 05:00 and 07:00 UTC
+  departures. Available sampled gust peaks were approximately 8.1, 5.8 and 3.5 mph;
+  no sampled value exceeded the test's 20 mph user limit. This is not a route-wide
+  safety conclusion or coverage between samples.
+- The first gust grid was LWX/97,71, issued 2026-10-28 23:52:47 UTC, revision
+  `b27aeb9ebecbc4de97710852fe30d7dd4b1c1815ef34326b2c1a6e2c63a1f619`.
+  The arrival matched its 01:00–05:00 UTC interval (7.408 km/h / about 4.6 mph).
+  Page and journey modules returned HTTP 200. Rendered browser verification is
+  still unavailable under the saved permission setting. Hourly upkeep is unchanged.

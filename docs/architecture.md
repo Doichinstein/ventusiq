@@ -305,3 +305,12 @@ private response caching. `places-sync.js` exposes opt-in account mode, explicit
 imports, minute polling and conflict recovery. `personal.js` keeps the local list
 separate and invalidates in-flight forecasts across scope changes. See
 [account places](places-sync.md) for retention, capacity and verification limits.
+
+## Journey gust context
+
+`journey.js` reuses `PlanningService` through the grid API, deduplicates grid URLs
+within a run and limits collection to three concurrent sample workers.
+`journey-gust.mjs` validates grid/time identity and matches each sample ETA to one
+explicit gust interval. `evaluateJourney` retains separate hourly/gust coverage
+and optional user-limit exceedance counts. Table, map, departure cards and raw
+source exports share one evaluated snapshot. See [journey methods](journeys.md).

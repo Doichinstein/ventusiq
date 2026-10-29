@@ -54,7 +54,8 @@ raw-evidence export. See [event archive semantics](docs/events.md) and
 
 **Journey** in the hosted edition compares weather along an estimated driving
 route for three departure times. Choose endpoints from saved places, coordinates
-or the map; inspect arrival-hour forecasts, time-overlapping alert boundaries,
+or the map; inspect arrival-hour forecasts, gust intervals and optional gust-limit
+counts, time-overlapping alert boundaries,
 missing coverage and exportable evidence. See [routing and exposure methods](docs/journeys.md).
 
 **Conditions in combination** evaluates six transparent rules in My weather:

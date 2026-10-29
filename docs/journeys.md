@@ -37,14 +37,15 @@ does not change a third-party service's usage terms.
 Sampling distributes points by both driving time and road distance, aiming for
 gaps no larger than 30 minutes / 50 km and capped at 25 locations including both
 ends. Longer trips have coarser coverage; the largest gaps are displayed explicitly.
-We fetch at most three point forecasts concurrently through the shared collector,
-then use the hourly period containing the ETA at each point for each departure.
+At most three sample workers fetch point forecasts then their gust grids through
+the shared collector. Identical grid URLs share one request within a comparison.
+The evaluator uses the hourly period containing the ETA at each point for each departure.
 Forecasts are reused across departure scenarios, not fetched three times.
 
-Temperature, sustained wind and rain probability remain separate fields. Missing
+Temperature, sustained wind, gust speed and rain probability remain separate fields. Missing
 fields, failed forecasts, missing arrival hours or collections older than 15 minutes
 reduce coverage. No weather is interpolated between sample points. The cards show
-coverage counts, sampled maximum wind/rain chance and alert matches; they do not
+coverage counts, available sampled maximum wind/gust/rain chance and alert matches; they do not
 rank an incompletely covered route as safer. Per-point source links, issue/check
 times and forecast revisions are available in the table and export.
 
@@ -73,7 +74,7 @@ journey refreshes them explicitly.
 
 This is weather exposure planning, not navigation, an evacuation route or a
 verified road-closure service. No closure source is currently integrated, and
-the UI makes no closure/open-road claim. Smoke, gusts, road-surface conditions,
+the UI makes no closure/open-road claim. Smoke, road-surface conditions,
 stops, editable via points, traffic-aware timing and closure attribution remain
 future additions. Automated rendered QA is still unavailable. The Python/static
 editions do not yet expose hosted routing.
@@ -81,3 +82,36 @@ editions do not yet expose hosted routing.
 Primary references: [OSRM route/annotation API](https://project-osrm.org/docs/v5.24.0/api/),
 [FOSSGIS usage and privacy information](https://routing.openstreetmap.de/about.html),
 [OSRM public-server policy](https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server).
+
+## Arrival-time gusts
+
+The same NWS grid adapter used by activity planning supplies journey gusts.
+`journey-gust.mjs` checks the point metadata's `forecastGridData` URL against the
+returned source URL, raw grid ID, office and x/y indices. The raw grid issue time
+must match the wrapper issue time. Collection must be at most 15 minutes old,
+issue time at most 24 hours old, and neither more than one minute in the future.
+Timezone-free metadata times, provider errors and delayed products are withheld.
+
+A gust must have exactly one valid interval containing ETA, including its start
+and excluding its end. Missing intervals and overlapping intervals are unknown;
+no nearest-hour fallback or interpolation is used. Known mph, km/h, m/s and knot
+units convert to mph. Null, nonnumeric, negative and over-250-mph values are
+withheld; zero is a known value. These checks are data validation, not observed
+forecast verification. The gust interval is forecast context around the estimated
+arrival, not a promise that the traveler experiences its peak.
+
+Hourly coverage and gust coverage are counted separately. An optional 0–250 mph
+user-selected gust ceiling counts available route samples strictly above that
+limit for each departure. Equal values do not exceed. Unknown samples are shown
+separately and cannot pass a limit. Counts are not exposure duration, route-wide
+maxima, independent observations, navigation advice or a driving-safety standard.
+Map samples with missing fields remain amber; complete samples above the chosen
+gust ceiling are pink. The table provides the values independently of color.
+
+Exports retain the comparison method, selected ceiling, source hourly forecasts,
+raw gust layers (other grid variables are omitted), grid identities, revisions,
+issue/check times and each matched valid interval. One snapshot serves all three
+departures. Rerunning the comparison refreshes it; exporting an old snapshot does
+not make it current. Hourly upkeep and database schema are unchanged.
+
+Source contract: [NWS API documentation](https://www.weather.gov/documentation/services-web-api).

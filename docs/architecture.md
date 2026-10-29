@@ -621,3 +621,14 @@ An explicit previous-version selection also supports irregularly collected place
 It chooses the latest distinct archived body before the current check within seven
 days, retains rollback/source identity and discloses actual spacing. Fixed-cutoff
 selection keeps its three-hour tolerance; neither mode creates missing history.
+
+
+### Identified HRRR temperature guidance
+
+`hrrr-temperature-reader.mjs` uses the shared bounded archive reader and native
+projection to extract 2 m temperature from an explicitly verified HRRR run.
+`hrrr-temperature-core.mjs` validates run/valid-time identity and Kelvin conversion;
+`hrrr-temperature.js` exposes a chart, missing-hour table and raw evidence in
+Forecast checks. Separate point/catalog caches share the existing HRRR request
+and daily budgets. No schema or scheduler change is needed. See
+[temperature methods and limits](hrrr-temperature.md).

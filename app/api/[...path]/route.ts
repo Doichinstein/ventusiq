@@ -75,6 +75,7 @@ export async function GET(request:Request){
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));
     if(path==='/api/ensemble')return json(await new EnsembleService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/smoke/hrrr')return json(await new HrrrService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
+    if(path==='/api/forecast/hrrr-temperature')return json(await new HrrrService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon'),'temperature'));
     if(path==='/api/smoke/catalog')return json(await new SmokeService(service).catalog());
     if(path==='/api/smoke/forecast')return json(await new SmokeService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/planning/grid'){

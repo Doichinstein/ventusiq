@@ -1747,3 +1747,37 @@ validation and supported hosted database recovery remain separate open requireme
   while the three unrelated alert-pair rules correctly became not detected.
   Measured PM2.5 during heat remained unknown because no eligible monitor was
   available. The temporary place was removed and Auto alerts remained enabled.
+
+## Identified HRRR temperature (October 29, v72)
+
+- Added explicit 2 m HRRR temperature loading in Forecast checks. It verifies the
+  run path against decoded initialization, lead and valid-time arrays, validates
+  the field/units/grid/float32 contract and retains raw Kelvin samples and hashes.
+  Shared smoke request/day budgets apply; cache products remain independent.
+- Seventeen targeted reader/service/core/UI tests passed, including the existing
+  smoke flow. Tests cover coordinate/metadata rejection, missing and duplicate
+  hours, source lead, conversion, delayed retention, scope changes, late replies,
+  explicit loading, independent caches and shared throttling. TypeScript passed.
+- Live native reader at 39,-77 selected 2026-10-29T12:00:00Z, grid x=1485/y=613,
+  latitude 38.99565994809633 and longitude -76.99581511079373, about 603.1 metres
+  projected distance from the rounded point. Chunk `0.4.9` was 1,508,674 bytes,
+  SHA-256 `9d7e361d7df0ff7dff73120f6e5840f6a4150c68c820e2e1ade3fb2a4863ffb1`.
+- Independent numcodecs 0.17.1 / NumPy float32 decoding matched all 48 selected raw
+  values exactly. First raw sample was 286.9908142089844 K at lead hour 1. At the
+  check time 41 upcoming hours remained; later hours were missing, not filled.
+- Post-publication rendered checks and exported evidence are recorded separately
+  in workspace QA artifacts. This does not establish temperature accuracy or GEFS
+  run identity. Open-Meteo fleet update metadata cannot identify a returned
+  ensemble run; that gate remains open.
+- River IOLK1 recheck still had no distinct older forecast; CAMS shared cooldown
+  remained active until 19:36:03 UTC. Neither was bypassed or reported complete.
+
+## Forecast revision comparison verified (October 29, v71)
+
+- Live Sacramento previous-version comparison selected checks at 01:20:47 and
+  19:19:19 UTC, about 18 hours apart. All 48 future temperature and rain-chance
+  pairs matched an independent calculation from the downloaded raw editions.
+  Maximum absolute differences were 3 degrees F and 14 percentage points.
+- The 12-hour cutoff continued to withhold differences for an older check outside
+  its three-hour tolerance. Changing selection disabled the prior export. The
+  temporary device place was removed and automatic live alerts restored.

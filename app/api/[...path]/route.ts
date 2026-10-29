@@ -1,3 +1,4 @@
+import {journeyStops} from '../../../public/journey-stops.mjs';
 import {HrrrService} from '../../../lib/hrrr-service.mjs';
 import {PlacesService} from '../../../lib/places-service.mjs';
 import {placesGet,placesPost} from '../../../lib/places-http.mjs';
@@ -60,7 +61,10 @@ export async function GET(request:Request){
       try{return json(await new AnalogsService(service).history(url.searchParams.get('lat'),url.searchParams.get('lon')));}
       catch(error){const message=String((error as Error).message);return json({error:message},message==='Invalid coordinates'?400:503);}
     }
-    if(path==='/api/journey/route')return json(await new JourneyService(service).route(url.searchParams.get('fromLat'),url.searchParams.get('fromLon'),url.searchParams.get('toLat'),url.searchParams.get('toLon')));
+    if(path==='/api/journey/route'){
+      let via=[];try{const input=url.searchParams.get('via')||'[]';if(input.length>1000)throw Error();via=journeyStops(JSON.parse(input));}catch{return json({error:'Invalid via points'},400);}
+      return json(await new JourneyService(service).route(url.searchParams.get('fromLat'),url.searchParams.get('fromLon'),url.searchParams.get('toLat'),url.searchParams.get('toLon'),via));
+    }
     if(path==='/api/observations/near')return json(await new ObservationsService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/observations/station')return json(await new ObservationsService(service).station(url.searchParams.get('id')));
     if(path==='/api/verification')return json(await new ObservationsService(service).verification(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('station')));

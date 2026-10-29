@@ -8,15 +8,23 @@ export function departureTime(value,now=Date.now()){
   const at=Date.parse(value);if(!Number.isFinite(at)||at<now||at>now+48*3600000)throw Error('Choose a departure between now and 48 hours ahead.');return at;
 }
 export function normalizeRoute(data){
-  const r=data?.routes?.[0],coords=r?.geometry?.coordinates,annotation=r?.legs?.[0]?.annotation;
-  if(data?.code!=='Ok'||r?.geometry?.type!=='LineString'||!Array.isArray(coords)||coords.length<2||coords.length>50000||!coords.every(valid)||r.legs.length!==1)throw Error('Invalid or unsupported route geometry');
+  const r=data?.routes?.[0],coords=r?.geometry?.coordinates,legs=r?.legs;
+  if(data?.code!=='Ok'||r?.geometry?.type!=='LineString'||!Array.isArray(coords)||coords.length<2||coords.length>50000||!coords.every(valid)||!Array.isArray(legs)||legs.length<1||legs.length>4)throw Error('Invalid or unsupported route geometry');
   if(!finite(r.distance)||r.distance<=0||r.distance>2000000||!finite(r.duration)||r.duration<=0||r.duration>86400)throw Error('Routes must be shorter than 2,000 km and 24 hours.');
-  const durations=annotation?.duration,distances=annotation?.distance;
-  if(!Array.isArray(durations)||!Array.isArray(distances)||durations.length!==coords.length-1||distances.length!==durations.length||![...durations,...distances].every(n=>finite(n)&&n>=0))throw Error('Route segment timing is unavailable');
-  const total=durations.reduce((a,b)=>a+b,0),metres=distances.reduce((a,b)=>a+b,0);if(total<=0||metres<=0)throw Error('Route segment timing is unavailable');
-  if(!Array.isArray(data.waypoints)||data.waypoints.length!==2||data.waypoints.some(p=>!valid(p.location)||!finite(p.distance)||p.distance>1000))throw Error('An endpoint is more than 1 km from a routed road');
-  let elapsed=0,distance=0;const vertices=coords.map((coordinate,i)=>{if(i){elapsed+=durations[i-1]/total*r.duration;distance+=distances[i-1]/metres*r.distance;}return {coordinate,elapsed,distance};});
-  return {vertices,duration:r.duration,distance:r.distance,waypoints:data.waypoints.map(p=>({coordinate:p.location,snap_distance:p.distance,name:p.name||''})),timing_method:'Road-segment durations scaled to the route total, including estimated turn time; no live traffic or stops'};
+  if(!Array.isArray(data.waypoints)||data.waypoints.length!==legs.length+1||data.waypoints.some(p=>!valid(p.location)||!finite(p.distance)||p.distance<0||p.distance>1000))throw Error('A waypoint is more than 1 km from a routed road');
+  const vertices=[{coordinate:coords[0],elapsed:0,distance:0}],legInfo=[];let index=0,elapsed=0,distance=0;
+  for(const [i,leg] of legs.entries()){
+    const durations=leg.annotation?.duration,distances=leg.annotation?.distance,seconds=legs.length===1?r.duration:leg.duration,metres=legs.length===1?r.distance:leg.distance;
+    if(!Array.isArray(durations)||!durations.length||!Array.isArray(distances)||distances.length!==durations.length||![...durations,...distances].every(n=>finite(n)&&n>=0)||!finite(seconds)||seconds<=0||!finite(metres)||metres<=0)throw Error('Route segment timing is unavailable');
+    const total=durations.reduce((a,b)=>a+b,0),length=distances.reduce((a,b)=>a+b,0);if(total<=0||length<=0)throw Error('Route segment timing is unavailable');
+    const start=index,startElapsed=elapsed,startDistance=distance;let partialTime=0,partialDistance=0;
+    for(let j=0;j<durations.length;j++){index++;if(!coords[index])throw Error('Route segment timing does not match geometry');partialTime+=durations[j];partialDistance+=distances[j];vertices.push({coordinate:coords[index],elapsed:startElapsed+partialTime/total*seconds,distance:startDistance+partialDistance/length*metres});}
+    elapsed+=seconds;distance+=metres;const end=vertices.at(-1);end.elapsed=elapsed;end.distance=distance;
+    legInfo.push({start_vertex:start,end_vertex:index,duration:seconds,distance:metres});
+    for(const [n,v] of [[i,coords[start]],[i+1,coords[index]]])if(Math.abs(wrap(data.waypoints[n].location[0],v[0])-v[0])>0.00002||Math.abs(data.waypoints[n].location[1]-v[1])>0.00002)throw Error('Route waypoint does not match its leg boundary');
+  }
+  if(index!==coords.length-1||Math.abs(elapsed-r.duration)>1||Math.abs(distance-r.distance)>1)throw Error('Route leg totals or geometry are inconsistent');
+  return {vertices,legs:legInfo,duration:elapsed,distance,waypoints:data.waypoints.map(p=>({coordinate:p.location,snap_distance:p.distance,name:p.name||''})),timing_method:'Road-segment durations scaled within each leg, including estimated turn time; no live traffic'};
 }
 export function sampleRoute(route){
   const v=route.vertices,cost=[0];for(let i=1;i<v.length;i++)cost.push(cost.at(-1)+Math.max((v[i].distance-v[i-1].distance)/50000,(v[i].elapsed-v[i-1].elapsed)/1800));

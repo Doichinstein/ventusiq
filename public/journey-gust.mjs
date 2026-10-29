@@ -1,5 +1,5 @@
 import {gustIntervals} from './planning-core.mjs';
-export const JOURNEY_METHOD='2026-10-29.1';
+export const JOURNEY_METHOD='2026-10-29.2';
 const timestamp=value=>typeof value==='string'&&/(Z|[+-]\d{2}:\d{2})$/.test(value)?Date.parse(value):NaN;
 export function gustLimit(value){if(value===null||value===undefined||String(value).trim()==='')return null;const n=Number(value);if(!Number.isFinite(n)||n<0||n>250)throw Error('Choose a gust limit between 0 and 250 mph, or leave it blank.');return n;}
 export function gustEvidence(data){const p=data?.grid?.properties;return {...data,grid:data?.grid?{id:data.grid.id,properties:{gridId:p?.gridId,gridX:p?.gridX,gridY:p?.gridY,updateTime:p?.updateTime,windGust:p?.windGust}}:null};}

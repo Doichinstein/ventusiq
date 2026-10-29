@@ -331,3 +331,13 @@ projects a selected point to the native grid and decodes one regional chunk with
 product and withholds differences for stale or missing sources. `hrrr.js` provides
 explicit collection, separate source ages, gaps and raw point evidence exports.
 See [HRRR methods and independent decoder checks](hrrr-smoke.md).
+
+### Journey stop timing
+
+`normalizeRoute` validates one to four OSRM legs and scales segment annotations
+within each leg. `JourneyService.route` uses ordered rounded coordinates for cache
+identity; via routes use `routes/via-v1/`. `journey-stops.mjs` inserts stationary
+segments for user-entered stops and derives updated ETAs, bounded stop samples and
+separate driving/stopped durations. Alert geometry evaluation includes those
+stationary segments; point forecasts and gust grids are deduplicated per comparison.
+Stop input remains client-side except for the via coordinates sent to routing.

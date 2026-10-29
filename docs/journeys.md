@@ -1,7 +1,7 @@
 # Journey weather
 
-The hosted Journey workspace accepts two coordinates, two saved places, or points
-picked on the map. It compares the selected departure with departures two and four
+The hosted Journey workspace accepts start/destination coordinates, saved places,
+or points picked on the map, plus up to three ordered via points and optional stops. It compares the selected departure with departures two and four
 hours later. A road map, arrival-time weather table, alert overlap windows and JSON
 export share the same evaluated snapshot. Departures require an explicit UTC offset
 or `Z`, avoiding ambiguity during a repeated daylight-saving hour. Table and popup
@@ -16,10 +16,11 @@ place names are not sent. OSRM/OpenStreetMap attribution, provider privacy/usage
 links and a map correction link appear beside the form.
 
 The route must be at most 2,000 km, 24 hours, and 50,000 geometry vertices, with
-both endpoints within 1 km of the snapped roads. The UI displays snap distances.
+all waypoints within 1 km of the snapped roads. The UI displays snap distances.
 OSRM's per-edge duration annotations omit turns; we scale them proportionally to
-the provider's total duration, then interpolate time along each road segment.
-This is an estimate, without live traffic, stops or weather-related slowing.
+each leg's provider duration, then interpolate time along each road segment.
+This is an estimate, without live traffic or weather-related slowing. User-entered
+stop durations are added separately at snapped via points.
 
 Identical routes cache for 24 hours. A shared atomic D1 admission gate permits at
 most one provider request per two integer clock seconds, guaranteeing at least
@@ -75,7 +76,7 @@ journey refreshes them explicitly.
 This is weather exposure planning, not navigation, an evacuation route or a
 verified road-closure service. No closure source is currently integrated, and
 the UI makes no closure/open-road claim. Smoke, road-surface conditions,
-stops, editable via points, traffic-aware timing and closure attribution remain
+traffic-aware timing and closure attribution remain
 future additions. Automated rendered QA is still unavailable. The Python/static
 editions do not yet expose hosted routing.
 
@@ -115,3 +116,42 @@ departures. Rerunning the comparison refreshes it; exporting an old snapshot doe
 not make it current. Hourly upkeep and database schema are unchanged.
 
 Source contract: [NWS API documentation](https://www.weather.gov/documentation/services-web-api).
+
+## Ordered via points and stops
+
+The optional form section offers three via rows, each with coordinate fields,
+saved-place selection, map picking, a clear control and a whole-minute stop length
+from zero to 120 minutes. Blank rows are skipped; half-entered coordinates and
+stop durations without a location are rejected. Zero means pass through. Rows are
+visited in displayed order; no automatic reorder or fastest-stop optimization is
+claimed. Start and destination may coincide for a round trip through distinct via
+points. Consecutive coordinates must differ after four-decimal rounding.
+
+The route API accepts `via` as a JSON array of up to three `{lat,lon}` objects.
+Only coordinates are sent to OSRM. Stop durations remain in the browser's journey
+calculation/export, and varying them reuses the same cached road geometry. Ordered
+via routes have distinct shared keys under `routes/via-v1/`. Invalid input fails
+before fetching. Multi-leg products must supply duration/distance annotations for
+every leg, consistent total geometry/timing and snapped waypoints at the exact leg
+boundaries. Per-edge times are scaled within each leg, so unequal turn penalties
+do not shift the stop to a guessed position along the total trip.
+
+`journey-stops.mjs` adds duplicate-position stationary segments to the timed route
+and shifts all subsequent vertices and ETAs. It retains driving and stopped time
+separately, and requires total driving plus stops to fit within 24 hours. Every via
+point gets an explicit sample; stops include arrival, departure and intermediate
+samples at most 30 minutes apart. Up to 25 driving samples plus at most 15 stop
+samples bound a comparison to 40 rows before deduplication. Conditions between
+samples remain unassessed. Repeated locations share a point-forecast request;
+grid forecasts are also reused. All three departure scenarios use the same planned
+stop lengths and archived source snapshots.
+
+Alert intersections use the full timed path, including stationary segments. Thus
+an alert active during a stay can match even if it was not active on arrival.
+Stops inside polygon holes remain outside the hazard geometry. Stop arrival and
+leave times appear separately in UTC, with snap distances and requested coordinates.
+Table/map samples identify via arrival, time during a stop and departure. A stop
+is modeled at the snapped road point; the route does not establish parking access,
+walking time, opening hours, safe stopping conditions or weather inside a building.
+Exports retain each requested stop and its elapsed times, per-leg timing, total
+stop/driving durations, updated samples and evaluated departure scenarios.

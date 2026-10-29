@@ -520,3 +520,30 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - Browser rendering remains unverified under the saved permission setting;
   DOM doubles and HTTP checks do not replace rendered QA. Hourly upkeep remains
   unchanged. Connection lists do not predict flood arrival or local inundation.
+
+## Journey via points and timed stops increment
+
+- Added three ordered via inputs with saved-place/map selection and clearing;
+  each allows a 0–120 minute stop. Routing validates per-leg annotations/boundaries
+  and caches ordered coordinates. Stops shift later ETAs, create stationary alert
+  passages and add bounded weather samples throughout each stay. Repeated point
+  forecasts are reused. Driving and stopped time remain separate in UI/export.
+- Eleven new tests cover leg-specific timing, malformed boundaries/totals,
+  cumulative and zero-length stops, round trips, stop-only warning overlaps,
+  weather-hour changes while stationary, request validation, route cache reuse,
+  form/export integration and point-forecast deduplication.
+- Full suite: 448 Node plus 16 Python tests passed (464 total). TypeScript and
+  production build passed. No dependency, schema, secret or schedule changes.
+- Built Worker live check at 2026-10-29 03:22:07 UTC routed Washington
+  (38.8977,-77.0365) through (39.032,-76.879) to Baltimore (39.2904,-76.6122).
+  Two legs covered 67.2275 km in 76.1317 driving minutes. A 90-minute stop made
+  total estimated duration 166.1317 minutes. The via snapped 111.8 m to the road.
+  Eight weather samples used five distinct point forecasts; all eight supplied
+  hourly fields. The stop's arrival/during/departure samples covered 05:36:29,
+  06:06:29, 06:36:29 and 07:06:29 UTC with forecast temperatures 49/48/48/48 °F.
+- Route revision: `7c3d53f467a3ec4ae9e7583b220267dbe67f4dfcc279b58f8627e8ee8f5c2673`.
+  A repeat request reused revision/check time. Invalid JSON, incomplete coordinates
+  and more than three vias returned HTTP 400. Page and modules returned HTTP 200.
+- Rendered browser QA remains unavailable under the saved permission setting.
+  Traffic, weather-induced slowing, smoke exposure and verified road closures
+  remain unfinished. Hourly upkeep is unchanged.

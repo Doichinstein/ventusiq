@@ -5,9 +5,13 @@ Detections independently. Choices persist on the current browser origin.
 Source details, fire search and forecast controls remain in the expandable
 panel below the toolbar. Current hazard layers stay hidden during alert replay.
 
-Visible hosted tabs check `/api/alerts?view=map` every 30 seconds. The shared
-collector retains its one-minute lease/cadence, so this is not a promise of a
-new source edition every 30 seconds. Auto alerts can be paused; a hidden tab or
+Visible hosted tabs normally check `/api/alerts?view=map` every 30 seconds.
+The response supplies a bounded 5–30 second follow-up delay: five seconds when
+collection is due/running or the stored check advanced while reading the body,
+otherwise at the next due time up to 30 seconds. This lets a cached response be
+replaced promptly after collection finishes. The shared collector still fetches
+at most once per minute with a database lease; shorter map reads do not bypass
+that limit or a failed source's two-minute cooldown. Auto alerts can be paused; a hidden tab or
 replay pauses alert polling. Returning to a visible tab checks when due.
 Fire, monitor and AQI layers retain their 15-minute collection cadence. The
 EPA AQI contour source publishes hourly. Unattended Sites upkeep remains hourly.
@@ -17,6 +21,9 @@ then schedules collection and upkeep after the response. The original alerts
 endpoint still awaits collection for scheduled callers. History, changes and
 health load independently after the map paints; failure there cannot hide a
 successful alert response. Unchanged alert geometry is not rebuilt each tick.
+Short follow-ups never change the displayed collection timestamp or suppress
+an error/90-second age warning. A genuinely slow or failed collection remains
+delayed until a successful alert body reaches the browser.
 
 The browser Cache API stores only public alerts and official zone geometries:
 at most 2,048 entries within a conservative 24 MiB payload budget, with a

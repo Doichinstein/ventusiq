@@ -148,7 +148,9 @@ async function refresh() {
     liveData = data;
     window.WeatherPersonal?.alertsUpdated(data);
     window.WeatherMapCache?.write('alerts', data);
-    nextFetch = Date.now() + refreshInterval;
+    const followup = data.refresh_after_ms;
+    nextFetch = Date.now() + (config.mode === 'hosted' && Number.isFinite(followup)
+      ? Math.max(5000, Math.min(refreshInterval, followup)) : refreshInterval);
     if (generation === snapshotGeneration && !replayAt && !replayLoading) {
       lastSourceUpdated = data.updated;
       features = data.features.filter(validFeature);
@@ -428,7 +430,7 @@ $('about-close').onclick = () => $('about').close();
 $('about').addEventListener('click', e => { if (e.target === $('about')) { const b = $('about').getBoundingClientRect(); if (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) $('about').close(); } });
 $('history-mode').textContent = direct ? 'History for this session' : '24h retained history';
 $('mode-explainer').textContent = direct ? 'This static public edition reads NWS directly from your browser. Replay and the change feed cover collections made while this page is open. Download the self-hosted edition for a shared background daemon and persistent 24-hour history.' : 'This edition reads from a shared background daemon. Collections continue even when nobody is viewing the map. Replay covers the last 24 hours collected since the daemon started; it does not invent earlier history.';
-if(config.mode==='hosted')$('mode-explainer').textContent='Visible tabs check shared alerts every 30 seconds. The shared NWS collector fetches at most once per minute. Last-collected alerts appear immediately while the server checks upstream. An hourly archive-upkeep task is configured for periods with no visitors; check actual timestamps for freshness. Fire, monitor and AQI-contour feeds refresh when enabled, at most once per 15 minutes; source editions can be hourly or slower. Smoke catalogs refresh at most hourly. Browser push runs during hourly upkeep and may be delayed.';
+if(config.mode==='hosted')$('mode-explainer').textContent='Visible tabs normally check shared alerts every 30 seconds, with follow-up checks as soon as five seconds while collection is due or running. The shared NWS collector fetches at most once per minute. Last-collected alerts appear immediately while the server checks upstream. An hourly archive-upkeep task is configured for periods with no visitors; check actual timestamps for freshness. Fire, monitor and AQI-contour feeds refresh when enabled, at most once per 15 minutes; source editions can be hourly or slower. Smoke catalogs refresh at most hourly. Browser push runs during hourly upkeep and may be delayed.';
 document.addEventListener('keydown', e => {
   if (e.key === '/' && !e.defaultPrevented && !e.isComposing && !e.ctrlKey && !e.altKey && !e.metaKey &&
       !$('map-workspace').hidden && !$('about').open && !document.activeElement.isContentEditable &&

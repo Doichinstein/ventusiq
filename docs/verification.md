@@ -1781,3 +1781,25 @@ validation and supported hosted database recovery remain separate open requireme
 - The 12-hour cutoff continued to withhold differences for an older check outside
   its three-hour tolerance. Changing selection disabled the prior export. The
   temporary device place was removed and automatic live alerts restored.
+
+## Map collection follow-up timing — October 29, v73
+
+The v72 browser run observed the displayed collection aging past 90 seconds
+while the shared collector subsequently reported fresh. The map response returns
+cached data before deferred collection; its fixed 30-second browser interval
+could therefore leave completed collection unseen until the next poll.
+
+The map response now supplies a bounded 5–30 second follow-up delay, using the
+shared dataset's due time and active lease. Reads while collection is due/running,
+or after a newer check than the cached body, request a five-second follow-up.
+Failure cooldowns retain ordinary polling. The client bounds this server hint and
+preserves the displayed body's timestamp/error and its existing auto/hidden/replay
+guards. No collection interval, source cooldown or upkeep lease was relaxed.
+
+Validation: 19 tests across map-alerts, hosted and upkeep passed, including the
+real collector with a held upstream response, deduplicated concurrent map reads,
+completed collection, failure retention and cooldown. The browser refresh function
+was exercised with bounded/missing/invalid hints, replay, daemon mode and network
+failure. TypeScript and diff checks passed. Live rendered verification follows
+publication; automated tests do not establish complete-device usability or
+absence of genuine provider delays.

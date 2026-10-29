@@ -1632,3 +1632,20 @@ validation and supported hosted database recovery remain separate open requireme
   Temporary places were removed and the map restored with Auto alerts enabled.
   Account testing remains deferred. Physical-device delivery, route closure
   attribution, forecast outcome validation and hosted recovery remain open.
+
+## v67 — National map framing across the date line
+
+- Public browser testing found that fitting all national alerts could frame Europe:
+  raw positive longitudes near the Aleutians and Guam were combined with negative
+  mainland longitudes. NWS display geometry now uses one world copy centered on
+  the US. Guam's region preset uses that same frame. Original source coordinates
+  remain unchanged for decisions, exports and archives; transformed geometry is
+  cached by source object to avoid repeating copies during redraws.
+- Twenty-five focused map/frontend checks pass, including date-line polygons,
+  nested zone collections, national coverage, source immutability, alert selection,
+  refresh/replay, layer controls and cached boundary loading.
+- The earlier live delayed-data state subsequently recovered. The public health
+  endpoint reported fresh data, last_error null and age_seconds 17. The 30-second
+  browser poll and the source collector are separate; no freshness warning was
+  suppressed and this does not establish uninterrupted upstream availability.
+- Account testing remains deferred at the user's request.

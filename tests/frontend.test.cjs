@@ -55,6 +55,7 @@ async function setup(mode='direct',options={}) {
   const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout(){return 1;}});
   const run=code=>vm.runInContext(code,ctx);
   run(fs.readFileSync(path.join(__dirname,'../public/zone-loader.js'),'utf8'));
+  run(fs.readFileSync(path.join(__dirname,'../public/map-geometry.js'),'utf8'));
   run(fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8'));
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(r=>setImmediate(r));};
   await settle();
@@ -68,6 +69,18 @@ test('hosted map paints alerts before slow history and status, without redrawing
   const version=s.run('geometryRevision');await s.run('nextFetch=0; refresh()');
   assert.equal(s.run('geometryRevision'),version);assert.equal(s.els.total.textContent,'2');
   s.releaseAuxiliary();await s.settle();
+});
+
+test('map and selected alert use the same date-line frame while stored source stays geographic',async()=>{
+  const s=await setup('hosted');
+  const alaska=fixture('dateline');
+  alaska.geometry.coordinates=[[[179,51],[-179,51],[-179,52],[179,51]]];
+  s.setData(payload([alaska]));await s.run('nextFetch=0; refresh()');
+  assert.equal(s.run('alertLayer.data[0].geometry.coordinates[0][0][0]'),-181);
+  assert.equal(s.run('features[0].geometry.coordinates[0][0][0]'),179);
+  s.els.feed.children[0].onclick();
+  assert.equal(s.run('featureGeometry(features[0]).coordinates[0][0][0]'),-181);
+  assert.equal(s.run('regions.guam.bounds[0][1]'),-216);
 });
 
 test('automatic checks pause in hidden tabs and during replay, resume on visibility, and can be switched off',async()=>{

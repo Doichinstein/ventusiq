@@ -11,7 +11,7 @@ const regions = {
   alaska: {name: 'Alaska', bounds: [[51, -179], [72, -129]]},
   hawaii: {name: 'Hawaii', bounds: [[18, -161], [23, -154]]},
   puertorico: {name: 'Puerto Rico & USVI', bounds: [[17.5, -68], [18.7, -64.3]]},
-  guam: {name: 'Guam & Marianas', bounds: [[12.8, 144], [20.7, 146.5]]},
+  guam: {name: 'Guam & Marianas', bounds: [[12.8, -216], [20.7, -213.5]]},
   samoa: {name: 'American Samoa', bounds: [[-15, -172], [-10.5, -168]]},
 };
 let features = [], filtered = [], changes = [], snapshots = [], selected = null;
@@ -274,8 +274,7 @@ function bindFeature(f, layer) {
   layer.on('click', () => selectAlert(features.find(x => x.id === f.id) || f));
 }
 function featureGeometry(f) {
-  if (f.geometry) return f.geometry;
-  return geometry.get(f.id) || null;
+  return window.WeatherMapGeometry.displayGeometry(f.geometry || geometry.get(f.id));
 }
 function drawMap() {
   const mapped = filtered.map(f => ({...f, geometry:featureGeometry(f)})).filter(f => f.geometry);

@@ -66,3 +66,48 @@ deployment's commercial use or collection scale.
 Longer outcome archives, lead/season stratification, HRRR comparisons, run-identified
 products and calibrated uncertainty remain roadmap work. Automated core, service
 and DOM behavior checks do not replace rendered browser verification.
+
+
+## Identified daily GEFS runs (v77)
+
+The **Ensemble source** selector adds **Identified daily 00 UTC run - Dynamical**.
+This uses [Dynamical's public point API](https://dynamical.org/api/) and its
+[NOAA GEFS 35-day archive](https://dynamical.org/catalog/noaa-gefs-forecast-35-day/).
+Only daily 00 UTC initializations are present in this product; it must not be
+presented as the latest six-hour GEFS cycle. Its NOAA data is processed by
+Dynamical and licensed CC BY 4.0. The original source arrays, product version,
+Icechunk snapshot ID, exact initialization and requested/selected grid remain in
+the downloaded report. No model implementation is copied.
+
+`GET /api/ensemble?lat=39&lon=-77&source=identified` requests one nearest grid point,
+31 members, and temperature plus 10 m u/v wind components through lead 120 hours.
+These leads use the archive's 0.25-degree source, with native three-hour samples.
+Temperature converts from Celsius to Fahrenheit; sustained speed is
+`sqrt(u*u+v*v) * 2.2369362920544` mph. Both components must exist. The provider's
+binary floating-point rounding remains part of the data; VentusIQ adds no temporal
+interpolation or elevation correction. This is separate from the Open-Meteo
+hourly interpolation, and switching source clears the previous display/export.
+
+Validation checks one product and run, snapshot identity, nearest grid indices,
+requested coordinates, declared units, UTC midnight initialization, ordered
+three-hour lead/valid-time agreement and unique member IDs 0-30. Bad units or
+identities reject the product. Missing members/components and invalid numeric
+values remain gaps. The existing full-member quantile rule remains unchanged.
+Every displayed row includes `lead_hours` in its export. Initialization is a
+model reference time, not the time at which the forecast became publicly available.
+
+Run age is independent of collection age. A run older than 36 hours is labeled
+delayed, even when just retrieved; this operational display threshold is not a
+skill calibration. Failed collections and collection age above seven hours also
+remain delayed. Older values can be inspected with these labels. The view still
+shows 24 upcoming three-hour timestamps; absent coverage remains unknown.
+
+The identified source has separate cache and quota namespaces: 200 cells,
+six-hour caching, one attempt per ten seconds and 100 upstream attempts per UTC
+day. Requests are bounded to 2 MB. HTTP 429/503 honors `Retry-After` using a shared
+cooldown of at least two minutes (15 minutes when absent/invalid); other cells do
+not bypass that pause. Existing immutable revisions and seven-day retention apply.
+No account, paid credential or automatic source polling is introduced.
+
+This supplies provenance for a daily ensemble run. It does not establish calibrated
+probabilities, independent model votes, seasonal skill or lead-stratified accuracy.

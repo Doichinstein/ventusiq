@@ -632,3 +632,16 @@ projection to extract 2 m temperature from an explicitly verified HRRR run.
 Forecast checks. Separate point/catalog caches share the existing HRRR request
 and daily budgets. No schema or scheduler change is needed. See
 [temperature methods and limits](hrrr-temperature.md).
+
+
+## Identified GEFS daily-run path (v77)
+
+The existing ensemble module now has a source selector, preserving the Open-Meteo
+series while adding a daily 00 UTC GEFS archive via Dynamical. `gefs-run-core.mjs`
+validates run, snapshot, grid, member and lead identities and normalizes native
+three-hour temperature/u-v wind samples for the existing chart/statistics.
+`EnsembleService` collects `source=identified` into a separate bounded archive and
+shared provider cooldown. Exports preserve raw source evidence and per-row leads.
+See [the ensemble contract](ensemble.md#identified-daily-gefs-runs-v77). This closes
+the missing run-identity implementation for this daily product; it does not
+supply all six-hour runs or close seasonal calibration/outcome validation.

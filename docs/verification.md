@@ -1867,3 +1867,20 @@ observations and screenshots are stored outside the source checkout in
 The October 29 20:07 UTC provider precheck still returned the shared CAMS cooldown
 (until 20:22:03 UTC); IOLK1 still had no earlier distinct forecast among three
 retained products. Neither positive-flow acceptance gap is closed by this change.
+
+
+## Identified daily GEFS adapter (v77)
+
+The live Dynamical API probe at Washington's shared 39,-77 grid returned the
+2026-10-29 00 UTC initialization, 31 members, source-native three-hour axes and
+archive snapshot T0BQYQVBY2GZ6P62M66G (product 0.2.0). The initial 96-hour probe
+returned 33 lead times and work count 3,069. The implementation requests through
+120 hours (41 times) to retain the next 72-hour view as a daily run ages.
+
+23 focused core/service/UI tests passed, covering unit/vector conversion,
+quantiles, raw evidence, missing members/components, invalid identity/grid/time
+axes, future/delayed runs, separate caching/budgets, provider Retry-After, source
+switch races and the original adapter. TypeScript and whitespace checks passed.
+Live hosted/browser/export comparisons are retained outside the checkout in
+`verification/browser-qa-2026-10-29/`. Model-run identity does not establish
+calibrated uncertainty or all-season predictive skill.

@@ -1956,3 +1956,23 @@ browser warning or error was reported. Account testing remains owner-deferred.
 - A follow-up local health request reported fresh alert data and a finished
   upkeep pass, with watch, push and webhook processing phases all finished on the
   empty local account queues. No missing-table error appeared in server logs.
+
+## HRRR temperature browser and export checks - v83
+
+Public browser testing on October 29 loaded the 18 UTC run at the public test
+point 39, -77. The product was checked at 21:41:10 UTC, with native cell
+38.99565994809633, -76.99581511079373 and 603 m projected point separation.
+The chart/table showed 45 available upcoming hours and three unknown tail hours.
+All displayed lead times and Fahrenheit conversions matched separate arithmetic
+against the downloaded raw samples. A fresh source-chunk download matched SHA-256
+`d6cf95e33c8dc5d60c65c1b66341c097a0834aad8c780c12a80db7293c3651b1`.
+This does not independently validate native-cell decoding or model performance.
+
+The observed chart lacked useful time ticks. The update adds three browser-local
+date/hour labels and per-sample timestamp/temperature/lead tooltips. Local browser
+checks verified desktop rendering and 390×844 keyboard scrolling: the chart
+content was 460 px wide inside a 282 px scroll region, with no parent overflow.
+Five focused tests and TypeScript checking passed; local browser error logs were
+empty. Public and local temporary places were removed; the viewport was reset.
+Evidence is retained in the workspace browser-qa-2026-10-29 directory as
+`hrrr-temperature-export-audit-v83.json`, raw source bytes and desktop/mobile images.

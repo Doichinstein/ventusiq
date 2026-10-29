@@ -42,7 +42,9 @@ added. Coordinates outside the existing contiguous-US coverage are rejected.
 
 The view loads only on explicit action, clears on place/account changes and ignores
 late replies. Its chart is accompanied by a table of exact times, lead hours and
-coverage. JSON retains source metadata, chunk and coordinate hashes, raw selected
+coverage. The chart axis shows browser-local dates and hours; each dot has a
+tooltip with its full timestamp, temperature and run lead. Its horizontal scroll
+region is keyboard-focusable on small screens. JSON retains source metadata, chunk and coordinate hashes, raw selected
 samples, revision and collection time. Static and Python-only editions hide this
 hosted archive control. NOAA and the University of Utah are attributed in the view.
 

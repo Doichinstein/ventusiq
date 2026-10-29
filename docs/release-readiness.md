@@ -1,5 +1,19 @@
 # Ten-feature acceptance audit
 
+## Live river forecast revisions (v88)
+
+Public browser QA compared AKFM7’s October 29 13:09 UTC issue with the
+October 28 14:27 UTC issue. The exported raw products independently reproduce
+50 matching future timestamps, all unchanged at 0.6 ft. The newer product has
+72 future samples versus 50 in the older one; unmatched times are excluded.
+All four reported thresholds remain unreached in the shared horizon.
+This closes the nonempty comparison gate for an unchanged-level example,
+not a moving crest or shifted threshold-crossing bracket. The retained
+[evidence bundle](evidence/river-revisions-AKFM7-2026-10-29.json) contains both
+raw products and the browser export. Comparison dates now label the device
+timezone, and the sample table has an explicit keyboard focus target and
+accessible region name. Account testing remains deferred by the owner.
+
 ## Captured HRRR temperature comparisons (v86)
 
 The observation card now compares retained HRRR forecasts with later QC-qualified
@@ -118,7 +132,7 @@ results below supply new evidence; they do not certify untested flows.
 | 2. Meaningful updates | My weather → Watch alerts; watch, push and webhook tests cover ownership, baseline suppression, changes, quiet periods, retry and deduplication | Real closed-page notification display; real external webhook delivery/retry; signed-in controls |
 | 3. Activity windows | Planning tests plus rendered v62 duration/limit changes, rejection by gust ceiling, unknown unloaded PM2.5 coverage, local EDT times, persistence and evidence download | Broader real-device usability and source-outage scenarios; no calibrated probability is established |
 | 4. Fire and smoke | Provider/core tests and live feeds; browser checks cover all seven map layers, fire perimeter/details, age/containment styles, smoke playback, replay hiding and the HRRR/RAP comparison chart and export; v65 rendered measured PM2.5/ozone trends, monitor switching, mobile ozone and exports | CAMS particle/gas chart flow remains blocked by observed provider rate limiting; nonempty archived forecast/monitor pairs remain unproven; modeled or nearby measurements do not verify personal exposure |
-| 5. Flood timing | River/network/gauge tests and live checks cover IDs, units, datum and revisions; browser opened LOLT2 observations and IOLK1 observed/forecast hydrograph, threshold timing, official impact text, connected gauges and missing-prior-revision exports | Nonempty revision comparisons remain unproven; the DLAF1 official NOAA link was followed and verified in v65. Address-level inundation and hydraulic travel times remain outside the current evidence |
+| 5. Flood timing | River/network/gauge tests and live checks cover IDs, units, datum and revisions; browser opened LOLT2 observations and IOLK1 observed/forecast hydrograph, threshold timing, official impact text, connected gauges and missing-prior-revision exports | AKFM7 now has a browser-verified nonempty comparison with unchanged matched levels; nonzero level and crossing-time shifts remain unproven in live QA; the DLAF1 official NOAA link was followed and verified in v65. Address-level inundation and hydraulic travel times remain outside the current evidence |
 | 6. Journey weather | Tests and live routes cover geometry/time alignment, stops, DST, gaps, agency proximity and source road labels; browser compared three Washington–Baltimore departures, a 30-minute via stop, shifted stop arrival/departure times and a Maryland agency work-zone panel | **Verified route closure attribution is still missing.** Shared labels do not resolve network identity, carriageway, signed direction or grade-separated crossings |
 | 7. Forecast confidence | Temperature outcomes, lead groups, persistence and revision comparisons have automated coverage; browser checked observed-temperature chart, GEFS charts/counts/exports and v68 Sacramento diagnostics with 11 matched hours, independently recalculated errors and a matching JSON download | v71 verified 48 same-hour forecast-revision pairs and independently recalculated differences; broader seasonal skill remains incomplete. v77/v78 verified an explicitly identified daily 00 UTC GEFS run in the live UI and exports, with 744 values per metric independently reproduced; all six-hour runs and calibrated skill remain outside that evidence. v79 adds prospective captured-run temperature comparisons with station QC, lead groups and evidence export; a nonempty live GEFS outcome sample has not yet matured. HRRR temperature has an explicit-run adapter; v83 verified its live chart, missing tail and export consistency, plus the updated desktop/mobile time axis. The one-day outcome sample and model spread do not justify calibrated confidence claims |
 | 8. Historical analogs | Grid/station tests plus rendered manual-date discovery, two daily records, station holdout diagnostics, current-forecast grid analogs and exports; mobile tables scroll within their containers | Forecast-to-history transfer and broader regional/climate-drift performance remain unvalidated |

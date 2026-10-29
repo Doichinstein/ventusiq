@@ -1,7 +1,7 @@
 import {compareRiverForecasts,forecastIdentity} from './river-changes-core.mjs';
 export function mountRiverChanges({document,window,fetcher=fetch,clock=Date.now}){
   const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;},hosted=window.WEATHER_CONFIG?.mode==='hosted',session=new Map();let product=null,report=null,generation=0,busy=false;
-  const time=t=>t?new Date(t).toLocaleString():'unavailable',value=(v,unit)=>v===null||v===undefined?'unknown':v.toLocaleString(undefined,{maximumFractionDigits:2})+' '+unit,signed=(v,unit)=>(v>0?'+':'')+value(v,unit);
+  const time=t=>t?new Date(t).toLocaleString(undefined,{timeZoneName:'short'}):'unavailable',value=(v,unit)=>v===null||v===undefined?'unknown':v.toLocaleString(undefined,{maximumFractionDigits:2})+' '+unit,signed=(v,unit)=>(v>0?'+':'')+value(v,unit);
   const fresh=p=>p&&!p.stale&&!p.error&&Number.isFinite(Date.parse(p.checked_at))&&clock()-Date.parse(p.checked_at)<=1350000;
   function clear(){generation++;busy=false;report=null;get('river-change-export').disabled=true;get('river-change-results').replaceChildren();}
   function updateGauge(next){
@@ -10,7 +10,7 @@ export function mountRiverChanges({document,window,fetcher=fetch,clock=Date.now}
     product=next;if(changed||!fresh(next)){clear();get('river-change-status').textContent=!next?'Choose a gauge.':!fresh(next)?'Refresh the gauge before comparing delayed products.':hosted?'Compare the latest collected forecast with the preceding distinct forecast in the seven-day archive.':'Compare distinct forecasts collected while this tab is open.';}
     get('river-change-run').disabled=!fresh(next)||busy;
   }
-  function table(headers,rows){const scroll=el('div',undefined,'hourly-scroll'),table=el('table',undefined,'hourly-table'),head=el('thead'),tr=el('tr'),body=el('tbody');for(const h of headers)tr.append(el('th',h));head.append(tr);for(const values of rows){const row=el('tr');for(const v of values)row.append(el('td',v));body.append(row);}table.append(head,body);scroll.append(table);return scroll;}
+  function table(headers,rows){const scroll=el('div',undefined,'hourly-scroll'),table=el('table',undefined,'hourly-table'),head=el('thead'),tr=el('tr'),body=el('tbody');scroll.tabIndex=0;scroll.role='region';scroll.ariaLabel='Matching river forecast samples';for(const h of headers)tr.append(el('th',h));head.append(tr);for(const values of rows){const row=el('tr');for(const v of values)row.append(el('td',v));body.append(row);}table.append(head,body);scroll.append(table);return scroll;}
   function crossingText(c){return c.status==='unknown'?'Unknown coverage':c.status==='not_reached'?'Not reached in sampled horizon':c.after?`${time(c.after)} – ${time(c.at)}`:`At/above at ${time(c.at)}; crossing unknown`;}
   function render(){const r=report,nodes=[];get('river-change-status').textContent=r.status==='compared'?`Current issue ${time(r.current_issued_at)} · previous issue ${time(r.previous_issued_at)}`:r.reason;get('river-change-export').disabled=false;
     if(r.archive?.truncated)nodes.push(el('p','The archive scan reached its 128-product limit without a distinct forecast. Older retained products may contain a baseline.','warning-note'));

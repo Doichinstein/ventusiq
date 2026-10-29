@@ -72,7 +72,9 @@ levels with no current forecast at LOLT2, and both observations and forecasts at
 AKFM7. Tests cover sentinels, gaps, forecast age, units, inconsistent thresholds,
 terminal/repeated maxima, forecast-only gauges, archive revisions, source failure,
 gauge-switch races, chart/table output, source-text safety, markers and replay.
-Real browser visual QA remains blocked by the existing permission gate. Full basin
+Public browser QA now covers gauge charts, thresholds, connected gauges and an
+AKFM7 revision comparison with 50 unchanged matched levels; see
+[the acceptance audit](release-readiness.md). Full basin
 delineation, address-to-watershed matching, closed-browser push, calibrated
 probabilities and verified inundation/road-impact layers remain unfinished.
 NOAA gauge associations are available as described below.
@@ -179,8 +181,8 @@ associations for BRKM2 (Little Falls), including PORM2 upstream and GTND2 downst
 The reciprocal PORM2 and GTND2 queries placed BRKM2 in the expected downstream and
 upstream lists. This spot check establishes those provider responses, not complete
 network coverage. Tests cover malformed/ambiguous products, bounded reads, retained
-revisions, failures, async selection changes and evidence export. Rendered browser
-QA remains unavailable under the existing saved permission setting.
+revisions, failures, async selection changes and evidence export. Public browser
+QA has exercised the connected-gauge panel; see the acceptance audit for scope.
 
 
 ## Selected-place watersheds

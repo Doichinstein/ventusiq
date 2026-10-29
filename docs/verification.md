@@ -1604,3 +1604,31 @@ validation and supported hosted database recovery remain separate open requireme
   the card and map popup; actual direction strings receive an explicit label.
   Raw agency data and evidence exports remain unchanged for auditability.
 - Account and notification testing remains deferred at the owner's request.
+
+## Public air/event QA and provider cooldown (October 29, v65/v66)
+
+- Rendered Lake/Volusia Flood Warning flow found DLAF1 and matched 114 observed
+  readings, 3.96–3.98 ft. Station A4619 yielded zero matching readings, without
+  inferring no event. The three-panel JSON and HTML downloads succeeded. The JSON
+  verifier passed for 119 chronology rows, and changing the cutoff to before the
+  new collections reset exports and withheld both newer measurement editions.
+  The official NOAA link rendered the matching Deland gauge and thresholds.
+- PM2.5 history displayed 23 usable King Greenleaf readings, latest 9 micrograms/m3
+  and separately reported AQI 48. Switching to McMillan changed the history and
+  cleared the old forecast comparison. Ozone loaded 24/24 completed hours, latest
+  42 ppb and source NowCast AQI 32. Mobile document width stayed within 390 pixels.
+  RAP smoke displayed 36/48 hourly samples with missing coverage explicit. Four
+  evidence exports parsed; zero PM2.5 pairs had null errors rather than zero skill.
+- CAMS returned HTTP 429 in the live browser. Independent monitor results remained
+  usable. This verifies the unavailable-source flow, not the successful gas chart.
+  The hosted collector previously only backed off each individual point for two
+  minutes while admitting another point after five seconds. v66 adds a shared
+  provider cooldown using Retry-After, or 15 minutes when it is absent/invalid.
+- Thirteen focused tests pass, including four new regression cases covering
+  cross-point/worker suppression, no extra daily-budget debit, seconds/date headers,
+  minimum/fallback delays, last-good retention, recovery and overlapping responses
+  that must not shorten a longer deadline. TypeScript and diff checks pass.
+- Local screenshots/exports are retained under the workspace verification folder.
+  Temporary places were removed and the map restored with Auto alerts enabled.
+  Account testing remains deferred. Physical-device delivery, route closure
+  attribution, forecast outcome validation and hosted recovery remain open.

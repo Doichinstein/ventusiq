@@ -98,3 +98,19 @@ requests share the normal hourly cache. No new dataset family, background task,
 secret or database migration is needed. Archived PM2.5 comparisons continue to
 read particle-only editions; later gas-bearing revisions do not backfill earlier
 forecast evidence.
+
+## Shared provider cooldown
+
+HTTP 429 from the air-quality provider pauses new CAMS requests across all
+locations and Worker instances. The existing D1 request gate stores the deadline;
+blocked requests do not consume another upstream request or daily budget unit.
+Retry-After accepts nonnegative integer seconds or an HTTP date, with a minimum
+120-second wait. Missing or invalid headers use 15 minutes. A later in-flight
+response cannot shorten an existing longer cooldown. Fresh cache hits remain
+available; refresh failures retain the last-good revision with explicit error and
+stale status. Requests become eligible after the deadline; no timer or background
+retry job is created. This limits retries but cannot remove the provider's quota.
+The static direct-provider edition still exposes the source error; the shared
+cooldown applies to the hosted collector.
+
+Header semantics: [RFC 9110, Retry-After](https://www.rfc-editor.org/rfc/rfc9110.html#name-retry-after).

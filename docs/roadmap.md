@@ -6,10 +6,10 @@ sequence and acceptance criteria are specified in [architecture](architecture.md
 | Feature | Current implementation | Remaining delivery |
 |---|---|---|
 | My Places | Device-local places, map selection, official alerts, hourly outlook and share links | Rendered QA; full saved-place synchronization (owned watches already persist across devices) |
-| Meaningful updates | CAP-linked changes, opt-in tab notifications, owned persistent watches, forecast threshold crossings, retained evidence and revocable Atom feeds | Rendered/sign-in QA, closed-page push, webhooks and delivery records |
+| Meaningful updates | CAP-linked changes, opt-in tab notifications, owned persistent watches, forecast threshold crossings, retained evidence, revocable Atom feeds, opt-in encrypted browser push with retries and delivery-attempt records | Rendered/sign-in QA, real closed-browser display verification, quiet hours and webhooks |
 | Activity windows | Editable presets, duration/temperature/wind/rain/gust checks across full windows, user margin tests, timed alerts, current PM2.5 context, optional RAP smoke-sample ceilings, exact sample evidence and export | Rendered QA, total air forecasts, continuous exposure evaluation, calibrated uncertainty and observation-based evaluation |
 | Fire and smoke | NIFC incident points/perimeters, AirNow PM2.5 monitors, NASA VIIRS daily imagery; saved-place proximity; 24-hour measured monitor trends; NOAA RAP point smoke forecasts with gaps, run age and evidence export; seven-day hosted archive | Rendered QA, animated smoke map, HRRR comparison and evaluated exposure |
-| Flood timing | Regional NWPS gauges, observed/forecast hydrographs, forecast high and threshold windows, official impacts, nearby gauges/map markers, revision comparisons, threshold-timing changes and owned gauge watches with separate observed/forecast updates | Rendered QA, watershed-aware associations and pushed delivery |
+| Flood timing | Regional NWPS gauges, observed/forecast hydrographs, forecast high and threshold windows, official impacts, nearby gauges/map markers, revision comparisons, threshold-timing changes and owned gauge watches with separate observed/forecast updates and opt-in browser push | Rendered QA, watershed-aware associations and real push-display verification |
 | Journey weather | Cached OSRM driving routes, bounded distance/time sampling, three departure scenarios, full-road intersections with loaded alert boundaries, coverage and JSON export | Rendered QA, traffic/stops/via points, gust/smoke exposure, verified closure attribution and broader deployment capacity |
 | Forecast confidence | Immutable point forecasts; nearby station observations and retrospective 6–24h temperature errors with sample counts and evidence export | Ensemble ingestion, longer observation history, seasonal/lead grading and validated confidence |
 | Historical analogs | Ten-year NASA POWER grid history; forecast-pattern matching, following-day distributions, fixed chronological holdout against seasonal/persistence baselines, reproducible export | Rendered QA, forecast-to-reanalysis transfer validation, station/impact integration, regional and climate-drift evaluation |
@@ -20,7 +20,8 @@ The hosted runtime now includes shared collection and a persistent D1 archive.
 Collection runs on demand with an hourly Sites archive-upkeep task configured for
 the public deployment. Scheduled execution must be checked using actual collection
 timestamps. Explicit owned watches now reuse this upkeep; see [watches](watches.md).
-Closed-page push and webhook delivery remain unfinished.
+Browser push is implemented but real closed-browser display remains unverified.
+Webhook delivery remains unfinished.
 Self-hosted Python supports `--watch LAT,LON` background point-forecast collection.
 
 ## First release

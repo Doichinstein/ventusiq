@@ -1,0 +1,15 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {encryptPush,vapidHeaders,validateSubscription,pushEndpoint,publicVapid,b64,unb64} from '../lib/web-push.mjs';
+const asPublic='BP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8';
+const uaPublic='BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4';
+const subscription={endpoint:'https://fcm.googleapis.com/fcm/send/test',keys:{p256dh:uaPublic,auth:'BTBZMqHH6r4Tts7J_aSIgg'}};
+test('RFC 8291 published encryption vector matches byte for byte',async()=>{
+  const raw=unb64(asPublic),jwk={kty:'EC',crv:'P-256',x:b64(raw.slice(1,33)),y:b64(raw.slice(33)),d:'yfWPiYE-n46HLnH0KqZOF1fJJU3MYrct3AELtAQ-oRw'};
+  const keyPair={publicKey:await crypto.subtle.importKey('raw',raw,{name:'ECDH',namedCurve:'P-256'},true,[]),privateKey:await crypto.subtle.importKey('jwk',jwk,{name:'ECDH',namedCurve:'P-256'},true,['deriveBits'])};
+  const body=await encryptPush(subscription,'When I grow up, I want to be a watermelon',{keyPair,salt:unb64('DGv6ra1nlYgDCS1FRnbzlw')});
+  assert.equal(b64(body),'DGv6ra1nlYgDCS1FRnbzlwAAEABBBP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A_yl95bQpu6cVPTpK4Mqgkf1CXztLVBSt2Ks3oZwbuwXPXLWyouBWLVWGNWQexSgSxsj_Qulcy4a-fN');
+});
+test('VAPID signature verifies, binds the push origin and expires within 24 hours',async()=>{const pair=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']),jwk=await crypto.subtle.exportKey('jwk',pair.privateKey),headers=await vapidHeaders(subscription.endpoint,jwk,1000),token=headers.Authorization.match(/t=([^,]+)/)[1],parts=token.split('.'),claims=JSON.parse(new TextDecoder().decode(unb64(parts[1])));assert.equal(claims.aud,'https://fcm.googleapis.com');assert.equal(claims.exp,44200);assert.ok(await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},pair.publicKey,unb64(parts[2]),new TextEncoder().encode(parts[0]+'.'+parts[1])));assert.equal(headers['Content-Encoding'],'aes128gcm');assert.equal(unb64(publicVapid(jwk)).length,65);});
+test('subscription validation rejects arbitrary origins, malformed keys and non-curve points',async()=>{assert.equal((await validateSubscription(subscription)).endpoint,subscription.endpoint);for(const endpoint of ['http://fcm.googleapis.com/fcm/send/x','https://fcm.googleapis.com.evil.test/x','https://127.0.0.1/x','https://user@fcm.googleapis.com/x','https://fcm.googleapis.com:444/x','https://fcm.googleapis.com/x#fragment'])assert.throws(()=>pushEndpoint(endpoint));for(const keys of [{...subscription.keys,auth:'AA'},{...subscription.keys,p256dh:b64(new Uint8Array(65).fill(4))},{...subscription.keys,auth:' BTBZMqHH6r4Tts7J_aSIgg'}])await assert.rejects(validateSubscription({...subscription,keys}));});
+test('encryption uses fresh salt and ephemeral keys for each message and bounds body size',async()=>{const a=await encryptPush(subscription,'hello'),b=await encryptPush(subscription,'hello');assert.notDeepEqual(a,b);assert.ok(a.length<4096);await assert.rejects(encryptPush(subscription,'x'.repeat(3001)),/bounds/);});

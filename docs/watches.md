@@ -53,7 +53,9 @@ details that may reveal location. Treat sharing it as intentional disclosure. Fe
 responses omit the token, owner ID and exact coordinates and disable caching/indexing.
 Replacing, revoking or deleting the watch invalidates the previous link. Paused
 watches retain readable history until expiry. Feed readers decide when to poll;
-this is not closed-browser push, email, SMS or webhook delivery.
+the feed itself is not push delivery. A separate [browser push](browser-push.md)
+control explicitly enrolls devices for future watch changes. Email, SMS and
+webhooks are not implemented.
 
 Self-hosters using the Worker edition must replace the Sites identity integration
 with a trusted identity gateway that strips incoming identity headers and injects
@@ -103,7 +105,7 @@ not establish a surveyed elevation.
 NWPS products share the existing cache/archive and hourly due-work path. Background
 work after watch management reads the cached national alert product rather than
 waiting on a new NWS fetch. Gauge checks can continue during a national-alert
-outage. No automatic watershed association, inundation inference or external push
-is added. Events retain source references; the latest usable forecast is also kept
+outage. No automatic watershed association or inundation inference is added.
+Browser push is separately opt-in; actual device display remains unverified. Events retain source references; the latest usable forecast is also kept
 in the watch baseline for comparable future timing checks. River method version:
 `2026-10-28.1`.

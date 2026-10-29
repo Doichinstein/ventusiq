@@ -14,14 +14,19 @@ import { SmokeService } from '../../../lib/smoke-service.mjs';
 import { EventReportsService } from '../../../lib/event-reports-service.mjs';
 import { EventObservationsService } from '../../../lib/event-observations-service.mjs';
 import { WatchService } from '../../../lib/watch-service.mjs';
+import { PushService } from '../../../lib/push-service.mjs';
+import { pushGet,pushPost } from '../../../lib/push-http.mjs';
 import { watchGet,watchPost } from '../../../lib/watch-http.mjs';
 
+function pushService(weather:WeatherService){let jwk=null;try{jwk=JSON.parse(env.VENTUSIQ_VAPID_PRIVATE_JWK||'null');}catch{}return new PushService(weather,{jwk});}
+async function upkeep(weather:WeatherService,alerts:any){await new WatchService(weather).upkeep(alerts);await pushService(weather).dispatch();}
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
 export async function GET(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
+    if(path==='/api/push')return pushGet(pushService(service),(await getChatGPTUser())?.userId||null);
     if(path==='/api/watches')return watchGet(request,new WatchService(service),(await getChatGPTUser())?.userId||null);
     if(path.startsWith('/api/watch-feed/'))return watchGet(request,new WatchService(service),null);
     if(path==='/api/event-observations'){
@@ -65,8 +70,8 @@ export async function GET(request:Request){
     if(path==='/api/health')return json(await service.health());
     if(path==='/api/alerts'){
       if(url.searchParams.has('at')){const result=await service.read('alerts/us',atTime(url.searchParams.get('at')));return result?json({...result.data,collected_at:result.checked_at}):json({error:'No collected snapshot at that time'},404);}
-      let result;try{result=await service.alerts();}catch(error){after(()=>new WatchService(service).upkeep(null));throw error;}
-      after(()=>new WatchService(service).upkeep(result));return json(result);
+      let result;try{result=await service.alerts();}catch(error){after(()=>upkeep(service,null));throw error;}
+      after(()=>upkeep(service,result));return json(result);
     }
     if(path==='/api/history')return json({snapshots:await service.history('alerts/us'),retention_hours:24});
     if(path==='/api/changes')return json({changes:await service.changes()});
@@ -82,13 +87,14 @@ export async function GET(request:Request){
 }
 export async function POST(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
+  if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,(await getChatGPTUser())?.userId||null);if(response.ok)after(()=>service.dispatch());return response;}
   if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);
   const service=new WeatherService(env.DB),watches=new WatchService(service),user=await getChatGPTUser();
   const response=await watchPost(request,watches,user?.userId||null);
   if(response.ok)after(async()=>{
     // Enrollment must not spend the background execution window waiting for an unrelated national source.
     const cached=await service.read('alerts/us').catch(()=>null);
-    await watches.upkeep(cached?{...cached.data,collected_at:cached.checked_at,error:cached.error}:null);
+    await upkeep(service,cached?{...cached.data,collected_at:cached.checked_at,error:cached.error}:null);
   });
   return response;
 }

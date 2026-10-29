@@ -242,3 +242,15 @@ separate from measured air. Activity planning can apply an optional user ceiling
 to hourly smoke samples spanning each window, with explicit discrete coverage
 and raw evidence. This is not a continuous air-quality or exposure check. See
 [smoke forecast semantics](smoke-forecasts.md).
+
+## Browser push delivery
+
+`push_subscriptions` holds explicit owner/device enrollment and `push_deliveries`
+holds bounded delivery attempts. Watch-event transactions enqueue non-baseline
+changes for enabled owner subscriptions. The existing hourly alert upkeep drains
+the queue after watch evaluation. `web-push.mjs` implements RFC 8291 encryption
+and RFC 8292 authentication with Web Crypto. `PushService` owns quotas, leases,
+backoff, expiration and deletion; `push-http.mjs` enforces authenticated
+same-origin management. The browser module requests permission only on explicit
+enablement, and a notification-only service worker opens the fixed watch page.
+Provider acceptance is distinct from device display. See [browser push](browser-push.md).

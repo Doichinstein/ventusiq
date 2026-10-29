@@ -36,3 +36,13 @@ export const watches = sqliteTable('watches',{
 export const watchEvents = sqliteTable('watch_events',{
   id:text('id').primaryKey(),watchId:text('watch_id').notNull(),at:integer('at').notNull(),kind:text('kind').notNull(),title:text('title').notNull(),payload:text('payload').notNull(),
 },t=>[index('watch_event_time').on(t.watchId,t.at)]);
+export const pushSubscriptions = sqliteTable('push_subscriptions',{
+  id:text('id').primaryKey(),owner:text('owner').notNull(),label:text('label').notNull(),endpoint:text('endpoint').notNull(),keys:text('keys').notNull(),
+  createdAt:integer('created_at').notNull(),enabled:integer('enabled').notNull().default(1),error:text('error'),lastTest:integer('last_test').notNull().default(0),
+},t=>[index('push_owner').on(t.owner)]);
+export const pushDeliveries = sqliteTable('push_deliveries',{
+  id:text('id').primaryKey(),subscriptionId:text('subscription_id').notNull(),watchId:text('watch_id'),eventId:text('event_id'),
+  createdAt:integer('created_at').notNull(),payload:text('payload').notNull(),status:text('status').notNull().default('pending'),
+  attempts:integer('attempts').notNull().default(0),nextAttempt:integer('next_attempt').notNull().default(0),leaseUntil:integer('lease_until').notNull().default(0),leaseToken:text('lease_token'),
+  acceptedAt:integer('accepted_at'),httpStatus:integer('http_status'),error:text('error'),
+},t=>[index('push_due').on(t.status,t.nextAttempt),index('push_delivery_subscription').on(t.subscriptionId,t.createdAt)]);

@@ -1,6 +1,7 @@
 declare namespace Cloudflare {
   interface Env {
     DB?: D1Database;
+    VENTUSIQ_VAPID_PRIVATE_JWK?: string;
     BUCKET?: R2Bucket;
   }
 }

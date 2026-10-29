@@ -1,6 +1,6 @@
 /* Agency work-zone context, not network-level closure matching. Apache-2.0. */
 import {nearbyRoadLabels} from './journey-roads.mjs';
-export const ROADWORK_METHOD='2026-10-29.1';
+export const ROADWORK_METHOD='2026-10-29.2';
 export const ROADWORK_FEEDS=Object.freeze({
   md:{name:'Maryland DOT SHA',region:'Maryland',url:'https://filter.ritis.org/wzdx_v4.1/mdot.geojson'},
   ia:{name:'Iowa DOT',region:'Iowa',url:'https://iowa-atms.cloud-q-free.com/api/rest/dataprism/wzdx/wzdxfeed'},
@@ -12,6 +12,23 @@ const valid=p=>Array.isArray(p)&&p.length>=2&&p.every(Number.isFinite)&&p[0]>=-1
 const box=(a,b=a)=>[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[0],b[0]),Math.max(a[1],b[1])];
 const intersects=(a,b)=>a[0]<=b[2]&&a[2]>=b[0]&&a[1]<=b[3]&&a[3]>=b[1];
 const merge=spans=>{const out=[];for(const s of spans.sort((a,b)=>a[0]-b[0])){const last=out.at(-1);if(last&&s[0]<=last[1]+.001)last[1]=Math.max(last[1],s[1]);else out.push(s.slice());}return out;};
+export function roadVerification(properties,current,legacy){
+  if(Object.hasOwn(properties,current)){const value=properties[current];return {value:typeof value==='boolean'?value:null,field:current,status:typeof value==='boolean'?(value?'verified':'unverified'):'invalid'};}
+  if(Object.hasOwn(properties,legacy)){const value=properties[legacy];return {value:value==='verified'?true:value==='estimated'?false:null,field:legacy,status:value==='verified'?'verified':value==='estimated'?'unverified':'invalid'};}
+  return {value:null,field:null,status:'unknown'};
+}
+export function roadActivity(event,issuedAt){
+  const reference=stamp(issuedAt),result=(status,reason,usable)=>({status,reason,usable,reference_time:reference===null?null:issuedAt});
+  if(['cancelled','completed'].includes(event.event_status))return result('reported_'+event.event_status,'The agency marks this record '+event.event_status+'.',false);
+  if(event.end_verified===true){
+    if(event.end_ms===null||reference===null)return result('reported_ended_time_unknown','The source reports that work ended, but its date or feed time is unavailable.',false);
+    if(event.end_ms>reference+60000)return result('conflicting_end_confirmation','The source confirms work ended but gives an end date later than the feed generation time.',false);
+    return result('reported_ended','The source reports that work ended.',false);
+  }
+  if(event.start_verified===true&&event.start_ms!==null&&reference!==null&&event.start_ms>reference+60000)return result('conflicting_start_confirmation','The source confirms work started but gives a start date later than the feed generation time.',false);
+  if(['start_date','end_date'].some(k=>event.verification?.[k]?.status==='invalid'))return result('invalid_confirmation','A supplied start/end confirmation field is invalid; current applicability is unknown.',false);
+  return result('not_confirmed_active','Reported dates describe a window; they do not confirm continuous work or current driving access.',true);
+}
 export function normalizeRoadwork(raw,feed){
   if(!Object.hasOwn(ROADWORK_FEEDS,feed)||raw?.type!=='FeatureCollection'||!Array.isArray(raw.features)||raw.features.length>5000)throw Error('Invalid or oversized work-zone feed');
   const meta=raw.feed_info||raw.road_event_feed_info;if(!meta||!['4','4.0','4.1','4.2'].includes(meta.version)||!stamp(meta.update_date)||typeof meta.publisher!=='string'||!Array.isArray(meta.data_sources))throw Error('Unsupported work-zone metadata');
@@ -23,7 +40,10 @@ export function normalizeRoadwork(raw,feed){
     vertices+=g.coordinates.length;if(vertices>100000)throw Error('Work-zone geometry exceeds its capacity');
     const sourceListed=meta.data_sources.some(s=>s.data_source_id===c.data_source_id);if(!sourceListed)audit.unknown_source_id++;
     const start=stamp(p.start_date),end=stamp(p.end_date),timesKnown=start!==null&&end!==null&&end>start;
-    events.push({id:f.id,roads:c.road_names,direction:typeof c.direction==='string'?c.direction:'unknown',description:typeof c.description==='string'?c.description:'',vehicle_impact:typeof p.vehicle_impact==='string'?p.vehicle_impact:'unknown',source_id:c.data_source_id||null,source_id_listed:sourceListed,start_date:p.start_date||null,end_date:p.end_date||null,start_ms:timesKnown?start:null,end_ms:timesKnown?end:null,updated_at:stamp(c.update_date)!==null?c.update_date:null,event_status:typeof p.event_status==='string'?p.event_status:null,start_verified:typeof p.is_start_date_verified==='boolean'?p.is_start_date_verified:p.start_date_accuracy==='verified',end_verified:typeof p.is_end_date_verified==='boolean'?p.is_end_date_verified:p.end_date_accuracy==='verified',start_position_verified:p.is_start_position_verified===true,end_position_verified:p.is_end_position_verified===true,geometry:g});
+    const verification={start_date:roadVerification(p,'is_start_date_verified','start_date_accuracy'),end_date:roadVerification(p,'is_end_date_verified','end_date_accuracy'),start_position:roadVerification(p,'is_start_position_verified','beginning_accuracy'),end_position:roadVerification(p,'is_end_position_verified','ending_accuracy')};
+    const text=value=>typeof value==='string'&&value.length<=500?value:null,number=value=>typeof value==='number'&&Number.isFinite(value)?value:null;
+    events.push({id:f.id,roads:c.road_names,direction:typeof c.direction==='string'?c.direction:'unknown',description:typeof c.description==='string'?c.description:'',vehicle_impact:typeof p.vehicle_impact==='string'?p.vehicle_impact:'unknown',source_id:c.data_source_id||null,source_id_listed:sourceListed,start_date:p.start_date||null,end_date:p.end_date||null,start_ms:timesKnown?start:null,end_ms:timesKnown?end:null,updated_at:stamp(c.update_date)!==null?c.update_date:null,event_status:typeof p.event_status==='string'?p.event_status:null,verification,start_verified:verification.start_date.value,end_verified:verification.end_date.value,start_position_verified:verification.start_position.value,end_position_verified:verification.end_position.value,
+      location_method:text(p.location_method),beginning_cross_street:text(p.beginning_cross_street),ending_cross_street:text(p.ending_cross_street),beginning_milepost:number(p.beginning_milepost),ending_milepost:number(p.ending_milepost),geometry:g});
   }
   return {method:ROADWORK_METHOD,feed,provider:ROADWORK_FEEDS[feed],issued_at:meta.update_date,meta,audit,events,raw};
 }
@@ -48,6 +68,6 @@ export function prepareRoadwork(route,products,{maxChecks=2000000}={}){
 export function evaluateRoadwork(prepared,departure,now=Date.now()){
   const {road_context,...base}=prepared;
   return {...base,feeds:prepared.feeds.map(feed=>{const issued=stamp(feed.issued_at),checked=stamp(feed.checked_at),fresh=!feed.error&&!feed.stale&&issued!==null&&checked!==null&&now-issued<=1800000&&now-issued>=-60000&&now-checked<=900000&&now-checked>=-60000;
-    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length)candidates.push({...event,road_labels:nearbyRoadLabels(road_context,event,spans.map(s=>s.map(t=>(t-departure)/1000))),time_known:timeKnown,usable_timing:fresh&&timeKnown&&!['cancelled','completed'].includes(event.event_status),passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}
+    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length)candidates.push({...event,activity:roadActivity(event,feed.issued_at),road_labels:nearbyRoadLabels(road_context,event,spans.map(s=>s.map(t=>(t-departure)/1000))),time_known:timeKnown,usable_timing:fresh&&timeKnown&&roadActivity(event,feed.issued_at).usable,passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}
     return {...feed,fresh,candidates};})};
 }

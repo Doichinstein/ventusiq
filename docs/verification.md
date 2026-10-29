@@ -1339,3 +1339,33 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   unverified under the saved browser permission setting. Structural and DOM-double
   checks do not replace that gate. The [release-readiness audit](release-readiness.md)
   records outstanding evidence for all ten features and a concrete browser checklist.
+
+
+## Agency verification semantics (v57)
+
+- All 718 Node tests pass, including six new focused checks for current/legacy
+  field precedence, absent/invalid values, original field provenance, date
+  contradictions, cancellations, unknown activity, cached-edition reinterpretation,
+  outage backoff, source immutability, text escaping, zero mileposts and map styles.
+  TypeScript checking passes. Python code is unchanged from v54.
+- A fixed-endpoint source capture at 2026-10-29T08:47:02.800Z contained 91 Maryland,
+  866 Iowa and 449 Washington records. Normalization retained 91, 866 and 445
+  respectively; the remaining Washington rows were excluded by existing validation.
+  Iowa has six legacy GPS-position confirmations, now preserved rather than lost.
+  Washington reports end confirmation on every raw record. All 445 usable records
+  give end dates later than the edition's own generation time and now explicitly
+  report contradictory evidence. That feed was already delayed, generated at
+  2026-10-28T23:15:33.841+00:00; a new download does not make it current.
+- Captured raw-response SHA-256 hashes, in MD/IA/WA order:
+  `49ee2e570757f4a21ae003b3e299088d113ccb64efd2e62e2b3981d4dad08107`,
+  `6c363c9623ebe664f96398a225e033783fca461fbcdf16ba16077a97943d9390`,
+  `8fd5083b0a91fb0d9160adcca04effae44a4bc89343668224747762edabeb9b8`.
+  These observations describe those captured editions, not all future feed data.
+- The interpretation follows the WZDx work-zone, spatial-verification and
+  time-verification contracts linked in [journey roadwork](journey-roadwork.md).
+  Original agency fields, method version and archived revision remain inspectable.
+  Existing editions are reinterpreted from their raw content without extra source
+  calls or changing the archive; ordinary cache and retry limits remain in force.
+- These corrections do not establish network identity, roadway direction or route
+  closure. The closure-attribution acceptance requirement remains open. Browser,
+  real-identity and real-notification verification limits remain unchanged.

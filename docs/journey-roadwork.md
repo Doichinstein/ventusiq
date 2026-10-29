@@ -59,12 +59,32 @@ do not mean uninterrupted work: users must inspect the agency description for
 recurring or intermittent hours. Deprecated cancelled/completed status, where
 provided, prevents treating the record as currently applicable.
 
-Current boolean date-verification fields take precedence over deprecated accuracy
-fields. Verification is an agency report, not a VentusIQ field inspection. Source
-start/end position flags are displayed separately from proximity. Route road
+Current boolean date/position verification fields take precedence over deprecated
+accuracy fields, including when the current field is invalid. Missing fields remain
+unknown; an explicit false value remains distinct. Older `verified`/`estimated`
+values are interpreted only when the corresponding current field is absent. Cards
+and exports preserve the exact field used. Verification is an agency report, not a
+VentusIQ field inspection. Source start/end position flags are displayed separately
+from proximity. Route road
 identity, carriageway, direction, grade-separated crossings and driving access
 have **not** been matched to the agency's road network. A nearby record therefore
 does not confirm closure of the routed road, and absence does not confirm passage.
+
+The [WZDx work-zone contract](https://raw.githubusercontent.com/usdot-jpo-ode/wzdx/main/spec-content/objects/WorkZoneRoadEvent.md)
+defines date confirmation as reported actual start/end, rather than a confidence
+score for a future schedule. An end confirmation therefore withholds current
+applicability. Confirmed dates more than one minute after the feed's generation
+time are explicitly contradictory. The comparison uses that source timestamp,
+so replaying the same edition later does not resolve its original contradiction.
+Invalid supplied date-confirmation fields also withhold applicability. Unconfirmed
+date windows never establish continuous activity or actual driving access.
+
+Agency location method, cross streets and numeric mileposts are displayed as
+source references. A zero milepost is retained; these values are not distances
+along the user's route. Legacy position verification uses the
+[WZDx spatial-verification definition](https://raw.githubusercontent.com/usdot-jpo-ode/wzdx/main/spec-content/enumerated-types/SpatialVerification.md).
+Even GPS-confirmed sign locations do not establish the OSM road identity or the
+precise extent of road work.
 
 ## Freshness, display and bounds
 
@@ -74,8 +94,9 @@ neither is more than one minute in the future, and no refresh failure/delay is
 present. Feed generation, event update, agency date verification and actual
 passage time are distinct. Old records remain visible as evidence with unknown
 current applicability; a new collection does not make an old generated feed fresh.
-Orange dashed lines/dots represent supplied agency geometry; gray marks stale or
-unknown feed freshness. These colors do not designate driving safety.
+Orange dashed lines/dots represent supplied agency geometry with usable overlap
+timing; gray marks delayed data or ended, conflicting or unknown applicability.
+These colors do not designate driving safety.
 
 Each feed caches for five minutes using existing D1 leases and failure backoff.
 Up to twelve recent distinct editions plus a rollback/current last-good edition
@@ -85,6 +106,9 @@ Only the three fixed endpoints can be fetched, with redirects rejected and a
 streamed 4 MiB body limit. The adapter accepts WZDx 4.0–4.2 headers, at most 5,000
 features, 2,000 coordinates per feature and 100,000 coordinates per feed, within
 the supported contiguous-US coordinate envelope. Future versions need review.
+When a cached edition predates the current interpretation method, its preserved
+raw feed is reinterpreted on read without another provider request. Its archived
+method and original revision remain explicit; the stored edition is unchanged.
 
 At most two million segment proximity checks run per comparison. Capacity limits
 remain explicit. Per-event passages are capped at 200 with omitted counts; the UI

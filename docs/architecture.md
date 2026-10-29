@@ -254,3 +254,11 @@ backoff, expiration and deletion; `push-http.mjs` enforces authenticated
 same-origin management. The browser module requests permission only on explicit
 enablement, and a notification-only service worker opens the fixed watch page.
 Provider acceptance is distinct from device display. See [browser push](browser-push.md).
+
+Daily quiet hours are stored per subscription with an explicit time zone and
+copied into each queued delivery in the watch transaction. Dispatch checks the
+queue-time snapshot and current send-time policy, including a final preflight
+check after encryption. Suppression produces terminal `muted` history rather than
+retrying after the interval. The shared wall-clock evaluator handles overnight
+and daylight-saving boundaries. Migration 0004 adds nullable policy fields, so
+existing subscriptions retain their prior behavior until users opt in.

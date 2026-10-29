@@ -33,10 +33,35 @@ in-flight messages may still arrive after removal or pause.
 
 **Send test notification** is an explicit action, limited to once per device per
 five minutes. Its response confirms queueing only. Recent delivery records show
-pending, accepted, failed, expired or cancelled states. **Accepted** means the
+pending, accepted, muted, failed, expired or cancelled states. **Accepted** means the
 push service accepted the request; it does not prove display, receipt or reading.
 There is no device-display acknowledgement. Up to 200 records per device and seven
 days are retained; the UI lists the latest 50 account records.
+
+## Per-device quiet hours
+
+Each enrolled device has an optional daily schedule. Choose start/end wall-clock
+times and a supported time zone, then **Save quiet hours**. The suggested 22:00–07:00
+interval is inactive until explicitly enabled and saved. Start is included; end
+is excluded. Overnight intervals work, but equal start/end times are rejected.
+The zone stays fixed when you travel. Repeated daylight-saving hours follow the
+same local rule twice; skipped hours create no artificial delivery time.
+
+Quiet hours **mute rather than defer** all watch updates and explicit test
+notifications, including severe-alert changes. Muted changes remain in watch
+history; they are never replayed when the interval ends or the schedule changes.
+Delivery records show `muted` with the reason and do not count a suppressed send
+as another transport attempt. Existing accepted or in-flight messages may arrive.
+Quiet hours cannot control when a browser displays an already-sent message.
+
+The queue transaction snapshots each device's policy. Dispatch checks that policy
+at the update's collection/queue time and the current device policy at send time.
+Either quiet interval suppresses delivery. This prevents delayed night updates
+from being sent after quiet hours are disabled, and prevents retries during a
+newly enabled interval. A corrupt stored policy suppresses delivery until repaired.
+Changing preferences neither reactivates expired subscriptions nor resets retry
+limits. Quiet settings persist through re-enrollment under the same subscription.
+On-page notifications are a separate browser-local setting.
 
 ## Queue and transport
 
@@ -94,5 +119,5 @@ development identities only on loopback. Real browser permission, production
 sign-in, operating-system display and closed-browser delivery remain unverified
 because the saved browser access setting blocks automated inspection. A user can
 verify actual display with the explicit test control; API acceptance alone is not
-reported as successful display. Email, SMS, webhooks, quiet hours and device-display
+reported as successful display. Email, SMS, webhooks and device-display
 acknowledgements remain separate work.

@@ -16,7 +16,7 @@ alert/forecast threshold changes across sessions. Sign in to manage up to four
 watches, inspect retained evidence or issue a revocable private Atom feed. Hourly
 upkeep is best effort; see [watch behavior and ownership](docs/watches.md).
 Optional [browser push](docs/browser-push.md) sends encrypted watch-change messages
-to explicitly enrolled devices, with bounded retries and delivery-attempt history.
+to explicitly enrolled devices, with bounded retries, optional per-device quiet hours and delivery-attempt history.
 
 **Fire & air** adds reported NIFC wildfire points and perimeters, EPA/AirNow
 PM2.5 monitor readings, NASA VIIRS daily thermal-detection imagery, and nearby

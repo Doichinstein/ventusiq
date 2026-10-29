@@ -18,3 +18,34 @@ test('authentication, origin and body-size checks protect all push mutations',as
 test('failed service authorization is terminal and old queued updates expire without a network send',async()=>{const s=await fixture();await enroll(s);await change(s);s.code(403);await s.push.dispatch();assert.equal((await s.push.list('alice')).deliveries[0].status,'failed');s.advance();s.wind(5);await s.service.evaluate(s.input.id,s.alerts());for(let i=0;i<24;i++)s.advance();await s.push.dispatch();assert.equal(s.calls(),1);assert.ok((await s.push.list('alice')).deliveries.some(d=>d.status==='expired'));s.db.close();});
 test('transient failures stop at four attempts and disabled configuration sends nothing',async()=>{const s=await fixture();await enroll(s);await change(s);s.code(503);for(let i=0;i<4;i++){await s.weather.statement('UPDATE push_deliveries SET next_attempt=0').run();await s.push.dispatch();}let d=(await s.push.list('alice')).deliveries[0];assert.equal(d.status,'failed');assert.equal(d.attempts,4);await s.push.dispatch();assert.equal(s.calls(),4);const disabled=new PushService(s.weather);assert.equal((await disabled.list('alice')).configured,false);await assert.rejects(disabled.subscribe('alice',{subscription}),e=>e.status===503);await disabled.dispatch();assert.equal(s.calls(),4);s.db.close();});
 test('an already in-flight accepted delivery remains accepted if a watch is paused during the request',async()=>{const s=await fixture();await enroll(s);await change(s);let release,started;const begun=new Promise(r=>started=r);s.push.fetcher=async()=>{started();await new Promise(r=>release=r);return new Response(null,{status:201});};const sending=s.push.dispatch();await begun;await s.service.change('alice',s.input.id,'pause');release();await sending;assert.equal((await s.push.list('alice')).deliveries[0].status,'accepted');s.db.close();});
+
+const quiet=(start='20:00',end='23:00')=>({enabled:true,start,end,time_zone:'UTC'});
+test('queue-time quiet policy persists through disabling and re-enrollment, without catch-up or lost watch evidence',async()=>{
+ const s=await fixture(),id=await enroll(s);await s.push.setQuiet('alice',id,quiet());await enroll(s);assert.deepEqual((await s.push.list('alice')).devices[0].quiet_hours,quiet());await change(s);
+ const queued=await s.weather.statement('SELECT quiet_snapshot FROM push_deliveries').first();assert.deepEqual(JSON.parse(queued.quiet_snapshot),quiet());
+ await s.push.setQuiet('alice',id,null);await s.push.dispatch();const d=(await s.push.list('alice')).deliveries[0];assert.equal(d.status,'muted');assert.equal(d.attempts,0);assert.match(d.error,/when this update was queued/);assert.equal(s.calls(),0);
+ assert.ok((await s.weather.statement("SELECT COUNT(*) AS n FROM watch_events WHERE kind<>'baseline'").first()).n>0);s.advance();await s.push.dispatch();assert.equal(s.calls(),0);s.db.close();
+});
+test('current quiet hours mute retries without counting a new transport attempt',async()=>{
+ const s=await fixture(),id=await enroll(s);await change(s);s.code(503);await s.push.dispatch();await s.push.setQuiet('alice',id,quiet());s.advance();await s.push.dispatch();const d=(await s.push.list('alice')).deliveries[0];assert.equal(d.status,'muted');assert.equal(d.attempts,1);assert.match(d.error,/current device/);assert.equal(s.calls(),1);await s.push.setQuiet('alice',id,null);s.advance();await s.push.dispatch();assert.equal(s.calls(),1);s.db.close();
+});
+test('quiet hours are per device and explicit test notifications obey them',async()=>{
+ const s=await fixture(),id=await enroll(s);const second=(await s.push.subscribe('alice',{subscription:{...subscription,endpoint:subscription.endpoint+'other'},label:'Other'})).id;
+ await s.push.setQuiet('alice',id,quiet());await s.push.test('alice',id);await s.push.test('alice',second);await s.push.dispatch();const list=await s.push.list('alice');assert.equal(list.deliveries.find(d=>d.label==='Laptop').status,'muted');assert.equal(list.deliveries.find(d=>d.label==='Other').status,'accepted');assert.equal(s.calls(),1);s.db.close();
+});
+test('quiet-hours API enforces ownership and validation, and preserves disabled subscription state',async()=>{
+ const s=await fixture(),id=await enroll(s);assert.equal((await pushPost(post({action:'quiet_hours',id,settings:quiet()}),s.push,'bob')).status,404);
+ assert.equal((await pushPost(post({action:'quiet_hours',id,settings:quiet('20:00','20:00')}),s.push,'alice')).status,400);
+ assert.equal((await pushPost(post({action:'quiet_hours',id,settings:quiet()},'https://other.test'),s.push,'alice')).status,403);
+ await s.weather.statement('UPDATE push_subscriptions SET enabled=0,last_test=123 WHERE id=?',id).run();assert.equal((await pushPost(post({action:'quiet_hours',id,settings:quiet()}),s.push,'alice')).status,200);
+ const row=await s.push.owned('alice',id);assert.equal(row.enabled,0);assert.equal(row.last_test,123);s.db.close();
+});
+test('a quiet boundary crossed during encryption is checked again before transport',async()=>{
+ const s=await fixture(),id=await enroll(s);await s.push.setQuiet('alice',id,quiet('21:00','22:00'));await s.push.test('alice',id);
+ const original=s.weather.statement.bind(s.weather);let crossed=false;s.weather.statement=(sql,...values)=>{if(sql==='SELECT quiet_hours FROM push_subscriptions WHERE id=? AND enabled=1'&&!crossed){s.advance();crossed=true;}return original(sql,...values);};
+ await s.push.dispatch();assert.equal(crossed,true);assert.equal(s.calls(),0);assert.equal((await s.push.list('alice')).deliveries[0].status,'muted');s.db.close();
+});
+test('corrupt policy mutes rather than sending; pause cancellation takes precedence',async()=>{
+ const s=await fixture(),id=await enroll(s);await s.weather.statement("UPDATE push_subscriptions SET quiet_hours='invalid' WHERE id=?",id).run();await change(s);assert.equal((await s.push.list('alice')).devices[0].quiet_hours.invalid,true);await s.push.dispatch();assert.equal(s.calls(),0);assert.match((await s.push.list('alice')).deliveries[0].error,/could not be read/);
+ await s.push.setQuiet('alice',id,quiet());s.advance();s.wind(5);await s.service.evaluate(s.input.id,s.alerts());await s.service.change('alice',s.input.id,'pause');await s.push.dispatch();assert.ok((await s.push.list('alice')).deliveries.some(d=>d.status==='cancelled'));assert.equal(s.calls(),0);s.db.close();
+});

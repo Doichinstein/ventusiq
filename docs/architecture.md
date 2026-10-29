@@ -227,6 +227,16 @@ or retrieval. Report coverage, sample size and error by location/season/lead tim
 Each delivery must update `docs/verification.md` with observed results and limits.
 Do not substitute navigation placeholders or roadmap labels for working features.
 
+## Station temperature evaluation
+
+`StationAnalogsService` collects a bounded, fixed-window daily temperature series
+for an explicitly selected US catalog station. `station-analogs-core.mjs` normalizes
+reported means, enforces count/location exclusions and freezes a chronological
+retrieval pool; the shared diagnostics score the same observed outcomes against
+analog, seasonal and persistence methods. `station-analogs.js` connects to station
+selection, exposes gaps and exports reproducible evidence. It does not validate
+current forecast transfer. See [station evaluation](station-analogs.md).
+
 ## Satellite detection inspection
 
 `FirmsService` adds two fixed, bounded NOAA-20 NRT regional CSV datasets to the

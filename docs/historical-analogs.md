@@ -8,6 +8,11 @@ impact probability. The original implementation is Apache-2.0.
 
 ## Sources and comparability
 
+A separate [station temperature evaluation](station-analogs.md) now uses explicitly
+selected NOAA daily observations with fixed chronological holdouts and same-case
+seasonal/persistence baselines. It tests a temperature-only station method; it does
+not validate transfer of this grid method to current NWS forecasts.
+
 - [NASA POWER daily API](https://power.larc.nasa.gov/docs/services/api/temporal/daily/):
   `T2M_MAX`, `T2M_MIN` (°C), `WS10M` (m/s), `PRECTOTCORR` (mm/day), `community=RE`,
   explicit `time-standard=UTC`. The default API time standard is LST; we never rely

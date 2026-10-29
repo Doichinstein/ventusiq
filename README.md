@@ -54,6 +54,12 @@ previously archived last-temperature baseline on identical later station reading
 Collection times, quality flags, missing baselines and raw record extracts remain
 inspectable. See [temperature verification](docs/observations.md).
 
+**Station temperature analog evaluation** tests an explicitly selected station's
+historical daily means against seasonal and persistence baselines, with fixed
+held-out dates, coverage gaps and reproducible evidence. See
+[station analogs](docs/station-analogs.md). It is a retrospective station experiment,
+not validation of the current forecast.
+
 **Archived PM2.5 comparisons** pair earlier forecasts with later nearby monitor
 readings and a previously archived persistence baseline. Missing hours, source
 revisions and raw evidence stay visible. These are diagnostic differences, not

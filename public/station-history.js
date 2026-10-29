@@ -2,7 +2,8 @@ import {STATION_HISTORY_METHOD} from './station-history-core.mjs';
 export function mountStationHistory({document,window,fetcher=fetch}){
   const get=id=>document.getElementById(id),el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;},option=(text,value)=>{const n=el('option',text);n.value=value;return n;};let context=null,candidates=null,report=null,generation=0,busy=false;
   const enabled=window.WEATHER_CONFIG?.mode==='hosted';get('station-history-card').hidden=!enabled;
-  function controls(){get('station-history-find').disabled=busy||!context?.matches?.length;get('station-history-load').disabled=busy||!candidates?.stations?.length;get('station-history-export').disabled=!report;get('station-history-station').disabled=busy||!candidates?.stations?.length;}
+  function analogContext(){const station=candidates?.stations?.find(s=>s.id===get('station-history-station').value);return context&&station?{place:context.place,station,date:get('station-history-date').value,discovery:candidates,grid_history_revision:context.history?.revision}:null;}
+  function controls(){get('station-history-find').disabled=busy||!context?.matches?.length;get('station-history-load').disabled=busy||!candidates?.stations?.length;get('station-history-export').disabled=!report;get('station-history-station').disabled=busy||!candidates?.stations?.length;window.WeatherStationAnalogs?.setContext(analogContext());}
   function clear(){generation++;busy=false;report=null;get('station-history-results').replaceChildren();controls();}
   function setAnalogDates(next){context=next;candidates=null;clear();get('station-history-station').replaceChildren();get('station-history-date').replaceChildren(...(next?.matches||[]).map(m=>option(m.date,m.date)));get('station-history-date').value=next?.matches?.[0]?.date||'';get('station-history-status').textContent=next?.matches?.length?`Choose a comparable date for ${next.place.name}, then find nearby US stations. Both that date and the following day will be retrieved.`:'Find comparable days above to inspect nearby station records.';controls();}
   async function request(path){const r=await fetcher(path,{signal:AbortSignal.timeout(60000)}),body=await r.json();if(!r.ok)throw Error(body.error||'Station archive returned HTTP '+r.status);return body;}
@@ -24,6 +25,6 @@ export function mountStationHistory({document,window,fetcher=fetch}){
   get('station-history-date').onchange=()=>{candidates=null;clear();get('station-history-station').replaceChildren();get('station-history-status').textContent='Date changed. Find nearby stations again.';};
   get('station-history-station').onchange=()=>{clear();get('station-history-status').textContent='Station changed. Load its daily records.';};
   get('station-history-export').onclick=()=>{if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-station-history.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherStationHistory={setAnalogDates};setAnalogDates(null);return {setAnalogDates,find,load};
+  window.WeatherStationHistory={setAnalogDates,context:analogContext};setAnalogDates(null);return {setAnalogDates,find,load};
 }
 if(typeof window!=='undefined'){const start=()=>mountStationHistory({document,window});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}

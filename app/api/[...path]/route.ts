@@ -1,5 +1,6 @@
 import {RoadworkService} from '../../../lib/roadwork-service.mjs';
 import {FirmsService} from '../../../lib/firms-service.mjs';
+import {StationAnalogsService} from '../../../lib/station-analogs-service.mjs';
 import {UpkeepService} from '../../../lib/upkeep-service.mjs';
 import {StationHistoryService} from '../../../lib/station-history-service.mjs';
 import {OzoneService} from '../../../lib/ozone-service.mjs';
@@ -84,6 +85,7 @@ export async function GET(request:Request){
     }
     if(path==='/api/history/stations/near')return json(await new StationHistoryService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('date')));
     if(path==='/api/history/stations/daily')return json(await new StationHistoryService(service).daily(url.searchParams.get('id'),url.searchParams.get('date')));
+    if(path==='/api/history/stations/temperatures')return json(await new StationAnalogsService(service).history(url.searchParams.get('id')));
     if(path==='/api/journey/roadwork')return json(await new RoadworkService(service).feed(url.searchParams.get('feed')));
     if(path==='/api/journey/route'){
       let via=[];try{const input=url.searchParams.get('via')||'[]';if(input.length>1000)throw Error();via=journeyStops(JSON.parse(input));}catch{return json({error:'Invalid via points'},400);}

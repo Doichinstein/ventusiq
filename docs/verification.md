@@ -1212,3 +1212,30 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   interaction and direct-edition browser CORS remain unverified. The layer is
   opt-in and covers NOAA-20 only; it does not establish current fire activity,
   complete overpass coverage, exposure, evacuation areas or spread predictions.
+
+## Observed station temperature analogs (2026-10-29, v52)
+
+- All 685 Node and 19 Python tests passed. New tests cover source observations,
+  count/location filters, missing dates, foreign/conflicting rows, bounded queries,
+  cache/outage preservation, admission budgets, chronological retrieval, fixed
+  spacing, outcome-independent ranking, same-case baseline scoring, selection
+  invalidation, export provenance and failure cleanup. TypeScript and production
+  build passed. UI tests use DOM doubles, not a rendered browser.
+- Real NOAA 2016–2025 daily-mean histories were evaluated with the fixed
+  2024-01-01 training cutoff at Reagan National, Seattle–Tacoma and Phoenix Sky
+  Harbor. Usable daily means were 3,526 / 3,525 / 3,507 of 3,653 expected dates;
+  scored tests were 40 / 40 / 39 of 48 scheduled dates. Missing reference/outcome
+  values account for unscored tests; 2025 records stop in August.
+- Analog/seasonal/persistence MAE in °C was 1.997/3.426/1.979 at Reagan,
+  1.535/2.254/1.696 at Seattle, and 1.541/2.757/1.603 at Phoenix. Analog medians
+  were slightly worse than persistence at Reagan. These results did not change
+  retrieval thresholds. See [station method and limitations](station-analogs.md).
+- The built Worker returned 200 for the page, new modules and station-temperature
+  API and 400 for an invalid station ID. At 2026-10-29T07:39:30Z, the Reagan
+  endpoint retained 3,527 raw rows and reproduced the same 40 scored cases.
+  Archive revision `9380375ae5f4200fd45ee7097efbdf7fa69a5bcc71539345dcd1f307eee534b3`.
+- No schema migration, runtime secret, schedule, enrollment or notification
+  change. Browser rendering remains blocked by the saved permission setting.
+  This validates a retrospective temperature-only station experiment, not current
+  forecast transfer, complete-day sampling, climate homogeneity, calibrated
+  probabilities, address-level accuracy or the existing multivariable grid method.

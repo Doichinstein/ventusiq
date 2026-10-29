@@ -8,6 +8,10 @@ flags, retrieval timestamps and immutable edition IDs.
 
 ## Sources and coverage
 
+The selected station also supports an explicit [ten-year temperature evaluation](station-analogs.md)
+with observation-count filters, yearly gaps, earlier matching dates and fixed
+held-out station outcomes. This is independent of the two-day inspection below.
+
 - [NOAA ISD station history CSV](https://www.ncei.noaa.gov/pub/data/noaa/isd-history.csv)
   supplies identifiers, coordinates, elevation and beginning/end dates.
 - [NCEI Access Data Service](https://www.ncei.noaa.gov/access/search/documentation/data-service/)

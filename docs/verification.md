@@ -1848,7 +1848,7 @@ are not a claim of equivalent browser elapsed-time improvement. Live rendered
 verification follows publication; account testing remains deferred.
 
 
-## Event keyboard focus — v76
+## Event keyboard focus  -  v76
 
 A live keyboard trace on v75 confirmed navigation to all five workspace headings
 and the visible Skip link. It also reproduced focus remaining in the event list
@@ -1884,3 +1884,17 @@ switch races and the original adapter. TypeScript and whitespace checks passed.
 Live hosted/browser/export comparisons are retained outside the checkout in
 `verification/browser-qa-2026-10-29/`. Model-run identity does not establish
 calibrated uncertainty or all-season predictive skill.
+
+
+### Live identified-run verification and text correction (v78)
+
+The hosted API and browser returned the 2026-10-29 00 UTC run, snapshot
+T0BQYQVBY2GZ6P62M66G, with all 31 members at all 24 displayed future times.
+Independent arithmetic reproduced 744 temperature and 744 wind values, each
+row's five order statistics, 70 F temperature counts and 5 mph wind counts.
+Maximum differences were below 2e-14 from floating-point operation order. A
+separate GET of the provider-returned canonical snapshot URL matched all raw
+member arrays exactly. The browser source switch cleared rows and disabled the
+old export. Live QA caught an invalidly encoded lead-range separator; v78 replaces
+it with plain text. The archive version, source timing and daily-run limitation
+remain visible. These checks verify data handling, not forecast skill.

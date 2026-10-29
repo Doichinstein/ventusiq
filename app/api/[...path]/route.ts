@@ -1,3 +1,4 @@
+import {EventGaugesService} from '../../../lib/event-gauges-service.mjs';
 import { env } from 'cloudflare:workers';
 import { after } from 'next/server';
 import { getChatGPTUser } from '../../chatgpt-auth';
@@ -29,6 +30,10 @@ export async function GET(request:Request){
     if(path==='/api/push')return pushGet(pushService(service),(await getChatGPTUser())?.userId||null);
     if(path==='/api/watches')return watchGet(request,new WatchService(service),(await getChatGPTUser())?.userId||null);
     if(path.startsWith('/api/watch-feed/'))return watchGet(request,new WatchService(service),null);
+    if(path==='/api/event-gauges'){
+      const result=await new EventGaugesService(service).forEvent(url.searchParams.get('id'),url.searchParams.get('gauge'),url.searchParams.has('at')?atTime(url.searchParams.get('at'))*1000:null,url.searchParams.has('alertAt')?atTime(url.searchParams.get('alertAt'))*1000:null);
+      return result?json(result):json({error:'No collected event at this time'},404);
+    }
     if(path==='/api/event-observations'){
       const result=await new EventObservationsService(service).forEvent(url.searchParams.get('id'),url.searchParams.get('station'),url.searchParams.has('at')?atTime(url.searchParams.get('at'))*1000:null,url.searchParams.has('alertAt')?atTime(url.searchParams.get('alertAt'))*1000:null);
       return result?json(result):json({error:'No collected event at this time'},404);

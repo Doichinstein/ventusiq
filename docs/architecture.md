@@ -273,3 +273,14 @@ replay/navigation suspension and provenance export. The regional image lives bel
 alert polygons in a non-interactive Leaflet pane. Its independent valid-time badge
 prevents a future smoke frame from relabeling current alert/monitor data. The hosted
 catalog endpoint shares existing D1 collection; source image pixels are not archived.
+
+## Gauge evidence in event stories
+
+`EventGaugesService` reuses the persistent CAP graph, shared boundary resolver and
+NWPS gauge archive. Bounded inventory boxes find candidate points; the matcher
+requires actual polygon/zone membership and an observed timestamp inside an
+explicit message window. Unknown geography, units and conflicting duplicate values
+remain unknown. Source corrections are editioned, and historical reads never fetch
+new data. Highest samples and threshold sample counts retain source metadata,
+reported datum and collection times without claiming verified impacts or duration.
+See [event gauge semantics](event-gauges.md).

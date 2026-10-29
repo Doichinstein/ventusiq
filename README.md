@@ -277,3 +277,6 @@ River gauge details can compare successive collected forecasts: matched-time lev
 The Events workspace also links [preliminary NOAA storm reports](docs/event-reports.md)
 to severe-convective alert areas and times, with source comments, archive-cutoff replay
 and raw-evidence downloads. Matching reports provide context, not official warning verification.
+
+Event timelines can also [link observed river-gauge readings to flood alerts](docs/event-gauges.md),
+with geometry/time matching, sampled highs, threshold sample counts and historical evidence exports.

@@ -15,14 +15,14 @@ export function mountEvents({document,window,fetcher=fetch}){
     }catch(error){if(gen===listGeneration)get('event-list-status').textContent=error.message;}finally{if(gen===listGeneration)get('event-more').disabled=false;}
   }
   async function openStory(nextId,nextAt=null,{resolve=false}={}){
-    show();const gen=++generation;window.WeatherEventReports?.updateStory(null);window.WeatherEventObservations?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
+    show();const gen=++generation;window.WeatherEventReports?.updateStory(null);window.WeatherEventObservations?.updateStory(null);window.WeatherEventGauges?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
     id=nextId;asof=nextAt;story=null;get('event-detail').hidden=true;get('event-status').textContent=resolve?'Retrieving up to five referenced messages from NWS…':'Reading the collected timeline…';
     const params=new URLSearchParams({event:id});if(asof)params.set('at',asof);window.history.replaceState(null,'',window.location.pathname+window.location.search+'#'+params);
     try{const data=await request('/api/events/'+id+(asof?'?at='+encodeURIComponent(asof):resolve?'?resolve=1':''));if(gen!==generation)return;story=data;render();}
     catch(error){if(gen===generation){get('event-status').textContent=error.message+' Earlier views cannot use messages or links collected later.';get('event-detail').hidden=true;}}
   }
   function render(){
-    if(!story)return;window.WeatherEventReports?.updateStory(story,asof);window.WeatherEventObservations?.updateStory(story,asof);const entries=timelineEntries(story),latest=[...entries].reverse().find(t=>t.present!==0)||entries.at(-1),p=latest.feature.properties;
+    if(!story)return;window.WeatherEventReports?.updateStory(story,asof);window.WeatherEventObservations?.updateStory(story,asof);window.WeatherEventGauges?.updateStory(story,asof);const entries=timelineEntries(story),latest=[...entries].reverse().find(t=>t.present!==0)||entries.at(-1),p=latest.feature.properties;
     get('event-detail').hidden=false;get('event-title').textContent=p.event||'Alert timeline';get('event-area').textContent=p.areaDesc||'';
     get('event-status').textContent=`${asof?'Historical archive view':'Latest collected archive'} · ${entries.length} recorded transitions across ${new Set(entries.map(e=>e.id)).size} collected messages.`;
     get('event-view-time').textContent=`View cutoff ${time(story.as_of)}. ${story.last_collection?'Last complete active-feed collection at or before this view: '+time(story.last_collection)+'.':'No complete active-feed collection is recorded before this view.'}`;

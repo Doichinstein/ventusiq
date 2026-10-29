@@ -59,6 +59,12 @@ test('missing source blocks planning and distinguishes unknown coverage from no 
   assert.match(app.els['plan-results'].textContent,/needs an hourly forecast/);
   assert.match(app.els['place-alerts'].textContent,/zone coverage is unknown/);
 });
+
+test('historical station selection receives saved places even during a forecast outage',async()=>{
+  const app=await setup(),selections=[];app.window.WeatherStationHistory={updatePlace:place=>selections.push(place)};app.fail();await app.add('Research location','39','-77');
+  assert.equal(selections.at(-1).name,'Research location');assert.equal(selections.at(-1).lat,39);assert.match(app.els['forecast-status'].textContent,/Source outage/);
+  await app.els['remove-place'].onclick();assert.ok(selections.at(-1)==null);assert.equal(app.requests.some(url=>url.includes('stations')),false);
+});
 test('share briefing encodes text and coordinates without markup execution',async()=>{
   const app=await setup();await app.add('Home <script>');await app.els['share-place'].onclick();
   const url=new URL(app.clipboard()),params=new URLSearchParams(url.hash.slice(1));

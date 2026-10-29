@@ -1,10 +1,24 @@
 # Nearby historical station records
 
-Method `2026-10-29.1`. After finding comparable days, explicitly discover nearby
-stations, select one, and load that date plus its following day. No collection
-runs automatically. JSON export includes the selected analog, NASA history
-revision, place, discovery results, station metadata, raw NOAA rows, reporting
-flags, retrieval timestamps and immutable edition IDs.
+Method `2026-10-29.1`. Select a saved place and enter a historical date, then
+explicitly find nearby stations, choose one, and load that date plus its following
+day. No current forecast or NASA grid search is required. Dates range from 1929
+through seven days ago; no recent date is preselected because catalog coverage
+can end well before today. No collection runs automatically.
+
+Comparable days remain optional suggestions. Selecting one captures that original
+comparison's target, match and history revision. Refreshing or losing the grid
+comparison does not erase station research or rewrite its provenance. Manually
+changing the date clears the analog association. JSON exports record
+`selection.kind` as `manual` or `analog`; `analog` is null for manual dates.
+Place, discovery, station metadata, raw NOAA rows, reporting flags, retrieval times
+and immutable edition IDs remain included in either mode.
+
+Place, account-scope or date changes clear the station selection, two-day results and downstream
+station-temperature evaluation, including late in-flight responses. A label-only
+change at identical coordinates does not reload data; existing exported records
+retain the captured place label. Discovery must match the requested coordinates
+and date, and daily records must match the chosen station and date before display.
 
 ## Sources and coverage
 

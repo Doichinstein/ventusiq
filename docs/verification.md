@@ -1239,3 +1239,26 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   This validates a retrospective temperature-only station experiment, not current
   forecast transfer, complete-day sampling, climate homogeneity, calibrated
   probabilities, address-level accuracy or the existing multivariable grid method.
+
+## Independent historical station workflow (2026-10-29, v53)
+
+- All 692 Node and 19 Python tests passed, plus TypeScript and production build.
+  The saved-place integration is exercised during a forecast outage. Station UI
+  tests cover manual dates, optional comparable-date selection, immutable reference
+  provenance, forecast refresh preservation, invalid dates, place/date/account-scope
+  invalidation, late discovery/daily responses and mismatched response rejection.
+- A saved place now enables independent date entry. Suggestions require explicit
+  selection and never overwrite a manually chosen date. Forecast/grid failures
+  do not discard retained station research. Manual exports contain `analog:null`;
+  selected analog references retain their original target/match/history revision.
+  Account scope changes clear prior labels/results even at identical coordinates.
+- Built Worker checks at 2026-10-29T07:55:46Z confirmed the date input and optional
+  suggestion control in served HTML. Direct station discovery for 39,-77 on
+  2024-06-05 returned ten candidates; selecting Reagan National (72405013743)
+  returned both daily records with matching station/date metadata. Revision:
+  `eaf07873b3ee6a3c6c0912213669232649aa11397c45abeb7b42cf0c5f4edfc7`.
+  This check made no forecast or grid-history requests.
+- Backend data contracts, schema, runtime secrets, schedules and notifications are
+  unchanged. Date-picker rendering and real browser interactions remain unverified
+  under the saved browser permission setting; HTTP and DOM-double checks are not
+  substitutes for those rendered checks.

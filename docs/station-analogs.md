@@ -1,7 +1,9 @@
 # Station temperature analog evaluation
 
-After finding comparable days and selecting a nearby US station, choose **Evaluate
-station temperature history**. This explicitly retrieves the same ten-calendar-year
+Select a saved place, enter a historical date and find a nearby US station, then
+choose **Evaluate station temperature history**. A current forecast or successful
+grid analog search is not required. Optional comparable-date suggestions retain
+their original provenance when selected. This explicitly retrieves the same ten-calendar-year
 window used by the grid history card. It evaluates a separate temperature-only
 method against station observations; it does not validate the grid analog method,
 calibrate NWS forecasts or predict wind, rain, fire or impacts.

@@ -237,6 +237,12 @@ analog, seasonal and persistence methods. `station-analogs.js` connects to stati
 selection, exposes gaps and exports reproducible evidence. It does not validate
 current forecast transfer. See [station evaluation](station-analogs.md).
 
+Station discovery is independent of forecast/grid availability: the saved-place
+render hook updates `WeatherStationHistory.updatePlace`, while `setAnalogDates`
+only supplies optional suggestions. Manual dates and explicitly selected analog
+references retain distinct export provenance. Forecast refreshes do not clear
+historical research; actual place/date changes invalidate dependent results.
+
 ## Satellite detection inspection
 
 `FirmsService` adds two fixed, bounded NOAA-20 NRT regional CSV datasets to the

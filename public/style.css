@@ -86,6 +86,8 @@
 .map-layer-key>small{flex-basis:100%;font-size:10px}
 #aqi-map-bands{display:flex;flex-wrap:wrap;gap:7px 12px}#aqi-map-bands span{display:flex;flex-direction:row-reverse;align-items:center;gap:5px;font-size:10px}#aqi-map-bands i{width:10px;height:10px;border-radius:2px}
 .fire-symbol{background:none!important;border:0!important;filter:drop-shadow(0 2px 3px #000b)}.fire-symbol svg{width:100%;height:100%;overflow:visible}.fire-symbol path{fill:#ff8148;stroke:#40231a;stroke-width:1.4;stroke-linejoin:round}.fire-symbol .fire-core{fill:#ffe9a0;stroke:none}.fire-size-unknown path{stroke:#aab3c2;stroke-dasharray:2 2}.fire-size-unknown .fire-core{stroke:none}
+.fire-contained path{fill:#526d79;stroke:#a6c0cb}.fire-contained .fire-core{fill:#6f8b98}.fire-symbol .fire-contained-mark{fill:none;stroke:#f0f6fa;stroke-width:3;stroke-linecap:round}
+.fire-record-old{filter:drop-shadow(0 1px 2px #000b)}.fire-record-old path{fill:#716760;stroke:#c4b9ad;stroke-dasharray:3 2}.fire-record-old .fire-core{fill:#ac9987;stroke:none}.fire-record-old.fire-contained path{fill:#52616c;stroke:#acb7c1}.fire-record-old.fire-contained .fire-core{fill:#75828a;stroke:none}.fire-record-old .fire-contained-mark{fill:none;stroke:#f0f6fa;stroke-dasharray:none}.fire-record-label{font-weight:600}
 .aqi-source-panel{margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
 .hazard-grid h3,.aqi-source-panel h3,.smoke-map-panel h3,.firms-panel h3{font-size:13px}
 .intro{padding-top:22px;padding-bottom:22px}.intro h1{font-size:27px}

@@ -10,7 +10,7 @@
   <title>VentusIQ — Open Weather Map</title>
   <link rel="icon" href="/assets/ventusiq-icon.png" type="image/png">
   <link rel="stylesheet" href="/vendor/leaflet.css"><link rel="stylesheet" href="/style.css">
-  <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/map-cache.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
+  <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/map-cache.js"></script><script defer src="/zone-loader.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
   <script type="module" src="/hazards.js"></script>
   <script type="module" src="/firms.js"></script>
   <script type="module" src="/station-analogs.js"></script>
@@ -173,12 +173,12 @@
       <div class="refresh-controls"><label><input type="checkbox" id="auto-refresh" checked> Auto alerts</label><span id="auto-refresh-status">Checking alerts…</span></div>
     </div>
     <div class="map-layer-keys">
-      <div id="fire-map-key" class="map-layer-key" hidden><strong>Fires</strong><span>Flame size: &lt;100 · 100–999 · 1k–9,999 · 10k+ acres. Gray outline: size unknown. Symbols are not footprints; select a fire for its reported perimeter.</span><small id="fire-map-time" role="status"></small></div>
+      <div id="fire-map-key" class="map-layer-key" hidden><strong>Fires</strong><span>Size: &lt;100 · 100–999 · 1k–9,999 · 10k+ acres; smaller at wide zoom. Blue-gray + check: reported 100% contained. Muted + dashed: record over 48h old or time unknown. Inspect a fire for its dates and reported boundary; containment does not mean extinguished or safe.</span><small id="fire-map-time" role="status"></small></div>
       <div id="aqi-map-key" class="map-layer-key" hidden><strong>PM2.5 AQI zones</strong><div id="aqi-map-bands"></div><span>EPA regional estimates · unshaded = no contour coverage · gray = old or missing source time.</span><small id="aqi-map-time" role="status"></small></div>
     </div>
     <details id="hazard-controls"><summary><strong>Source details &amp; forecast controls</strong><span class="small">Freshness · fire search · smoke timeline</span></summary>
       <div class="hazard-grid">
-        <section><h3>Reported wildfires</h3><p class="small">Flame symbols show incident locations, sized by reported acreage. Select a fire to load its reported perimeter: an orange dashed boundary, not an evacuation zone.</p><p id="fires-status" class="small" role="status">Enable to load NIFC incidents.</p><a href="https://data-nifc.opendata.arcgis.com/" target="_blank" rel="noopener">NIFC / WFIGS ↗</a></section>
+        <section><h3>Reported wildfires</h3><p class="small">Flames mark incident locations, sized by reported acreage and zoom. Blue-gray with a check means reported 100% containment, not extinguishment. Muted dashed flames have a record over 48 hours old or an unknown time; this is a display convention, not a claim about current fire activity. A smaller gray outline indicates missing acreage. Select a fire for its source dates and reported perimeter: an orange dashed boundary, not an evacuation zone.</p><p id="fires-status" class="small" role="status">Enable to load NIFC incidents.</p><a href="https://data-nifc.opendata.arcgis.com/" target="_blank" rel="noopener">NIFC / WFIGS ↗</a></section>
         <section><h3>PM2.5 observations</h3><p class="small">Small colored circles show measured monitor AQI. Gray indicates missing or older readings. Enable AQI separately for EPA’s estimated regional zones.</p><p id="air-status" class="small" role="status">Enable to load AirNow monitors.</p><a href="https://www.airnow.gov/" target="_blank" rel="noopener">EPA / AirNow ↗</a></section>
         <section><h3>Satellite heat detections</h3><p class="small">NASA's imagery shows VIIRS thermal anomalies for the available UTC day. These are detected pixels, not fire boundaries.</p><p id="satellite-status" class="small" role="status">Enable to check NASA's available date.</p><a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank" rel="noopener">NASA FIRMS / GIBS ↗</a></section>
       </div>

@@ -64,9 +64,19 @@ export async function loadAqiContours(fetcher=fetch,signal){
       return {...f,properties:{category:band?.code??null,label:band?.label||'Unknown category',range:band?.range||'Unknown',color:band?.color||'#8b8b93',observed_at:stamp(f.properties.Timestamp)}};
     })};
 }
-export function fireSymbolSize(acres){
-  if(typeof acres!=='number'||!Number.isFinite(acres)||acres<0)return 22;
-  return acres<100?24:acres<1000?30:acres<10000?38:46;
+export function fireSymbolSize(acres,options={}){
+  const zoom=options?.zoom??9;
+  const size=typeof acres!=='number'||!Number.isFinite(acres)||acres<0?22:acres<100?24:acres<1000?30:acres<10000?38:46;
+  // Keep acreage bands distinct while reducing national-view crowding.
+  return Math.round(size*(zoom<=5?0.55:zoom<=7?0.75:1));
+}
+export function fireDisplay(properties,now=Date.now()){
+  const updated=Date.parse(properties.updated_at),known=Number.isFinite(updated)&&updated<=now+300000;
+  const old=known&&now-updated>48*3600000;
+  const contained=properties.contained===100;
+  const age=known?(old?'record over 48 hours old':'record within 48 hours'):'record time unknown';
+  const containment=contained?'reported 100% contained':typeof properties.contained==='number'&&Number.isFinite(properties.contained)&&properties.contained>=0&&properties.contained<100?`reported ${properties.contained}% contained`:'containment unreported';
+  return {className:(contained?' fire-contained':'')+(!known||old?' fire-record-old':''),label:`${containment} · ${age}`};
 }
 export async function loadPerimeters(id,fetcher=fetch,signal){
   id=incidentId(id);

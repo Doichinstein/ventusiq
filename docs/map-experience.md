@@ -53,3 +53,28 @@ Validation includes cached-response ordering, missing-source behavior, tab and
 replay polling guards, cache expiry/capacity, preference restoration, icon bands
 and AQI timestamp/category handling. DOM/Leaflet doubles verify interactions;
 they do not constitute rendered desktop/mobile QA.
+
+## Browser-tested follow-up (v62)
+
+Boundary loading now has separate bounded queues: twelve local cache reads and
+four network requests. A slow cache miss cannot occupy a cache-read slot while
+waiting for the network. Selecting an alert promotes its queued boundaries;
+in-flight requests remain shared. The existing expiry, failure backoff and
+public-only cache rules apply. This removes a verified scheduling bottleneck;
+it is not a measured cold-load speed claim or an increase in provider concurrency.
+
+Fire symbols retain the acreage bands but shrink to 55% at zoom 5 and below and
+75% through zoom 7; detailed views use their full size. The source popup and
+reported perimeter remain available at every zoom. Blue-gray flames with a check
+mean **reported 100% containment**, not extinguishment or safety. Muted dashed
+flames indicate a record over 48 hours old or an unknown/invalid time. The
+48-hour threshold is an explicit display convention, not a provider freshness
+guarantee or a current activity classification. Record age and reported
+containment are independent; neither removes an incident from the map.
+
+The October 29 in-app browser pass of v61 verified desktop and mobile-width
+rendering, all layer controls, fire perimeter loading, smoke playback, alert
+details, a journey example, a river gauge and an event timeline. The same pass
+showed dense fire-marker overlap and cache restoration preceding completed
+boundaries. Account/device delivery and physical mobile testing were not part
+of that pass. See `verification.md` for evidence and remaining limits.

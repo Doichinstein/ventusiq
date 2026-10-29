@@ -21,7 +21,21 @@ let upkeepStatus = null, upkeepStatusCheckedAt = 0;
 let autoRefresh = true, restoredCache = false, auxiliaryPending = false, geometryRevision = 0, drawnKey = '';
 const refreshInterval = config.mode === 'hosted' ? 30000 : 60000;
 const directHistory = [], geometry = new Map(), zoneCache = new Map(), zoneFailed = new Map();
-let zoneQueue = [], zonePending = new Set(), zoneActive = 0, geometryTimer = null;
+let geometryTimer = null;
+const zoneLoader = window.createZoneLoader({
+  readCache: url => window.WeatherMapCache?.read('zone/' + new URL(url).pathname.slice('/zones/'.length), 30 * 86400000),
+  async fetchZone(url) {
+    const data = await request(direct ? url : '/api' + new URL(url).pathname);
+    if (data.geometry) window.WeatherMapCache?.write('zone/' + new URL(url).pathname.slice('/zones/'.length), {geometry:data.geometry});
+    return data;
+  },
+  onResult(url, data) {
+    if (data?.geometry) zoneCache.set(url, data.geometry);
+    else zoneFailed.set(url, Date.now() + 300000);
+    scheduleGeometryDraw();
+  },
+  onError(url) { zoneFailed.set(url, Date.now() + 300000); scheduleGeometryDraw(); },
+});
 const map = L.map('map', {zoomControl: false, preferCanvas: true, minZoom: 2, maxZoom: 14, worldCopyJump: true});
 L.tileLayer(config.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19, attribution: config.tileAttribution || '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
@@ -297,32 +311,12 @@ function queueGeometry(priority = null) {
     combineZones(f);
     for (const url of f.properties.affectedZones || []) {
       if (!/^https:\/\/api\.weather\.gov\/zones\/(county|forecast|fire|coastal|offshore)\/\w{6}$/.test(url)) continue;
-      if (zoneCache.has(url) || zonePending.has(url) || (zoneFailed.get(url) || 0) > Date.now()) continue;
-      zonePending.add(url);
+      if (zoneCache.has(url) || (zoneFailed.get(url) || 0) > Date.now()) continue;
       newQueue.push(url);
     }
   }
-  zoneQueue = priority ? [...newQueue, ...zoneQueue] : [...zoneQueue, ...newQueue];
-  pumpZones();
-}
-function pumpZones() {
-  while (zoneActive < 4 && zoneQueue.length) {
-    const url = zoneQueue.shift();
-    zoneActive++;
-    (async () => {
-      const key = 'zone/' + new URL(url).pathname.slice('/zones/'.length);
-      const saved = await window.WeatherMapCache?.read(key, 30 * 86400000);
-      if (saved?.geometry) return saved;
-      const data = await request(direct ? url : '/api' + new URL(url).pathname);
-      if (data.geometry) window.WeatherMapCache?.write(key, {geometry:data.geometry});
-      return data;
-    })().then(data => {
-      if (data.geometry) zoneCache.set(url, data.geometry);
-      else zoneFailed.set(url, Date.now() + 300000);
-    }).catch(() => zoneFailed.set(url, Date.now() + 300000)).finally(() => {
-      zoneActive--; zonePending.delete(url); scheduleGeometryDraw(); pumpZones();
-    });
-  }
+  zoneLoader.enqueue(newQueue);
+  if (priority) zoneLoader.enqueue((priority.properties.affectedZones || []).filter(url => newQueue.includes(url)), true);
 }
 function selectAlert(f) {
   selected = f.id;

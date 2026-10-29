@@ -1456,3 +1456,36 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   schedule, subscription, database, authentication or delivery settings.
 - See [method, commands and limits](analog-forward-validation.md). The broader
   goal remains incomplete until its outstanding acceptance evidence exists.
+
+## Rendered browser access and follow-up (October 29, v62)
+
+- Browser access to `https://ventusiq.com/` succeeded after the user updated the
+  site's allowance. No permission denial occurred in this session. The cause of
+  earlier failures is not established; previous references to a saved block
+  should not be read as a verified diagnosis or a continuing browser blocker.
+- The v61 baseline was exercised in the in-app browser at its normal panel size,
+  1440×900 and 390×844. All seven layer controls responded. Fires and AQI restored
+  after reload; cached alerts were present while the live request was checking.
+  San Diego filtering, official alert details, a reported fire perimeter, smoke
+  playback and replay/live transitions worked. A Washington–Baltimore journey
+  compared three departures; LOLT2 opened; a Palm Beach event timeline rendered
+  three transitions across two collected messages. Captured warning/error logs
+  were empty. Checked mobile workspaces had no document-level horizontal overflow.
+- This is rendered desktop-browser responsive testing, not a physical-phone or
+  complete ten-feature acceptance test. No account login, push enrollment,
+  closed-page delivery or webhook transmission was performed. Performance timing
+  APIs were unavailable in the supported browser evaluation scope; there is no
+  cold-load benchmark or quantitative speed claim.
+- Observed follow-ups: contained/older incidents used bright flame symbols,
+  national-view markers overlapped, and cached alert cards preceded many zone
+  boundaries. The v62 implementation adds source-age/containment styles and
+  zoom-aware marker sizing, retaining every incident and its reported perimeter.
+  Cache reads now have a separate bounded queue from the four network requests.
+- New behavioral tests hold four network misses unresolved while a later cache
+  hit completes, verify queue limits/coalescing and selected-boundary priority,
+  exercise storage failures and retries, and preserve independent containment,
+  missing timestamps, record-age thresholds and acreage bands. New source is
+  not claimed rendered-verified until the post-publication browser check.
+- Real account/device flows, notification delivery, route-closure attribution,
+  future forecast outcomes and supported hosted database recovery remain open.
+  These are separate from the now-working browser access.

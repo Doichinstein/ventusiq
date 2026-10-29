@@ -1,5 +1,5 @@
 /* Fire and air observations. Source text is only inserted through textContent. */
-import {loadFires,loadAir,loadAqiContours,loadSatellite,loadPerimeters,nearest,observationFresh,aqiCategory,fireSymbolSize,AQI_BANDS,SATELLITE_LAYER} from './hazards-core.mjs';
+import {loadFires,loadAir,loadAqiContours,loadSatellite,loadPerimeters,nearest,observationFresh,aqiCategory,fireSymbolSize,fireDisplay,AQI_BANDS,SATELLITE_LAYER} from './hazards-core.mjs';
 
 export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   const get=id=>document.getElementById(id),map=window.WeatherMap.instance;
@@ -43,7 +43,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   function firePopup(f){
     perimeterRequest++;perimeter.clearLayers();
     const p=f.properties,box=el('div',undefined,'hazard-popup');
-    box.append(el('h3',p.name),el('p',fireSummary(f)),el('p',`Record updated ${time(p.updated_at)}. Discovered ${time(p.discovered_at)}.`,'small'),el('p','Incident point only. Distance and containment do not establish local safety.'));
+    box.append(el('h3',p.name),el('p',fireSummary(f)),el('p',fireDisplay(p,clock()).label,'fire-record-label'),el('p',`Record updated ${time(p.updated_at)}. Discovered ${time(p.discovered_at)}.`,'small'),el('p','Incident point only. Reported containment does not mean extinguished or establish local safety.'));
     if(isDelayed('fires'))box.append(el('p','Collection is delayed. This is the last available record.'));
     if(p.description)box.append(el('p',p.description));
     if(p.perimeter_id){const button=el('button','Show reported perimeter','action secondary'),message=el('p','');button.onclick=async()=>{
@@ -67,6 +67,14 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     box.append(el('p',`${p.agency} · ${p.monitor_type} · ${p.status}`,'small'),el('p','An observation at this monitor, not a forecast or an estimate at your address.'));
     return box;
   }
+  function fireIcon(f){
+    const size=fireSymbolSize(f.properties.acres,{zoom:map.getZoom?.()??9}),unknown=f.properties.acres==null;
+    const display=fireDisplay(f.properties,clock());
+    return L.divIcon({className:'fire-symbol'+display.className+(unknown?' fire-size-unknown':''),iconSize:[size,size],iconAnchor:[size/2,size],popupAnchor:[0,-size],html:'<svg viewBox="0 0 32 36" aria-hidden="true"><path d="M17 2C19 11 27 12 28 22C29 30 23 34 16 34C8 34 3 29 4 22C4 17 8 13 11 10C10 17 13 18 14 17C18 14 16 8 17 2Z"/><path class="fire-core" d="M16 19C18 23 22 24 21 28C20 32 12 32 11 28C10 24 14 22 16 19Z"/>'+(f.properties.contained===100?'<path class="fire-contained-mark" d="m10 23 4 4 9-10"/>':'')+'</svg>'});
+  }
+  const fireTitle=f=>`${f.properties.name} · ${quantity(f.properties.acres,' acres')} · ${fireDisplay(f.properties,clock()).label}`;
+  function updateFireIcons(){layers.fires?.eachLayer?.(layer=>{if(layer.feature){layer.options.title=fireTitle(layer.feature);layer.setIcon(fireIcon(layer.feature));}});}
+  map.on?.('zoomend',updateFireIcons);
   function draw(kind){
     if(!state[kind].data)return;
     if(kind==='satellite'){
@@ -87,9 +95,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
       if(layers[kind])map.removeLayer(layers[kind]);
       layers[kind]=L.geoJSON(state[kind].data,{pointToLayer:(f,latlng)=>{
         if(kind==='fires'){
-          const size=fireSymbolSize(f.properties.acres),unknown=f.properties.acres==null;
-          const icon=L.divIcon({className:'fire-symbol'+(unknown?' fire-size-unknown':''),iconSize:[size,size],iconAnchor:[size/2,size],popupAnchor:[0,-size],html:'<svg viewBox="0 0 32 36" aria-hidden="true"><path d="M17 2C19 11 27 12 28 22C29 30 23 34 16 34C8 34 3 29 4 22C4 17 8 13 11 10C10 17 13 18 14 17C18 14 16 8 17 2Z"/><path class="fire-core" d="M16 19C18 23 22 24 21 28C20 32 12 32 11 28C10 24 14 22 16 19Z"/></svg>'});
-          return L.marker(latlng,{icon,title:`${f.properties.name} · ${quantity(f.properties.acres,' acres')} · reported incident`,alt:'Reported wildfire'});
+          return L.marker(latlng,{icon:fireIcon(f),title:fireTitle(f),alt:'Reported wildfire'});
         }
         return L.circleMarker(latlng,{radius:5,weight:1.5,color:'#18242d',fillColor:observationFresh(f,clock())?aqiCategory(f.properties.aqi).color:'#8b8b93',fillOpacity:0.95});
       },onEachFeature:(f,layer)=>layer.bindPopup(()=>kind==='fires'?firePopup(f):airPopup(f))});
@@ -135,7 +141,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     setReplay(value){window.WeatherSmokeMap?.setReplay(value);window.WeatherFirms?.setReplay(value);replay=value;perimeterRequest++;map.closePopup();sync();},
     showMap(value){window.WeatherSmokeMap?.setVisible(value);get('hazard-workspace').hidden=!value;},
   };
-  window.setInterval(()=>{if(document.hidden||replay)return;for(const kind of Object.keys(sources)){if(get('layer-'+kind).checked||(place&&['fires','air'].includes(kind)))load(kind);status(kind);}if(state.air.data)draw('air');if(state.aqi.data)draw('aqi');renderPlace();},60000);
+  window.setInterval(()=>{if(document.hidden||replay)return;for(const kind of Object.keys(sources)){if(get('layer-'+kind).checked||(place&&['fires','air'].includes(kind)))load(kind);status(kind);}if(state.air.data)draw('air');if(state.aqi.data)draw('aqi');updateFireIcons();renderPlace();},60000);
   for(const band of AQI_BANDS){const item=el('span',`${band.range} ${band.label}`),swatch=el('i');swatch.style.background=band.color;item.append(swatch);get('aqi-map-bands').append(item);}
   sync();window.WeatherHazards.showMap(!get('map-workspace').hidden);window.WeatherHazards.updatePlace(window.WeatherPersonal?.current());
   return {load,state};

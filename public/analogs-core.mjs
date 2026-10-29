@@ -1,6 +1,7 @@
+import {analogDiagnostics} from './analog-diagnostics.mjs';
 /* Historical weather analogs. Apache-2.0. No network or DOM effects. */
 export const DAY=86400000;
-export const ANALOG_METHOD='2026-10-28.1';
+export const ANALOG_METHOD='2026-10-29.2';
 export const VARIABLES=['high_c','low_c','wind_ms','rain_mm'];
 export const RULES=Object.freeze({season_days:30,separation_days:7,max_matches:20,min_matches:10,scales:{high_c:5,low_c:5,wind_ms:3},max_distance:1,max_component:1.5});
 const finite=v=>typeof v==='number'&&Number.isFinite(v);
@@ -64,10 +65,10 @@ function selectPrepared(index,target,cutoff){
 export function selectAnalogs(rows,target,cutoff=target.date){return selectPrepared(prepare(rows),target,cutoff);}
 export function holdoutEvaluation(history){
   // Freeze all retrieval at the start of the last two years. Never tune on test outcomes.
-  const cutoff=history.window.holdout_start,first=Number(cutoff.slice(0,4)),last=Number(history.window.end.slice(0,4)),byDate=new Map(history.rows.map(r=>[r.date,r])),index=prepare(history.rows),cases=[];let attempted=0,missing=0,insufficient=0;
-  for(let year=first;year<=last;year++)for(let month=1;month<=12;month++)for(const day of [7,21]){attempted++;const date=`${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`,target=byDate.get(date),actual=byDate.get(dateString(dayTime(date)+DAY));if(!featureComplete(target)||!actual){missing++;continue;}const result=selectPrepared(index,target,cutoff);if(!result.sufficient){insufficient++;continue;}cases.push({date,actual,match_dates:result.matches.map(m=>m.date),prediction:result.outcomes,baseline:result.seasonal,persistence:target});}
-  const metrics=Object.fromEntries(VARIABLES.map(k=>{const pairs=cases.filter(c=>finite(c.actual[k])&&c.prediction[k].n>=RULES.min_matches&&c.baseline[k].n>=RULES.min_matches&&finite(c.persistence[k]));const n=pairs.length,mae=which=>n?pairs.reduce((a,c)=>a+Math.abs((which==='persistence'?c.persistence[k]:c[which][k].median)-c.actual[k]),0)/n:null;return [k,{n,analog_mae:mae('prediction'),seasonal_mae:mae('baseline'),persistence_mae:mae('persistence')}];}));
-  return {cutoff,attempted,evaluated:cases.length,missing,insufficient,metrics,cases,method:'Fixed 7th and 21st of every month in the last two years; retrieve only from the preceding eight years. Compare next-day medians with seasonal-median and persistence baselines on the same cases. Inputs and outcomes are reanalysis, not archived operational forecasts. This does not validate transfer to NWS forecasts or establish calibrated probabilities.'};
+  const cutoff=history.window.holdout_start,first=Number(cutoff.slice(0,4)),last=Number(history.window.end.slice(0,4)),byDate=new Map(history.rows.map(r=>[r.date,r])),index=prepare(history.rows),cases=[],trials=[];let attempted=0,missing=0,insufficient=0;
+  for(let year=first;year<=last;year++)for(let month=1;month<=12;month++)for(const day of [7,21]){attempted++;const date=`${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`,target=byDate.get(date),actual=byDate.get(dateString(dayTime(date)+DAY));if(!featureComplete(target)||!actual){missing++;trials.push({date,status:'missing'});continue;}const result=selectPrepared(index,target,cutoff);if(!result.sufficient){insufficient++;trials.push({date,status:'insufficient',match_count:result.matches.length});continue;}trials.push({date,status:'evaluated',match_count:result.matches.length});cases.push({date,actual,match_dates:result.matches.map(m=>m.date),prediction:result.outcomes,baseline:result.seasonal,persistence:target});}
+  const diagnostics=analogDiagnostics(cases,trials,VARIABLES,RULES.min_matches),metrics=diagnostics.cohorts[0].metrics;
+  return {cutoff,attempted,evaluated:cases.length,missing,insufficient,metrics,cases,trials,diagnostics,method:'Fixed 7th and 21st of every month in the last two years; retrieve only from the preceding eight years. Compare next-day medians with seasonal-median and persistence baselines on the same cases. Inputs and outcomes are reanalysis, not archived operational forecasts. This does not validate transfer to NWS forecasts or establish calibrated probabilities.'};
 }
 export function analogReport(history,target,now=Date.now()){
   const result=selectAnalogs(history.rows,target,dateString(dayTime(history.window.end)+DAY));

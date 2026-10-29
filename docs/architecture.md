@@ -363,3 +363,13 @@ selected revisions in batches of 32 and retains only used temperature periods.
 `verification-leads-ui.mjs` renders coverage, error and daily tables; export keeps
 all cohort/common-hour pairs and audits. This does not create calibrated confidence,
 longer observation retention, subscriptions or new background collection.
+
+### Historical analog diagnostics
+
+`analog-diagnostics.mjs` consumes the fixed holdout cases and complete scheduled
+trial audit from `holdoutEvaluation`. It produces overall, calendar-season and
+yearly metrics with shared per-variable denominators, paired baseline differences
+and empirical spread counts. `analog-diagnostics-ui.mjs` adds accessible tables to
+the historical-analog card; all scored values and trial exclusions survive export.
+The retrieval method and training cutoff are unchanged. No calibration, climate
+trend inference or additional provider/scheduler work is introduced.

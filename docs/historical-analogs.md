@@ -108,3 +108,59 @@ and baseline results. A reader can rerun retrieval from the exported records
 without trusting a later NASA revision. Source issue time remains null where the
 provider did not supply one. Saved place names are browser-local; the chosen grid
 coordinates are public shared cache inputs and are sent to NASA.
+
+## Seasonal and yearly diagnostic breakdowns
+
+Report method `2026-10-29.2` adds diagnostics while preserving the original
+`2026-10-28.1` retrieval scales, spacing, cutoff and predetermined test dates.
+Every scheduled test date now has an explicit status: evaluated, missing inputs,
+or too few matching analogs. Counts are shown for all tests, Dec–Feb, Mar–May,
+Jun–Aug, Sep–Nov, and each held-out calendar year. Groups use target UTC calendar
+dates; month labels avoid assuming northern-hemisphere seasons.
+
+For each variable and group, all three error methods use exactly the same eligible
+cases: finite actual, analog median, seasonal median and persistence value, with
+at least ten historical values in each median distribution. Missing precipitation
+therefore cannot improve rainfall error by becoming zero or changing only one
+method's denominator. Diagnostics include analog MAE and bias, mean paired absolute
+error differences versus each baseline, and counts of smaller/tied/larger errors.
+Negative paired differences favor the analog; positive differences favor the
+baseline. Ties use a 1e-10 native-unit numerical tolerance only.
+
+The historical 10th–90th percentile spread is checked against each held-out
+next-day outcome. The report retains counts inside, below and above, plus the
+number of available ordered ranges and mean width. Boundaries are inclusive,
+zero-width ranges remain valid, and missing/reversed ranges or a median outside
+the range are unavailable. Error scoring can still use a valid median when its
+range is unavailable. The UI shows inside/available counts, not a calibrated
+probability. A favorable count here does not validate the spread for today's NWS
+forecast, establish independent events, or measure station-level extremes.
+
+Year-to-year differences can reflect different weather regimes, coverage and small
+samples; two held-out years do not establish climate drift. Seasonal/year summaries
+are descriptive and do not retune matching parameters. The full test schedule,
+per-variable matched values/errors/ranges and cohort memberships are exported,
+alongside original history and selected analog dates. Duplicate test identities or
+cases that do not match the evaluated schedule fail rather than double-counting.
+No additional provider collection or unattended schedule is introduced.
+
+## Regional diagnostic spot checks
+
+On 2026-10-29, the built Worker supplied 2016–2025 NASA histories for three grids.
+Retrieval froze at 2024-01-01; each region had 48 eligible 2024–2025 test dates for
+all four variables. The following results are next-day high-temperature MAE in °C:
+
+| Grid near | Analog | Seasonal median | Persistence | Inside historical 10th–90th spread |
+|---|---:|---:|---:|---:|
+| Washington region (39, -76.875) | 2.566 | 3.806 | 2.734 | 32/48 |
+| Sacramento region (38.5, -121.25) | 1.712 | 2.831 | 1.732 | 39/48 |
+| Miami region (26, -80) | 0.679 | 1.162 | 0.616 | 36/48 |
+
+These spot checks do not demonstrate regional generalization or operational skill.
+Washington's seasonal baseline had lower wind and rainfall MAE than the analog;
+Miami's persistence baseline had lower high/low-temperature MAE, and both baselines
+had lower rainfall MAE. Sacramento's persistence low-temperature MAE was lower.
+Such differences remain visible; neither location nor variable was selected for a
+favorable headline. Seasonal groups contained only 12 test dates and yearly groups
+24, so effects may reflect a few weather events. The method was not changed after
+these results. Exact history revisions are recorded in [verification](verification.md).

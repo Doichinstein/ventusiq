@@ -38,6 +38,9 @@ forecasts, paired valid times, separate run ages and downloadable raw evidence.
 A separate [NOAA RAP smoke forecast](docs/smoke-forecasts.md) shows modeled near-surface
 concentrations at future hourly times, with coverage gaps, run age and evidence export.
 
+Historical analogs include seasonal and yearly held-out diagnostics, paired baseline
+errors and empirical spread coverage. See [analog validation](docs/historical-analogs.md#seasonal-and-yearly-diagnostic-breakdowns).
+
 Forecast track records now separate 6–72 hour lead groups and compare errors on
 identical observation hours, with coverage and daily summaries. See [verification methods](docs/observations.md#forecast-errors-by-lead-time).
 

@@ -604,3 +604,33 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - Page and both new modules returned HTTP 200. Rendered browser QA, longer-term
   observation history, seasonal grading and calibrated confidence remain
   unverified/unfinished. Hourly upkeep is unchanged.
+
+## Historical analog seasonal/year diagnostics increment
+
+- Added complete scheduled-test statuses, seasonal/yearly same-case errors, paired
+  baseline differences, bias, smaller/tied/larger error counts and empirical spread
+  coverage. Method version 2026-10-29.2 preserves the original retrieval rules,
+  fixed training cutoff and 48 predetermined holdout dates. No tuning followed QA.
+- Seven new tests cover hand-calculated error arithmetic, exclusions/denominators,
+  season/year membership, interval endpoints/zero-width/invalid ranges, duplicate
+  test identities, UI/export completeness and missing precipitation.
+- Full suite: 476 Node plus 16 Python tests passed (492 total). TypeScript and
+  production build passed. The first build took longer in dependency externalization
+  but completed successfully; its running handle was retained throughout.
+  No dependency, schema, environment secret or scheduled-task changes.
+- Built Worker checks completed 2026-10-29 03:47:49–03:48:03 UTC. Histories covered
+  2016–2025 and the training cutoff was 2024-01-01. Washington, Sacramento and Miami
+  grids each supplied 48 scored test dates per variable. All diagnostics reconciled
+  trial counts, common-case error differences, interval counts and training-date
+  exclusions. NASA requests respected the shared collection rate gate.
+- Washington region grid 39,-76.875: checked 2026-10-28T21:32:00.000Z; revision `5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2`.
+- Sacramento region grid 38.5,-121.25: checked 2026-10-29T03:47:56.000Z; revision `a7bb0028a3aa74e6d4afc4f72201616edc4098f81d585fac4e7000bc8e896bc9`.
+- Miami region grid 26,-80: checked 2026-10-29T03:48:03.000Z; revision `0b529d2c64966550b83e10936a9499b7ef6730a799ed2c9604fd1ce000c6d436`.
+
+- High-temperature analog/seasonal/persistence MAEs (°C): Washington
+  2.566/3.806/2.734; Sacramento 1.712/2.831/1.732; Miami 0.679/1.162/0.616.
+  Historical percentile-range coverage was 32/48, 39/48 and 36/48 respectively.
+  Other variables had mixed baseline comparisons, documented in the methods page;
+  these checks do not establish operational forecast transfer or calibrated ranges.
+- Page and diagnostic modules returned HTTP 200. Rendered browser QA and broader
+  independent station/impact validation remain unfinished. Hourly upkeep unchanged.

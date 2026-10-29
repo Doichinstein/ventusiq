@@ -1582,3 +1582,25 @@ validation and supported hosted database recovery remain separate open requireme
   historical test. This does not validate transfer from current forecasts.
 - All 15 existing ensemble core, service and UI tests pass after the chart/encoding
   correction. Post-publication rendering of the changed scale is checked separately.
+
+## River and timed-journey browser flow (October 29, v64; v65 direction label)
+
+- IOLK1 (Neosho River at Iola) displayed observations, a forecast hydrograph,
+  gauge datum, threshold timing and official impact descriptions. No forecast
+  samples reached the listed action/flood thresholds. The accessible table opened.
+- Connection lookup returned eight upstream and six downstream gauges. Forecast
+  revision comparison explicitly reported no earlier distinct retained forecast.
+  Both evidence JSON downloads succeeded. This does not test a nonempty revision
+  difference or hydraulic travel time between gauges.
+- Washington–Baltimore via College Park added a 30-minute stop to approximately
+  72 minutes of driving. Six weather samples included stop arrival and departure.
+  Selecting the departure two hours later shifted both stop times by two hours.
+- The Maryland work-zone feed loaded one nearby record and disclosed freshness,
+  supplied geometry, unlisted source ID, date/position verification and the limits
+  of shared road labels. Journey JSON downloaded successfully. This does not
+  establish closure attribution or current driving access.
+- The source supplied the literal string `undefined` for that record's direction.
+  v65 displays `Direction not reported` for missing/placeholder directions in both
+  the card and map popup; actual direction strings receive an explicit label.
+  Raw agency data and evidence exports remain unchanged for auditability.
+- Account and notification testing remains deferred at the owner's request.

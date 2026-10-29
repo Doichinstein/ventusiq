@@ -2,8 +2,8 @@
 
 My weather evaluates six explicit rules for each saved place using the existing
 live alert, hourly forecast and measured AirNow PM2.5 lanes. This feature works in
-hosted, Python and static editions; it creates no additional subscriptions or source
-requests. The card refreshes when source responses arrive, on place changes and
+hosted, Python and static editions; the on-page card creates no additional subscriptions
+or source requests. Hosted users can separately opt into compound watches below. The card refreshes when source responses arrive, on place changes and
 once per minute. It is independent of the map's selected historical snapshot.
 
 `public/compound-core.mjs` is a pure evaluator. `public/compound.js` renders results,
@@ -13,8 +13,8 @@ last-good air data together with current outage/freshness state.
 
 ## Rules and source review
 
-Rule set `2026-10-28.1` was checked against the primary guidance below on
-2026-10-28. This is an implementation/source review, not an external meteorologist
+Rule set `2026-10-29.1` retains the mechanism guidance reviewed on 2026-10-28
+and adds stricter hourly-input validation. This is an implementation/source review, not an external meteorologist
 endorsement, calibrated impact model or demonstrated forecast skill.
 
 | Rule | Trigger | Mechanism reference / interpretation limit |
@@ -75,7 +75,59 @@ that expanded state; a source outage removes current positive conclusions rather
 than leaving an old finding labeled current. Export downloads the currently
 evaluated report, including unknown states and the selected place coordinates.
 
-No notification or automated action is triggered by these rules. Professionally
-reviewed extensions, measured outcome validation, more provider combinations and
-opt-in delivery remain future work. The rules do not infer burn scars from active
+The on-page card triggers no notifications. Explicit hosted watches can deliver
+selected rule changes through the existing private feeds and opted-in browser push.
+Independent professional review, measured outcome validation and more provider
+combinations remain future work. The rules do not infer burn scars from active
 fire points, smoke transport from fire distance, or evacuation routes from warnings.
+
+
+## Opt-in persistent compound watches
+
+My weather's watch form offers six unchecked compound-rule choices. Any subset can
+be combined with official alert changes or individual forecast thresholds. The
+normal four-per-account / 64-global watch limits, ownership, pause/delete, 30-day
+history and hourly due-work path apply. Compound rules cannot be combined with a
+river-gauge watch. Existing watches keep their original settings; no one is enrolled
+by visiting the compound card or by this release.
+
+The hosted watch service runs the same `evaluateCompound` implementation and
+geographic/hourly primitives as the on-page card. Only selecting `heat-pm25` adds a
+shared AirNow collection during upkeep; other rules need no air request. Collection
+uses the existing deadline, leases, source cache and revision archive. Failed air
+or forecast collection can leave some rules unknown while independent polygon
+alert overlaps remain detectable. Full negative coverage still requires its inputs.
+
+The shared evaluator now requires explicit-timezone, exactly one-hour,
+non-overlapping forecast periods. An ambiguous period schedule suppresses the
+forecast rules. Precipitation probability needs `wmoUnit:percent`; unsupported units
+are unknown. Negative or malformed sustained-wind text cannot be parsed as a
+positive threshold. Existing numerical rule thresholds are unchanged.
+
+`compound-watch-core.mjs` compares only selected rule states. Initial checks record
+one baseline without push. A rule's first usable status after unknown data, or a
+method-version change, records a `baseline_compound` without a weather-change push.
+Later matched/not-detected transitions produce `compound` events. Unknown states
+preserve the last known status and never create a false clear. Separate
+`compound_coverage` events record incomplete/restored input coverage. Repeated
+identical states do not resend. Window drift and changed values that retain the
+same rule status are reflected in the current snapshot, not separate change events.
+A match after an unknown gap means the latest evidence now detects it; the exact
+onset during the gap remains unknown.
+
+Events retain the rule version, trigger, interpretation, guidance, matched windows,
+normalized premise values, source revisions and issue/collection/valid times. Full
+national source polygons are not copied into each watch event; raw products retain
+their independent archive lifetimes. Every matched segment still references its
+retained normalized evidence. Snapshot details and history export expose it. Private
+feeds include rule state, coverage and windows, preserving the observation-instant
+wording for measured air. Non-baseline events enter the existing owned push queue;
+quiet hours, retries and pause/delete cancellation still apply. No device is
+subscribed automatically, and provider acceptance does not prove device display.
+
+Forecast combinations use a rolling 48-hour horizon. Alert rules describe currently
+issued messages; the particle rule describes a recent measured instant, not future
+exposure. A status change can occur because time advanced, not only because a source
+changed. No joint probability, verified impact or all-clear is inferred. Hourly
+checks may miss intervening conditions. Rendered sign-in and real closed-browser
+notification verification remain outstanding.

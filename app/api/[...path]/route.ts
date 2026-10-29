@@ -113,7 +113,7 @@ export async function POST(request:Request){
   if(response.ok)after(async()=>{
     // Enrollment must not spend the background execution window waiting for an unrelated national source.
     const cached=await service.read('alerts/us').catch(()=>null);
-    await upkeep(service,cached?{...cached.data,collected_at:cached.checked_at,error:cached.error}:null);
+    await upkeep(service,cached?{...cached.data,collected_at:cached.checked_at,revision:cached.revision,error:cached.error}:null);
   });
   return response;
 }

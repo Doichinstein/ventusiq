@@ -145,6 +145,7 @@ time segments and source evidence; unmatched rules remain unknown when required
 inputs are missing. `compound.js` displays the evidence and exports the current
 evaluation. It reuses collection lanes through read-only personal/hazard bridges,
 does not mix map replay into the briefing, and does not produce a risk probability.
+Explicit selected-rule watches now reuse this evaluator on the server.
 See [rule definitions, review and provenance](compound-hazards.md).
 
 `JourneyService` caches OSRM geometry and segment durations with a shared provider
@@ -388,3 +389,18 @@ changes. `WeatherService` prunes observation checks/revisions after 30 days on
 successful collection, preserving the last good edition. Other hazard/route retention
 is unchanged. This supports retrospective weekly checks and longer station evidence
 for event stories; it does not yet provide multi-month or calibrated skill scores.
+
+
+### Compound-rule subscriptions
+
+`WatchService` evaluates the shared `compound-core.mjs` with the same weather
+primitives, loading the shared AirNow lane only for the selected measured-particle
+rule. `compound-watch-core.mjs` canonicalizes rule selection and derives status and
+coverage transitions with last-known-state preservation across unknown gaps.
+`watch-core.mjs` attaches these facts to the existing atomic watch transaction.
+Baseline events remain quiet; transitions use existing owner-scoped push deliveries,
+quiet policies and private feeds. UI snapshots and JSON exports retain normalized
+premise evidence without replicating full national polygons. Existing watch settings
+serialize unchanged when no compound rule is selected; no schema migration or
+new scheduler is needed. Shared forecast-rule validation now rejects ambiguous
+hour schedules, unsupported probability units and malformed wind inputs.

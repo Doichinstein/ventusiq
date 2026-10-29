@@ -671,3 +671,49 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   seasonal validation remain unfinished.
 - Rendered browser QA remains unavailable under the existing saved permission
   restriction. Interaction doubles and Worker HTTP checks do not replace it.
+
+
+## 2026-10-29 — Opt-in compound-rule watches
+
+- Added explicit unchecked choices for all six compound rules to place watches.
+  The server runs the shared dashboard evaluator, collects AirNow only when the
+  measured-particle rule is selected, and retains normalized premise evidence,
+  rule versions, windows and source timestamps/revisions. Existing subscriptions
+  remain unchanged. No schema or scheduler change was needed.
+- Compound state changes and coverage changes reuse owned history, private Atom
+  feeds and the existing push queue. Initial/first-usable compound baselines stay
+  quiet. Unknown gaps preserve last known states and cannot produce false clear
+  events. Repeated unchanged states do not resend; method changes reset comparison.
+- Shared forecast rule validation now rejects overlapping, duplicate, timezone-free
+  or non-hourly periods, unsupported precipitation units and malformed/negative
+  wind text. Planning thresholds and mechanism references are unchanged.
+- 496 Node tests and 16 Python tests passed (512 total), including eleven new
+  tests for selections, transitions, unknown gaps, version changes, normalized
+  provenance, all six rules through real SQLite transactions, owned push queues,
+  quiet-hour suppression, conditional AirNow collection, outages and UI consent.
+  Final feed/UI refinements passed 22 targeted tests. TypeScript and build passed.
+- Initial built-Worker QA exposed a shared-module loading mismatch: the bundler
+  supplied a CommonJS module object, so the server could not see `WeatherCore`.
+  The existing wrapper now exposes the same API to both the global consumer and
+  CommonJS. Regression tests and a new production build passed after repair.
+- Built Worker checks on loopback with an explicit development identity returned
+  401 anonymously, 404 for another owner, successful create/read/feed/delete,
+  and HTTP 200 for the page and new client module. A first real-data baseline
+  retained unknown alert-rule states when the cached alert collection was old.
+  After a fresh alert collection, 2026-10-29T04:14:30Z at 39,-77 returned complete
+  inputs and `not_detected` for each of the six rules, with one baseline record.
+  This is a source-rule result, not an all-clear or evidence of predictive skill.
+- Live source revisions in that baseline: alerts
+  `58eeea81ea223d307df8f8aad80a4395ac75f69d0ee799c3f06b12b68224119e`, forecast
+  `94f5eeb1d524acbd8a74b6032fac0a26d1ec1121719e989646c367a7ff0bc347`, AirNow
+  `8d37c4d5f61031fedbace60cb67d00a0e7227424ffb4d1884bbe7a5e32caa619`.
+  Forecast coverage was 48 hours and the nearest eligible monitor was 110010043.
+  Cached-alert upkeep now carries its revision into this evidence as well.
+- All temporary local watches, histories and feed tokens were deleted. No real
+  push device was enrolled or messaged. In-memory delivery tests queued six
+  owner-only changes, deduplicated repeated checks and muted them under quiet hours.
+  Provider acceptance and actual device display remain distinct.
+- Rendered browser, real sign-in and closed-browser push verification remain
+  unavailable under the saved browser restriction. Independent domain review,
+  outcomes-based validation and additional compound-provider combinations remain
+  roadmap work. Existing hourly upkeep and runtime secret revision are unchanged.

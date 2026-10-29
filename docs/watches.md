@@ -7,7 +7,7 @@ user ID. Four watches per account and 64 across this small public deployment are
 enforced in the database. Watches are separate from device-local saved places.
 
 Choose official alert changes and optional sustained wind, precipitation probability,
-high-temperature or low-temperature thresholds. Forecast rules ask whether any
+high-temperature or low-temperature thresholds, plus any of the six compound rules. Forecast rules ask whether any
 usable interval in the next 24 hours meets the inclusive threshold. They do not
 estimate a new probability, a measured outcome or gusts. Separate river watches
 use the gauge-specific method below.
@@ -63,7 +63,7 @@ verified values. Never expose raw trusted-header authentication directly to the
 internet. The Python/static editions hide this hosted-only feature and retain their
 existing local places and operator-configured daemon watches.
 
-Core method version: `2026-10-28.2`. Real browser sign-in/rendering verification is
+Core method version: `2026-10-29.1`. Real browser sign-in/rendering verification is
 still outstanding; local Worker tests use explicit development identity fixtures.
 
 
@@ -109,3 +109,16 @@ outage. No automatic watershed association or inundation inference is added.
 Browser push is separately opt-in; actual device display remains unverified. Events retain source references; the latest usable forecast is also kept
 in the watch baseline for comparable future timing checks. River method version:
 `2026-10-28.1`.
+
+
+## Compound-rule changes
+
+The optional unchecked compound controls enroll only the selected rules for the
+saved place. They use the same source-backed evaluator as the dashboard. Rule-state
+and coverage changes reuse watch history, private feeds and enrolled browser push;
+initial and first-usable compound baselines remain quiet. Unknown gaps preserve the
+last known state, and a negative is never labeled all-clear. Expand each rule in
+watch details for windows, normalized premise values, revision IDs and guidance.
+The JSON history export retains those facts. Forecast combinations cover 48 hours,
+while measured air represents a specific observation instant. See
+[compound watch semantics](compound-hazards.md#opt-in-persistent-compound-watches).

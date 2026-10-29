@@ -309,3 +309,9 @@ Forecast verification includes past-week replay (weeks ending 7–28 days ago),
 30-day observation-edition retention and raw evidence export. Missing archives
 remain explicit; later corrections cannot leak into a historical cutoff. See
 [station observations and verification](docs/observations.md).
+
+
+Hosted watches can now follow any of the six compound-hazard rules, with retained
+state/coverage changes, private feeds and optional browser push. Initial baselines
+stay quiet; missing inputs never produce an all-clear. See
+[compound-rule subscriptions](docs/compound-hazards.md#opt-in-persistent-compound-watches).

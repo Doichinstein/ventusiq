@@ -109,5 +109,8 @@
     return found.slice(0,12);
   }
   const api={coordinate,contains,relevantAlerts,windMph,hours,plan,alertChanges,forecastChanges};
-  if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.WeatherCore=api;
+  // The same side-effect module is used by classic browser scripts and the Worker bundle.
+  // Bundlers may provide a CommonJS module object even when the importer uses ESM.
+  root.WeatherCore=api;
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

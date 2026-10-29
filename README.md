@@ -44,6 +44,11 @@ ozone and NO₂ sample ceilings for activity
 windows. The source is separate from smoke and measured monitor data; model-run
 age is unknown. See [air-quality methods and provider terms](docs/particulate-forecasts.md).
 
+**Temperature forecast benchmarking** compares archived NWS forecasts with a
+previously archived last-temperature baseline on identical later station readings.
+Collection times, quality flags, missing baselines and raw record extracts remain
+inspectable. See [temperature verification](docs/observations.md).
+
 **Archived PM2.5 comparisons** pair earlier forecasts with later nearby monitor
 readings and a previously archived persistence baseline. Missing hours, source
 revisions and raw evidence stay visible. These are diagnostic differences, not

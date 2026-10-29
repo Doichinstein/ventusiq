@@ -944,3 +944,41 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   coordinates returned 400. Browser rendering/direct-source CORS remain
   unverified under the saved permission restriction. Observed gas evaluation,
   identified model runs and continuous exposure assessment remain outstanding.
+
+
+## Temperature persistence benchmark — 2026-10-29
+
+- Added a collection-time persistence comparison to the main temperature report
+  and its four source-lead groups. Forecast and constant-temperature predictions
+  are scored against exactly the same later station observations; the report
+  exposes paired/forecast counts, UTC days, MAE and signed MAE difference.
+- Baselines require a station edition collected strictly before the forecast
+  check and a latest reading no more than three hours old, with explicit time,
+  matching station identity, convertible temperature and QC V/G. Same-second
+  editions, future records, poor quality and conflicting readings cannot qualify.
+  A bad latest reading or edition is not replaced by a more favorable older one.
+- Existing immutable station editions provide evidence without new provider
+  collection. Archive reads are bounded to 2,000 relevant checks and batches of
+  eight compressed editions. Baseline capacity errors leave the existing forecast
+  comparisons available. Exports label selected raw baseline records as extracts,
+  retain collection/revision/quality metadata and include all exclusions.
+- 573 Node and 19 Python tests passed (592 total). Ten new tests cover units,
+  three-hour boundaries, same-second availability, corrections after collection,
+  invalid/conflicting/foreign-station readings, zero temperatures, identical-case
+  errors, deduplicated raw extracts, historical replay, capacity and unavailable
+  UI metrics. TypeScript and production builds passed.
+- Controlled SQLite archive integration had one forecast at 65°F against a later
+  60°F reading, with a 50°F baseline actually archived before collection. The
+  forecast MAE was 5°F and persistence MAE 10°F, difference −5°F. A later correction
+  of that historical baseline to 99°F did not replace the 50°F decision-time
+  reading. Later outcome corrections also left a fixed historical replay unchanged.
+- Built Worker live-source verification at 39,-77 selected KCGS and returned
+  HTTP 200 at 2026-10-29T05:35:41Z, with 356 source observations. All 168 candidate
+  hours lacked eligible earlier forecast checks at this point, so forecast and
+  persistence counts were zero and all error metrics null. This verified missing
+  archive behavior; it is not live evidence of model skill. The page and both new
+  browser modules also returned HTTP 200.
+- No schema, runtime secret, retention or hourly upkeep change was needed.
+  Browser rendering remains unverified under the saved permission restriction.
+  Longer evaluation, issuance-time baselines, station-change review and calibrated
+  confidence remain open; the baseline is explicitly a collection-time comparison.

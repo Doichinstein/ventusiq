@@ -479,3 +479,15 @@ preserves immutable earlier checks. The card gives per-pollutant coverage and ra
 exports. Planning adds independent optional ozone/NO₂ sample ceilings, evidence
 and coverage while leaving full air-quality/exposure coverage unproven. No new
 schema or unattended collection is introduced.
+
+### Temperature persistence benchmark
+
+`verification-persistence-service.mjs` joins already matched forecast checks with
+the latest earlier station-observation edition, using bounded archive scans and
+compressed-payload batches. `verification-persistence.mjs` rejects later,
+same-second, stale, conflicting or unaccepted-quality baselines and compares the
+forecast and constant-temperature baseline on identical outcomes. The existing
+verification endpoint returns both the main and source-lead group benchmarks,
+with selected raw baseline records and exclusion audits. A separate UI renderer
+adds paired mean errors to the existing station report. Historical cutoff views
+retain both sides of the comparison; no new collection or storage schema is needed.

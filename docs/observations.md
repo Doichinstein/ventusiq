@@ -163,3 +163,47 @@ can expose gaps or delayed collection; missing hours never become zero error.
 Each report covers one archived week, not a merged 30-day skill score. Seasonal
 validation and calibrated confidence remain future work. Changing the selector
 invalidates pending results and exports so a late response cannot relabel a new week.
+
+## Previously archived persistence baseline
+
+Temperature verification now adds a collection-time persistence benchmark for the
+main 6–24-hour report and each source-lead group. Persistence holds the latest
+station temperature available before the selected forecast check constant. It is
+a deliberately simple comparator: a smaller model error on this matched sample
+does not establish future forecast skill, independence of hours or calibration.
+
+For each forecast–observation pair, read the latest station edition archived
+strictly before the forecast check. Whole-second archives exclude an edition
+collected in the same second because ordering cannot be established. The edition
+and its latest observation must be no more than three hours old at the forecast
+check; readings after edition collection are excluded. The latest reading must
+have a finite convertible temperature and QC V/G. A bad or conflicting latest
+reading stays missing; neither an older reading nor an older edition is searched
+for a better baseline. Source station identity must match the selected station.
+
+Current corrected historical readings cannot become earlier baseline inputs.
+Current-mode outcomes still use the selected current observation edition; a
+historical report freezes both its outcome and pre-forecast baseline editions.
+Existing observation matching, quality rules and forecast selection are unchanged.
+
+The UI compares forecast and persistence mean absolute errors on exactly the same
+later station readings, alongside paired/forecast-hour counts and UTC days. A
+negative difference (forecast minus persistence) means smaller forecast errors on
+that subset. Different source-lead groups can still cover different hours. The
+export also includes signed bias, RMS errors, each paired result, excluded cases,
+baseline observation time/ID/QC, edition check/revision and the selected raw
+baseline records. Source extracts are explicitly labeled: they are not the full
+up-to-3,000-record observation editions. Station-to-point representativeness and
+possible station changes still limit interpretation.
+
+The baseline reflects information available at **forecast collection**, which may
+be later than forecast issuance. It is not an issuance-time benchmark. No daily
+cycle, climatology or statistical calibration is inferred from persistence.
+
+`verification-persistence-service.mjs` reads at most 2,000 existing observation
+checks in the relevant interval, excludes later checks and expands at most eight
+compressed editions per query batch. Only selected raw baseline records survive
+projection into the response. Exceeding the baseline scan cap returns explicit
+baseline unavailability while preserving the ordinary forecast comparisons.
+No provider calls, subscriptions, schedules, migrations or retention extensions
+are added by this benchmark. Older evidence already pruned cannot be restored.

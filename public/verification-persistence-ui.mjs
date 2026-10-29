@@ -1,0 +1,11 @@
+export function persistenceNodes(document,report){
+  if(!report)return [];
+  const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;},number=n=>n===null?'Unavailable':n.toFixed(2)+'°F';
+  const nodes=[el('h3','Compare with the last known temperature'),el('p','The baseline holds the station’s latest archived reading constant. It uses only readings available before each forecast check, at most three hours old. Both error columns below use exactly the same later observations.')];
+  if(report.error)nodes.push(el('p',report.error));
+  const table=el('table'),head=el('thead'),tr=el('tr'),body=el('tbody'),scroll=el('div');table.className='hourly-table';scroll.className='hourly-scroll';
+  for(const title of ['Forecast source lead','Paired / forecast hours','UTC days','Forecast mean absolute error','Persistence mean absolute error','Forecast minus persistence'])tr.append(el('th',title));head.append(tr);
+  const groups=[{label:'6–24 hours · main report',...report.overall},...report.groups];for(const g of groups){const row=el('tr');for(const v of [g.label,`${g.sample_count} / ${g.forecast_pair_count}`,g.days,number(g.forecast.mae_f),number(g.persistence.mae_f),number(g.mae_difference_f)])row.append(el('td',v));body.append(row);}table.append(head,body);scroll.append(table);nodes.push(scroll,el('p','A negative difference means smaller forecast errors on this matched subset. Different lead groups can still cover different hours. No percentage skill grade or future accuracy is inferred.'));
+  if(!groups.some(g=>g.sample_count))nodes.push(el('p','No paired persistence cases yet. Earlier monitor editions must already exist in the archive; today’s corrected readings cannot fill that gap.'));
+  const details=el('details');details.append(el('summary','Inspect baseline coverage and evidence'));for(const g of groups){const counts=new Map();for(const p of g.omitted)counts.set(p.reason,(counts.get(p.reason)||0)+1);details.append(el('h4',g.label),el('p',counts.size?[...counts].map(([reason,n])=>`${n}: ${reason}`).join('; '):'No baseline exclusions among matched forecast hours.'));}details.append(el('p',report.scope),el('p','Download the report to inspect exact baseline readings, quality flags, collection times, paired errors and selected raw source records.'));nodes.push(details);return nodes;
+}

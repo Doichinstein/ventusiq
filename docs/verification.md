@@ -2034,3 +2034,38 @@ TypeScript checking passed. The workflow adds Linux/Windows checks and a hosted
 build without deployment credentials or account enrollment. A green local run
 does not establish external CI execution, real delivery, route-closure identity
 or calibrated forecast performance. The source download includes the workflow.
+
+## Alert refresh and keyboard continuity - v92
+
+The v91 GitHub Actions run 40970371873 completed successfully on Ubuntu and
+Windows. Its logs independently confirm 884 JavaScript tests, 30 Python tests,
+TypeScript, source packaging and production builds on both platforms.
+
+Public browser QA at approximately October 29 23:06–23:10 UTC observed 438 mapped
+alerts after zone loading, automatic collection-time advances, a 34-second
+manual pause, resume, replay's paused status and return to Live. A warm reload
+returned the list and 19 polygons after a measured 1,651 ms; all 438 were mapped
+on later inspection. The measurement includes automation overhead and does not
+measure the exact boundary completion time, a cold visit or a slow connection.
+No browser errors were captured. The browser was logically visible even while
+its tool window was kept in the background; hidden-tab suspension is established
+by the existing behavioral test, not this public check.
+
+A regression test first demonstrated that changed collections replaced surviving
+alert buttons. A second failed on missing return focus after closing details.
+The fix retains buttons by alert ID, updates their displayed fields and current
+source handler, reconciles ordering and restores focus only when a focused card
+was moved/removed or the reader closes focused details. Search/region controls
+retain their own focus. Empty feeds and expired alerts do not retain dead cards.
+
+A separate local HTTP fixture fed the actual application three synthetic alerts.
+Browser QA kept keyboard focus on the same alert through severity promotion and
+new higher-priority insertion, then focused Alert results when that alert was
+removed. Enter opened details; closing returned to the retained alert. The same
+close flow worked at 390×844, with a 375 px document client/scroll width and no
+horizontal overflow. Captured browser warnings/errors were empty. These tests
+do not establish real assistive-technology announcements or provider performance.
+
+The complete post-change local runner passed all 887 JavaScript tests, all 30
+Python tests and TypeScript checking. The source download was rebuilt with the
+updated implementation, regression tests and verification notes.

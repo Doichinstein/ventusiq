@@ -1,13 +1,32 @@
 # Ten-feature acceptance audit
 
+## Live alert refresh and keyboard continuity (v92)
+
+Changed collections now retain surviving alert buttons rather than replacing the
+entire list. Only changed card content is rebuilt, and event handlers use the
+latest source body. Keyboard focus survives new arrivals and severity reordering;
+removal of the focused alert falls back to the labeled results container. Closing
+details returns focus to the alert when present. External controls retain focus.
+
+Local synthetic-feed browser QA verified reordering, a new higher-priority alert,
+removal, opening/closing details and the mobile close flow without overflow or
+captured browser errors. These synthetic cases are not real weather observations.
+Public v91 QA separately verified pause/resume, historical replay pausing and live
+recovery. One warm reload exposed all 438 list entries and 19 directly mapped
+polygons after approximately 1.7 seconds; the remaining boundaries loaded later.
+That is a single observation including automation overhead, not a cold-load or
+network performance benchmark. The original account and scientific gates remain.
+
 ## Repeatable automated verification (v91)
 
 The complete local suite passes 884 JavaScript tests, 30 Python daemon tests and
 TypeScript checking on Node 24.19.0 / Python 3.13.12. `npm test` now discovers all
 JavaScript test files rather than relying on the earlier README’s small subset.
 The GitHub workflow runs the same checks and the hosted build on Linux and
-Windows using Node 22 and Python 3.12. Remote workflow results must be inspected
-separately; the local pass does not prove them.
+Windows using Node 22 and Python 3.12. The actual
+[first remote run](https://github.com/Doichinstein/ventusiq/actions/runs/40970371873)
+passed both platforms, including all 884 JavaScript tests, 30 Python tests,
+TypeScript checking, source packaging and the hosted application build.
 
 All ten modules have executable implementation and automated checks. Full release
 acceptance remains unproven: the owner deferred account testing; closed-page

@@ -19,6 +19,7 @@ let category = 'all', feedMode = 'alerts', replayAt = null, lastSuccess = null, 
 let refreshing = false, replayLoading = false, snapshotGeneration = 0, nextFetch = 0, lastSourceUpdated = null, liveData = null;
 let upkeepStatus = null, upkeepStatusCheckedAt = 0;
 let autoRefresh = true, restoredCache = false, auxiliaryPending = false, geometryRevision = 0;
+const alertCards = new Map();
 const refreshInterval = config.mode === 'hosted' ? 30000 : 60000;
 const directHistory = [], geometry = new Map(), zoneCache = new Map(), zoneFailed = new Map();
 let geometryTimer = null;
@@ -254,25 +255,50 @@ function render() {
   }
 }
 function renderAlerts() {
+  const feed = $('feed'), focused = document.activeElement;
+  const focusedId = focused?.dataset?.alertId;
+  const hadCardFocus = focusedId && alertCards.get(focusedId)?.card === focused;
+  const wanted = new Set(filtered.map(f => f.id));
+  for (const [id, entry] of alertCards) {
+    if (!wanted.has(id)) { if (entry.card.parentNode === feed) feed.removeChild(entry.card); alertCards.delete(id); }
+  }
   if (!filtered.length) {
     emptyFeed(features.length ? 'No alerts match this view' : 'No active alerts', features.length ? 'Try another place, event, or severity. Reset filters to see all alerts.' : 'The latest collection contains no active alerts. New alerts will appear automatically.');
+    if (hadCardFocus) feed.focus({preventScroll:true});
     return;
   }
-  const frag = document.createDocumentFragment();
+  const cards = [];
   for (const f of filtered) {
     const p = f.properties;
-    const card = node('button', null, `alert-card${selected === f.id ? ' selected' : ''}`);
+    let entry = alertCards.get(f.id);
+    if (!entry) {
+      const card = node('button'); card.dataset.alertId = f.id;
+      entry = {card, signature:null}; alertCards.set(f.id, entry);
+    }
+    const card = entry.card;
+    card.className = `alert-card${selected === f.id ? ' selected' : ''}`;
     card.setAttribute('aria-label', `${p.event}: ${p.areaDesc}`);
     card.setAttribute('aria-pressed', String(selected === f.id));
-    const top = node('div', null, 'card-top');
-    top.append(badge(f), node('span', replayAt ? dateText(p.sent) : ageText(p.sent), 'card-time'));
-    const bottom = node('div', null, 'card-bottom');
-    bottom.append(node('span', `Until ${dateText(p.ends || p.expires)}`), node('span', 'View alert ↗'));
-    card.append(top, node('h3', p.event || 'Weather alert'), node('p', p.areaDesc || 'Area not provided'), bottom);
+    const sent = replayAt ? dateText(p.sent) : ageText(p.sent), until = dateText(p.ends || p.expires);
+    const signature = JSON.stringify([severity(f), p.event, p.areaDesc, sent, until]);
+    if (signature !== entry.signature) {
+      const top = node('div', null, 'card-top');
+      top.append(badge(f), node('span', sent, 'card-time'));
+      const bottom = node('div', null, 'card-bottom');
+      bottom.append(node('span', `Until ${until}`), node('span', 'View alert ↗'));
+      card.replaceChildren(top, node('h3', p.event || 'Weather alert'), node('p', p.areaDesc || 'Area not provided'), bottom);
+      entry.signature = signature;
+    }
     card.onclick = () => selectAlert(f);
-    frag.append(card);
+    cards.push(card);
   }
-  $('feed').replaceChildren(frag);
+  // Keep surviving buttons connected, including when new alerts are inserted above them.
+  // A genuine reorder can detach a focused button in older DOM implementations.
+  const keep = new Set(cards);
+  for (const child of [...feed.children]) if (!keep.has(child)) feed.removeChild(child);
+  cards.forEach((card, i) => { if (feed.children[i] !== card) feed.insertBefore(card, feed.children[i] || null); });
+  if (hadCardFocus && document.activeElement !== focused)
+    (alertCards.get(focusedId)?.card || feed).focus({preventScroll:true});
 }
 function renderChanges() {
   const term = $('search').value.trim().toLowerCase();
@@ -370,7 +396,14 @@ function renderDetail(f) {
   body.append(link, node('p',`Collected ${dateText(replayAt || lastSuccess,true)}. Source feed updated ${dateText(lastSourceUpdated,true)}.`));
   if(config.mode==='hosted'){const timeline=node('button','Open collected event timeline','action secondary');timeline.onclick=()=>window.WeatherEvents?.openAlert(p.id||f.id);body.append(timeline);}
 }
-function closeDetail() { selected = null; $('detail').hidden = true; render(); }
+function closeDetail() {
+  const previous = selected, restoreFocus = $('detail').contains(document.activeElement);
+  selected = null; $('detail').hidden = true; render();
+  if (restoreFocus) {
+    const card = alertCards.get(previous)?.card;
+    (card?.parentNode === $('feed') ? card : $('feed')).focus({preventScroll:true});
+  }
+}
 function updateTimeline() {
   const input = $('timeline');
   input.max = Math.max(0,snapshots.length - 1);

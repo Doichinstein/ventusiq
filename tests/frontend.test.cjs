@@ -13,14 +13,17 @@ class Element {
   }
   set textContent(x) {this.text=String(x ?? '');this.children=[];}
   get textContent(){return this.text+this.children.map(c=>c.textContent||'').join('');}
-  append(...items){for(const item of items){if(item.tagName==='FRAGMENT')this.children.push(...item.children);else this.children.push(item);}}
-  replaceChildren(...items){this.text='';this.children=[];this.append(...items);}
+  append(...items){for(const item of items){if(item.tagName==='FRAGMENT')this.append(...item.children);else this.insertBefore(item,null);}}
+  replaceChildren(...items){this.text='';for(const child of [...this.children])this.removeChild(child);this.append(...items);}
+  contains(node){return this===node||this.children.some(child=>child.contains(node));}
+  removeChild(child){if(child.contains(this.ownerDocument?.activeElement))this.ownerDocument.activeElement=this.ownerDocument.body;this.children.splice(this.children.indexOf(child),1);child.parentNode=null;return child;}
+  insertBefore(child,reference){if(child.parentNode)child.parentNode.removeChild(child);const index=reference===null?this.children.length:this.children.indexOf(reference);this.children.splice(index,0,child);child.parentNode=this;return child;}
   setAttribute(k,v){this.attrs[k]=v;}
   addEventListener(k,v){this.listeners[k]=v;}
   querySelectorAll(tag){return this.children.filter(c=>c.tagName===tag.toUpperCase());}
   querySelector(tag){return this.querySelectorAll(tag)[0];}
   closest(){return this;}
-  focus(){this.focusCount=(this.focusCount||0)+1;}
+  focus(){this.focusCount=(this.focusCount||0)+1;if(this.ownerDocument)this.ownerDocument.activeElement=this;}
   showModal(){this.open=true;}
   close(){this.open=false;}
 }
@@ -56,6 +59,10 @@ async function setup(mode='direct',options={}) {
   };
   const documentListeners={};
   const doc={getElementById:id=>els[id],createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e;},createDocumentFragment:()=>new Element('fragment'),addEventListener(type,fn){documentListeners[type]=fn;},activeElement:new Element('body')};
+  doc.body=doc.activeElement;
+  for(const element of [...Object.values(els),doc.body])element.ownerDocument=doc;
+  doc.createElement=t=>Object.assign(new Element(t),{ownerDocument:doc});
+  els.detail.append(els['detail-close'],els['detail-body']);
   const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,performance:{now:()=>0},console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout(){return 1;}});
   const run=code=>vm.runInContext(code,ctx);
   run(fs.readFileSync(path.join(__dirname,'../public/zone-loader.js'),'utf8'));
@@ -74,6 +81,39 @@ test('hosted map paints alerts before slow history and status, without redrawing
   const version=s.run('geometryRevision');await s.run('nextFetch=0; refresh()');
   assert.equal(s.run('geometryRevision'),version);assert.equal(s.els.total.textContent,'2');
   s.releaseAuxiliary();await s.settle();
+});
+
+test('changed collections retain surviving alert cards and dispatch their latest source body',async()=>{
+  const s=await setup('hosted'),first=s.els.feed.children[0],second=s.els.feed.children[1];
+  const revised=fixture('one');revised.properties.description='Revised official instructions';
+  s.setData(payload([fixture('new','Tornado Warning','Extreme'),revised,fixture('two','Wind Advisory','Moderate','Other County')]));
+  await s.run('nextFetch=0; refresh()');
+  assert.equal(s.els.feed.children[1],first);
+  assert.equal(s.els.feed.children[2],second);
+  first.onclick();assert.match(s.els['detail-body'].textContent,/Revised official instructions/);
+});
+
+test('live insertion and severity reordering preserve focused alert; expiry focuses results and filters leave search alone',async()=>{
+  const s=await setup('hosted'),card=s.els.feed.children[1];card.focus();
+  const promoted=fixture('two','Tornado Warning','Extreme','Other County');
+  s.setData(payload([fixture('one'),promoted]));await s.run('nextFetch=0; refresh()');
+  assert.equal(s.els.feed.children[0],card);assert.equal(s.doc.activeElement,card);
+  assert.match(card.textContent,/Tornado Warning/);assert.equal(card.attrs['aria-label'],'Tornado Warning: Other County');
+  s.setData(payload([fixture('one')]));await s.run('nextFetch=0; refresh()');
+  assert.equal(s.doc.activeElement,s.els.feed);assert.equal(s.run('alertCards.size'),1);
+  s.els.search.focus();s.els.search.value='absent';s.els.search.listeners.input();
+  assert.equal(s.doc.activeElement,s.els.search);assert.equal(s.run('alertCards.size'),0);
+  s.els.search.value='';s.els.search.listeners.input();s.els.feed.children[0].focus();
+  s.setData(payload([]));await s.run('nextFetch=0; refresh()');
+  assert.equal(s.doc.activeElement,s.els.feed);assert.match(s.els.feed.textContent,/No active alerts/);
+});
+
+test('closing alert details returns keyboard focus to its retained card, but external controls keep focus',async()=>{
+  const s=await setup('hosted'),card=s.els.feed.children[0];
+  card.onclick();assert.equal(s.doc.activeElement,s.els['detail-close']);
+  s.els['detail-close'].onclick();assert.ok(s.doc.activeElement===card);
+  card.onclick();s.els.region.focus();s.els.region.onchange();
+  assert.equal(s.doc.activeElement,s.els.region);
 });
 
 test('map and selected alert use the same date-line frame while stored source stays geographic',async()=>{

@@ -51,3 +51,23 @@ test('missing hourly inputs are unknown, not zero probability, and mismatched ho
 test('missing or future forecast issue times suppress hourly findings, and no combined probability is returned',()=>{
   const data=input();data.forecast.issued_at=stamp(2);const result=evaluateCompound(data);assert.equal(rule(result,'precip-wind').status,'unknown');assert.equal(Object.hasOwn(result,'risk_score'),false);assert.equal(Object.hasOwn(result,'probability'),false);assert.match(result.limitations,/not joint probabilities/);
 });
+function unlocated(event){const f=alert('unlocated',event,0,4,null);f.properties.affectedZones=[];return f;}
+test('unresolved geography on a known unrelated alert does not contaminate compound-rule coverage',()=>{
+  const r=evaluateCompound(input([unlocated('Law Enforcement Warning')]));assert.equal(r.sources.alerts.unresolved_local_coverage,1);assert.equal(r.sources.alerts.unresolved_local_alerts[0].event,'Law Enforcement Warning');
+  for(const id of ['heat-air-alerts','heat-pm25','winter-wind','inland-coastal-flood']){assert.equal(rule(r,id).status,'not_detected');assert.deepEqual(rule(r,id).unresolved_alerts,[]);}
+});
+test('unresolved relevant families keep exactly their dependent rules unknown',()=>{
+  for(const [event,affected] of [['Heat Advisory',['heat-air-alerts','heat-pm25']],['Air Quality Alert',['heat-air-alerts']],['High Wind Warning',['winter-wind']],['Winter Storm Warning',['winter-wind']],['Flood Warning',['inland-coastal-flood']],['Coastal Flood Warning',['inland-coastal-flood']]]){
+    const r=evaluateCompound(input([unlocated(event)]));for(const id of ['heat-air-alerts','heat-pm25','winter-wind','inland-coastal-flood']){
+      const result=rule(r,id);assert.equal(result.status,affected.includes(id)?'unknown':'not_detected',event+' / '+id);assert.equal(result.unresolved_alerts.length,affected.includes(id)?1:0);
+    }
+  }
+});
+test('unclassified unresolved alerts remain unknown for every alert-dependent rule',()=>{
+  for(const event of [undefined,null,'']){const r=evaluateCompound(input([unlocated(event)]));for(const id of ['heat-air-alerts','heat-pm25','winter-wind','inland-coastal-flood'])assert.equal(rule(r,id).status,'unknown');assert.equal(rule(r,'precip-wind').status,'not_detected');}
+});
+test('a supported positive overlap remains complete with unrelated missing geography, partial with a relevant one',()=>{
+  const known=[alert('heat','Heat Advisory'),alert('air','Air Quality Alert')];
+  const complete=rule(evaluateCompound(input([...known,unlocated('Law Enforcement Warning')])),'heat-air-alerts');assert.equal(complete.status,'matched');assert.equal(complete.coverage_complete,true);
+  const partial=rule(evaluateCompound(input([...known,unlocated('Heat Advisory')])),'heat-air-alerts');assert.equal(partial.status,'matched');assert.equal(partial.coverage_complete,false);assert.equal(partial.unresolved_alerts.length,1);
+});

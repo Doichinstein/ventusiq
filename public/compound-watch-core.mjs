@@ -15,7 +15,7 @@ export function evaluateCompoundWatch({selected,report,previous=null}){
     const premises=new Set((found?.windows||[]).flatMap(w=>w.segments.flatMap(s=>s.premises)));
     // Retain the normalized values/times/revisions used by each premise, not full national polygons.
     const evidence=(report?.evidence||[]).filter(e=>premises.has(e.id)).map(({source_snapshot,...e})=>e);
-    const current={...definition,status,coverage_complete:!!(valid&&found.coverage_complete),coverage_note:valid?found.coverage_note:'Compound evaluation unavailable.',windows:valid?found.windows:[],evidence:valid?evidence:[],last_known:status==='unknown'?last:status};
+    const current={...definition,status,coverage_complete:!!(valid&&found.coverage_complete),coverage_note:valid?found.coverage_note:'Compound evaluation unavailable.',unresolved_alerts:valid?found.unresolved_alerts||[]:[],windows:valid?found.windows:[],evidence:valid?evidence:[],last_known:status==='unknown'?last:status};
     rules.push(current);
     if(previous){
       if(status!=='unknown'&&last===null)changes.push({kind:'baseline_compound',key:id,title:'First usable compound check: '+definition.title,after:current});

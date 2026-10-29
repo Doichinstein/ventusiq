@@ -1695,3 +1695,31 @@ validation and supported hosted database recovery remain separate open requireme
   are covered. All 39 observation/inventory/event-bundle tests, TypeScript and
   whitespace checks pass. Post-publication discovery rendering is checked
   separately; this source check alone does not prove the hosted UI flow.
+
+## Compound positive case and relevant coverage (October 29, v69/v70)
+
+- The v69 public Atka Airport briefing produced a precipitation/wind match across
+  41 hourly premises: 38 contiguous hours, a six-hour gap, then three hours.
+  Expanded evidence and JSON export agree. An independent raw-value check verifies
+  each hour's percent precipitation chance is at least 60 and sustained wind/range
+  maximum is at least 25 mph, with matching timestamps and one-hour periods.
+  These are planning thresholds, not joint probabilities or observed impacts.
+- The audit table exposed four incomplete rules. One genuine gap is the absence
+  of a nearby eligible PM2.5 monitor. The other three inherited uncertainty from
+  a Hamilton, Tennessee Law Enforcement Warning with neither geometry nor affected
+  zones, despite that event type not belonging to any of those rules. The official
+  active feed confirmed the missing geography and event type.
+- v70 rule set `2026-10-29.2` computes unresolved geography per named alert family.
+  Known unrelated alert types no longer contaminate coverage. Relevant unlocated
+  alerts and unclassified unlocated alerts remain unknown for dependent rules;
+  supported positives can remain partial. Source audits and selected watch
+  snapshots retain unresolved alert identities. Existing watches rebaseline on
+  the new rule version, without a weather-crossing notification from the upgrade.
+- All 31 compound core, UI, watch and service tests pass, including explicit
+  relevant/unrelated/unknown-type cases and method-change baseline behavior.
+  TypeScript and whitespace checks pass. Live rendering of the v70 correction is
+  verified separately after publication; account testing remains deferred.
+- v69 station-discovery publication was browser-verified: 1,117 Alaska records
+  across four pages suggested PAAK, PADK and ADKA2. Selecting PAAK returned two
+  accepted timestamps. A prior cutoff used the original 500-record archive and
+  suggested only ADKA2, explicitly labeled older and truncated.

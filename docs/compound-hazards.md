@@ -13,8 +13,9 @@ last-good air data together with current outage/freshness state.
 
 ## Rules and source review
 
-Rule set `2026-10-29.1` retains the mechanism guidance reviewed on 2026-10-28
-and adds stricter hourly-input validation. This is an implementation/source review, not an external meteorologist
+Rule set `2026-10-29.2` retains the mechanism guidance reviewed on 2026-10-28
+and strict hourly-input validation, with geography coverage assessed for each
+rule's named alert families. This is an implementation/source review, not an external meteorologist
 endorsement, calibrated impact model or demonstrated forecast skill.
 
 | Rule | Trigger | Mechanism reference / interpretation limit |
@@ -35,7 +36,12 @@ do not create extra evidence. A single alert cannot satisfy both families in a p
 
 - Explicit alert polygons take priority over wider administrative-zone membership.
   Polygon holes and date-line behavior use the shared location evaluator. Zone-only
-  matching needs fresh point metadata. Unresolved scope is shown as incomplete.
+  matching needs fresh point metadata. Unresolved scope is shown as incomplete
+  for rules that use that alert's named family. An unlocated Law Enforcement
+  Warning, for example, cannot make the winter/wind rule unknown. An unresolved
+  alert without an event name remains ambiguous for every alert-dependent rule.
+  The source audit retains all unresolved alert IDs/types; each rule and watch
+  snapshot retains the relevant subset. Positive evidence can still be partial.
 - Alert windows start at supplied onset, otherwise effective/sent, and end at
   ends/expiry. Missing or inverted times are unknown. The intersection must have
   positive duration and overlap the next 48 hours. Touching windows do not qualify.
@@ -114,6 +120,10 @@ identical states do not resend. Window drift and changed values that retain the
 same rule status are reflected in the current snapshot, not separate change events.
 A match after an unknown gap means the latest evidence now detects it; the exact
 onset during the gap remains unknown.
+
+The `2026-10-29.2` coverage correction changes the rule-set version, so existing
+compound watches establish a fresh baseline. The upgrade itself does not create
+a weather-crossing notification.
 
 Events retain the rule version, trigger, interpretation, guidance, matched windows,
 normalized premise values, source revisions and issue/collection/valid times. Full

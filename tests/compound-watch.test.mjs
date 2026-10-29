@@ -25,6 +25,10 @@ test('first usable data and method changes establish a baseline, not a new weath
   const gap=run(setStatus('unknown')),known=run(report(),gap.snapshot);assert.ok(known.changes.some(e=>e.kind==='baseline_compound'));assert.ok(!known.changes.some(e=>e.kind==='compound'));
   const prior=run(setStatus('not_detected')).snapshot;prior.ruleset_version='old';const reset=run(report(),prior);assert.deepEqual(reset.changes.map(e=>e.kind),['baseline_compound']);
 });
+test('selected watch snapshots retain rule-specific unresolved alert identities',()=>{
+  const r=report(),unknown=[{id:'https://api.weather.gov/alerts/unlocated',event:'Heat Advisory'}];Object.assign(r.rules.find(r=>r.id==='heat-air-alerts'),{status:'unknown',coverage_complete:false,unresolved_alerts:unknown});
+  assert.deepEqual(evaluateCompoundWatch({selected:['heat-air-alerts'],report:r}).snapshot.rules[0].unresolved_alerts,unknown);
+});
 test('partial positive evidence remains explicit and retains only selected premise values and provenance',()=>{
   const result=run(setStatus('matched',false));assert.equal(result.covered,false);assert.equal(result.snapshot.rules.length,1);const r=result.snapshot.rules[0];assert.equal(r.status,'matched');assert.equal(r.evidence.length,48);assert.equal(r.evidence[0].revision,'r');assert.equal(r.evidence[0].values.precipitation_probability_percent,80);assert.equal(r.evidence[0].source_snapshot,undefined);assert.ok(r.windows.flatMap(w=>w.segments).every(s=>s.premises.every(id=>r.evidence.some(e=>e.id===id))));
 });

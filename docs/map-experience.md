@@ -19,7 +19,8 @@ health load independently after the map paints; failure there cannot hide a
 successful alert response. Unchanged alert geometry is not rebuilt each tick.
 
 The browser Cache API stores only public alerts and official zone geometries:
-at most 256 entries, 3 MB per entry, with a 15-minute restore limit for alerts
+at most 2,048 entries within a conservative 24 MiB payload budget, with a
+3-million-character per-entry limit and a 15-minute restore limit for alerts
 and 30-day zone lifetime. A restored alert collection is explicitly labeled
 until a live request succeeds, preserves its original timestamp, and excludes
 expired alerts. Cache failure falls back to normal requests. Nothing from

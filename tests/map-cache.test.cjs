@@ -6,7 +6,12 @@ test('public map cache restores original collection time, expires entries and ex
   await s.api.write('api/places',{private:true});assert.equal(s.entries.size,0);
 });
 test('boundary cache bounds concurrent writes and tolerates unavailable storage',async()=>{
-  const s=setup();await Promise.all(Array.from({length:260},(_,i)=>s.api.write('zone/county/'+String(i).padStart(6,'0'),{geometry:{type:'Polygon'}})));
-  assert.equal(s.entries.size,256);assert.equal(await s.api.read('zone/county/000000',1e9),null);
+  const s=setup();await Promise.all(Array.from({length:2052},(_,i)=>s.api.write('zone/county/'+String(i).padStart(6,'0'),{geometry:{type:'Polygon'}})));
+  assert.equal(s.entries.size,2048);assert.equal(await s.api.read('zone/county/000000',1e9),null);
   const window={};vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../public/map-cache.js'),'utf8'),{window,Response,Date});await window.WeatherMapCache.write('alerts',{});assert.equal(await window.WeatherMapCache.read('alerts',1e9),null);
+});
+test('large geometries obey the byte budget as well as the entry count',async()=>{
+  const s=setup();for(let i=0;i<6;i++)await s.api.write('zone/county/'+String(i).padStart(6,'0'),{geometry:'x'.repeat(2000000)});
+  const bytes=[...s.entries.values()].reduce((sum,r)=>sum+Number(r.headers.get('X-Cache-Bytes')),0);
+  assert.ok(bytes<=24*1024*1024);assert.equal(s.entries.size,4);assert.equal(await s.api.read('zone/county/000000',1e9),null);
 });

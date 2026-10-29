@@ -491,3 +491,14 @@ verification endpoint returns both the main and source-lead group benchmarks,
 with selected raw baseline records and exclusion audits. A separate UI renderer
 adds paired mean errors to the existing station report. Historical cutoff views
 retain both sides of the comparison; no new collection or storage schema is needed.
+
+## Outbound webhook delivery
+
+`WebhookService` sends compact owned watch changes after existing upkeep. The
+watch-event transaction inserts queue records for enabled owned endpoints; signed
+JSON uses stable delivery IDs and bounded retry leases. `webhook_endpoints`,
+`webhook_deliveries` and `webhook_attempts` are additive migration 0006. Owner-only
+HTTP routes require same-origin JSON for mutations and keep secrets out of reads.
+Push and webhook drains run concurrently after watch evaluation. See the
+[protocol, receiver example and limits](webhooks.md). Real external delivery and
+rendered/sign-in verification remain outstanding.

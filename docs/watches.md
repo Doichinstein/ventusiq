@@ -122,3 +122,11 @@ watch details for windows, normalized premise values, revision IDs and guidance.
 The JSON history export retains those facts. Forecast combinations cover 48 hours,
 while measured air represents a specific observation instant. See
 [compound watch semantics](compound-hazards.md#opt-in-persistent-compound-watches).
+
+## Signed webhook updates
+
+Explicitly enrolled [webhook destinations](webhooks.md) receive changes from all
+their owner's watches. Initial baselines stay quiet. Existing upkeep drains the
+webhook and push queues concurrently after watch evaluation; no additional schedule
+is needed. Destination pauses cancel queued updates, and browser push quiet hours
+do not apply to webhooks. HTTP acceptance does not prove downstream execution.

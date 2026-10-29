@@ -1,5 +1,34 @@
 # Verification record
 
+## Signed webhook delivery — 2026-10-29
+
+- Added explicit owned destinations, signed watch-change JSON, stable delivery
+  IDs, leased retries, pause/delete controls, test delivery and attempt history.
+  Initial watch baselines stay quiet. The existing hourly path drains push and
+  webhook queues concurrently after watch evaluation; no new schedule was added.
+- 587 Node and 19 Python tests passed (606 total), plus TypeScript and production
+  build. Fourteen new tests cover ownership, consent, lost enrollment responses,
+  quota limits, atomic event queueing, concurrent dispatch, signature integrity,
+  retry timing, redirects, expiry, interrupted attempts, cleanup and receiver
+  deduplication. All outbound transports were fake; no external destination was
+  enrolled or contacted.
+- Additive migration 0006 applied successfully to the local persistent D1 store,
+  bringing the application schema to 17 tables. The webhook tables remained empty.
+  The built page and module returned 200; anonymous GET and POST `/api/webhooks`
+  returned 401 with `private, no-store`. The page contains the receiver guide link.
+- An initial local health read exceeded the 30-second client deadline while a
+  separate Wrangler D1 inspection was running. The server later logged 200.
+  After restarting the preview without a concurrent D1 command, health returned
+  200 in 0.06 seconds. The archived alert source was stale; this check did not
+  collect fresh weather or assert scheduled execution.
+- The Apache-2.0 receiver example verifies raw-body HMAC, delivery ID and a
+  five-minute timestamp window before atomic durable-inbox insertion. Duplicate
+  bodies create one row; a conflicting signed body for the same ID returns 409.
+- Real account sign-in, external receiver delivery and rendered controls remain
+  unverified. Browser automation remains blocked by the saved permission setting.
+  HTTP acceptance alone is not proof of downstream workflow execution. See
+  [webhook setup, protocol and bounds](webhooks.md).
+
 Date: 2026-10-28. This record distinguishes executed checks from deployment recipes.
 
 ## River forecast revision increment

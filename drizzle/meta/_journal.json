@@ -43,6 +43,13 @@
       "when": 1793241518348,
       "tag": "0005_windy_tag",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1793252511830,
+      "tag": "0006_bright_iron_man",
+      "breakpoints": true
     }
   ]
 }

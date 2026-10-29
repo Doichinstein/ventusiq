@@ -38,3 +38,11 @@ forecasts continue to refresh on demand.
 During setup, direct service requests to the production alert, health and forecast
 endpoints returned HTTP 200 with 313 alerts and 156 forecast periods on 2026-10-28.
 The service token was passed only through hidden process input, not stored on disk.
+
+## Signed webhook updates
+
+Explicitly enrolled [webhook destinations](webhooks.md) receive changes from all
+their owner's watches. Initial baselines stay quiet. Existing upkeep drains the
+webhook and push queues concurrently after watch evaluation; no additional schedule
+is needed. Destination pauses cancel queued updates, and browser push quiet hours
+do not apply to webhooks. HTTP acceptance does not prove downstream execution.

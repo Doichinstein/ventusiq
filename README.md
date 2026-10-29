@@ -23,6 +23,8 @@ watches, inspect retained evidence or issue a revocable private Atom feed. Hourl
 upkeep is best effort; see [watch behavior and ownership](docs/watches.md).
 Optional [browser push](docs/browser-push.md) sends encrypted watch-change messages
 to explicitly enrolled devices, with bounded retries, optional per-device quiet hours and delivery-attempt history.
+Optional [signed webhooks](docs/webhooks.md) connect watch changes to your own
+automations, with retries, delivery history and a signature-verifying receiver example.
 
 **Fire & air** adds reported NIFC wildfire points and perimeters, EPA/AirNow
 PM2.5 monitor readings, NASA VIIRS daily thermal-detection imagery, and nearby

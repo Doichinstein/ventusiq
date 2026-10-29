@@ -1,3 +1,5 @@
+import {WebhookService} from '../../../lib/webhook-service.mjs';
+import {webhookGet,webhookPost} from '../../../lib/webhook-http.mjs';
 import {PMComparisonService} from '../../../lib/pm-comparison-service.mjs';
 import {AirForecastService} from '../../../lib/air-forecast-service.mjs';
 import {WatershedSitesService} from '../../../lib/watershed-sites-service.mjs';
@@ -30,7 +32,7 @@ import { pushGet,pushPost } from '../../../lib/push-http.mjs';
 import { watchGet,watchPost } from '../../../lib/watch-http.mjs';
 
 function pushService(weather:WeatherService){let jwk=null;try{jwk=JSON.parse(env.VENTUSIQ_VAPID_PRIVATE_JWK||'null');}catch{}return new PushService(weather,{jwk});}
-async function upkeep(weather:WeatherService,alerts:any){await new WatchService(weather).upkeep(alerts);await pushService(weather).dispatch();}
+async function upkeep(weather:WeatherService,alerts:any){await new WatchService(weather).upkeep(alerts);await Promise.all([pushService(weather).dispatch(),new WebhookService(weather).dispatch()]);}
 function json(value:unknown,status=200){return Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
 function atTime(value:string|null){if(!value||!/(Z|[+-]\d\d:\d\d)$/.test(value)||!Number.isFinite(Date.parse(value)))throw new Error('Archive time requires a valid timezone');return Date.parse(value)/1000;}
 export async function GET(request:Request){
@@ -38,6 +40,7 @@ export async function GET(request:Request){
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
     if(path==='/api/places')return placesGet(new PlacesService(service),(await getChatGPTUser())?.userId||null);
+    if(path==='/api/webhooks')return webhookGet(new WebhookService(service),(await getChatGPTUser())?.userId||null);
     if(path==='/api/push')return pushGet(pushService(service),(await getChatGPTUser())?.userId||null);
     if(path==='/api/watches')return watchGet(request,new WatchService(service),(await getChatGPTUser())?.userId||null);
     if(path.startsWith('/api/watch-feed/'))return watchGet(request,new WatchService(service),null);
@@ -117,6 +120,7 @@ export async function POST(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   if(new URL(request.url).pathname==='/api/geocode')return geocodePost(request,new GeocodeService(new WeatherService(env.DB)));
   if(new URL(request.url).pathname==='/api/places')return placesPost(request,new PlacesService(new WeatherService(env.DB)),(await getChatGPTUser())?.userId||null);
+  if(new URL(request.url).pathname==='/api/webhooks'){const service=new WebhookService(new WeatherService(env.DB)),response=await webhookPost(request,service,(await getChatGPTUser())?.userId||null);if(response.ok)after(()=>service.dispatch());return response;}
   if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,(await getChatGPTUser())?.userId||null);if(response.ok)after(()=>service.dispatch());return response;}
   if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);
   const service=new WeatherService(env.DB),watches=new WatchService(service),user=await getChatGPTUser();

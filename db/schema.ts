@@ -49,3 +49,15 @@ export const pushDeliveries = sqliteTable('push_deliveries',{
   attempts:integer('attempts').notNull().default(0),nextAttempt:integer('next_attempt').notNull().default(0),leaseUntil:integer('lease_until').notNull().default(0),leaseToken:text('lease_token'),
   quietSnapshot:text('quiet_snapshot'),acceptedAt:integer('accepted_at'),httpStatus:integer('http_status'),error:text('error'),
 },t=>[index('push_due').on(t.status,t.nextAttempt),index('push_delivery_subscription').on(t.subscriptionId,t.createdAt)]);
+export const webhookEndpoints = sqliteTable('webhook_endpoints',{
+  id:text('id').primaryKey(),owner:text('owner').notNull(),label:text('label').notNull(),endpoint:text('endpoint').notNull(),secret:text('secret').notNull(),
+  createdAt:integer('created_at').notNull(),enabled:integer('enabled').notNull().default(1),lastTest:integer('last_test').notNull().default(0),
+},t=>[index('webhook_owner').on(t.owner)]);
+export const webhookDeliveries = sqliteTable('webhook_deliveries',{
+  id:text('id').primaryKey(),endpointId:text('endpoint_id').notNull(),watchId:text('watch_id'),eventId:text('event_id'),createdAt:integer('created_at').notNull(),payload:text('payload').notNull(),
+  status:text('status').notNull().default('pending'),attempts:integer('attempts').notNull().default(0),nextAttempt:integer('next_attempt').notNull().default(0),
+  leaseUntil:integer('lease_until').notNull().default(0),leaseToken:text('lease_token'),acceptedAt:integer('accepted_at'),httpStatus:integer('http_status'),error:text('error'),
+},t=>[index('webhook_due').on(t.status,t.nextAttempt),index('webhook_delivery_endpoint').on(t.endpointId,t.createdAt)]);
+export const webhookAttempts = sqliteTable('webhook_attempts',{
+  deliveryId:text('delivery_id').notNull(),attempt:integer('attempt').notNull(),at:integer('at').notNull(),httpStatus:integer('http_status'),outcome:text('outcome').notNull(),error:text('error'),
+},t=>[primaryKey({columns:[t.deliveryId,t.attempt]})]);

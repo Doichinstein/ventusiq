@@ -1,4 +1,5 @@
 /* Agency work-zone context, not network-level closure matching. Apache-2.0. */
+import {nearbyRoadLabels} from './journey-roads.mjs';
 export const ROADWORK_METHOD='2026-10-29.1';
 export const ROADWORK_FEEDS=Object.freeze({
   md:{name:'Maryland DOT SHA',region:'Maryland',url:'https://filter.ritis.org/wzdx_v4.1/mdot.geojson'},
@@ -42,10 +43,11 @@ export function prepareRoadwork(route,products,{maxChecks=2000000}={}){
         for(const segment of candidates){if(++checks>maxChecks){row.limited=true;break;}for(const [left,right] of capsule(project(segment.a.coordinate),project(segment.b.coordinate),[0,0],project(d),ROADWORK_RADIUS))spans.push([segment.a.elapsed+(segment.b.elapsed-segment.a.elapsed)*left,segment.a.elapsed+(segment.b.elapsed-segment.a.elapsed)*right]);}if(row.limited)break;}
       const merged=merge(spans);if(merged.length)row.candidates.push({...event,spans:merged.slice(0,200),spans_omitted:Math.max(0,merged.length-200)});if(row.limited)break;
     }feeds.push(row);
-  }return {method:ROADWORK_METHOD,radius_m:ROADWORK_RADIUS,checks,feeds,dateline_segments_omitted:route.vertices.slice(1).filter((v,i)=>Math.abs(v.coordinate[0]-route.vertices[i].coordinate[0])>180).length,complete:false};
+  }return {method:ROADWORK_METHOD,road_context:route.road_context||null,radius_m:ROADWORK_RADIUS,checks,feeds,dateline_segments_omitted:route.vertices.slice(1).filter((v,i)=>Math.abs(v.coordinate[0]-route.vertices[i].coordinate[0])>180).length,complete:false};
 }
 export function evaluateRoadwork(prepared,departure,now=Date.now()){
-  return {...prepared,feeds:prepared.feeds.map(feed=>{const issued=stamp(feed.issued_at),checked=stamp(feed.checked_at),fresh=!feed.error&&!feed.stale&&issued!==null&&checked!==null&&now-issued<=1800000&&now-issued>=-60000&&now-checked<=900000&&now-checked>=-60000;
-    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length)candidates.push({...event,time_known:timeKnown,usable_timing:fresh&&timeKnown&&!['cancelled','completed'].includes(event.event_status),passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}
+  const {road_context,...base}=prepared;
+  return {...base,feeds:prepared.feeds.map(feed=>{const issued=stamp(feed.issued_at),checked=stamp(feed.checked_at),fresh=!feed.error&&!feed.stale&&issued!==null&&checked!==null&&now-issued<=1800000&&now-issued>=-60000&&now-checked<=900000&&now-checked>=-60000;
+    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length)candidates.push({...event,road_labels:nearbyRoadLabels(road_context,event,spans.map(s=>s.map(t=>(t-departure)/1000))),time_known:timeKnown,usable_timing:fresh&&timeKnown&&!['cancelled','completed'].includes(event.event_status),passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}
     return {...feed,fresh,candidates};})};
 }

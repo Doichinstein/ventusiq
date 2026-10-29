@@ -1,3 +1,4 @@
+import {roadStops} from './journey-roads.mjs';
 export function journeyStops(value){
   if(!Array.isArray(value)||value.length>3)throw Error('Choose at most three via points.');
   return value.map((p,i)=>{
@@ -29,6 +30,6 @@ export function applyJourneyStops(route,input){
   const unique=new Map();for(const s of samples)unique.set([s.elapsed.toFixed(4),s.lat.toFixed(6),s.lon.toFixed(6)].join('/'),s);
   const ordered=[...unique.values()].sort((a,b)=>a.elapsed-b.elapsed),gaps=ordered.slice(1).map((s,i)=>({km:(s.distance-ordered[i].distance)/1000,minutes:(s.elapsed-ordered[i].elapsed)/60}));
   const maxKm=Math.max(0,...gaps.map(g=>g.km)),maxMinutes=Math.max(0,...gaps.map(g=>g.minutes));
-  return {...route,vertices,driving_duration:route.duration,stop_duration:delay,duration:route.duration+delay,stops,sampling:{samples:ordered,max_gap_km:maxKm,max_gap_minutes:maxMinutes,coarse:maxKm>50.01||maxMinutes>30.01},timing_method:route.timing_method+'; user stop durations added at snapped via points'};
+  return {...route,vertices,road_context:roadStops(route.road_context,stops),driving_duration:route.duration,stop_duration:delay,duration:route.duration+delay,stops,sampling:{samples:ordered,max_gap_km:maxKm,max_gap_minutes:maxMinutes,coarse:maxKm>50.01||maxMinutes>30.01},timing_method:route.timing_method+'; user stop durations added at snapped via points'};
 }
 export function journeySampleLabel(row,i,length){return row.stop_index?'Via '+row.stop_index+' · '+({arrive:'stop arrival',during:'during stop',depart:'stop departure',via:'pass through'})[row.stop_phase]:i===0?'Start':i===length-1?'Arrival':'Sample '+i;}

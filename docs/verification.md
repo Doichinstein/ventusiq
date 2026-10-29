@@ -1290,3 +1290,30 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   restore drill remain required. Scheduling, secrets, deployed database retention
   and browser behavior are unchanged; prior rendered/sign-in/delivery QA limits
   still apply. Operational targets and commands are in [archive operations](archive-operations.md).
+
+## Journey road-label evidence (v55)
+
+- All 705 Node tests pass, including 13 new checks for ordered road-step alignment,
+  repeated-coordinate loops, malformed/missing steps, arrival records, capacity,
+  stop index/time shifts, narrow label normalization, junction/stop exclusions,
+  departure-specific event clipping, streaming response limits, legacy cache
+  upgrades and retry backoff, UI departure changes, escaping and exported evidence.
+  TypeScript and the production build pass. Python code is unchanged from v54.
+- Actual OSRM responses for Washington–Baltimore and the same journey via College
+  Park yielded 21 and 35 usable road steps respectively. All steps aligned exactly
+  with the route's ordered geometry. Adding a 30-minute College Park stop preserved
+  every step's displayed vertex/time alignment. The optional map data version was
+  retained as supplied, not inferred from collection time.
+- Built Worker HTTP checks at 2026-10-29T08:22:42Z confirmed the new HTML controls
+  and the routing API with 21 steps, no unavailable legs and a fresh route revision
+  `8ab1df7dfc106d5ffe2f8da725ef37ef8f50d02c72100ed8b233311cdc144c23`.
+  At 08:23:09Z, the Maryland DOT feed was within freshness limits. For a departure
+  one hour later, two records were nearby, neither shared the routed road labels,
+  and neither was promoted to a verified closure. Agency revision:
+  `e12a5550139b927e78b2c4ba83881d49e52d68ad7b7b58dc18dec116afd5ef18`.
+- The shared-label flag is textual evidence only. It does not establish a network
+  identity, designated direction, carriageway, crossing level, traffic access or
+  route closure. The road/direction closure-attribution acceptance requirement
+  remains open. Rendered map/card/date interactions remain unverified under the
+  saved browser permission setting. No schema, secret, subscription, retention or
+  hourly task changed.

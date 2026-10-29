@@ -94,6 +94,49 @@ source gaps and unmatched road identity mean full closure coverage is always
 unproven. Broader feeds, road-network matching, traffic timing and observed route
 outcomes remain future work.
 
+## Routed road-label evidence
+
+Routing now requests OSRM steps. Each step's complete coordinate sequence must
+match the full route geometry in order within its leg; repeated coordinates are
+resolved by that sequence, not a nearest-location search. A malformed, incomplete
+or oversized step list withholds labels for that leg while leaving usable weather
+geometry available. Zero-length arrival steps are validated separately. At most
+2,000 steps per leg are interpreted; routing responses are streamed with an
+8 MiB limit and redirects are rejected.
+
+The expandable route list shows road names, numbered-road references and travel
+times. It follows the selected departure and includes the user's stop delays.
+The stop interval itself is not assigned to either adjacent road. Vertex indices
+refer to the displayed route; original source indices and step fields remain in
+the export. Optional OSM `data_version` is preserved, and is unknown if absent.
+These fields follow the [OSRM route-step contract](https://project-osrm.org/docs/v5.24.0/api/#routestep-object).
+
+For each nearby agency record, the label comparison uses only route steps whose
+estimated passage overlaps that record's selected time window. A tangent touch
+at a junction does not assign a road. Comparisons ignore case, Unicode compatibility
+forms and repeated whitespace; common I/US/MD/IA/WA/SR numbered-road separators
+can be a hyphen or space. Route suffixes, ramp labels and street-direction words
+are retained. Semicolon-separated OSRM references are checked individually.
+There is no fuzzy-name, substring or road-number-only match. Alternate road names
+can therefore remain unmatched, and unmatched names never establish an open road.
+
+Cards show whether any nearby step shares a label, along with the source labels.
+This is textual evidence, not an established connection between the agency and
+OSM road networks. [WZDx direction](https://raw.githubusercontent.com/usdot-jpo-ode/wzdx/main/spec-content/objects/RoadEventCoreDetails.md)
+is the roadway's designated traffic direction, which can differ from compass
+heading. The adapter does not infer it from a route bearing. Carriageway, ramps,
+grade-separated crossings, network identity and route closure attribution remain
+unverified even when labels match. All-lanes-closed remains an agency statement
+about its described road/direction, not a verified closure of this driving route.
+
+The route view displays up to 100 steps; each agency card displays up to ten
+overlapping steps. Per-record evidence retains up to 100 overlapping steps with
+an explicit omitted count; the full route context remains in the journey export
+for recomputation. Missing source steps and unavailable legs are explicit.
+Existing cached routes upgrade on access under the shared routing gate; failed
+upgrades preserve the last route and normal retry backoff. Source editions remain
+immutable. No new subscription, schema or hourly task is introduced.
+
 Application code remains Apache-2.0. Feed metadata is preserved; the
 [WZDx feed specification](https://raw.githubusercontent.com/usdot-jpo-ode/wzdx/main/spec-content/objects/FeedInfo.md)
 requires public feed data to use CC0. The feature does not alter provider terms or

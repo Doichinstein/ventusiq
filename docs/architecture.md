@@ -560,6 +560,12 @@ geometry and keeps failed sources separate from available weather. The main
 journey export includes every selected raw feed edition. No schema, runtime
 secret or schedule changes were needed. See [methods](journey-roadwork.md).
 
+`journey-roads.mjs` now aligns bounded OSRM step geometry to exact route vertices,
+preserves source names/references and supplies time-clipped label comparisons for
+agency records. Stop handling shifts both vertex indices and passage times without
+assigning stopped intervals a roadway. The dashboard exposes labels and their
+limits; signed direction and road-network closure attribution remain unverified.
+
 ### Historical station context
 
 `StationHistoryService` archives the US subset of the fixed NOAA ISD CSV catalog

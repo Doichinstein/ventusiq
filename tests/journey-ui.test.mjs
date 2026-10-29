@@ -37,6 +37,27 @@ test('saved-place and map selection fill coordinates; export retains the selecte
 });
 test('unsupported editions do not expose a broken routing control',()=>{assert.equal(setup('direct').nodes['nav-journey'].hidden,true);});
 
+test('road-label view follows departure selection, uses text nodes and survives in the exported route',async()=>{
+  const context={method:'2026-10-29.1',status:'available',data_version:null,unavailable_legs:[],direction_verified:false,segments:[{leg_index:0,step_index:0,start_vertex:0,end_vertex:1,start_elapsed:0,end_elapsed:3600,name:'<script>Main Street</script>',ref:'I 95',mode:'driving',source:{name:'<script>Main Street</script>'}}]};
+  const s=setup('hosted',false,{...route,road_context:context});await s.mounted.run();
+  assert.match(s.nodes['journey-roads-status'].textContent,/1 route steps/);assert.match(s.nodes['journey-roads-list'].textContent,/<script>Main Street<\/script>/);
+  assert.equal(s.nodes['journey-roads-list'].children[0].children.length,0);
+  const first=s.nodes['journey-roads-list'].textContent;s.nodes['journey-comparisons'].children[1].onclick();assert.notEqual(s.nodes['journey-roads-list'].textContent,first);
+  s.nodes['journey-export'].onclick();const data=JSON.parse(await s.exported().text());assert.deepEqual(data.route.road_context,context);assert.equal(data.selected_departure,1);
+});
+
+test('old routes disclose missing road labels while retaining weather comparisons',async()=>{
+  const s=setup();await s.mounted.run();assert.match(s.nodes['journey-roads-status'].textContent,/unavailable/);assert.equal(s.nodes['journey-roads-list'].children.length,0);assert.equal(s.nodes['journey-comparisons'].children.length,3);
+});
+
+test('agency card and export show shared road labels without promoting them to verified closures',async()=>{
+  const context={method:'2026-10-29.1',status:'available',data_version:null,unavailable_legs:[],direction_verified:false,segments:[{leg_index:0,step_index:0,start_vertex:0,end_vertex:1,start_elapsed:0,end_elapsed:3600,name:'Test road',ref:'',mode:'driving',source:{name:'Test road'}}]};
+  const s=setup('hosted',false,{...route,road_context:context});s.nodes['journey-roadwork-md'].checked=true;await s.mounted.run();
+  assert.match(s.nodes['journey-roadwork-list'].textContent,/shares a road label/);assert.match(s.nodes['journey-roadwork-list'].textContent,/closure attribution remain unverified/);
+  s.nodes['journey-export'].onclick();const data=JSON.parse(await s.exported().text());const labels=data.departures[0].roadwork.feeds[0].candidates[0].road_labels;
+  assert.equal(labels.status,'shared_label');assert.equal(labels.direction_verified,false);assert.equal(labels.closure_attribution_verified,false);
+});
+
 test('route-relevant alert zones load independently and retain official-zone attribution',async()=>{
   const s=setup('hosted',true);await s.mounted.run();assert.equal(s.requests.filter(p=>p==='/api/zones/forecast/ABC001').length,1);assert.match(s.nodes['journey-alerts'].textContent,/Wind Advisory/);assert.match(s.nodes['journey-alerts'].textContent,/Official zone coverage/);assert.doesNotMatch(s.nodes['journey-coverage'].textContent,/incomplete/);
 });

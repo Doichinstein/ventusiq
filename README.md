@@ -381,3 +381,8 @@ source NowCast AQI, gap-aware charts and optional earlier CAMS model context in 
 
 Event stories offer a [portable combined evidence record](docs/event-evidence-bundles.md)
 with a chronology, original source data, JSON checksum verification and offline HTML.
+
+Journey comparisons now expose road names and numbered-road references along the
+route, aligned with departure times and planned stops. Nearby agency records show
+shared-label evidence with explicit road/direction uncertainty; see
+[roadwork methods](docs/journey-roadwork.md#routed-road-label-evidence).

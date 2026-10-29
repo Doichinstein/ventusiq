@@ -393,3 +393,28 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - The gauge edition collected at 2026-10-29 02:19:15 UTC supplied 50 matched observed samples from October 28 13:15 UTC through October 29 01:30 UTC, ranging from 3.96 to 3.98 ft. All 50 were at or above the edition's 3.5 ft action threshold; none reached its 4 ft minor threshold. This is sampled gauge context, not a determination that the warning was right or wrong, nor evidence of conditions everywhere in the alert area. A reported vertical datum was absent.
 - A historical query at 2026-10-29 02:18:49.500 UTC returned `not_collected_by_cutoff` and zero usable timestamps, withholding the later gauge edition. The built homepage and event-gauge module served HTTP 200. This runtime check used actual NWS/NWPS data, without identity spoofing or creating watches.
 - The change reuses existing NWPS gauge storage and adds a bounded hourly inventory cache. No migration, new schedule or outbound notification was introduced. Browser rendering remains unverified under the saved permission restriction. Watershed-aware attribution, verified impact outcomes and long-term measurement retention remain separate roadmap requirements.
+
+## GEFS ensemble spread increment
+
+- Added explicit hosted GEFS temperature/wind collection, 24 future three-hour
+  member-spread samples, threshold counts, complete-set quantiles, gaps and JSON
+  source evidence. Initialization is unknown, and no calibrated probability is claimed.
+- Fifteen new tests cover member/units/grid/time validation, inclusive thresholds,
+  missing values, retrieval age, six-hour shared caching, immutable revisions,
+  source failures, redirect rejection, size limits, atomic admission and request
+  budgets, UI selection races, explicit loading, exports and standalone hiding.
+- Full regression suite: 384 Node and 16 Python tests passed (400 total).
+  TypeScript and production build passed. No dependency or migration was added.
+- Built Worker integration initially exposed unsupported fetch redirect mode `error`;
+  the adapter now uses `manual` and rejects redirect responses. Service tests and
+  the built Worker integration passed after correction.
+- Live built-Worker request at 2026-10-29 02:33:35 UTC returned all 31 members for
+  all 24 displayed timestamps at grid 39, -77.25. The 03:00 UTC temperature sample
+  had p10 56.9, median 57.5 and p90 57.9 degrees F. Revision:
+  `9b765cec833392b43202af0ef7e6179ee31e6fcf63e6fa40f73c1b77240bb193`.
+  A nearby request reused the same grid/revision/check time; malformed coordinates
+  returned HTTP 400. Page and both ensemble modules returned HTTP 200.
+- New layout remains unverified in a rendered browser under the saved permission
+  setting. Hourly upkeep is unchanged; ensemble loading is explicit and cached.
+  Provider terms, attribution and commercial-fork requirements are documented in
+  [ensemble method and limits](ensemble.md).

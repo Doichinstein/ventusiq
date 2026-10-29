@@ -40,3 +40,9 @@ Source methods, units, grid coverage and attribution are retained in history
 responses and exports. No NASA endorsement is implied.
 
 Preliminary tornado, wind and hail reports: NOAA / Storm Prediction Center.
+
+NOAA GEFS ensemble weather data provided by Open-Meteo.com
+(https://open-meteo.com/) under CC BY 4.0
+(https://creativecommons.org/licenses/by/4.0/). VentusIQ selects grid cells,
+samples timestamps and computes empirical member quantiles and threshold counts.
+The free API has separate noncommercial service terms; see docs/ensemble.md.

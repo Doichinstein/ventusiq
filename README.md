@@ -11,6 +11,12 @@ checks duration, temperature, sustained wind, gusts and hourly rain probability.
 An optional user ceiling also compares forecast smoke samples spanning each window. Missing
 values or gaps never count as favorable; stale forecasts pause recommendations.
 
+**Model agreement** adds an opt-in [GEFS ensemble view](docs/ensemble.md) with
+temperature/wind member ranges, threshold counts, missing-data gaps and source
+evidence downloads. Spread is not a calibrated probability or confidence score.
+The free Open-Meteo endpoint is noncommercial; commercial forks need suitable
+provider terms. Application code remains Apache-2.0.
+
 **Persistent watches** in the hosted edition store explicitly enrolled places and
 alert/forecast threshold changes across sessions. Sign in to manage up to four
 watches, inspect retained evidence or issue a revocable private Atom feed. Hourly

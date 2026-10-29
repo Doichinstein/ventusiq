@@ -1,0 +1,3 @@
+import {ENSEMBLE_METHOD} from '../../public/ensemble-core.mjs';
+export const ensembleNow=Date.parse('2026-10-29T03:00:00Z');
+export function ensembleProduct(){const hourly={time:Array.from({length:96},(_,i)=>(ensembleNow+i*3600000)/1000)},hourly_units={time:'unixtime'};for(const field of ['temperature_2m','wind_speed_10m'])for(let i=0;i<31;i++){const key=field+(i?'_member'+String(i).padStart(2,'0'):'');hourly[key]=Array(96).fill(i);hourly_units[key]=field==='temperature_2m'?'°F':'mp/h';}return {method:ENSEMBLE_METHOD,model:'gfs025',point:{lat:39,lon:-77,key:'39,-77'},raw:{latitude:39,longitude:-77,utc_offset_seconds:0,hourly,hourly_units},checked_at:new Date(ensembleNow).toISOString(),revision:'fixture',attribution:{provider:'https://open-meteo.com/'}};}

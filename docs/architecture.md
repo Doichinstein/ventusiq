@@ -284,3 +284,13 @@ remain unknown. Source corrections are editioned, and historical reads never fet
 new data. Highest samples and threshold sample counts retain source metadata,
 reported datum and collection times without claiming verified impacts or duration.
 See [event gauge semantics](event-gauges.md).
+
+## GEFS ensemble adapter
+
+`EnsembleService` uses the existing D1 lease/revision collector with a six-hour
+shared grid cache, atomic cell admission and global request budgets.
+`ensemble-core.mjs` validates units, grid and member identities and computes
+complete-set empirical quantiles. `ensemble.js` provides explicit loading,
+accessible tables, a spread chart and raw-evidence exports in My weather.
+Model initialization is unknown and member counts are not calibrated probabilities.
+See [ensemble method, terms and limits](ensemble.md).

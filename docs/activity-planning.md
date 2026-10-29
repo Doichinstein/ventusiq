@@ -42,7 +42,7 @@ AirNow observation feed; no additional air request is made by the planner.
 ## Results and sensitivity
 
 Each window reports temperature, sustained wind, rain chance and (when requested)
-gust checks as **fits**, **outside limits**, or **unknown**. Numeric fits come
+gust and optional smoke-sample checks as **fits**, **outside limits**, or **unknown**. Numeric fits come
 first, then incomplete checks, then known failures. Among fits, windows that pass
 the chosen extra margins come first, then chronological order. The UI shows up
 to three alternatives separated by the selected duration; JSON contains all
@@ -70,18 +70,52 @@ its name, distance and actual reading time. Readings must be no older than three
 hours and not in the future; source collection must be fresh. We do not select
 a more alarming distant monitor, interpolate to the saved location, or carry
 an observation forward through a future activity window. AQI context does not
-cover every pollutant. Future air-quality coverage is explicitly unknown.
+cover every pollutant. Future total air-quality coverage is explicitly unknown.
 
 An inspected EPA regional forecast layer exposes named Today/Tomorrow products
 without per-feature validity dates in its schema. We did not infer UTC activity
-intervals from those labels. Integrating an explicitly dated air/smoke forecast
-and validating exposure estimates remains required work.
+intervals from those labels. The planner now uses the separately collected, explicitly timed RAP smoke product
+for optional sample comparisons. Total-air forecasts and validated exposure
+estimates remain required work.
+
+## Optional smoke ceiling
+
+An optional user-selected ceiling compares the NOAA RAP surface smoke samples
+against each window. It is blank by default and no activity preset assigns a
+health threshold. The existing smoke card supplies the same cached product to the
+planner, without a second source download. This works in hosted and direct editions.
+
+For a window from 10:30 to 12:30, checks use the 10:00, 11:00, 12:00 and 13:00
+instantaneous model values. For an exact 10:00–12:00 window they use 10:00, 11:00
+and 12:00. Boundaries are computed in absolute UTC time, then displayed in the
+place's timezone, including daylight-saving transitions. The expanded samples
+are listed in each result. A high bracketing sample can reject a candidate even
+when that sample is just outside the proposed activity; this conservative rule
+is shown explicitly and does not estimate when concentrations cross the ceiling.
+
+A requested sample ceiling passes only with a fresh, matching-place product and
+a usable value at every hourly time spanning the window. One known exceedance
+can establish failure despite another gap; stale data remains unknown even if
+old values exceeded the ceiling. NoData, conflicting samples, missing boundary
+samples and wrong-place products cannot pass. Omitting the ceiling keeps smoke
+as context and does not affect weather ranking. Blank and zero are distinct.
+Existing custom ceilings survive loading a weather preset and persist on the device.
+
+This is a discrete **sample** criterion, not continuous air coverage. It cannot
+bound smoke between those times, certify an entire activity's air quality, model
+other PM2.5 sources, estimate an inhaled dose or establish health-safe conditions.
+No interpolation or model-error allowance is invented. `coverage.smoke_samples`
+tracks the complete fresh sample set; `coverage.air_forecast` and
+`smoke.continuous_coverage` remain false. Weather sensitivity margins do not alter
+the smoke ceiling. Results and ordering incorporate the requested sample check,
+while alerts and measured-air context remain separately visible.
 
 ## Export and verification
 
 The JSON export includes evaluation time, method version, applied preferences and
 margins, every window/check, source hourly values and raw gust intervals, revisions,
-issue/check times, matching alert bodies and current monitor evidence. Changing
+issue/check times, matching alert bodies, current monitor evidence and the complete raw smoke product.
+Each window retains its exact smoke samples, coverage, ceiling and comparison result. Changing
 place or source freshness invalidates the previous display. Late grid responses
 cannot repopulate a removed or changed place. Source and place text use text nodes.
 

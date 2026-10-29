@@ -1,5 +1,6 @@
 /* NOAA NDGD RAP near-surface smoke. Apache-2.0. */
 export const SMOKE_METHOD='2026-10-28.1';
+export const SMOKE_EVALUATION_METHOD='2026-10-28.2';
 export const SMOKE_SOURCE='https://mapservices.weather.noaa.gov/raster/rest/services/air_quality/ndgd_smoke_sfc_1hr_avg_time/ImageServer';
 export const SMOKE_UNITS_NOTICE='https://www.weather.gov/media/notification/pdf2/scn21-86rap_and_hrr_smoke_units_change_aab.pdf';
 export const SMOKE_PRODUCT_NOTICE='https://www.weather.gov/media/notification/pdf2/scn22-42_hysplit_smoke_model_change_aaa.pdf';
@@ -46,18 +47,20 @@ function concentration(sample,raster,point){
   if(!sample)return {value:null,reason:'No sampled grid value'};
   const a=sample.attributes,l=sample.location;
   if(!a||a.idp_issueddate!==raster.idp_issueddate||a.idp_validtime!==raster.idp_validtime||a.idp_subset!=='conus')return {value:null,reason:'Raster metadata changed during collection'};
-  if(!l||l.spatialReference?.wkid!==4326||Math.abs(l.x-point.lon)>0.00001||Math.abs(l.y-point.lat)>0.00001)return {value:null,reason:'Sample location does not match'};
+  if(!l||l.spatialReference?.wkid!==4326||!Number.isFinite(l.x)||!Number.isFinite(l.y)||Math.abs(l.x-point.lon)>0.00001||Math.abs(l.y-point.lat)>0.00001)return {value:null,reason:'Sample location does not match'};
   const raw=sample.value;
   if((typeof raw!=='number'&&typeof raw!=='string')||String(raw).trim()===''||!/^[+]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(String(raw)))return {value:null,reason:'NoData or invalid concentration'};
   const value=Number(raw);
   if(!Number.isFinite(value)||value<0||value>0.001)return {value:null,reason:'Concentration outside the supported raw-unit range'};
   return {value:value*1e9,reason:null};
 }
-export function smokeForecast(product,now=Date.now()){
+function contract(product){
   if(product?.method!==SMOKE_METHOD||product.raw_unit!=='kg/m³'||product.conversion_factor!==1e9||product.temporal_semantics!=='instantaneous')throw Error('Unsupported smoke product contract');
-  const point=smokePoint(product.point?.lat,product.point?.lon),issued=Date.parse(product.issued_at),checked=Date.parse(product.checked_at),start=Math.ceil(now/HOUR)*HOUR;
+}
+function smokeRows(product,start,count){
+  const point=smokePoint(product.point?.lat,product.point?.lon),issued=Date.parse(product.issued_at);
   const rows=[];
-  for(let t=start;t<start+48*HOUR;t+=HOUR){
+  for(let t=start;t<start+count*HOUR;t+=HOUR){
     const rasters=product.rasters.filter(a=>a.idp_validtime===t&&a.idp_issueddate===issued);
     let value=null,reason='Outside available forecast coverage',raster_id=null,resolution=null;
     if(rasters.length===1){const raster=rasters[0],matches=product.samples.filter(s=>s.rasterId===raster.objectid);raster_id=raster.objectid;
@@ -65,7 +68,31 @@ export function smokeForecast(product,now=Date.now()){
     }else if(rasters.length>1)reason='Conflicting forecast rasters';
     rows.push({at:iso(t),smoke_ug_m3:value,reason,raster_id,source_resolution:resolution});
   }
+  return rows;
+}
+export function smokeForecast(product,now=Date.now()){
+  contract(product);
+  const point=smokePoint(product.point?.lat,product.point?.lon),issued=Date.parse(product.issued_at),checked=Date.parse(product.checked_at);
+  const rows=smokeRows(product,Math.ceil(now/HOUR)*HOUR,48);
   const usable=rows.filter(r=>r.smoke_ug_m3!==null),age=now-issued,checkAge=now-checked;
-  const fresh=!product.stale&&!product.error&&Number.isFinite(age)&&age>=0&&age<=30*HOUR&&Number.isFinite(checkAge)&&checkAge>=0&&checkAge<=1.5*HOUR;
-  return {method:SMOKE_METHOD,evaluated_at:iso(now),point,issued_at:product.issued_at,checked_at:product.checked_at,fresh,error:product.error||null,rows,coverage:{usable:usable.length,expected:48},range:usable.length?{min:Math.min(...usable.map(r=>r.smoke_ug_m3)),max:Math.max(...usable.map(r=>r.smoke_ug_m3))}:null,evidence:product};
+  const fresh=!product.stale&&!product.error&&Number.isFinite(age)&&age>=0&&age<=30*HOUR&&Number.isFinite(checkAge)&&checkAge>=-60000&&checkAge<=1.5*HOUR;
+  return {method:SMOKE_EVALUATION_METHOD,evaluated_at:iso(now),point,issued_at:product.issued_at,checked_at:product.checked_at,fresh,error:product.error||null,rows,coverage:{usable:usable.length,expected:48},range:usable.length?{min:Math.min(...usable.map(r=>r.smoke_ug_m3)),max:Math.max(...usable.map(r=>r.smoke_ug_m3))}:null,evidence:product};
+}
+
+// A sample ceiling evaluates discrete values bracketing an activity window.
+// It cannot establish continuous concentrations between those forecast times.
+export function smokeWindow(product,place,start,end,limit=null,now=Date.now()){
+  const base={method:SMOKE_EVALUATION_METHOD,status:limit===null?'not_requested':'unknown',limit_ug_m3:limit,scope:'hourly instantaneous samples bracketing the window',continuous_coverage:false,complete:false,fresh:false,samples:[],maximum_ug_m3:null,reason:'Smoke forecast unavailable'};
+  if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start||end-start>12*HOUR)return {...base,reason:'Unsupported activity window'};
+  if(limit!==null&&(!Number.isFinite(limit)||limit<0||limit>10000))return {...base,reason:'Invalid smoke ceiling'};
+  if(!product)return base;
+  try{
+    const report=smokeForecast(product,now),point=smokePoint(place?.lat,place?.lon);
+    if(point.lat!==report.point.lat||point.lon!==report.point.lon)return {...base,reason:'Smoke forecast belongs to a different place'};
+    const first=Math.floor(start/HOUR)*HOUR,last=Math.ceil(end/HOUR)*HOUR;
+    const samples=smokeRows(product,first,(last-first)/HOUR+1),usable=samples.filter(s=>s.smoke_ug_m3!==null),complete=usable.length===samples.length;
+    const maximum=usable.length?Math.max(...usable.map(s=>s.smoke_ug_m3)):null;
+    const status=limit===null?'not_requested':!report.fresh?'unknown':usable.some(s=>s.smoke_ug_m3>limit)?'outside_limits':complete?'fits':'unknown';
+    return {...base,status,fresh:report.fresh,complete,samples,maximum_ug_m3:maximum,issued_at:report.issued_at,checked_at:report.checked_at,revision:product.revision||null,reason:!report.fresh?'Smoke forecast is stale or updates are delayed':!complete?'Missing or invalid hourly smoke samples':null};
+  }catch(error){return {...base,reason:error.message};}
 }

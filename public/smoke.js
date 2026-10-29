@@ -4,7 +4,7 @@ export function mountSmoke({document,window,fetcher=fetch,clock=Date.now}){
   const time=t=>t?new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}):'unavailable';
   const number=n=>n===null?'Unknown':n.toLocaleString(undefined,{maximumFractionDigits:1});
   let key=null,point=null,product=null,report=null,generation=0,pending=false,next=0;
-  function clear(){report=null;get('smoke-summary').replaceChildren();get('smoke-chart').replaceChildren();get('smoke-table').replaceChildren();get('smoke-export').disabled=true;}
+  function clear(){report=null;get('smoke-summary').replaceChildren();get('smoke-chart').replaceChildren();get('smoke-table').replaceChildren();get('smoke-export').disabled=true;window.WeatherPlanner?.refresh();}
   function render(){
     if(!product)return;report=smokeForecast(product,clock());const r=report;
     get('smoke-status').textContent=`${r.fresh?'':'Updates delayed · '}RAP run ${time(r.issued_at)} · checked ${time(r.checked_at)}${r.error?' · '+r.error:''}`;
@@ -22,7 +22,7 @@ export function mountSmoke({document,window,fetcher=fetch,clock=Date.now}){
       r.rows.forEach((p,i)=>{if(p.smoke_ug_m3!==null)node('circle',{cx:55+i/47*565,cy:y(p.smoke_ug_m3),r:3,fill:'#e8bd7c'});});
       node('text',{x:55,y:187},'Next hour · µg/m³');node('text',{x:540,y:187},'+48 hours');target.append(svg);
     }
-    get('smoke-export').disabled=false;
+    get('smoke-export').disabled=false;window.WeatherPlanner?.refresh();
   }
   async function load(force=false){
     if(!point||pending||(!force&&clock()<next))return;const token=++generation,selected={...point};pending=true;next=clock()+3600000;get('smoke-refresh').disabled=true;
@@ -53,6 +53,6 @@ export function mountSmoke({document,window,fetcher=fetch,clock=Date.now}){
   get('smoke-source').href=SMOKE_SOURCE;
   get('smoke-refresh').onclick=()=>load(true);
   get('smoke-export').onclick=()=>{render();if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-smoke-forecast.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherSmoke={refresh};refresh();window.setInterval(()=>{if(!get('personal-workspace').hidden)refresh();},60000);return {refresh,load};
+  window.WeatherSmoke={refresh,snapshot:()=>product};refresh();window.setInterval(()=>{if(!get('personal-workspace').hidden)refresh();},60000);return {refresh,load};
 }
 if(typeof window!=='undefined'){const start=()=>mountSmoke({document,window});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}

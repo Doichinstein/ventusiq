@@ -7,7 +7,8 @@ responsive map with filters, official alert details, replay, and a change feed.
 **My weather** adds device-local saved places, geographic alert matching, a 48-hour
 hourly outlook, meaningful alert/forecast changes, optional desktop notifications
 while the page is open, share links, and configurable activity windows. Planning
-checks duration, temperature, sustained wind and hourly rain probability. Missing
+checks duration, temperature, sustained wind, gusts and hourly rain probability.
+An optional user ceiling also compares forecast smoke samples spanning each window. Missing
 values or gaps never count as favorable; stale forecasts pause recommendations.
 
 **Persistent watches** in the hosted edition store explicitly enrolled places and

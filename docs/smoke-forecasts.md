@@ -52,16 +52,17 @@ The service may return rounded pixel values; displayed decimal formatting does
 not imply higher precision. NoData is not zero. No smoothing, interval averages,
 extrapolation, threshold duration or accumulated exposure is calculated.
 
-A run older than 30 hours, a check older than 90 minutes, future issue/check times
+A run older than 30 hours, a check older than 90 minutes, future issue times or check times more than one minute ahead
 or a collection error marks the result delayed. Remaining future values may still
 be shown as the last available forecast, with the warning carried into exports.
 This is a freshness convention, not a calibrated model accuracy score.
 
 ## Limits and next work
 
-There is no animated smoke map, Alaska/Hawaii adapter, HRRR comparison, validated
-exposure model or integration into activity-window pass/fail checks yet. The
-forecast card provides timing context; existing planning still does not certify
-future air conditions. Browser rendering remains unverified because the saved
+The [activity planner](activity-planning.md) can now compare an optional ceiling
+against hourly smoke samples spanning each activity window. This uses the same
+product and does not certify continuous air conditions or personal exposure.
+There is no animated smoke map, Alaska/Hawaii adapter, HRRR comparison or validated
+exposure model yet. Browser rendering remains unverified because the saved
 browser access setting blocks automated inspection. Numeric, source-contract,
 cache and UI state behavior have automated tests.

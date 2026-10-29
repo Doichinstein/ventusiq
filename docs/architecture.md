@@ -238,5 +238,7 @@ products through the hazard archive. `smoke-core.mjs` pins the RAP surface mass
 density contract, locks raster IDs and checks run/time/location metadata before
 conversion. `smoke.js` adds a separate My weather chart, gap-aware table and raw
 evidence export; direct editions reuse the source adapter. Forecasts remain
-separate from measured air and activity-window pass/fail logic. See
+separate from measured air. Activity planning can apply an optional user ceiling
+to hourly smoke samples spanning each window, with explicit discrete coverage
+and raw evidence. This is not a continuous air-quality or exposure check. See
 [smoke forecast semantics](smoke-forecasts.md).

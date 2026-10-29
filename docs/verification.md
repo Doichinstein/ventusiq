@@ -1667,3 +1667,31 @@ validation and supported hosted database recovery remain separate open requireme
   stable zone collections, cache loading, freshness and date-line display.
 - Account testing remains deferred. Scientific validation, route closure attribution,
   signed-in delivery and hosted recovery acceptance are not closed by this change.
+# Nonempty diagnostics and paginated station discovery (October 29, v68/v69)
+
+- v68 Sacramento/KSAC rendered 11 forecast-versus-observation hours over one UTC
+  day. The downloaded JSON independently reproduces MAE/bias 3.423636°F and RMSE
+  3.922045°F; all forecast checks precede their valid hours by at least six hours,
+  source leads are 6–24 hours, and observations are within 30 minutes with QC V/G.
+  The UI retains 157 missing-archive hours and unavailable persistence/longer-lead
+  comparisons. This is a small local sample, not general forecast-skill evidence.
+- v68 Atka/Adak High Wind Warning matched two PAAK timestamps, each with accepted
+  temperature and sustained wind. The highest sampled wind is 24.158912 mph;
+  gusts remain unknown. Raw unit conversions, QC, source coordinates and alert
+  windows agree with the exported rows. The combined station/alert bundle has
+  three chronology rows and passes `verify_event_bundle.mjs`. Replaying before
+  the station collection clears exports and returns no collected station edition.
+  The association does not verify a warning or physical impacts. Account testing
+  remains deferred and offline HTML rendering remains unverified.
+- The first-500 Alaska discovery inventory omitted PAAK even though direct lookup
+  worked. v69 follows validated station pagination with a four-page/2,000-record
+  limit per state, preserving raw features and per-page provenance. Live NOAA
+  collection returned 500, 500, 117 and zero records; the empty last page still
+  supplied a next link, so the collector explicitly stops on empty pages. PAAK
+  is present and passes the existing alert-boundary candidate matcher.
+- New cache keys permit immediate upgraded collection while historical replay
+  falls back to eligible original single-page editions. Later-page errors retain
+  last-good evidence as delayed; invalid links, repeated cursors and page limits
+  are covered. All 39 observation/inventory/event-bundle tests, TypeScript and
+  whitespace checks pass. Post-publication discovery rendering is checked
+  separately; this source check alone does not prove the hosted UI flow.

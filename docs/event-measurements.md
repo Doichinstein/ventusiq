@@ -11,13 +11,28 @@ impacts throughout an alert area.
 **Find stations in the alert area** reads the NWS station inventory for up to two
 state/marine prefixes found in the selected messages' UGC codes. The [NWS API
 specification](https://api.weather.gov/openapi.json) defines `/stations` state
-filtering and pagination. This implementation takes only the first 500 listed
-stations per selected state, reports pagination/omission limits, and offers at
+filtering and pagination. This implementation reads up to four 500-record pages
+per selected state, reports page/record counts and pagination/omission limits, and offers at
 most 25 geometrically matching stations, with four-letter codes surfaced first
 and identifier ordering within each group. This is a discovery convenience, not
 a claim of data availability or quality. This is candidate
 discovery, not a complete inventory or evidence that other areas lack stations.
 The user can instead enter a 3–8 character NWS station identifier directly.
+
+Pagination follows only validated NWS `/stations` cursors for the same state and
+500-record page size, under the existing shared 40-second event deadline. It stops
+at an absent next link, an empty page (NWS can still supply a next cursor there),
+or four pages. Repeated cursors and malformed or failed later pages reject the
+new collection; an existing last-good edition remains explicitly delayed. Raw
+station features, requested page URLs, counts, source next links and the stopping
+reason remain in the inventory evidence. Four pages with a remaining nonempty
+continuation are explicitly truncated; no complete inventory is promised.
+
+Paginated collections use `observations/event-stations-v2/<state>` and the existing
+daily shared cache. Historical reads prefer a v2 edition collected by the cutoff,
+then fall back to the original single-page archive at the same cutoff. They never
+fetch new pages. A failed first upgrade may also return the legacy edition with
+delayed status. Legacy editions retain their first-500 limitation in the UI.
 
 Inventory locations are used only to suggest candidates. Each measurement must
 supply its own valid point geometry; its actual coordinates determine matching.

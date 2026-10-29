@@ -2069,3 +2069,43 @@ do not establish real assistive-technology announcements or provider performance
 The complete post-change local runner passed all 887 JavaScript tests, all 30
 Python tests and TypeScript checking. The source download was rebuilt with the
 updated implementation, regression tests and verification notes.
+
+## Regional station evidence and upkeep audit - v93
+
+The v92 remote workflow run 40971854137 passed tests and builds on both Linux and
+Windows. Public post-deployment QA showed all 439 alerts mapped and verified that
+closing details returned keyboard focus to the El Paso flash-flood warning.
+No browser warnings/errors were captured.
+
+The Sites metadata still identifies the enabled hourly VentusIQ archive-upkeep
+task. Bounded Worker logs showed successful visitor API requests, but did not
+identify a scheduled invocation. This does not prove unattended execution.
+The schedule was not changed or duplicated, and no account/delivery test ran.
+
+A fixed six-location station experiment selected each nearest catalog-listed US
+station before fetching its temperature history. The public API returned all six
+histories without stale flags or errors. Each retained 2016–2025 window was
+normalized again and evaluated with unchanged method 2026-10-29.1 and the fixed
+2024–2025 holdout schedule. The 237 scored cases, 48 missing cases and three
+insufficient cases are all retained; no station or unfavorable result was omitted.
+
+A separate Python reconstruction used the raw NOAA rows rather than importing the
+JavaScript evaluator. Count/location filtering, seasonal pools, temperature
+ranking, seven-day spacing, following-day medians and every scored result agreed
+within 1e-10°C. The equal-station analog/seasonal/persistence MAEs were
+1.8072243465 / 3.1343995227 / 1.7346488104°C. Analog MAE beat persistence at one of
+six stations. This is retrospective temperature-only evidence; it is not an
+operational forecast experiment, independent regional sample or calibration.
+
+The compressed raw bundle, readable grouped summary and independent audit are
+under `docs/evidence/station-regional-*`. The offline verifier reproduces every
+stored result and rejects changed source hashes, altered scores, missing members,
+station/window mismatches and invalid capture ordering. It performs no network
+requests, enrollment, scheduling or database mutation. Three artifact-based
+regression tests pass; broader checks and publication are recorded separately.
+
+The complete JavaScript run passed all 890 tests. Its Python phase encountered
+one Windows `ConnectionAbortedError` during the geocode oversized-request check.
+The focused geocode rerun passed all three tests; a subsequent complete Python
+run passed all 30 tests, and TypeScript checking passed. The original failed log
+is retained alongside the rerun evidence; this was not a first-run clean suite.

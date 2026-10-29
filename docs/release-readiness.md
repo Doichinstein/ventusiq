@@ -1,5 +1,17 @@
 # Ten-feature acceptance audit
 
+## Broader retrospective station checks (v93)
+
+Six additional fixed station locations produced 237 scored cases from 288 scheduled
+dates, with 48 missing and three insufficient. An independent Python reconstruction
+agreed with the unchanged station algorithm. Equal-station MAE was 1.807°C for
+analogs, 3.134°C for the seasonal baseline and 1.735°C for persistence. Only Denver
+had lower analog error than persistence. Raw evidence, exclusions, season/year
+results and an offline verifier are retained in [station evaluation](station-analogs.md).
+The source series end in August 2025. This expands geographic spot-check evidence;
+it does not establish operational transfer, homogeneous climate records or broad
+regional skill. Those acceptance limits and the deferred account checks remain.
+
 ## Live alert refresh and keyboard continuity (v92)
 
 Changed collections now retain surviving alert buttons rather than replacing the

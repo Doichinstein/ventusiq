@@ -1,0 +1,78 @@
+{
+  "verified_at": "2026-10-29T23:24:47.376279+00:00",
+  "bundle_sha256": "4e33b623e5c71467cf2de96e44d2fd86c3cecf1a72b18938d0d49f1c299c235b",
+  "method": "Independent Python reconstruction from raw station rows: count/location exclusions, seasonal pool, temperature ranking/spacing, all 48 test dates, medians and identical-case errors. No JavaScript evaluator imports.",
+  "stations": [
+    {
+      "city": "Denver",
+      "id": "72565003017",
+      "usable_days": 3526,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "analog_mae": 2.425694444444444,
+      "seasonal_mae": 3.7138888888888886,
+      "persistence_mae": 2.5986111111111105
+    },
+    {
+      "city": "Miami",
+      "id": "72202012839",
+      "usable_days": 3524,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "analog_mae": 1.147222222222223,
+      "seasonal_mae": 1.9645833333333336,
+      "persistence_mae": 1.1152777777777776
+    },
+    {
+      "city": "Boston",
+      "id": "72509014739",
+      "usable_days": 3526,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "analog_mae": 2.28125,
+      "seasonal_mae": 3.498611111111111,
+      "persistence_mae": 2.0972222222222223
+    },
+    {
+      "city": "Chicago",
+      "id": "72530094846",
+      "usable_days": 3524,
+      "evaluated": 39,
+      "missing": 8,
+      "insufficient": 1,
+      "analog_mae": 2.225071225071225,
+      "seasonal_mae": 3.831908831908832,
+      "persistence_mae": 2.0584045584045585
+    },
+    {
+      "city": "Houston",
+      "id": "72243012960",
+      "usable_days": 3526,
+      "evaluated": 38,
+      "missing": 8,
+      "insufficient": 2,
+      "analog_mae": 1.4210526315789473,
+      "seasonal_mae": 3.0314327485380117,
+      "persistence_mae": 1.3786549707602345
+    },
+    {
+      "city": "Anchorage",
+      "id": "70272526491",
+      "usable_days": 3508,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "analog_mae": 1.3430555555555554,
+      "seasonal_mae": 2.765972222222222,
+      "persistence_mae": 1.1597222222222223
+    }
+  ],
+  "equal_station_mae": {
+    "analog_mae": 1.8072243464787325,
+    "seasonal_mae": 3.1343995226670662,
+    "persistence_mae": 1.7346488104163542
+  }
+}

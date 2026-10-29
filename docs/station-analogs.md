@@ -92,3 +92,64 @@ These are small descriptive station samples, not regional validation. In
 particular, analogs did not beat persistence at Reagan. No parameter was changed
 in response to these results. Multi-variable station analogs, forecast transfer,
 homogeneity/climate-drift checks and broader independent validation remain open.
+
+## Six additional station locations — October 29, 2026
+
+The unchanged temperature-only method was evaluated at the nearest catalog station
+to six fixed airport points: Denver, Miami, Boston, Chicago, Houston and Anchorage.
+The points, selection rule, history window and aggregation were written before
+requesting their temperature histories. The nearest Anchorage station was Lake
+Hood Seaplane Base, not Ted Stevens International. No station was substituted and
+no thresholds were tuned after seeing scores. This local plan is inspectable but
+is not an independently timestamped research registration.
+
+All stations used 2016–2025 histories, an eight-year retrieval pool ending in 2023
+and the same 48 scheduled 2024–2025 test dates. All three methods use identical
+scored cases within each station. Lower mean absolute error (MAE) is better.
+
+| Station | Scored / 48 | Missing | Too few matches | Analog MAE °C | Seasonal MAE °C | Persistence MAE °C |
+|---|---:|---:|---:|---:|---:|---:|
+| Denver International, 72565003017 | 40 | 8 | 0 | 2.426 | 3.714 | 2.599 |
+| Miami International, 72202012839 | 40 | 8 | 0 | 1.147 | 1.965 | 1.115 |
+| Boston Logan, 72509014739 | 40 | 8 | 0 | 2.281 | 3.499 | 2.097 |
+| Chicago O'Hare, 72530094846 | 39 | 8 | 1 | 2.225 | 3.832 | 2.058 |
+| Houston Intercontinental, 72243012960 | 38 | 8 | 2 | 1.421 | 3.031 | 1.379 |
+| Anchorage / Lake Hood, 70272526491 | 40 | 8 | 0 | 1.343 | 2.766 | 1.160 |
+
+Of 288 scheduled station/date cases, 237 were scored, 48 lacked reference/outcome
+observations and three lacked enough matches. The retained source series end in
+August 2025; their absent later months were not filled. Giving each station equal
+weight produces MAE of **1.807°C for analogs, 3.134°C for the seasonal baseline,
+and 1.735°C for persistence**. The seasonal prediction for each case is the median of its eligible
+historical following-day temperatures; the aggregate is the mean of station MAEs.
+Analogs beat that seasonal baseline at all six stations but beat persistence only
+at Denver. These results do not support an overall improvement over persistence.
+
+The [complete compressed evidence](evidence/station-regional-2026-10-29.json.gz)
+retains the plan, catalog selections, raw NOAA rows, exclusions, match dates and
+all validation cases. The [readable summary](evidence/station-regional-summary-2026-10-29.json)
+also includes season/year groups. Reproduce it without network requests:
+
+```sh
+node scripts/verify-station-cohort.mjs docs/evidence/station-regional-2026-10-29.json.gz
+```
+
+The verifier checks membership, capture order, source hashes, fixed windows,
+normalization and every stored holdout result before reporting metrics. Tests
+reject changed source rows/scores, omitted stations, mismatched locations and
+invalid selection times. Hashes detect changes relative to the bundle, not
+authenticity or independent proof of source collection time.
+
+An [independent Python audit](evidence/station-regional-independent-audit-2026-10-29.json)
+reconstructed eligibility, seasonal pools, match ranking/spacing, all test dates,
+medians and errors directly from the raw NOAA rows and agreed within 1e-10°C.
+Its fixed-experiment script is also retained:
+
+```sh
+python docs/evidence/audit-station-regional-2026-10-29.py
+```
+
+Station/date errors are correlated, the six locations are a convenience sample,
+and the last holdout year lacks autumn/winter observations. This expands the
+actual-source checks; it does not establish regional/seasonal generalization,
+station homogeneity, operational forecast transfer or calibrated probabilities.

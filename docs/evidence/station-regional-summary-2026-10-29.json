@@ -1,0 +1,715 @@
+{
+  "schema": "ventusiq-station-regional-summary/1",
+  "method": "2026-10-29.1",
+  "window": {
+    "start": "2016-01-01",
+    "end": "2025-12-31",
+    "holdout_start": "2024-01-01"
+  },
+  "stations": [
+    {
+      "city": "Denver",
+      "id": "72565003017",
+      "name": "DENVER INTERNATIONAL AIRPORT",
+      "usable_days": 3526,
+      "expected_days": 3653,
+      "attempted": 48,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "last_raw_date": "2025-08-27",
+      "checked_at": "2026-10-29T23:21:03.000Z",
+      "stale": false,
+      "source_error": null,
+      "metrics": {
+        "n": 40,
+        "analog_mae": 2.425694444444444,
+        "seasonal_mae": 3.7138888888888886,
+        "persistence_mae": 2.5986111111111105,
+        "analog_bias": 0.13263888888888947,
+        "difference_seasonal": -1.2881944444444442,
+        "difference_persistence": -0.17291666666666664,
+        "versus_seasonal": {
+          "lower": 28,
+          "tied": 0,
+          "higher": 12
+        },
+        "versus_persistence": {
+          "lower": 19,
+          "tied": 1,
+          "higher": 20
+        },
+        "interval": {
+          "n": 40,
+          "inside": 34,
+          "below": 3,
+          "above": 3,
+          "mean_width": 8.788333333333338
+        }
+      },
+      "groups": [
+        {
+          "id": "DJF",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 10,
+          "missing": 2,
+          "insufficient": 0,
+          "n": 10,
+          "analog_mae": 2.286111111111112,
+          "seasonal_mae": 3.7999999999999994,
+          "persistence_mae": 2.927777777777778
+        },
+        {
+          "id": "MAM",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 2.7384259259259256,
+          "seasonal_mae": 3.5416666666666665,
+          "persistence_mae": 2.4999999999999996
+        },
+        {
+          "id": "JJA",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 2.097222222222221,
+          "seasonal_mae": 3.3333333333333335,
+          "persistence_mae": 2.226851851851851
+        },
+        {
+          "id": "SON",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 6,
+          "missing": 6,
+          "insufficient": 0,
+          "n": 6,
+          "analog_mae": 2.689814814814815,
+          "seasonal_mae": 4.675925925925925,
+          "persistence_mae": 2.9907407407407405
+        },
+        {
+          "id": "2024",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 24,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 24,
+          "analog_mae": 2.9189814814814814,
+          "seasonal_mae": 4.384259259259259,
+          "persistence_mae": 2.8287037037037037
+        },
+        {
+          "id": "2025",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 16,
+          "missing": 8,
+          "insufficient": 0,
+          "n": 16,
+          "analog_mae": 1.685763888888888,
+          "seasonal_mae": 2.708333333333333,
+          "persistence_mae": 2.253472222222222
+        }
+      ]
+    },
+    {
+      "city": "Miami",
+      "id": "72202012839",
+      "name": "MIAMI INTERNATIONAL AIRPORT",
+      "usable_days": 3524,
+      "expected_days": 3653,
+      "attempted": 48,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "last_raw_date": "2025-08-27",
+      "checked_at": "2026-10-29T23:21:11.000Z",
+      "stale": false,
+      "source_error": null,
+      "metrics": {
+        "n": 40,
+        "analog_mae": 1.1472222222222233,
+        "seasonal_mae": 1.9645833333333331,
+        "persistence_mae": 1.1152777777777776,
+        "analog_bias": 0.6986111111111114,
+        "difference_seasonal": -0.8173611111111103,
+        "difference_persistence": 0.0319444444444454,
+        "versus_seasonal": {
+          "lower": 31,
+          "tied": 0,
+          "higher": 9
+        },
+        "versus_persistence": {
+          "lower": 18,
+          "tied": 1,
+          "higher": 21
+        },
+        "interval": {
+          "n": 40,
+          "inside": 32,
+          "below": 5,
+          "above": 3,
+          "mean_width": 3.225
+        }
+      },
+      "groups": [
+        {
+          "id": "DJF",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 10,
+          "missing": 2,
+          "insufficient": 0,
+          "n": 10,
+          "analog_mae": 1.88888888888889,
+          "seasonal_mae": 3.905555555555556,
+          "persistence_mae": 1.7388888888888885
+        },
+        {
+          "id": "MAM",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 0.7569444444444459,
+          "seasonal_mae": 1.569444444444444,
+          "persistence_mae": 0.833333333333333
+        },
+        {
+          "id": "JJA",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 0.7314814814814815,
+          "seasonal_mae": 0.7731481481481494,
+          "persistence_mae": 0.7083333333333336
+        },
+        {
+          "id": "SON",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 6,
+          "missing": 6,
+          "insufficient": 0,
+          "n": 6,
+          "analog_mae": 1.5231481481481488,
+          "seasonal_mae": 1.9027777777777768,
+          "persistence_mae": 1.4537037037037035
+        },
+        {
+          "id": "2024",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 24,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 24,
+          "analog_mae": 1.1493055555555565,
+          "seasonal_mae": 1.964120370370371,
+          "persistence_mae": 1.1550925925925923
+        },
+        {
+          "id": "2025",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 16,
+          "missing": 8,
+          "insufficient": 0,
+          "n": 16,
+          "analog_mae": 1.1440972222222228,
+          "seasonal_mae": 1.965277777777778,
+          "persistence_mae": 1.0555555555555558
+        }
+      ]
+    },
+    {
+      "city": "Boston",
+      "id": "72509014739",
+      "name": "GEN E L LOGAN INTERNATIONAL AIRPORT",
+      "usable_days": 3526,
+      "expected_days": 3653,
+      "attempted": 48,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "last_raw_date": "2025-08-27",
+      "checked_at": "2026-10-29T23:21:18.000Z",
+      "stale": false,
+      "source_error": null,
+      "metrics": {
+        "n": 40,
+        "analog_mae": 2.28125,
+        "seasonal_mae": 3.4986111111111122,
+        "persistence_mae": 2.097222222222222,
+        "analog_bias": 0.777083333333333,
+        "difference_seasonal": -1.217361111111111,
+        "difference_persistence": 0.18402777777777768,
+        "versus_seasonal": {
+          "lower": 28,
+          "tied": 0,
+          "higher": 12
+        },
+        "versus_persistence": {
+          "lower": 17,
+          "tied": 2,
+          "higher": 21
+        },
+        "interval": {
+          "n": 40,
+          "inside": 31,
+          "below": 6,
+          "above": 3,
+          "mean_width": 7.81861111111111
+        }
+      },
+      "groups": [
+        {
+          "id": "DJF",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 10,
+          "missing": 2,
+          "insufficient": 0,
+          "n": 10,
+          "analog_mae": 2.7999999999999994,
+          "seasonal_mae": 4.633333333333335,
+          "persistence_mae": 2.594444444444444
+        },
+        {
+          "id": "MAM",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 2.5578703703703702,
+          "seasonal_mae": 3.157407407407407,
+          "persistence_mae": 2.055555555555555
+        },
+        {
+          "id": "JJA",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 1.9212962962962967,
+          "seasonal_mae": 3.0648148148148144,
+          "persistence_mae": 1.9166666666666676
+        },
+        {
+          "id": "SON",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 6,
+          "missing": 6,
+          "insufficient": 0,
+          "n": 6,
+          "analog_mae": 1.5833333333333324,
+          "seasonal_mae": 3.157407407407407,
+          "persistence_mae": 1.712962962962963
+        },
+        {
+          "id": "2024",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 24,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 24,
+          "analog_mae": 2.2824074074074066,
+          "seasonal_mae": 3.0729166666666665,
+          "persistence_mae": 2.490740740740741
+        },
+        {
+          "id": "2025",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 16,
+          "missing": 8,
+          "insufficient": 0,
+          "n": 16,
+          "analog_mae": 2.279513888888889,
+          "seasonal_mae": 4.137152777777777,
+          "persistence_mae": 1.5069444444444442
+        }
+      ]
+    },
+    {
+      "city": "Chicago",
+      "id": "72530094846",
+      "name": "CHICAGO O'HARE INTERNATIONAL AIRPORT",
+      "usable_days": 3524,
+      "expected_days": 3653,
+      "attempted": 48,
+      "evaluated": 39,
+      "missing": 8,
+      "insufficient": 1,
+      "last_raw_date": "2025-08-25",
+      "checked_at": "2026-10-29T23:21:25.000Z",
+      "stale": false,
+      "source_error": null,
+      "metrics": {
+        "n": 39,
+        "analog_mae": 2.2250712250712246,
+        "seasonal_mae": 3.8319088319088315,
+        "persistence_mae": 2.058404558404558,
+        "analog_bias": -0.7777777777777773,
+        "difference_seasonal": -1.6068376068376067,
+        "difference_persistence": 0.16666666666666638,
+        "versus_seasonal": {
+          "lower": 29,
+          "tied": 0,
+          "higher": 10
+        },
+        "versus_persistence": {
+          "lower": 21,
+          "tied": 0,
+          "higher": 18
+        },
+        "interval": {
+          "n": 39,
+          "inside": 30,
+          "below": 1,
+          "above": 8,
+          "mean_width": 8.410113960113959
+        }
+      },
+      "groups": [
+        {
+          "id": "DJF",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 9,
+          "missing": 2,
+          "insufficient": 1,
+          "n": 9,
+          "analog_mae": 3.7561728395061724,
+          "seasonal_mae": 5.481481481481482,
+          "persistence_mae": 3.314814814814815
+        },
+        {
+          "id": "MAM",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 2.368055555555556,
+          "seasonal_mae": 3.9814814814814814,
+          "persistence_mae": 2.259259259259259
+        },
+        {
+          "id": "JJA",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 1.458333333333333,
+          "seasonal_mae": 2.3935185185185177,
+          "persistence_mae": 1.1712962962962967
+        },
+        {
+          "id": "SON",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 6,
+          "missing": 6,
+          "insufficient": 0,
+          "n": 6,
+          "analog_mae": 1.1759259259259263,
+          "seasonal_mae": 3.9351851851851856,
+          "persistence_mae": 1.5462962962962976
+        },
+        {
+          "id": "2024",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 24,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 24,
+          "analog_mae": 2.390046296296296,
+          "seasonal_mae": 4.125,
+          "persistence_mae": 2.305555555555555
+        },
+        {
+          "id": "2025",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 15,
+          "missing": 8,
+          "insufficient": 1,
+          "n": 15,
+          "analog_mae": 1.9611111111111112,
+          "seasonal_mae": 3.3629629629629627,
+          "persistence_mae": 1.6629629629629634
+        }
+      ]
+    },
+    {
+      "city": "Houston",
+      "id": "72243012960",
+      "name": "G BUSH INTERCONTINENTAL AP/HOUSTON AP",
+      "usable_days": 3526,
+      "expected_days": 3653,
+      "attempted": 48,
+      "evaluated": 38,
+      "missing": 8,
+      "insufficient": 2,
+      "last_raw_date": "2025-08-27",
+      "checked_at": "2026-10-29T23:21:32.000Z",
+      "stale": false,
+      "source_error": null,
+      "metrics": {
+        "n": 38,
+        "analog_mae": 1.421052631578947,
+        "seasonal_mae": 3.0314327485380113,
+        "persistence_mae": 1.3786549707602345,
+        "analog_bias": -0.3304093567251459,
+        "difference_seasonal": -1.610380116959064,
+        "difference_persistence": 0.04239766081871288,
+        "versus_seasonal": {
+          "lower": 33,
+          "tied": 0,
+          "higher": 5
+        },
+        "versus_persistence": {
+          "lower": 17,
+          "tied": 0,
+          "higher": 21
+        },
+        "interval": {
+          "n": 38,
+          "inside": 33,
+          "below": 2,
+          "above": 3,
+          "mean_width": 5.5046783625731015
+        }
+      },
+      "groups": [
+        {
+          "id": "DJF",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 8,
+          "missing": 2,
+          "insufficient": 2,
+          "n": 8,
+          "analog_mae": 2.975694444444445,
+          "seasonal_mae": 5.100694444444445,
+          "persistence_mae": 2.923611111111111
+        },
+        {
+          "id": "MAM",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 1.0763888888888886,
+          "seasonal_mae": 3.0231481481481484,
+          "persistence_mae": 1.4629629629629637
+        },
+        {
+          "id": "JJA",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 0.9791666666666673,
+          "seasonal_mae": 1.902777777777778,
+          "persistence_mae": 0.6805555555555562
+        },
+        {
+          "id": "SON",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 6,
+          "missing": 6,
+          "insufficient": 0,
+          "n": 6,
+          "analog_mae": 0.9212962962962953,
+          "seasonal_mae": 2.5462962962962963,
+          "persistence_mae": 0.5462962962962967
+        },
+        {
+          "id": "2024",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 24,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 24,
+          "analog_mae": 1.4421296296296295,
+          "seasonal_mae": 2.998842592592592,
+          "persistence_mae": 1.395833333333334
+        },
+        {
+          "id": "2025",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 14,
+          "missing": 8,
+          "insufficient": 2,
+          "n": 14,
+          "analog_mae": 1.3849206349206349,
+          "seasonal_mae": 3.0873015873015865,
+          "persistence_mae": 1.3492063492063497
+        }
+      ]
+    },
+    {
+      "city": "Anchorage",
+      "id": "70272526491",
+      "name": "LAKE HOOD SEAPLANE BASE",
+      "usable_days": 3508,
+      "expected_days": 3653,
+      "attempted": 48,
+      "evaluated": 40,
+      "missing": 8,
+      "insufficient": 0,
+      "last_raw_date": "2025-08-27",
+      "checked_at": "2026-10-29T23:21:39.000Z",
+      "stale": false,
+      "source_error": null,
+      "metrics": {
+        "n": 40,
+        "analog_mae": 1.3430555555555557,
+        "seasonal_mae": 2.7659722222222216,
+        "persistence_mae": 1.1597222222222223,
+        "analog_bias": -0.06249999999999989,
+        "difference_seasonal": -1.4229166666666664,
+        "difference_persistence": 0.18333333333333332,
+        "versus_seasonal": {
+          "lower": 28,
+          "tied": 1,
+          "higher": 11
+        },
+        "versus_persistence": {
+          "lower": 18,
+          "tied": 0,
+          "higher": 22
+        },
+        "interval": {
+          "n": 40,
+          "inside": 31,
+          "below": 6,
+          "above": 3,
+          "mean_width": 4.778472222222222
+        }
+      },
+      "groups": [
+        {
+          "id": "DJF",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 10,
+          "missing": 2,
+          "insufficient": 0,
+          "n": 10,
+          "analog_mae": 2.1083333333333334,
+          "seasonal_mae": 5.727777777777778,
+          "persistence_mae": 1.6999999999999997
+        },
+        {
+          "id": "MAM",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 0.8958333333333336,
+          "seasonal_mae": 1.472222222222222,
+          "persistence_mae": 0.6574074074074082
+        },
+        {
+          "id": "JJA",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 12,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 12,
+          "analog_mae": 0.8935185185185183,
+          "seasonal_mae": 1.6203703703703696,
+          "persistence_mae": 0.8981481481481478
+        },
+        {
+          "id": "SON",
+          "kind": "season",
+          "attempted": 12,
+          "evaluated": 6,
+          "missing": 6,
+          "insufficient": 0,
+          "n": 6,
+          "analog_mae": 1.8611111111111105,
+          "seasonal_mae": 2.7083333333333335,
+          "persistence_mae": 1.7870370370370365
+        },
+        {
+          "id": "2024",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 24,
+          "missing": 0,
+          "insufficient": 0,
+          "n": 24,
+          "analog_mae": 1.4456018518518514,
+          "seasonal_mae": 2.7233796296296284,
+          "persistence_mae": 1.4166666666666667
+        },
+        {
+          "id": "2025",
+          "kind": "year",
+          "attempted": 24,
+          "evaluated": 16,
+          "missing": 8,
+          "insufficient": 0,
+          "n": 16,
+          "analog_mae": 1.1892361111111114,
+          "seasonal_mae": 2.829861111111111,
+          "persistence_mae": 0.7743055555555551
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "scheduled_stations": 6,
+    "paired_stations": 6,
+    "scheduled_cases": 288,
+    "paired_cases": 237,
+    "weighting": "Equal station weight after computing each station MAE on identical cases for all methods.",
+    "analog_mae": 1.8072243464787323,
+    "seasonal_mae": 3.1343995226670667,
+    "persistence_mae": 1.7346488104163538,
+    "analog_lower_than_seasonal": 6,
+    "analog_lower_than_persistence": 1
+  },
+  "units": "degrees Celsius",
+  "scope": "Descriptive retrospective daily-mean station temperature experiment. Station/day results are correlated. This does not establish regional skill, current forecast transfer, calibrated probabilities or homogeneous climate records. Checksums and local timestamps are not signatures or independent registration evidence."
+}

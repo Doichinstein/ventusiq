@@ -634,3 +634,40 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   these checks do not establish operational forecast transfer or calibrated ranges.
 - Page and diagnostic modules returned HTTP 200. Rendered browser QA and broader
   independent station/impact validation remain unfinished. Hourly upkeep unchanged.
+
+
+## 2026-10-29 — Past-week forecast verification and 30-day station editions
+
+- Extended `observations/` check/revision retention from seven to 30 days, including
+  event inventories, while preserving current last-good data and other hazard/route
+  policies. Cleanup remains per dataset after a successful collection.
+- Added five seven-day comparison choices: latest, or ending 7/14/21/28 days ago.
+  Historical API reads exclude the cutoff second and use only archived station
+  discovery and observation editions. Later corrections and current membership
+  cannot substitute for the selected evidence. Missing sources have an explicit,
+  exportable status. Forecast reads are bounded above and below the selected range.
+- Reports now export raw observation evidence, discovery provenance and window
+  metadata alongside existing lead-group/shared-hour pairs and quality audits.
+  Selector changes invalidate in-flight reports and their exports.
+- 485 Node tests and 16 Python tests passed (501 total); TypeScript and production
+  build passed. Nine new tests cover past-window/timezone bounds, request-transit
+  headroom, cutoff-second exclusion, later corrections, no-fetch missing archives,
+  historical source ages, exclusion of newer checks from the read quota, 30-day
+  retention boundaries, outage preservation, selector races and absence exports.
+- Built Worker HTTP check at 2026-10-29T03:59:52Z: KCGS at 39,-77 returned 356
+  readings from revision
+  `fb3528138e1107e4c075bbc2a3ef124d0b213722889b61d23ec59780a5d27d61`.
+  A replay at 2026-10-29T03:38:20Z selected the same observation and discovery
+  revisions, strictly before the cutoff. Both had 168 candidate hours and no
+  eligible forecast pairs; no empirical accuracy claim follows. The 28-day choice
+  returned missing historical station discovery. A timezone-free cutoff returned
+  HTTP 400. Page and new module returned HTTP 200 and the selector was in HTML.
+- Positive historical matching and correction exclusion were checked with real
+  SQLite/D1-interface fixtures (a 21-day-old pair retained its 2 F absolute error
+  after a later measurement correction). These are controlled tests, not measured
+  operational skill. No upstream historical reconstruction or background enrollment
+  was added. Existing hourly upkeep is unchanged; previously pruned data cannot be
+  restored by the retention extension. Broad archive backup/export and multi-month
+  seasonal validation remain unfinished.
+- Rendered browser QA remains unavailable under the existing saved permission
+  restriction. Interaction doubles and Worker HTTP checks do not replace it.

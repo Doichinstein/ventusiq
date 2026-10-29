@@ -24,7 +24,7 @@ values retain their source flags. The chart and accessible table cover the last
 NWS observation pagination keeps the requested start/end range and has a ceiling
 of six pages / 3,000 records. A truncated response is explicitly marked partial.
 Malformed records and failed pages do not replace last-good data. A database lease
-and failure backoff reuse the existing collector. Seven days of successful checks
+and failure backoff reuse the existing collector. Thirty days of successful checks
 and referenced revisions are retained, along with the current last-good revision.
 Each raw response retains station identity and measurement timestamps. Collection
 does not imply that measurements were available at their observation time.
@@ -38,7 +38,7 @@ readings or lack coverage, especially outside CONUS.
 
 ## Comparison method
 
-For each completed UTC hour in the past seven days (allowing the full 30-minute
+For each completed UTC hour in the selected seven-day window (allowing the full 30-minute
 matching tolerance to elapse):
 
 1. Select the last successful forecast check at least six hours before the valid
@@ -57,8 +57,9 @@ The evidence table and downloadable JSON retain observation identifiers, QC,
 forecast revision, forecast collection and issue times, and source lead times.
 The report identifies the observation collection revision used. Late corrections
 can change a newly evaluated report; an exported report records its own evaluation.
-This is retrospective verification, not a reconstruction of what was known at a
-historical observation timestamp. No model is trained or tuned on these outcomes.
+Latest-mode verification uses the available observation edition. Historical mode
+uses an explicit collection cutoff, as described below. Neither mode assumes a
+measurement was available at its occurrence timestamp. No model is trained or tuned on these outcomes.
 
 Consecutive hours are correlated. A short local sample does not establish future
 accuracy or calibrated probability, and no confidence percentage is displayed.
@@ -119,3 +120,46 @@ selection bounds, skipped counts, observation audit and exact shared-hour pairs.
 The report remains tied to its observation collection revision and evaluation
 clock. No probability, confidence grade or independent sample-count claim is made.
 Seasonal comparisons and validated forecast skill require broader retained data.
+
+
+## Past-week replay and retention
+
+The comparison selector offers the latest seven days or the seven-day period
+ending 7, 14, 21 or 28 days ago. `GET /api/verification` accepts an optional `at`
+ISO timestamp with an explicit timezone. The API allows up to 29 days of lookback
+so the 28-day selection has headroom for request transit and small clock differences.
+Future, missing-timezone and older cutoffs fail with HTTP 400.
+
+Historical mode reads only archived station discovery and the latest observation
+edition collected before the cutoff second. Whole-second archive timestamps cannot
+prove availability within that second, so it is excluded conservatively. Station
+membership also comes from the archived discovery edition. There are no historical
+upstream requests or substitutes from a current collection. If either source is
+absent, the API returns `status: not_collected_by_cutoff`, the missing source and
+the selected window; the UI exposes that absence and allows its JSON export.
+
+The same seven-day targets, 6–72-hour lead cohorts, nearest-reading/QC rules and
+2,000-check bound apply. Forecast checks are bounded on both sides of the selected
+ten-day range. Newer checks cannot consume a historical request's limit. Collection
+age is evaluated relative to the selected cutoff, while `generated_at` records the
+actual report creation time. Later observation corrections do not change a report
+for the same cutoff while its evidence remains retained. The export now includes
+the raw selected observation edition, station-discovery revision and candidates,
+window/method metadata and all existing error pairs and audits.
+
+All `observations/` datasets now retain 30 days of successful checks and referenced
+immutable revisions, including event station inventories. Cleanup runs per dataset
+after successful collection; inactive datasets can remain longer, and current
+last-good revisions survive outages. This expands storage for already requested
+stations; it does not increase collection frequency or enroll new locations.
+Other hazard/route products retain their existing seven-day policy. No migration
+is required. The existing approximate 1,000 observation-dataset cap still applies;
+operators must monitor storage before broader collection. A site-wide export and
+backup policy remains unfinished.
+
+The change cannot restore editions already pruned under the prior seven-day policy.
+A newly visited location can have no past-week evidence. Selecting an old window
+can expose gaps or delayed collection; missing hours never become zero error.
+Each report covers one archived week, not a merged 30-day skill score. Seasonal
+validation and calibrated confidence remain future work. Changing the selector
+invalidates pending results and exports so a late response cannot relabel a new week.

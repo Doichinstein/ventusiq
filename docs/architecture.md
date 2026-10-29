@@ -157,7 +157,7 @@ do not establish traffic, road closures or evacuation suitability. See
 [journey methods](journeys.md).
 
 `ObservationsService` discovers NWS-listed stations near a point and archives
-seven-day observation products with existing lease, revision and last-good-state
+seven-day source observation products retained as editions for 30 days, with existing lease, revision and last-good-state
 semantics. `observations-core.mjs` normalizes units and QC, selects forecasts from
 successful checks available six hours before each valid hour, and compares later
 V/G station temperatures. `observations.js` owns the station selector, observed
@@ -362,7 +362,8 @@ reads ten days of forecast checks for seven days of verification hours, expands
 selected revisions in batches of 32 and retains only used temperature periods.
 `verification-leads-ui.mjs` renders coverage, error and daily tables; export keeps
 all cohort/common-hour pairs and audits. This does not create calibrated confidence,
-longer observation retention, subscriptions or new background collection.
+subscriptions or new background collection. Past-week replay and longer observation
+retention were added in the following increment.
 
 ### Historical analog diagnostics
 
@@ -373,3 +374,17 @@ and empirical spread counts. `analog-diagnostics-ui.mjs` adds accessible tables 
 the historical-analog card; all scored values and trial exclusions survive export.
 The retrieval method and training cutoff are unchanged. No calibration, climate
 trend inference or additional provider/scheduler work is introduced.
+
+
+### Past-week verification and observation retention
+
+`verification-window.mjs` defines the replay cutoff contract and 30-day observation
+edition retention. `ObservationsService.verification` reads archived discovery and
+station evidence strictly before a historical cutoff second, without upstream
+collection, and limits forecast checks to the relevant ten-day interval. Reports
+retain selected source editions and explicit missing-history status. The observation
+UI provides five weekly choices and invalidates in-flight reports on selection
+changes. `WeatherService` prunes observation checks/revisions after 30 days on
+successful collection, preserving the last good edition. Other hazard/route retention
+is unchanged. This supports retrospective weekly checks and longer station evidence
+for event stories; it does not yet provide multi-month or calibrated skill scores.

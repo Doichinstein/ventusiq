@@ -303,3 +303,9 @@ and raw-evidence downloads. Matching reports provide context, not official warni
 
 Event timelines can also [link observed river-gauge readings to flood alerts](docs/event-gauges.md),
 with geometry/time matching, sampled highs, threshold sample counts and historical evidence exports.
+
+
+Forecast verification includes past-week replay (weeks ending 7–28 days ago),
+30-day observation-edition retention and raw evidence export. Missing archives
+remain explicit; later corrections cannot leak into a historical cutoff. See
+[station observations and verification](docs/observations.md).

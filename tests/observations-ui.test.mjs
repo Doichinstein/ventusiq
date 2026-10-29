@@ -1,3 +1,4 @@
+import {verificationWindow} from '../public/verification-window.mjs';
 import {leadChoices,compareLeadGroups} from '../public/verification-leads.mjs';
 // Interaction doubles verify state transitions, not rendered browser layout.
 
@@ -19,15 +20,15 @@ const observation=(h,id)=>({id:id+h,properties:{timestamp:stamp(h),temperature:{
 
 function setup(mode='hosted'){
 
-  const nodes=Object.fromEntries([...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element()]));let broken=false,exported,time=now;const waits=new Map(),holds=new Set(),timers=[];
+  const nodes=Object.fromEntries([...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element()]));let broken=false,missing=false,exported,time=now;const waits=new Map(),holds=new Set(),timers=[];
 
   const window={WEATHER_CONFIG:{mode},WeatherPersonal:{current:()=>null},setInterval:fn=>timers.push(fn),setTimeout:fn=>fn(),URL:{createObjectURL(blob){exported=blob;return 'blob:result';},revokeObjectURL(){}}};
 
-  const fetcher=async path=>{if(holds.has(path))await new Promise(r=>waits.set(path,r));if(broken)throw Error('Outage');const url=new URL('https://example.test'+path),id=url.searchParams.get('id');return {ok:true,json:async()=>url.pathname.endsWith('/near')?{stations:[station('KAAA'),station('KBBB')],coverage:'Stations within 50 km'}:url.pathname==='/api/verification'?{lead_analysis:compareLeadGroups([now],leadChoices([],[now]),new Map(),[]),station:station(url.searchParams.get('station')),sample_count:0,eligible_hours:168,days:0,skipped:{no_archive:168,forecast_unavailable:0,observation_unavailable:0,quality_excluded:0},method:'no calibrated confidence probability',generated_at:stamp(0),observation_checked_at:stamp(0),pairs:[]}:{checked_at:stamp(0),features:[observation(-3,id),observation(0,id)],truncated:true}};};
+  const fetcher=async path=>{if(holds.has(path))await new Promise(r=>waits.set(path,r));if(broken)throw Error('Outage');const url=new URL('https://example.test'+path),id=url.searchParams.get('id');if(missing&&url.pathname==='/api/verification')return {ok:true,json:async()=>({status:'not_collected_by_cutoff',window:verificationWindow(url.searchParams.get('at'),time),station_id:'KAAA',missing:['station observations'],message:'No retained station observations collected before this cutoff.'})};return {ok:true,json:async()=>url.pathname.endsWith('/near')?{stations:[station('KAAA'),station('KBBB')],coverage:'Stations within 50 km'}:url.pathname==='/api/verification'?{lead_analysis:compareLeadGroups([now],leadChoices([],[now]),new Map(),[]),station:station(url.searchParams.get('station')),window:verificationWindow(url.searchParams.get('at'),time),sample_count:0,eligible_hours:168,days:0,skipped:{no_archive:168,forecast_unavailable:0,observation_unavailable:0,quality_excluded:0},method:'no calibrated confidence probability',generated_at:stamp(0),observation_checked_at:stamp(0),pairs:[]}:{checked_at:stamp(0),features:[observation(-3,id),observation(0,id)],truncated:true}};};
 
   const mounted=mountObservations({document:{getElementById:id=>nodes[id],createElement:tag=>new Element(tag),createElementNS:(_,tag)=>new Element(tag)},window,fetcher,clock:()=>time});
 
-  return {nodes,mounted,window,timers,advance:ms=>time+=ms,break:(value=true)=>{broken=value;},hold:path=>holds.add(path),release:path=>{holds.delete(path);waits.get(path)();},exported:()=>exported};
+  return {nodes,mounted,window,timers,advance:ms=>time+=ms,break:(value=true)=>{broken=value;},hold:path=>holds.add(path),release:path=>{holds.delete(path);waits.get(path)();},missing:()=>missing=true,exported:()=>exported};
 
 }
 
@@ -74,3 +75,11 @@ test('failed station discovery offers an in-place retry and recovers without swi
 
 
 test('lead tables preserve missing-data labels and export all group and shared-hour evidence',async()=>{const s=setup();await s.mounted.updatePlace({lat:38.9,lon:-77});await s.mounted.verify();const text=s.nodes['verification-results'].textContent;assert.match(text,/How errors vary with forecast lead/);assert.match(text,/48–72 hours/);assert.match(text,/Compare identical hours/);assert.match(text,/Unavailable/);assert.match(text,/No eligible pairs in this lead group/);s.nodes['verification-export'].onclick();const r=JSON.parse(await s.exported().text());assert.equal(r.lead_analysis.groups.length,4);assert.equal(r.lead_analysis.shared.length,3);assert.equal(r.lead_analysis.shared[0].difference_f,null);});
+
+
+test('past-week choice requests an explicit cutoff and exports the selected window',async()=>{const s=setup();await s.mounted.updatePlace({lat:38.9,lon:-77});s.nodes['verification-window'].value='28';s.nodes['verification-window'].onchange();await s.mounted.verify();assert.match(s.nodes['verification-results'].textContent,/2026-09-30T20:00:00.000Z/);assert.match(s.nodes['verification-results'].textContent,/later observation corrections are excluded/);s.nodes['verification-export'].onclick();const r=JSON.parse(await s.exported().text());assert.equal(r.window.as_of,stamp(-28*24));assert.equal(r.window.historical,true);});
+
+test('changing the comparison window invalidates an in-flight report and its export',async()=>{const s=setup();await s.mounted.updatePlace({lat:38.9,lon:-77});const path='/api/verification?lat=38.9&lon=-77&station=KAAA';s.hold(path);const first=s.mounted.verify();s.nodes['verification-window'].value='7';s.nodes['verification-window'].onchange();assert.equal(s.nodes['verification-run'].disabled,false);await s.mounted.verify();s.release(path);await first;s.nodes['verification-export'].onclick();assert.equal(JSON.parse(await s.exported().text()).window.as_of,stamp(-7*24));});
+
+
+test('missing past evidence remains an exportable absence rather than a zero-error result',async()=>{const s=setup();await s.mounted.updatePlace({lat:38.9,lon:-77});s.missing();s.nodes['verification-window'].value='14';await s.mounted.verify();assert.match(s.nodes['verification-results'].textContent,/No retained station observations/);assert.doesNotMatch(s.nodes['verification-results'].textContent,/mean absolute error/);assert.equal(s.nodes['verification-run'].disabled,false);s.nodes['verification-export'].onclick();const r=JSON.parse(await s.exported().text());assert.equal(r.status,'not_collected_by_cutoff');assert.deepEqual(r.missing,['station observations']);});

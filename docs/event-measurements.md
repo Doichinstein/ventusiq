@@ -77,9 +77,9 @@ the cutoff second, but cannot leak a later same-second retrieval into the past.
 Observation occurrence time never substitutes for collection availability.
 
 Station inventories share a one-day cache; observation collections share the
-existing 30-minute cache. Both retain seven days of checks/revisions plus the
+existing 30-minute cache. Both retain 30 days of checks/revisions plus the
 current last-good edition. Outages preserve available evidence with a delayed
-label. Older alerts may have no retained observations; long-term measured-outcome
+label. Older alerts may have no retained observations; broader measured-outcome
 retention and verified impact records remain roadmap work. The existing observation
 cache admission cap applies. The request shares a 40-second upstream deadline with
 boundary collection and performs no background enrollment or external messaging.

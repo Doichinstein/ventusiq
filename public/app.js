@@ -18,7 +18,7 @@ let features = [], filtered = [], changes = [], snapshots = [], selected = null;
 let category = 'all', feedMode = 'alerts', replayAt = null, lastSuccess = null, lastError = null;
 let refreshing = false, replayLoading = false, snapshotGeneration = 0, nextFetch = 0, lastSourceUpdated = null, liveData = null;
 let upkeepStatus = null, upkeepStatusCheckedAt = 0;
-let autoRefresh = true, restoredCache = false, auxiliaryPending = false, geometryRevision = 0, drawnKey = '';
+let autoRefresh = true, restoredCache = false, auxiliaryPending = false, geometryRevision = 0;
 const refreshInterval = config.mode === 'hosted' ? 30000 : 60000;
 const directHistory = [], geometry = new Map(), zoneCache = new Map(), zoneFailed = new Map();
 let geometryTimer = null;
@@ -42,6 +42,20 @@ L.tileLayer(config.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
 }).addTo(map).on('tileerror', () => { $('map-subtitle').textContent = 'Basemap unavailable · alert areas still shown'; });
 L.control.zoom({position: 'bottomright'}).addTo(map);
 let alertLayer = L.geoJSON([], {style: styleFeature, onEachFeature: bindFeature}).addTo(map);
+let geometryAvailable = 0;
+const alertRenderer = window.createAlertRenderer({
+  create: f => L.geoJSON(f, {style:styleFeature,onEachFeature:bindFeature}).addTo(alertLayer),
+  remove: layer => alertLayer.removeLayer(layer),
+  restyle: (layer, f) => layer.setStyle(styleFeature(f)),
+  front: layer => layer.bringToFront(),
+  progress: ({drawn,pending}) => {
+    $('mapped-count').textContent = drawn;
+    const missing = filtered.length - geometryAvailable;
+    $('map-subtitle').textContent = pending || missing
+      ? `${drawn} mapped${pending ? ` · ${pending} drawing` : ''}${missing ? ` · ${missing} awaiting boundaries` : ''}`
+      : 'Official alerts · affected areas';
+  },
+});
 map.fitBounds(regions.conus.bounds, {padding: [15, 30]});
 
 function node(tag, text, cls) {
@@ -129,6 +143,7 @@ async function refresh() {
       lastError = data.error || (data.stale ? 'Source collection delayed' : null);
     }
     const changed = JSON.stringify(liveData?.features) !== JSON.stringify(data.features);
+    if (!changed) data.features = liveData.features;
     restoredCache = false;
     liveData = data;
     window.WeatherPersonal?.alertsUpdated(data);
@@ -278,18 +293,16 @@ function featureGeometry(f) {
 }
 function drawMap() {
   const mapped = filtered.map(f => ({...f, geometry:featureGeometry(f)})).filter(f => f.geometry);
-  // Severe alerts are drawn last so less urgent overlapping areas do not hide them.
-  const drawKey = `${geometryRevision}|${selected}|${mapped.map(f=>f.id+':'+severity(f)).join('|')}`;
-  if (drawKey !== drawnKey) { alertLayer.clearLayers().addData([...mapped].reverse()); drawnKey = drawKey; }
-  if (selected) alertLayer.eachLayer(layer => { if (layer.feature.id === selected) layer.bringToFront(); });
-  $('mapped-count').textContent = mapped.length;
-  const pending = filtered.length - mapped.length;
-  $('map-subtitle').textContent = pending ? `${mapped.length} mapped · ${pending} awaiting boundaries` : 'Official alerts · affected areas';
+  geometryAvailable = mapped.length;
+  alertRenderer.update(mapped, selected);
 }
 function combineZones(f) {
   const zones = f.properties.affectedZones || [];
   const geometries = zones.map(z => zoneCache.get(z)).filter(Boolean);
-  if (geometries.length) geometry.set(f.id, {type:'GeometryCollection', geometries});
+  const previous = geometry.get(f.id)?.geometries;
+  if (geometries.length && (!previous || previous.length !== geometries.length || geometries.some((g,i)=>g!==previous[i])))
+    geometry.set(f.id, {type:'GeometryCollection', geometries});
+  else if (!geometries.length) geometry.delete(f.id);
   return geometries.length === zones.length && zones.length > 0;
 }
 function scheduleGeometryDraw() {

@@ -32,7 +32,11 @@ async function setup(mode='direct',options={}) {
   els.severity.value='all';els.region.value='conus';
   for(const c of ['all','Warning','Watch','Advisory']) {const b=new Element('button');b.dataset.category=c;els.categories.append(b);}
   const map={fitBounds(){return this;},invalidateSize(){}};
-  const L={map:()=>map,tileLayer:()=>({addTo(){return this;},on(){return this;}}),control:{zoom:()=>({addTo(){}})},geoJSON(data,options){return {data:data||[],addTo(){return this;},clearLayers(){this.data=[];return this;},addData(d){this.data=d; for(const f of d)options?.onEachFeature?.(f,{bindTooltip(){},on(){}});return this;},eachLayer(fn){for(const f of this.data)fn({feature:f,bringToFront(){}});},getBounds(){return {isValid:()=>true};}};}};
+  const L={map:()=>map,tileLayer:()=>({addTo(){return this;},on(){return this;}}),control:{zoom:()=>({addTo(){}})},geoJSON(data,options){
+    const own=Array.isArray(data)?data:data?.type==='Feature'?[data]:[],children=new Set();
+    for(const f of own)options?.onEachFeature?.(f,{bindTooltip(){},on(){}});
+    return {get data(){return [...own,...[...children].flatMap(c=>c.data)];},addTo(parent){parent.addLayer?.(this);return this;},addLayer(layer){children.add(layer);return this;},removeLayer(layer){children.delete(layer);},setStyle(){},bringToFront(){},getBounds(){return {isValid:()=>true};}};
+  }};
   let current=payload([fixture('one'),fixture('two','Wind Advisory','Moderate','Other County')]);
   let error=false;
   const stored=[],requests=[],intervals=[];
@@ -52,10 +56,11 @@ async function setup(mode='direct',options={}) {
   };
   const documentListeners={};
   const doc={getElementById:id=>els[id],createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e;},createDocumentFragment:()=>new Element('fragment'),addEventListener(type,fn){documentListeners[type]=fn;},activeElement:new Element('body')};
-  const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout(){return 1;}});
+  const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,performance:{now:()=>0},console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout(){return 1;}});
   const run=code=>vm.runInContext(code,ctx);
   run(fs.readFileSync(path.join(__dirname,'../public/zone-loader.js'),'utf8'));
   run(fs.readFileSync(path.join(__dirname,'../public/map-geometry.js'),'utf8'));
+  run(fs.readFileSync(path.join(__dirname,'../public/alert-renderer.js'),'utf8'));
   run(fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8'));
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(r=>setImmediate(r));};
   await settle();
@@ -81,6 +86,16 @@ test('map and selected alert use the same date-line frame while stored source st
   s.els.feed.children[0].onclick();
   assert.equal(s.run('featureGeometry(features[0]).coordinates[0][0][0]'),-181);
   assert.equal(s.run('regions.guam.bounds[0][1]'),-216);
+});
+
+test('unchanged zone membership reuses combined geometry; new and removed boundaries replace it',async()=>{
+  const s=await setup('hosted');
+  s.run("features[0].geometry=null;features[0].properties.affectedZones=['a','b'];zoneCache.set('a',{type:'Polygon',coordinates:[]});combineZones(features[0]);globalThis.firstGeometry=geometry.get(features[0].id)");
+  s.run('combineZones(features[0])');assert.equal(s.run('geometry.get(features[0].id)===firstGeometry'),true);
+  s.run("zoneCache.set('b',{type:'Polygon',coordinates:[]});combineZones(features[0])");
+  assert.equal(s.run('geometry.get(features[0].id).geometries.length'),2);
+  assert.equal(s.run('geometry.get(features[0].id)===firstGeometry'),false);
+  s.run("zoneCache.clear();combineZones(features[0])");assert.equal(s.run('geometry.has(features[0].id)'),false);
 });
 
 test('automatic checks pause in hidden tabs and during replay, resume on visibility, and can be switched off',async()=>{

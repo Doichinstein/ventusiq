@@ -1649,3 +1649,21 @@ validation and supported hosted database recovery remain separate open requireme
   browser poll and the source collector are separate; no freshness warning was
   suppressed and this does not establish uninterrupted upstream availability.
 - Account testing remains deferred at the user's request.
+
+## v68 — Incremental alert boundary rendering
+
+- A boundary batch formerly cleared and recreated the entire alert layer; selecting
+  an alert also rebuilt every shape. Rendering now reconciles by alert ID, geometry
+  identity and displayed label. Unchanged shapes stay attached. New/revised shapes
+  draw in approximately eight-millisecond batches, yielding between batches. One
+  unusually complex individual shape can exceed that budget; this is not a hard
+  frame-time guarantee or a claim that provider downloads are faster.
+- Selection restyles existing geometry, and preserves severe/selected stacking.
+  Changing filters or replay replaces queued work so older alerts cannot reappear.
+  The map reports drawn areas, areas still drawing and missing boundaries separately.
+  Stable zone membership and unchanged feed responses reuse geometry references.
+- Thirty focused map/frontend tests cover batching, incremental retention,
+  changed geometry/labels, selection priority, interrupted filter/replay queues,
+  stable zone collections, cache loading, freshness and date-line display.
+- Account testing remains deferred. Scientific validation, route closure attribution,
+  signed-in delivery and hosted recovery acceptance are not closed by this change.

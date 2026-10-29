@@ -12,6 +12,7 @@ import {WebhookService} from '../../../lib/webhook-service.mjs';
 import {webhookGet,webhookPost} from '../../../lib/webhook-http.mjs';
 import {PMComparisonService} from '../../../lib/pm-comparison-service.mjs';
 import {AirForecastService} from '../../../lib/air-forecast-service.mjs';
+import {GeosCFService} from '../../../lib/geos-cf-service.mjs';
 import {WatershedSitesService} from '../../../lib/watershed-sites-service.mjs';
 import {GeocodeService,geocodePost} from '../../../lib/geocode-service.mjs';
 import {WatershedService} from '../../../lib/watershed-service.mjs';
@@ -74,6 +75,7 @@ export async function GET(request:Request){
     if(path==='/api/air/ozone/near')return json(await new OzoneService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/air/ozone/history')return json(await new OzoneService(service).history(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('id'),url.searchParams.get('compare')==='1'));
     if(path==='/api/air/forecast')return json(await new AirForecastService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
+    if(path==='/api/air/geos-cf')return json(await new GeosCFService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));
     if(path==='/api/ensemble')return json(await new EnsembleService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('source')||'latest'));
     if(path==='/api/smoke/hrrr')return json(await new HrrrService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));

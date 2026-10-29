@@ -58,6 +58,12 @@ These are structural/DOM-double checks, not screen-reader or rendered-browser QA
 
 ## Browser verification handoff
 
+The v81 NASA alternative adds independently collected particles and gases despite
+CAMS throttling. Its live reader returned all six fields from a dated run; a source
+timestamp inconsistency is excluded rather than assigned to the wrong hour. This
+does not close CAMS-specific collection or forecast/monitor validation gates, nor
+establish NASA forecast skill. See [source and quality contract](geos-cf.md).
+
 Browser access to `https://ventusiq.com/` works. Earlier failures do not establish
 a continuing permission block. The completed checks are recorded in
 [verification](verification.md#rendered-public-feature-flows-october-29-v62).

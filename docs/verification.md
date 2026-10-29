@@ -1,5 +1,24 @@
 # Verification record
 
+## NASA air forecast alternative (v81)
+
+The new reader/UI and existing CAMS regressions pass 20 focused tests. TypeScript
+also passes. Captured NASA fixtures verify the named-run date, grid association,
+interval boundaries, particle/gas units, missing data and a real erroneous ozone
+time coordinate. Other gas fixture values are synthetic; live collection is
+verified separately. A six-field live read completed in 14.5 seconds. All 49
+PM2.5 values matched independently decoded S3 Zarr values from the same run/cell
+exactly. A local API read completed in 36.2 seconds and retained three field-level
+time-coordinate exclusions. A simultaneous reader received the expected warming
+response, then read the completed cache.
+
+The local browser rendered the named initialization, separate collection age,
+36-hour run-age warning, six pollutant ranges, units and missing counts. Export
+downloaded with all six raw responses, 49 intervals and quality reasons. No
+browser errors were captured. Evidence and screenshot are in the October 29
+browser QA directory outside the source checkout. Account tests remain deferred.
+These checks do not prove provider uptime, forecast skill or CAMS availability.
+
 ## Agency work-zone journey context — 2026-10-29
 
 - Added optional Maryland DOT SHA, Iowa DOT and Washington State DOT WZDx sources,

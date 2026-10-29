@@ -55,6 +55,12 @@ delivery or watch coverage. See [upkeep semantics](collector-schedule.md#shared-
 
 ## Data contracts shared by the ten features
 
+NASA GEOS-CF is now an independently requested composition forecast in the air
+workspace, with dated-run provenance, interval averages, source-native unit
+conversions and explicit time-coordinate quality exclusions. It shares D1 leases
+and last-good retention without enrolling background watches. See
+[NASA forecast methods](geos-cf.md). CAMS activity/monitor contracts remain separate.
+
 `hazards-core.mjs` supplies the fire, air-monitor and NASA date adapters shared by
 hosted and direct editions. `lib/hazards-service.mjs` uses the existing collection
 lease and archive. `hazards.js` owns independent Leaflet layers and saved-place

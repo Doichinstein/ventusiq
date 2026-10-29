@@ -53,7 +53,25 @@ NASA data; the remaining fields in unit tests reuse values synthetically, which
 does not prove their live collection. A separate live six-field request succeeded
 in 14.5 seconds, with the inconsistent hour explicitly excluded.
 
-Activity constraints and monitor comparisons continue to use their existing
-CAMS contracts. NASA's different averaging periods and gas units are not silently
-substituted into those calculations. Prospective verification against observations
+Activity planning now offers an explicit CAMS/NASA source choice. Separate saved
+NASA limits apply to PM2.5 at RH 35% in µg/m³, and ozone/NO2 in ppb. Existing CAMS
+limits remain unchanged; switching source cannot reinterpret mass units as mole
+fractions. A changed source clears the displayed result and disables export until
+Compare windows applies the new source and limits. Loading uses only the chosen
+provider. Monitor comparisons continue to use CAMS.
+
+The NASA evaluator checks every full-hour average whose interval overlaps the
+activity, including partially overlapping hours. It does not interpolate, compute
+an activity-period average, or treat the hourly mean as a bound on shorter peaks.
+All overlapping means must be valid to confirm a fit. A valid mean above the limit
+can reject a window even if another interval is missing; stale or over-age evidence
+cannot confirm either fit or exceedance. Collection must be within 90 minutes,
+with no retained error, and initialization must be between zero and 48 hours old.
+The 48-hour cutoff is an application recency policy, not a calibrated skill claim;
+the source panel still warns when its daily run is older than 36 hours.
+
+Planning exports include exact raw NASA evidence, source selection, limits/units,
+full averaging intervals, overlap intervals, quality exclusions and freshness.
+Missing NASA never silently falls back to CAMS. Blank limits request no check;
+no health thresholds are supplied. Prospective verification against observations
 and further provider availability evidence remain outstanding.

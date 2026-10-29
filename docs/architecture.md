@@ -59,7 +59,9 @@ NASA GEOS-CF is now an independently requested composition forecast in the air
 workspace, with dated-run provenance, interval averages, source-native unit
 conversions and explicit time-coordinate quality exclusions. It shares D1 leases
 and last-good retention without enrolling background watches. See
-[NASA forecast methods](geos-cf.md). CAMS activity/monitor contracts remain separate.
+[NASA forecast methods](geos-cf.md). Activity planning explicitly selects CAMS
+samples or NASA hourly means with separate persisted limits and units. Monitor
+comparisons retain their CAMS contract.
 
 `hazards-core.mjs` supplies the fire, air-monitor and NASA date adapters shared by
 hosted and direct editions. `lib/hazards-service.mjs` uses the existing collection

@@ -6,6 +6,14 @@ preferences. They are not safety standards, equipment ratings or individualized
 health advice. Apply a preset, edit the limits and press **Compare windows**.
 Preferences persist on the device alongside saved places.
 
+The hosted planner lets visitors explicitly choose CAMS hourly samples or NASA
+GEOS-CF hourly averages for particles and gases. Each source retains separate
+optional limits: NASA gases use ppb; CAMS gases use µg/m³. Switching sources
+requires **Compare windows** before exporting another report. NASA checks every
+full hourly mean overlapping the activity, including partial boundary hours;
+those means do not bound within-hour peaks. Missing data stays unknown, with no
+automatic fallback. See [NASA source and planning methods](geos-cf.md).
+
 ## Source and time handling
 
 Hourly NWS forecasts supply temperature, sustained wind and precipitation chance.

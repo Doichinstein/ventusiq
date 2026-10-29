@@ -94,3 +94,5 @@
 .alert-card:focus-visible{outline-offset:-3px}.layer-menu summary:focus-visible,#hazard-controls summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 @media(max-width:700px){.hazard-workspace{padding:10px 12px;margin-bottom:12px}.map-control-bar{flex-wrap:wrap;gap:10px}.active-layer-summary{min-width:100px}.refresh-controls{width:100%;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px}#auto-refresh-status{text-align:right}.layer-options{width:290px}#hazard-controls>summary .small{display:none}.intro h1{font-size:24px}.intro{padding-top:18px;padding-bottom:18px}.map-layer-key{align-items:flex-start}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.planner-air-limits:not([hidden]){display:contents}#plan-air-source-label{grid-column:1/-1;max-width:420px}

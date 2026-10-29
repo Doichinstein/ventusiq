@@ -1,5 +1,19 @@
 # Ten-feature acceptance audit
 
+## NASA activity-planning increment (v82)
+
+October 29 local rendered checks exercised explicit NASA selection, unloaded
+unknown checks, a successful cached collection, fitting windows, rejection with
+an ozone ceiling of zero, and JSON export. All 147 NASA checks in 49 exported
+windows reproduce from the retained raw source. Source limits and native gas
+units remain separate from CAMS. Desktop and 390×844 layouts were inspected;
+the planner form had no horizontal overflow. Test preferences were restored.
+The focused planning, NASA, and air-source suites pass 56 tests, including a
+loading-button recovery regression. TypeScript checking passes. This adds a
+usable alternative source; it does not establish model skill, within-hour
+exposure, account synchronization, or CAMS availability. Existing gates below
+remain open; the owner has deferred account testing.
+
 Audit baseline: v62 source and October 29 rendered browser checks, including
 navigation, map follow-up, local places, activity planning, station history,
 compound-rule inspection and event evidence, followed by v65 air/event checks. This

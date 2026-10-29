@@ -4,7 +4,11 @@ The My weather planner compares full-duration windows beginning within the next
 48 hours. Editable Walk, Bike ride and Outdoor tasks presets provide starting
 preferences. They are not safety standards, equipment ratings or individualized
 health advice. Apply a preset, edit the limits and press **Compare windows**.
-Preferences persist on the device alongside saved places.
+Preferences persist on the device alongside saved places. Editing a limit, margin,
+duration or source, or loading a preset, clears the previous results and disables
+export until the draft matches the applied settings or **Compare windows** applies
+it. Background source updates cannot restore the old plan over pending edits.
+Required blank fields remain invalid; they are not interpreted as zero.
 
 The hosted planner lets visitors explicitly choose CAMS hourly samples or NASA
 GEOS-CF hourly averages for particles and gases. Each source retains separate

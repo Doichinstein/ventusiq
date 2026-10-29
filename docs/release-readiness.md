@@ -1,5 +1,18 @@
 # Ten-feature acceptance audit
 
+## Planner draft consistency (v89)
+
+Editing limits or loading a preset now clears the prior report and disables its
+export until comparison applies the new settings. Blank required fields cannot
+be interpreted as zero. Regression tests reproduced both stale-report defects
+before the fix; all 43 focused planner/service/NASA tests pass afterward, including
+late grid arrival, unavailable sources, source switching and evidence export.
+Local browser QA at 39, -77 verified an applied zero-wind limit produced no fits
+and exported that limit for all 49 evaluated windows. Preset and blank-field
+drafts disabled export; the 390×844 card had no horizontal overflow. No browser
+errors were captured, and original local preferences were restored. These checks
+do not establish calibrated uncertainty or broad real-device/outage coverage.
+
 ## Live river forecast revisions (v88)
 
 Public browser QA compared AKFM7’s October 29 13:09 UTC issue with the

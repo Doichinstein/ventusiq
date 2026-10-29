@@ -5,7 +5,7 @@ export function mountPlanner({document,window,fetcher=fetch,clock=Date.now}){
   let report=null,key=null,generation=0,grid=null,pending=false,nextFetch=0,signature=null;
   function sourceControls(){const nasa=get('plan-air-source').value==='geos';get('plan-cams-limits').hidden=nasa;get('plan-geos-limits').hidden=!nasa;for(const name of ['pm25','ozone','no2'])get(fields[name]).disabled=nasa;for(const name of ['geosPm25','geosOzone','geosNo2'])get(fields[name]).disabled=!nasa;get('plan-geos-option').disabled=window.WEATHER_CONFIG?.mode!=='hosted';const loading=nasa&&!!window.WeatherGeosCF?.loading?.();get('plan-pm25-load').disabled=loading;get('plan-pm25-load').textContent=loading?'Loading NASA forecast…':nasa?'Load NASA for planning':'Load particle and gas forecasts';}
   function fill(p){for(const [name,id] of Object.entries(fields))get(id).value=p[name]??'';sourceControls();}
-  function input(){return preferences(Object.fromEntries(Object.entries(fields).map(([name,id])=>[name,get(id).value])));}
+  function input(){if(['duration','minTemp','maxTemp','wind','rain','tempMargin','windMargin','rainMargin'].some(name=>String(get(fields[name]).value).trim()===''))throw Error('Complete every required weather limit and margin.');return preferences(Object.fromEntries(Object.entries(fields).map(([name,id])=>[name,get(id).value])));}
   function fmt(t){const zone=window.WeatherPersonal?.context?.()?.forecast?.metadata?.properties?.timeZone;try{return new Date(t).toLocaleString(undefined,{timeZone:zone,weekday:'short',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch{return new Date(t).toISOString();}}
   const number=(n,suffix)=>n===null?'unknown':Math.round(n)+suffix;
   async function loadGrid(context){
@@ -50,18 +50,20 @@ export function mountPlanner({document,window,fetcher=fetch,clock=Date.now}){
     }
     nodes.push(el('p',r.uncertainty,'small'));get('plan-results').replaceChildren(...nodes);
   }
+  function clearDraft(message){report=null;signature=null;get('plan-export').disabled=true;get('plan-source-status').textContent=message;get('plan-results').replaceChildren();get('plan-smoke-status').textContent='';get('plan-pm25-status').textContent='';get('plan-gas-status').textContent='';}
   function refresh(){
     sourceControls();
     const c=window.WeatherPersonal?.context?.(),newKey=c?.place?`${c.place.lat},${c.place.lon}`:null;
     if(newKey!==key){key=newKey;generation++;pending=false;nextFetch=0;grid=null;signature=null;report=null;get('plan-export').disabled=true;}
     if(!c?.place){get('plan-results').replaceChildren();get('plan-air').textContent='';get('plan-grid-status').textContent='';get('plan-smoke-status').textContent='';get('plan-pm25-status').textContent='';get('plan-gas-status').textContent='';get('plan-source-status').textContent='';return;}
-    loadGrid(c);let pref;try{pref=preferences(window.WeatherPersonal?.preferences?.()||input());if(get('plan-air-source').value!==pref.airSource){report=null;signature=null;get('plan-export').disabled=true;get('plan-source-status').textContent='Source selection changed. Compare windows to apply this source and its separate limits.';get('plan-results').replaceChildren();get('plan-pm25-status').textContent='';get('plan-gas-status').textContent='';return;}report=evaluatePlan({...c,grid,airForecast:window.WeatherAirForecast?.snapshot?.(),geosForecast:window.WeatherGeosCF?.snapshot?.(),smoke:window.WeatherSmoke?.snapshot?.(),air:window.WeatherHazards?.snapshot?.('air'),preferences:pref,now:clock(),core:window.WeatherCore});}catch(error){report=null;get('plan-results').replaceChildren(el('p',error.message));get('plan-export').disabled=true;return;}
+    loadGrid(c);let pref;try{pref=preferences(window.WeatherPersonal?.preferences?.()||input());if(JSON.stringify(input())!==JSON.stringify(pref)){clearDraft('Limits or source changed. Compare windows to apply these settings before viewing or exporting a plan.');return;}report=evaluatePlan({...c,grid,airForecast:window.WeatherAirForecast?.snapshot?.(),geosForecast:window.WeatherGeosCF?.snapshot?.(),smoke:window.WeatherSmoke?.snapshot?.(),air:window.WeatherHazards?.snapshot?.('air'),preferences:pref,now:clock(),core:window.WeatherCore});}catch(error){clearDraft(error.message+' Compare windows after correcting the fields.');return;}
     get('plan-export').disabled=false;const next=JSON.stringify([report,grid?.error]);if(next!==signature){signature=next;render();}
   }
   let initial;try{initial=preferences(window.WeatherPersonal?.preferences?.()||{});}catch{initial=preferences();window.WeatherPersonal?.setPreferences?.(initial);}fill(initial);
   const custom=el('option','Custom limits');custom.value='';get('plan-preset').replaceChildren(custom,...Object.entries(PRESETS).map(([id,p])=>{const o=el('option',p.label);o.value=id;return o;}));get('plan-preset').value='';
-  get('plan-preset').onchange=()=>{const preset=PRESETS[get('plan-preset').value];if(!preset)return;fill(preferences({...window.WeatherPersonal?.preferences?.(),...preset}));get('plan-preset-note').textContent=preset.label+' defaults loaded. Edit any value, then compare. These are comfort preferences, not validated safety limits.';};
+  get('plan-preset').onchange=()=>{const preset=PRESETS[get('plan-preset').value];if(!preset)return;fill(preferences({...window.WeatherPersonal?.preferences?.(),...preset}));get('plan-preset-note').textContent=preset.label+' defaults loaded. Edit any value, then compare. These are comfort preferences, not validated safety limits.';refresh();};
   get('planner-form').onsubmit=e=>{e.preventDefault();try{const p=input();window.WeatherPersonal.setPreferences(p);get('plan-preset-note').textContent='Limits saved on this device. Extra margins test warmer/colder, windier and wetter scenarios; they are not forecast error estimates.';refresh();}catch(error){get('plan-preset-note').textContent=error.message;}};
+  get('planner-form').oninput=refresh;get('planner-form').onchange=refresh;
   get('plan-air-source').onchange=()=>{sourceControls();refresh();};
   get('plan-pm25-load').onclick=()=>get('plan-air-source').value==='geos'?window.WeatherGeosCF?.load?.():window.WeatherAirForecast?.run?.();
   get('plan-grid-refresh').onclick=()=>{nextFetch=0;refresh();};

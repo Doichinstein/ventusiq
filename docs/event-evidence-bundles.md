@@ -71,7 +71,10 @@ of the service's retention windows if the reader saves them. Event-message recor
 remain unpruned; station editions retain 30 days and other provider archives use
 their documented bounds. There is no silent retention-policy change, migration,
 background subscription or new server storage. Operators still need database
-backups and capacity monitoring before broader deployment. Provider attribution
+backups and capacity monitoring before broader deployment. The local
+[archive operations CLI](archive-operations.md) now provides full SQLite snapshots,
+verification, offline restore and a capacity report; hosted Sites recovery still
+requires a provider-supported path and a restore drill. Provider attribution
 and data limitations remain separate from the Apache-2.0 application license.
 
 Browser rendering, broader verified impacts and forecast-to-outcome evaluation

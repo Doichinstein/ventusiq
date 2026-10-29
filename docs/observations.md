@@ -154,8 +154,8 @@ last-good revisions survive outages. This expands storage for already requested
 stations; it does not increase collection frequency or enroll new locations.
 Other hazard/route products retain their existing seven-day policy. No migration
 is required. The existing approximate 1,000 observation-dataset cap still applies;
-operators must monitor storage before broader collection. A site-wide export and
-backup policy remains unfinished.
+operators must monitor storage before broader collection. Local backup, restore and storage checks are documented in
+[archive operations](archive-operations.md); hosted export/recovery remains open.
 
 The change cannot restore editions already pruned under the prior seven-day policy.
 A newly visited location can have no past-week evidence. Selecting an old window

@@ -1262,3 +1262,31 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   unchanged. Date-picker rendering and real browser interactions remain unverified
   under the saved browser permission setting; HTTP and DOM-double checks are not
   substitutes for those rendered checks.
+
+## Local archive recovery (v54)
+
+- All 30 Python tests pass, including 11 new archive tests. Coverage includes
+  committed WAL contents with an open writer, historical forecast revisions and
+  rollback readback, all eight Worker migrations, additional future tables/indexes,
+  checksum/schema/count corruption, invalid SQLite data, foreign-key violations,
+  missing paths, no-overwrite rules, output isolation, timeout failure, sidecars,
+  capacity calculations and CLI exit codes. The unchanged Node suite last passed
+  all 692 tests in v53; this change adds no Worker or browser code.
+- At 2026-10-29T08:08:34Z, the CLI backed up, verified and restored the existing
+  local Worker database: 6,537,216 bytes, 18 application tables plus one Cloudflare
+  metadata table, 620 event messages/revisions, 325 links and 901 transitions.
+  Snapshot SHA-256:
+  `7b85aa39a48e25997f8d45ca70d9be8a93fc899b967288cafcaf04e2dbe1e120`.
+  The backup and recovered copies remain outside the source checkout and are
+  not included in the public source distribution.
+- The actual `EventsService` read the original and restored files through
+  read-only SQLite connections: the event-list page and 30 story comparisons
+  across ten IDs and three collection cutoffs matched exactly. Twenty-six
+  comparisons contained stories and four preserved absent historical records.
+  This made no network requests and did not activate a restored runtime.
+- This is a local recovery drill, not a hosted Sites backup. The available Sites
+  connector has bounded table reads but no consistent export/restore capability.
+  Provider recovery access, production capacity validation and an isolated hosted
+  restore drill remain required. Scheduling, secrets, deployed database retention
+  and browser behavior are unchanged; prior rendered/sign-in/delivery QA limits
+  still apply. Operational targets and commands are in [archive operations](archive-operations.md).

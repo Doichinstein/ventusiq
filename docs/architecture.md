@@ -180,7 +180,10 @@ issue time and content hash. Identical fetches deduplicate their payload.
 `forecast_checks` records successful checks and their revisions, including an
 upstream rollback; `forecast_latest` tracks freshness and failure/backoff state.
 Forecast archives are not pruned with alert snapshots. Operators must monitor
-storage and back it up; retention/export policy will precede nationwide collection.
+storage and back it up; the [archive operations policy](archive-operations.md)
+defines local backup verification, offline restore and capacity thresholds.
+Hosted provider export/recovery and a production restore drill remain required
+before broader rollout.
 
 `GET /api/forecast?lat=...&lon=...` provides a cached source envelope.
 `GET /api/forecast/history?lat=...&lon=...` lists the latest 200 stored revisions.

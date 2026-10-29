@@ -155,6 +155,11 @@ collections happen about every 60 seconds. A fresh installation has no history
 before its first collection. Replay becomes available after the next snapshot.
 Stop with Ctrl+C. State persists in `data/weather.sqlite` across restarts.
 
+Local operators can inspect storage, take WAL-safe database backups and verify an
+offline restore with `python -m weathercommons.archive`. See
+[archive operations](docs/archive-operations.md) for commands, retention targets,
+recovery drills and the separate hosted Sites recovery requirement.
+
 To collect hourly forecasts even when no page is open, explicitly configure points:
 
 ```sh

@@ -21,6 +21,14 @@ then schedules collection and upkeep after the response. The original alerts
 endpoint still awaits collection for scheduled callers. History, changes and
 health load independently after the map paints; failure there cannot hide a
 successful alert response. Unchanged alert geometry is not rebuilt each tick.
+The renderer draws available alerts in severity/newest order, with a selected
+alert first. Between drawing batches it retains already-correct layer order and
+moves only the required prefix to the back or suffix to the front. This keeps
+severity order and the selected alert on top without restacking every existing
+layer after each batch. Unchanged updates require no layer-order operations.
+The eight-millisecond cooperative drawing budget still yields between features;
+one complex feature can exceed that budget, and full-map render speed remains
+device-dependent. Source and displayed geometry coordinates are unchanged.
 Short follow-ups never change the displayed collection timestamp or suppress
 an error/90-second age warning. A genuinely slow or failed collection remains
 delayed until a successful alert body reaches the browser.

@@ -1825,3 +1825,24 @@ coalescing, selected-alert priority, storage failures, budget eviction and
 unchanged geometry rendering. TypeScript and diff checks passed. Live batch
 measurement and rendered QA follow publication; no browser cache was cleared
 and no new cold-browser timing is claimed from unit tests.
+
+## Incremental alert stacking — October 29, v75
+
+The v74 browser pass showed complete boundary availability while 97 alert shapes
+were still queued for drawing. Source inspection found that each renderer pump
+raised every visible layer again, even for an unchanged update. Initial pending
+shapes were also reversed, drawing low-priority alerts before warnings.
+
+The renderer now tracks relative layer order, preserves the longest already-
+ordered prefix or suffix, and moves only the opposite end. Available alerts draw
+in severity/newest order with the selected alert prioritized. Selection, late
+geometry, replacements and filters retain the required final stacking after each
+yield. Geometry coordinates and the cooperative eight-millisecond budget are
+unchanged; one expensive feature still cannot be preempted inside its creation.
+
+Ten renderer and map-geometry tests passed; TypeScript and diff checks passed.
+A deterministic comparison against the prior committed renderer, using 364 shapes
+and simulated 10ms creation cost, counted 66,430 initial layer-order operations
+before and 363 after. Unchanged updates went from 364 moves to zero. These counts
+are not a claim of equivalent browser elapsed-time improvement. Live rendered
+verification follows publication; account testing remains deferred.

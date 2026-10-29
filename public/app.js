@@ -53,6 +53,7 @@ const alertRenderer = window.createAlertRenderer({
   remove: layer => alertLayer.removeLayer(layer),
   restyle: (layer, f) => layer.setStyle(styleFeature(f)),
   front: layer => layer.bringToFront(),
+  back: layer => layer.bringToBack(),
   progress: ({drawn,pending}) => {
     $('mapped-count').textContent = drawn;
     const missing = filtered.length - geometryAvailable;

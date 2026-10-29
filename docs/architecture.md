@@ -455,3 +455,15 @@ exports the product and notifies the planner on updates, removals or failure.
 smoke, monitor observations and total particulate concentrations remain distinct.
 Missing model-run identity is carried through the view and exports. The card and
 planner retain provider attribution; application and data-access terms stay separate.
+
+### Archived PM2.5 diagnostic comparison
+
+`PMComparisonService` joins existing forecast checks and immutable raw products
+with later monitor readings at exact UTC timestamps. The latest eligible check
+must precede the target by 1–24 hours; later products cannot repair missing earlier
+evidence. Historical monitor editions collected strictly before each check supply
+a persistence baseline. Both models are compared on the same paired subset.
+An explicit hosted card exports sources, coverage and exclusions; collection is
+on demand under the existing provider quotas, with no new schema or schedule.
+Regional instantaneous samples and preliminary monitor concentrations have
+different spatial and temporal support. See [method and limitations](particulate-comparison.md).

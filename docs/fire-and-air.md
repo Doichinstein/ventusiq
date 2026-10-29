@@ -1,5 +1,9 @@
 # Fire and air sources
 
+The hosted dashboard also offers [archived PM2.5 comparisons](particulate-comparison.md):
+earlier model samples versus later preliminary monitor readings, a previously
+archived persistence baseline, explicit missing hours and source exports.
+
 The public Fire & air controls add independent layers to the alert map. They start
 disabled. Saving a place also loads incidents and monitors for a proximity summary.
 No saved place is sent to these providers: national products are downloaded and

@@ -72,5 +72,5 @@ the PM2.5 limit. Smoke and total particulate values are not added or averaged.
 The planning export retains the raw particulate product, revision/check metadata,
 selected samples, maximum, limit and comparison result for every candidate window.
 Changing place clears old evidence; late replies cannot restore another point's
-forecast. Independent evaluation against measurements, run-identified products,
+forecast. [Archived PM2.5 diagnostic comparisons](particulate-comparison.md) now pair earlier model samples with later monitor readings. Broader independent evaluation, run-identified products,
 other pollutants and continuous exposure remain roadmap work.

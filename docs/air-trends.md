@@ -24,3 +24,5 @@ The chart breaks at missing values and gaps over 90 minutes. A table contains al
 Static and Python-served frontends use the same EPA adapter directly. This requires provider browser CORS; rendered browser verification remains pending. Browser memory retains at most twelve histories. Repeated requests reuse recent data; source outages retain and label last-good history.
 
 Collection is on demand. The existing hourly alert-upkeep task does not enroll saved places or collect air histories in the background. Air-quality forecasts, smoke transport, exposure validation and opt-in threshold delivery remain separate roadmap work.
+
+Hosted users can also explicitly [compare archived PM2.5 forecasts with later readings](particulate-comparison.md), including a previously archived persistence baseline and missing-hour audit. These diagnostics do not establish calibrated model skill.

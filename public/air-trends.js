@@ -5,7 +5,7 @@ export function mountAirTrends({document,window,fetcher=fetch,clock=Date.now}){
   const cache=new Map();let key=null,options=[],monitor=null,product=null,report=null,generation=0,pending=false,next=0;
   const number=(n,unit='')=>n===null||n===undefined?'Unknown':n.toLocaleString(undefined,{maximumFractionDigits:1})+unit;
   const time=t=>t?new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}):'unavailable';
-  function clear(){report=null;get('air-trend-export').disabled=true;get('air-trend-summary').replaceChildren();get('air-trend-chart').replaceChildren();get('air-trend-table').replaceChildren();get('air-trend-coverage').textContent='';}
+  function clear(){report=null;window.WeatherPMComparison?.refresh();get('air-trend-export').disabled=true;get('air-trend-summary').replaceChildren();get('air-trend-chart').replaceChildren();get('air-trend-table').replaceChildren();get('air-trend-coverage').textContent='';}
   function chart(r){
     const target=get('air-trend-chart');target.replaceChildren();const usable=r.rows.filter(p=>p.pm25!==null);if(!usable.length)return;
     const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 640 200');svg.setAttribute('role','img');svg.setAttribute('aria-label','Measured PM2.5 concentration during the last 24 hours. Missing readings and gaps over 90 minutes break the line. Exact readings follow in the table.');
@@ -17,6 +17,7 @@ export function mountAirTrends({document,window,fetcher=fetch,clock=Date.now}){
     node('text',{x:55,y:187},'24 hours ago · µg/m³');node('text',{x:580,y:187},'Now');target.append(svg);
   }
   function render(){
+    window.WeatherPMComparison?.refresh();
     if(!product||!monitor)return;report=airTrend(product,monitor,clock());const r=report,latest=r.latest,nodes=[];
     get('air-trend-status').textContent=`${r.fresh?'':'Updates or measurements delayed · '}${monitor.properties.name} · ${monitor.distance_km.toFixed(1)} km away · checked ${time(r.checked_at)}${r.error?' · '+r.error:''}`;
     if(latest){nodes.push(el('p',number(latest.pm25,' µg/m³'),'outlook-number'),el('p',`Measured ${time(latest.at)} · reported PM2.5 NowCast AQI ${number(latest.aqi)} · ${aqiCategory(latest.aqi).label}`));}
@@ -53,6 +54,6 @@ export function mountAirTrends({document,window,fetcher=fetch,clock=Date.now}){
   }
   get('air-trend-monitor').onchange=()=>select(get('air-trend-monitor').value);get('air-trend-refresh').onclick=()=>{if(monitor)return load(true);refresh();};
   get('air-trend-export').onclick=()=>{render();if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-air-history-'+monitor.id+'.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherAirTrends={refresh};refresh();window.setInterval(()=>{if(!get('personal-workspace').hidden)refresh();},60000);return {refresh,select,load};
+  window.WeatherAirTrends={refresh,context:()=>({monitor,product})};refresh();window.setInterval(()=>{if(!get('personal-workspace').hidden)refresh();},60000);return {refresh,select,load};
 }
 if(typeof window!=='undefined'){const start=()=>mountAirTrends({document,window});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}

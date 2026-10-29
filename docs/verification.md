@@ -879,3 +879,34 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   Broad test weather bounds isolated the optional PM2.5 comparison: 49 candidate
   windows produced 21 fits and 28 exceedances. Run age stayed unknown. These
   counts are transient integration evidence, not recommendations or skill scores.
+
+## Archived PM2.5 comparison — 2026-10-29
+
+- Added an explicit hosted comparison between earlier archived CAMS PM2.5 samples
+  and later same-timestamp AirNow monitor concentrations. Only checks 1–24 hours
+  before the target qualify; selection is independent of numeric outcomes. A
+  missing chosen product is not replaced by a more favorable earlier revision.
+- Persistence uses only a valid reading from a monitor-history edition already
+  archived strictly before the forecast check. Model and persistence metrics use
+  the identical paired subset. The export includes raw editions, selected model
+  sources, check times, source IDs, lead groups, and all 24 target-hour exclusions.
+- 553 Node and 19 Python tests passed (572 total), including twelve new tests for
+  collection boundaries, late forecast revisions, invalid/missing/conflicting
+  observations, zero concentrations, baseline correction leakage, same-case
+  metrics, SQLite archive joins, source outages, monitor admission, exports and
+  late UI replies. TypeScript and the production build passed.
+- Built Worker HTTP checks returned 200 for the page and both comparison modules,
+  and 400 for invalid coordinates. The live-source endpoint at 39,-77, monitor
+  110010043, returned 200 at 2026-10-29T05:17:37Z: 23 measured target hours, zero
+  eligible forecast checks and zero pairs, with null metrics rather than invented
+  scores. Observation revision:
+  `09460aac3982ce755d53e3e45a8cc1e0314be940b4a1a4f0113e15f144a98031`.
+  The available model revision remained
+  `8b030ec7aa116dbee282ae99785fc981abfb3e4160a5c0b928e1021c8e630478`,
+  checked at 05:01:58Z and not yet old enough for the target timestamps.
+- Positive pairs and persistence comparisons were verified with controlled
+  historical fixtures, not claimed as live model skill. Regional instantaneous
+  samples and preliminary monitor concentrations differ in spatial and temporal
+  support; model-run age remains unknown. Broader independent evaluation remains
+  open. No schema, secret, watch or hourly upkeep changes were introduced.
+- Browser rendering remains unverified under the saved permission restriction.

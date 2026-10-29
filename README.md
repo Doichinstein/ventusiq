@@ -43,6 +43,11 @@ concentrations at future hourly times, with coverage gaps, run age and evidence 
 windows. The source is separate from smoke and measured monitor data; model-run
 age is unknown. See [particulate methods and provider terms](docs/particulate-forecasts.md).
 
+**Archived PM2.5 comparisons** pair earlier forecasts with later nearby monitor
+readings and a previously archived persistence baseline. Missing hours, source
+revisions and raw evidence stay visible. These are diagnostic differences, not
+calibrated accuracy or exposure estimates. See [comparison methods](docs/particulate-comparison.md).
+
 Historical analogs include seasonal and yearly held-out diagnostics, paired baseline
 errors and empirical spread coverage. See [analog validation](docs/historical-analogs.md#seasonal-and-yearly-diagnostic-breakdowns).
 

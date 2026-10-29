@@ -1,3 +1,4 @@
+import {PMComparisonService} from '../../../lib/pm-comparison-service.mjs';
 import {AirForecastService} from '../../../lib/air-forecast-service.mjs';
 import {WatershedSitesService} from '../../../lib/watershed-sites-service.mjs';
 import {GeocodeService,geocodePost} from '../../../lib/geocode-service.mjs';
@@ -52,6 +53,7 @@ export async function GET(request:Request){
       const result=await new EventReportsService(service).forEvent(url.searchParams.get('id'),url.searchParams.has('at')?atTime(url.searchParams.get('at'))*1000:null,url.searchParams.has('alertAt')?atTime(url.searchParams.get('alertAt'))*1000:null);
       return result?json(result):json({error:'No collected event at this time'},404);
     }
+    if(path==='/api/air/comparison')return json(await new PMComparisonService(service).comparison(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('id')));
     if(path==='/api/air/forecast')return json(await new AirForecastService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/air/history')return json(await new AirTrendsService(service).history(url.searchParams.get('id')));
     if(path==='/api/ensemble')return json(await new EnsembleService(service).forecast(url.searchParams.get('lat'),url.searchParams.get('lon')));

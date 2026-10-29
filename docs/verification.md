@@ -547,3 +547,30 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
 - Rendered browser QA remains unavailable under the saved permission setting.
   Traffic, weather-induced slowing, smoke exposure and verified road closures
   remain unfinished. Hourly upkeep is unchanged.
+
+## Journey smoke guidance increment
+
+- Added optional RAP smoke brackets at travel/stop sample times, per-departure
+  coverage and user-limit counts, source/run timestamps, map context, a separate
+  evidence table and raw source exports. Exact-hour ETAs use one sample; fractional
+  ETAs use preceding/following hourly instantaneous values without interpolation.
+  Missing/stale values cannot establish below-limit or clear-air results.
+- Twelve new tests cover exact/fractional time brackets, partial high values versus
+  unknown low brackets, run/check age, mismatched locations, repeated DST hours,
+  separate coverage, optional loading, deduplicated coordinates, cancellation,
+  source outages, UI/export behavior and atomic final-slot cache admission.
+- Full suite: 460 Node and 16 Python tests passed (476 total). TypeScript and
+  production build passed. No dependency, migration, secret or schedule changes.
+- Built Worker live check at 2026-10-29 03:29:14 UTC used the Washington–via–Baltimore
+  route with a 90-minute stop. Eight samples required five distinct rounded smoke
+  point products and one catalog request. Departures at 05:00, 07:00 and 09:00 UTC
+  each had 8/8 complete smoke brackets from RAP's 2026-10-28 03:00 UTC run.
+  The highest available bracketing value was 1 µg/m³ in each comparison; no sample
+  exceeded the chosen 5 µg/m³ test limit. This is modeled sample evidence, not a
+  measured-exposure result or travel-safety assessment.
+- First-point revision: `4a89986d9f8674b3abf4a88050077713012b24944f1b813099d7f7e7b8793d38`.
+  At rounded point 38.90,-77.04 the exact 05:00 UTC sample was 1 µg/m³, source
+  raster 716111, checked at 03:29:13 UTC. Source resolution was about 6.30 km.
+  Repeated stop samples shared the same point revision. Page/modules returned 200.
+- Rendered browser QA and measured continuous-exposure evaluation remain
+  unverified. Hourly upkeep is unchanged.

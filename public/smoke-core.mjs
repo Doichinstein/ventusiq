@@ -79,6 +79,19 @@ export function smokeForecast(product,now=Date.now()){
   return {method:SMOKE_EVALUATION_METHOD,evaluated_at:iso(now),point,issued_at:product.issued_at,checked_at:product.checked_at,fresh,error:product.error||null,rows,coverage:{usable:usable.length,expected:48},range:usable.length?{min:Math.min(...usable.map(r=>r.smoke_ug_m3)),max:Math.max(...usable.map(r=>r.smoke_ug_m3))}:null,evidence:product};
 }
 
+// Instantaneous hourly values bracket an ETA; they are not an interpolated ETA estimate.
+export function smokeAtTime(product,place,at,now=Date.now()){
+  const base={method:'2026-10-29.1',at:Number.isFinite(at)?iso(at):null,point:null,fresh:false,complete:false,samples:[],maximum_ug_m3:null,issued_at:null,checked_at:product?.checked_at||null,revision:product?.revision||null,reason:'Smoke forecast unavailable',continuous_coverage:false};
+  if(!Number.isFinite(at)||at<now||at>now+76*HOUR)return {...base,reason:'Smoke sample time is outside the journey horizon'};
+  if(!product||product.error&&!product.method)return {...base,reason:product?.error||base.reason};
+  try{
+    const report=smokeForecast(product,now),point=smokePoint(place?.lat,place?.lon);
+    if(point.lat!==report.point.lat||point.lon!==report.point.lon)return {...base,reason:'Smoke forecast belongs to a different location'};
+    const first=Math.floor(at/HOUR)*HOUR,last=Math.ceil(at/HOUR)*HOUR,samples=smokeRows(product,first,(last-first)/HOUR+1),known=samples.filter(s=>s.smoke_ug_m3!==null),complete=report.fresh&&known.length===samples.length;
+    return {...base,point,fresh:report.fresh,complete,samples,maximum_ug_m3:report.fresh&&known.length?Math.max(...known.map(s=>s.smoke_ug_m3)):null,issued_at:report.issued_at,checked_at:report.checked_at,reason:!report.fresh?'Smoke forecast is stale or updates are delayed':!complete?'Missing or invalid bracketing smoke samples':null};
+  }catch(error){return {...base,reason:error.message};}
+}
+
 // A sample ceiling evaluates discrete values bracketing an activity window.
 // It cannot establish continuous concentrations between those forecast times.
 export function smokeWindow(product,place,start,end,limit=null,now=Date.now()){

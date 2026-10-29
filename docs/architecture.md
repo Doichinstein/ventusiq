@@ -341,3 +341,14 @@ segments for user-entered stops and derives updated ETAs, bounded stop samples a
 separate driving/stopped durations. Alert geometry evaluation includes those
 stationary segments; point forecasts and gust grids are deduplicated per comparison.
 Stop input remains client-side except for the via coordinates sent to routing.
+
+### Journey smoke guidance
+
+`smokeAtTime` reuses the RAP adapter's raw contract and freshness checks to select
+one exact hourly sample or two samples bracketing an ETA. `journey-smoke.mjs`
+collects deduplicated rounded point products after warming the shared catalog;
+three workers bound concurrency and cancellation stops new requests. Journey
+results retain smoke completeness, limit results and issue times separately from
+NWS hourly/gust fields. `journey-smoke-ui.mjs` renders sample/source evidence.
+The smoke service admits new point datasets atomically under its 500-point cap.
+No interpolated ETA concentration, continuous exposure or AQI is inferred.

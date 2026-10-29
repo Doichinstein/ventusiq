@@ -39,7 +39,8 @@ A separate [NOAA RAP smoke forecast](docs/smoke-forecasts.md) shows modeled near
 concentrations at future hourly times, with coverage gaps, run age and evidence export.
 
 Journey planning supports up to three ordered via points with timed stops, including
-weather samples during each stay and stop-aware alert overlaps. See [journey methods](docs/journeys.md).
+weather samples during each stay and stop-aware alert overlaps. Optional RAP smoke
+samples bracket travel times, with separate coverage, user limits and source exports. See [journey methods](docs/journeys.md).
 
 NOAA upstream/downstream [gauge connections](docs/rivers.md#upstream-and-downstream-gauge-connections)
 let users navigate related gauges and export the original associations. Direction

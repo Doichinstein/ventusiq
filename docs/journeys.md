@@ -75,8 +75,8 @@ journey refreshes them explicitly.
 
 This is weather exposure planning, not navigation, an evacuation route or a
 verified road-closure service. No closure source is currently integrated, and
-the UI makes no closure/open-road claim. Smoke, road-surface conditions,
-traffic-aware timing and closure attribution remain
+the UI makes no closure/open-road claim. Evaluated personal smoke exposure,
+road-surface conditions, traffic-aware timing and closure attribution remain
 future additions. Automated rendered QA is still unavailable. The Python/static
 editions do not yet expose hosted routing.
 
@@ -155,3 +155,49 @@ is modeled at the snapped road point; the route does not establish parking acces
 walking time, opening hours, safe stopping conditions or weather inside a building.
 Exports retain each requested stop and its elapsed times, per-leg timing, total
 stop/driving durations, updated samples and evaluated departure scenarios.
+
+## Smoke guidance along a journey
+
+**Include RAP smoke forecast samples** is optional and off by default. With it
+selected, each departure card and a separate table show NOAA RAP near-surface
+smoke guidance around travel and stop sample times. The user may enter a sample
+limit of 0–10,000 µg/m³; leaving it empty still displays coverage and values.
+This reuses the existing NOAA NDGD point adapter, raw kg/m³-to-µg/m³ conversion,
+raster identity checks and model/collection freshness rules.
+
+At fractional-hour ETAs, `smokeAtTime` uses the immediately preceding and following
+hourly instantaneous values at the same location. Exact-hour ETAs use just that
+hour. Values are never interpolated to create a new arrival-time concentration.
+The displayed maximum is the larger available bracketing value, not a route-wide
+maximum or continuous concentration. One valid above-limit sample establishes
+that a bracket contains an above-limit value even when its other sample is missing;
+an at-or-below result requires every bracket sample to be present and fresh.
+Unknown results are counted separately. Stale products withhold numeric summaries
+and comparisons while retaining their raw source evidence in the export.
+
+The table includes actual sample valid times, model run/check timestamps, rounded
+request coordinates, source links, gaps and limit results. Cards keep smoke
+coverage separate from hourly-weather and gust coverage. The map uses amber when
+any requested sample is incomplete and pink for a complete point with a gust or
+smoke-sample limit exceedance. Different model issue times across sampled points
+are disclosed. Positive concentrations below 0.001 µg/m³ display as `<0.001` rather
+than rounding to zero.
+
+Points are rounded to 0.01° within the contiguous-US adapter coverage, then sampled
+with the provider's nearest-neighbor method. Repeated points, including stops,
+share one request and all three departure scenarios reuse those sources. Catalog
+collection happens first, followed by at most three concurrent point workers, to
+avoid empty-cache lease races. Unsupported points remain unknown without an
+out-of-coverage provider request. A failed catalog stops point collection; a single
+point failure affects that point only. The shared 500-point admission cap is now
+atomic under concurrent requests. Existing hourly caching and seven-day archive
+retention apply; no new background schedule is added.
+
+The product is smoke mass concentration at 8 m, not total ambient PM2.5 or AQI.
+Brackets do not establish inhaled dose, conditions inside a vehicle/building,
+time above a limit, continuous exposure or safe travel. Point sampling can miss
+spatial and temporal peaks between samples. Evaluation snapshots and exports retain
+those limitations; refresh the comparison for newer sources. HRRR is not fetched
+for every route point in this increment; its separate place comparison remains
+available. Measured-exposure evaluation and total-air-quality forecasts remain
+future work.

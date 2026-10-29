@@ -174,3 +174,12 @@ reported event starts with original source fields and exportable raw evidence.
 It does not change ranking, baseline tests or weather distributions, and it does
 not infer an impact probability or damage at the saved point. NOAA records are
 delayed and may be revised; current retrieval is not decision-time evidence.
+
+## Nearby station records
+
+The Station records card reuses a comparable date and saved place to discover up
+to ten US ISD catalog stations within 100 km. Users explicitly select a station
+and retrieve its two GSOD daily records. [Station methods](station-history.md)
+explain reporting intervals, flags and catalog limitations. This inspection leaves
+analog ranking and holdout tests unchanged; it does not establish forecast skill
+or a complete station-based historical evaluation.

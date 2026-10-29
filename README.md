@@ -356,3 +356,6 @@ Hosted watches can now follow any of the six compound-hazard rules, with retaine
 state/coverage changes, private feeds and optional browser push. Initial baselines
 stay quiet; missing inputs never produce an all-clear. See
 [compound-rule subscriptions](docs/compound-hazards.md#opt-in-persistent-compound-watches).
+
+Historical analogs now connect to [nearby NOAA daily station records](docs/station-history.md),
+with explicit station choice, reporting flags, missing values and raw evidence export.

@@ -48,3 +48,10 @@ Deferred. A separate commercial service may reuse the Apache-2.0 infrastructure;
 audience, pricing and product scope remain undecided. No feature in the ten-feature
 public roadmap is reserved for that service. Others may also commercially reuse
 released code under Apache-2.0.
+
+### Historical station integration progress
+
+Comparable dates now support explicit nearby US station selection and two-day NOAA
+GSOD evidence with reporting flags and raw export. Station continuity, broad
+station-based holdout evaluation, forecast-to-reanalysis transfer and calibrated
+impact projections remain open. This is inspectable historical context.

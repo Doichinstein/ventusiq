@@ -526,3 +526,12 @@ identity or a route closure. `journey-roadwork.mjs` renders records and source
 geometry and keeps failed sources separate from available weather. The main
 journey export includes every selected raw feed edition. No schema, runtime
 secret or schedule changes were needed. See [methods](journey-roadwork.md).
+
+### Historical station context
+
+`StationHistoryService` archives the US subset of the fixed NOAA ISD CSV catalog
+and bounded two-day GSOD queries. Local geographic filtering sends no place
+coordinates upstream. Explicit station/date retrieval uses shared cache admission,
+request spacing, daily budgets and last-good editions. `station-history.js` receives
+analog context and resets evidence when place/date/station changes. No schema,
+secret or hourly schedule changes. See [methods](station-history.md).

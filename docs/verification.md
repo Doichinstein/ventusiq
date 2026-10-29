@@ -1084,3 +1084,31 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   Browser rendering remains unverified under the saved permission restriction.
   Longer evaluation, issuance-time baselines, station-change review and calibrated
   confidence remain open; the baseline is explicitly a collection-time comparison.
+
+
+## Historical station records (2026-10-29, v47)
+
+- All 627 Node tests and 19 Python tests passed; TypeScript and production build
+  passed. Fourteen new tests cover catalog parsing/filtering, bounded discovery,
+  missing sentinels, reporting flags, conflicting source records, stale editions,
+  request/cache budgets, explicit UI requests, exports and late-response clearing.
+- Built Worker HTTP QA at 2026-10-29T06:35:13.512530+00:00 returned 200 for the page,
+  both new modules, station discovery and daily records. Invalid calendar dates
+  and station IDs returned 400. No browser automation was attempted: rendered UI
+  remains unverified under the saved permission restriction.
+- Discovery at 39,-77 for June 5–6, 2024 returned ten candidates within 100 km.
+  Catalog revision `9578c51611e0267fd749ed9f5470f53126a7d55e2f6ff23e6614172b3c51b656`; source-text SHA-256
+  `1994747ab4af1b97e63adb434b4d0d022f2daee76f0c144ea9ab46be2d906604`. The 7,178 US raw catalog rows
+  included 146 excluded rows. Many catalog end dates are in August 2025, so newer
+  coverage cannot be inferred from a fresh retrieval timestamp.
+- Reagan National station 72405013743 was 17.28 km away. Source edition
+  `eaf07873b3ee6a3c6c0912213669232649aa11397c45abeb7b42cf0c5f4edfc7` returned both dates. June 5 mean/high/low were
+  76.3/88.0/69.1 Fahrenheit, mean wind 7.2 knots, gust unknown, precipitation
+  0.00 inches with G (one 24-hour report). June 6 mean/high/low were
+  79.5/86.0/72.0 Fahrenheit, wind 10.1 knots, gust 24.1 knots, precipitation
+  0.46 inches with G. These source summaries are not independently validated
+  point measurements or exact UTC-day equivalents for reanalysis evaluation.
+- No migration, secret, notification enrollment or hourly upkeep change. Real
+  sign-in, two-device synchronization and closed-browser notification delivery
+  remain unverified from earlier work. Station continuity and a full station-based
+  holdout evaluation remain roadmap items.

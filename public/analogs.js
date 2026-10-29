@@ -6,7 +6,7 @@ export function mountAnalogs({document,window,fetcher=fetch,clock=Date.now}){
   const labels={high_c:'High temperature',low_c:'Low temperature',wind_ms:'Mean sustained wind',rain_mm:'Daily precipitation'};
   const value=(n,k)=>n===null||n===undefined?'Unknown':k.endsWith('_c')?(n*9/5+32).toFixed(1)+'°F':k==='wind_ms'?(n*2.236936).toFixed(1)+' mph':n.toFixed(1)+' mm';
   const errorValue=(n,k)=>n===null||n===undefined?'Unknown':(n*(k.endsWith('_c')?1.8:k==='wind_ms'?2.236936:1)).toFixed(1)+(k.endsWith('_c')?'°F':k==='wind_ms'?' mph':' mm');
-  function clear(message){window.WeatherStormHistory?.setAnalogDates(null);generation++;busy=false;report=null;get('analog-export').disabled=true;get('analog-results').replaceChildren();if(message)get('analog-status').textContent=message;}
+  function clear(message){window.WeatherStormHistory?.setAnalogDates(null);window.WeatherStationHistory?.setAnalogDates(null);generation++;busy=false;report=null;get('analog-export').disabled=true;get('analog-results').replaceChildren();if(message)get('analog-status').textContent=message;}
   function refresh(){
     if(!enabled)return;const context=window.WeatherPersonal?.context?.(),place=context?.place,key=place?`${place.lat},${place.lon}`:null,next=forecastDays(context?.forecast,clock()),nextSignature=JSON.stringify([key,context?.forecast?.revision,context?.forecast?.issued_at,next.map(d=>[d.date,d.high_c,d.low_c,d.wind_ms])]);
     if(nextSignature===signature)return;const previous=get('analog-day').value;signature=nextSignature;placeKey=key;days=next;
@@ -15,7 +15,7 @@ export function mountAnalogs({document,window,fetcher=fetch,clock=Date.now}){
   }
   function table(headers,rows){const scroll=el('div',undefined,'hourly-scroll'),table=el('table',undefined,'hourly-table'),thead=el('thead'),hr=el('tr'),body=el('tbody');for(const h of headers)hr.append(el('th',h));thead.append(hr);for(const cells of rows){const tr=el('tr');for(const cell of cells)tr.append(el('td',cell));body.append(tr);}table.append(thead,body);scroll.append(table);return scroll;}
   function render(){
-    window.WeatherStormHistory?.setAnalogDates(report);const r=report,target=r.target,h=r.history,n=r.matches.length,nodes=[];
+    window.WeatherStormHistory?.setAnalogDates(report);window.WeatherStationHistory?.setAnalogDates(report);const r=report,target=r.target,h=r.history,n=r.matches.length,nodes=[];
     get('analog-status').textContent=`${n} comparable days for ${r.place.name} · ${h.window.start.slice(0,4)}–${h.window.end.slice(0,4)} history · method ${ANALOG_METHOD}`;
     nodes.push(el('p',`${target.date} UTC forecast pattern: high ${value(target.high_c,'high_c')}, low ${value(target.low_c,'low_c')}, mean sustained wind ${value(target.wind_ms,'wind_ms')}.`),el('p','Forecast pattern uses hourly temperature extremes and mean wind, with wind ranges represented by their midpoint. Historical values describe an entire model grid; terrain, coastlines and local extremes can differ.','small'));
     if(h.stale||h.error)nodes.push(el('p','Historical source refresh is delayed. These are the last collected historical records: '+(h.error||'refresh overdue'),'warning-note'));

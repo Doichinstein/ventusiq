@@ -5,20 +5,24 @@ export function mountEvents({document,window,fetcher=fetch}){
   const time=stamp=>stamp?new Date(stamp).toLocaleString():'Not supplied';
   let visible=false,id=null,asof=null,story=null,generation=0,listGeneration=0,cursor=null,query='',messages=[];
   async function request(url){const response=await fetcher(url,{signal:AbortSignal.timeout(55000)}),data=await response.json();if(!response.ok)throw new Error(data.error||`Archive returned HTTP ${response.status}`);return data;}
-  function hide(){visible=false;get('event-workspace').hidden=true;get('nav-events').classList.toggle('nav-active',false);get('nav-events').setAttribute('aria-pressed','false');const params=new URLSearchParams(window.location.hash.slice(1));if(params.has('event'))window.history.replaceState(null,'',window.location.pathname+window.location.search);}
+  function hide(){visible=false;generation++;get('event-workspace').hidden=true;get('nav-events').classList.toggle('nav-active',false);get('nav-events').setAttribute('aria-pressed','false');const params=new URLSearchParams(window.location.hash.slice(1));if(params.has('event'))window.history.replaceState(null,'',window.location.pathname+window.location.search);}
   function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);visible=true;get('event-workspace').hidden=false;for(const key of ['map-workspace','map-timeline','hazard-workspace','river-workspace'])get(key).hidden=true;for(const [key,on] of [['nav-events',true],['nav-map',false],['nav-personal',false],['nav-rivers',false]]){get(key).classList.toggle('nav-active',on);get(key).setAttribute('aria-pressed',String(on));}}
   async function loadList(append=false){
     const gen=++listGeneration;if(!append){query=get('event-search').value.trim();cursor=null;messages=[];get('event-list').replaceChildren();}get('event-list-status').textContent='Reading the persistent archive…';get('event-more').disabled=true;
     try{const data=await request('/api/events?q='+encodeURIComponent(query)+(append&&cursor?'&cursor='+encodeURIComponent(cursor):''));if(gen!==listGeneration)return;messages=[...messages,...data.messages];cursor=data.next_cursor;
       get('event-list-status').textContent=`${messages.length} collected messages shown. ${data.last_collection?'Latest active-feed collection '+time(data.last_collection)+'.':'Archive begins with the next successful collection.'} Updates in one chain can appear separately below.`;
-      get('event-list').replaceChildren(...messages.map(m=>{const b=el('button',undefined,'river-choice');b.setAttribute('aria-pressed',String(m.id===id));b.append(el('strong',m.name),el('span',m.area),el('span',`${m.message_type} · first collected ${time(m.first_seen)}`),el('span',m.present===1?'Present in last active-feed collection':m.present===0?'Left active feed':'Retrieved separately'));b.onclick=()=>openStory(m.id);return b;}));get('event-more').hidden=!cursor;
+      get('event-list').replaceChildren(...messages.map(m=>{const b=el('button',undefined,'river-choice');b.setAttribute('aria-pressed',String(m.id===id));b.append(el('strong',m.name),el('span',m.area),el('span',`${m.message_type} · first collected ${time(m.first_seen)}`),el('span',m.present===1?'Present in last active-feed collection':m.present===0?'Left active feed':'Retrieved separately'));b.onclick=()=>openStory(m.id,null,{focus:true});return b;}));get('event-more').hidden=!cursor;
     }catch(error){if(gen===listGeneration)get('event-list-status').textContent=error.message;}finally{if(gen===listGeneration)get('event-more').disabled=false;}
   }
-  async function openStory(nextId,nextAt=null,{resolve=false}={}){
+  async function openStory(nextId,nextAt=null,{resolve=false,focus=false}={}){
     show();const gen=++generation;story=null;window.WeatherEventBundle?.refresh();window.WeatherEventReports?.updateStory(null);window.WeatherEventObservations?.updateStory(null);window.WeatherEventGauges?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
     id=nextId;asof=nextAt;story=null;get('event-detail').hidden=true;get('event-status').textContent=resolve?'Retrieving up to five referenced messages from NWS…':'Reading the collected timeline…';
+    // Focus loading only for an explicit selection. A later response must not
+    // steal focus if the reader has moved on or switched workspaces.
+    const status=get('event-status');
+    if(focus){status.setAttribute('tabindex','-1');status.focus();}
     const params=new URLSearchParams({event:id});if(asof)params.set('at',asof);window.history.replaceState(null,'',window.location.pathname+window.location.search+'#'+params);
-    try{const data=await request('/api/events/'+id+(asof?'?at='+encodeURIComponent(asof):resolve?'?resolve=1':''));if(gen!==generation)return;story=data;render();window.WeatherEventBundle?.refresh();}
+    try{const data=await request('/api/events/'+id+(asof?'?at='+encodeURIComponent(asof):resolve?'?resolve=1':''));if(gen!==generation)return;story=data;render();window.WeatherEventBundle?.refresh();if(focus&&visible&&document.activeElement===status){const title=get('event-title');title.setAttribute('tabindex','-1');title.focus();}}
     catch(error){if(gen===generation){get('event-status').textContent=error.message+' Earlier views cannot use messages or links collected later.';get('event-detail').hidden=true;}}
   }
   function render(){
@@ -39,15 +43,15 @@ export function mountEvents({document,window,fetcher=fetch}){
       if(t.origin==='reference')box.append(el('p','Retrieved separately; active-feed presence at retrieval is not established.','small'));
       const details=el('details'),summary=el('summary','Official message and instructions');details.append(summary);if(p.headline)details.append(el('h3',p.headline));if(p.instruction)details.append(el('p',p.instruction,'instruction'));details.append(el('p',p.description||'No description supplied.','event-description'));box.append(details);
       const link=el('a','Official NWS message ↗');link.href=f.id.startsWith('https://api.weather.gov/alerts/')?f.id:'https://www.weather.gov/';link.target='_blank';link.rel='noopener';box.append(link);
-      const replay=el('button','View what was known at this collection','text-button');replay.onclick=()=>openStory(t.id,t.at);box.append(replay);return box;
+      const replay=el('button','View what was known at this collection','text-button');replay.onclick=()=>openStory(t.id,t.at,{focus:true});box.append(replay);return box;
     }));
   }
   get('nav-events').onclick=()=>{show();loadList();};get('event-search-form').onsubmit=e=>{e.preventDefault();loadList();};get('event-more').onclick=()=>loadList(true);
   get('event-refresh').onclick=async()=>{get('event-refresh').disabled=true;try{await request('/api/alerts');await loadList();if(id)await openStory(id,asof);}catch(error){get('event-status').textContent=error.message;}finally{get('event-refresh').disabled=false;}};
-  get('event-asof-form').onsubmit=e=>{e.preventDefault();const at=new Date(get('event-asof').value);if(!Number.isFinite(at.getTime())){get('event-status').textContent='Choose a valid local date and time.';return;}openStory(id,at.toISOString());};get('event-current').onclick=()=>openStory(id);get('event-resolve').onclick=()=>openStory(id,null,{resolve:true});
+  get('event-asof-form').onsubmit=e=>{e.preventDefault();const at=new Date(get('event-asof').value);if(!Number.isFinite(at.getTime())){get('event-status').textContent='Choose a valid local date and time.';return;}openStory(id,at.toISOString(),{focus:true});};get('event-current').onclick=()=>openStory(id,null,{focus:true});get('event-resolve').onclick=()=>openStory(id,null,{resolve:true,focus:true});
   get('event-share').onclick=async()=>{try{await window.navigator.clipboard.writeText(window.location.href);get('event-status').textContent='Timeline link copied, including the archive cutoff when selected.';}catch{get('event-status').textContent='Copy the timeline URL from the address bar.';}};
   get('event-export').onclick=()=>{if(!story)return;const blob=new Blob([JSON.stringify(story,null,2)],{type:'application/json'}),url=window.URL.createObjectURL(blob),a=el('a');a.href=url;a.download='ventusiq-event-'+id.slice(0,12)+'.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherEvents={hide,openStory,context:()=>({story,asof}),async openAlert(value){await openStory(await eventId(value));if(!messages.length)loadList();}};
+  window.WeatherEvents={hide,openStory,context:()=>({story,asof}),async openAlert(value){await openStory(await eventId(value),null,{focus:true});if(!messages.length)loadList();}};
   const shared=new URLSearchParams(window.location.hash.slice(1));if(shared.has('event')){openStory(shared.get('event'),shared.get('at'));loadList();}
   // Keep an open story stable while somebody reads or expands official text.
   window.setInterval(()=>{if(visible&&!asof&&!id)loadList();},60000);

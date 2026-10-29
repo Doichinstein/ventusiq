@@ -102,3 +102,22 @@ operational rollout requirements; see [archive operations](archive-operations.md
 Completion remains unproven until the applicable architecture requirements have
 direct evidence. Additional roadmap ambitions are retained in [roadmap](roadmap.md)
 and must not be silently declared complete by this navigation improvement.
+
+
+## Keyboard navigation follow-up (v76)
+
+October 29 live keyboard checks reached the Skip link by reverse tabbing from the
+map search, visibly outlined it, and activated it to focus the map heading.
+Keyboard-only navigation reached My weather, Journey, Rivers and Events, with
+focus on the visible workspace heading after each switch. Opening an event with
+Enter exposed a remaining issue: focus stayed in the result list ahead of dozens
+of other results. This is now corrected for explicit event selections and cutoff
+changes: loading status receives focus, then the timeline heading on success.
+If the reader moves focus elsewhere while loading, the response does not take it
+back. Leaving Events invalidates the pending response; failures keep the focused
+status readable. Shared-link startup and passive refresh do not request focus.
+
+Seventeen focused event/navigation tests cover the handoff, races, failures,
+cutoffs and existing workspace behavior. These tests do not establish screen
+reader announcements, all shortcut targets, or real-device coverage. The separate
+live post-publication checks are retained with the browser QA evidence.

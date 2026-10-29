@@ -1846,3 +1846,24 @@ and simulated 10ms creation cost, counted 66,430 initial layer-order operations
 before and 363 after. Unchanged updates went from 364 moves to zero. These counts
 are not a claim of equivalent browser elapsed-time improvement. Live rendered
 verification follows publication; account testing remains deferred.
+
+
+## Event keyboard focus — v76
+
+A live keyboard trace on v75 confirmed navigation to all five workspace headings
+and the visible Skip link. It also reproduced focus remaining in the event list
+after Enter opened an alert, leaving the detail controls beyond the other search
+results. Explicit selections, historical-cutoff changes and map-to-event opens
+now focus loading status and then the rendered timeline heading, provided focus
+has not moved elsewhere. Leaving Events invalidates its pending story request.
+Passive/shared-link loading does not move focus.
+
+`node --test tests/events-ui.test.mjs tests/workspace-navigation.test.mjs` passed
+17 tests, including delayed-response focus preservation, navigation-away races,
+failed selections, replay cutoffs and passive-load behavior. Production keyboard
+observations and screenshots are stored outside the source checkout in
+`verification/browser-qa-2026-10-29/`.
+
+The October 29 20:07 UTC provider precheck still returned the shared CAMS cooldown
+(until 20:22:03 UTC); IOLK1 still had no earlier distinct forecast among three
+retained products. Neither positive-flow acceptance gap is closed by this change.

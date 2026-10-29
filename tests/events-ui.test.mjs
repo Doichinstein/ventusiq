@@ -10,8 +10,10 @@ function setup({mode='hosted',hash=''}={}){
   const nodes=Object.fromEntries([...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element()])),requests=[],held=new Map(),waiting=new Set(),timers=[];let copied='',exported=null,broken=false;
   const location=new URL('https://example.test/'+hash),window={WEATHER_CONFIG:{mode},location,history:{replaceState(_,__,url){location.href=new URL(url,location).href;}},WeatherPersonal:{show(){window.WeatherEvents?.hide();}},navigator:{clipboard:{writeText:async text=>{copied=text;}}},URL:{createObjectURL(blob){exported=blob;return 'blob:test';},revokeObjectURL(){}},setTimeout(){},setInterval:fn=>timers.push(fn)};
   const fetcher=async url=>{requests.push(url);const parsed=new URL(url,location),key=parsed.pathname.split('/').at(-1);if(waiting.has(key))await new Promise(r=>held.set(key,r));if(broken)return {ok:false,json:async()=>({error:'Archive unavailable'})};return {ok:true,json:async()=>parsed.pathname==='/api/events'?{messages:[{id,name:'Flood Warning',area:'Test County',message_type:'Alert',first_seen:at,last_seen:at,present:1}],next_cursor:null,last_collection:at}:{...makeStory(key),as_of:parsed.searchParams.get('at')||at}};};
-  const mounted=mountEvents({document:{getElementById:key=>nodes[key],createElement:tag=>new Element(tag)},window,fetcher});
-  return {nodes,window,mounted,requests,timers,copied:()=>copied,exported:()=>exported,hold:key=>waiting.add(key),release:key=>{waiting.delete(key);held.get(key)();},break:()=>{broken=true;}};
+  const document={activeElement:null,getElementById:key=>nodes[key],createElement:tag=>new Element(tag)};
+  for(const node of Object.values(nodes))node.focus=()=>{document.activeElement=node;};
+  const mounted=mountEvents({document,window,fetcher});
+  return {document,nodes,window,mounted,requests,timers,copied:()=>copied,exported:()=>exported,hold:key=>waiting.add(key),release:key=>{waiting.delete(key);held.get(key)();},break:()=>{broken=true;}};
 }
 test('archive renders official text safely, shows collection gaps and preserves source links',async()=>{
   const s=setup();await s.mounted.loadList();await s.mounted.openStory(id);assert.equal(s.nodes['event-detail'].hidden,false);assert.equal(s.nodes['event-title'].textContent,'<script>Flood</script>');assert.equal(s.nodes['event-title'].children.length,0);assert.match(s.nodes['event-coverage'].textContent,/not been collected/);assert.match(s.nodes['event-timeline'].textContent,/Alert collected/);assert.match(s.window.location.hash,/event=/);
@@ -33,3 +35,28 @@ test('editions without a persistent hosted archive do not expose a broken archiv
 });
 
 test('entering this workspace suspends the main smoke animation',async()=>{const s=setup(),visibility=[];s.window.WeatherSmokeMap={setVisible:v=>visibility.push(v)};s.nodes['nav-events'].onclick();assert.deepEqual(visibility,[false]);});
+
+
+test('keyboard selection reaches the timeline and replay preserves its cutoff',async()=>{
+  const s=setup();await s.mounted.loadList();await s.nodes['event-list'].children[0].onclick();
+  assert.equal(s.document.activeElement,s.nodes['event-title']);
+  assert.equal(s.nodes['event-title'].attrs.tabindex,'-1');
+  const replay=s.nodes['event-timeline'].children[0].children.at(-1);await replay.onclick();
+  assert.equal(s.document.activeElement,s.nodes['event-title']);assert.equal(new URLSearchParams(s.window.location.hash.slice(1)).get('at'),at);
+});
+
+test('a delayed selection does not steal focus after the reader moves elsewhere',async()=>{
+  const s=setup();s.hold(id);const pending=s.mounted.openStory(id,null,{focus:true});
+  assert.equal(s.document.activeElement,s.nodes['event-status']);s.nodes['event-search'].focus();s.release(id);await pending;
+  assert.equal(s.document.activeElement,s.nodes['event-search']);assert.equal(s.nodes['event-detail'].hidden,false);
+});
+
+test('leaving during a selection invalidates its response and focus handoff',async()=>{
+  const s=setup();s.hold(id);const pending=s.mounted.openStory(id,null,{focus:true});s.window.WeatherEvents.hide();s.nodes['nav-map'].focus();s.release(id);await pending;
+  assert.equal(s.mounted.getStory(),null);assert.equal(s.nodes['event-detail'].hidden,true);assert.equal(s.document.activeElement,s.nodes['nav-map']);assert.equal(s.window.location.hash,'');
+});
+
+test('failed selections retain the focused error; passive loads do not move focus',async()=>{
+  const s=setup();s.nodes['event-search'].focus();await s.mounted.openStory(id);assert.equal(s.document.activeElement,s.nodes['event-search']);
+  s.break();await s.mounted.openStory(other,null,{focus:true});assert.equal(s.document.activeElement,s.nodes['event-status']);assert.match(s.nodes['event-status'].textContent,/Archive unavailable/);
+});

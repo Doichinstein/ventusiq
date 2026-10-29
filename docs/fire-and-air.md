@@ -45,6 +45,9 @@ not inferred from today's date. The confirmed available day at setup was
 incomplete coverage. Satellite pixels are not perimeters, and clouds, overpass
 timing and coverage gaps can hide fires. This layer is imagery only, without
 point-level measurement inspection or inference of current active fire.
+The separate [inspectable detection layer](satellite-detections.md) now adds
+NOAA-20 regional CSV points with acquisition time, confidence, FRP, filters and
+raw-source export. It preserves the distinction between pixels and reported fires.
 
 ## Runtime, failure handling and delivery status
 

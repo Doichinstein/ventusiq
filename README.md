@@ -31,6 +31,9 @@ PM2.5 monitor readings, NASA VIIRS daily thermal-detection imagery, and nearby
 conditions for saved places. Each product shows its own timestamp and coverage
 limits. Current layers hide during historical alert replay. See
 [fire and air sources](docs/fire-and-air.md) for provenance and remaining work.
+An optional [satellite point inspector](docs/satellite-detections.md) adds NOAA-20
+acquisition times, confidence, fire radiative power, regional/time/place filters
+and raw NASA CSV evidence export.
 My weather also shows [24-hour measured air-quality trends](docs/air-trends.md),
 with monitor selection, explicit gaps, six-hour endpoint changes and raw-evidence downloads.
 An optional map animation adds hourly smoke frames, explicit concentration bands,

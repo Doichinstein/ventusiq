@@ -1,4 +1,5 @@
 import {RoadworkService} from '../../../lib/roadwork-service.mjs';
+import {FirmsService} from '../../../lib/firms-service.mjs';
 import {UpkeepService} from '../../../lib/upkeep-service.mjs';
 import {StationHistoryService} from '../../../lib/station-history-service.mjs';
 import {OzoneService} from '../../../lib/ozone-service.mjs';
@@ -106,6 +107,7 @@ export async function GET(request:Request){
     if(path==='/api/rivers/gauge')return json(await new RiversService(service).gauge(url.searchParams.get('id')));
     if(path==='/api/rivers/network')return json(await new RiversService(service).network(url.searchParams.get('id')));
     if(path==='/api/rivers/changes')return json(await new RiversService(service).changes(url.searchParams.get('id')));
+    if(path==='/api/hazards/firms')return json(await new FirmsService(service).get(url.searchParams.get('region')));
     if(path.startsWith('/api/hazards/')){
       const kind=path.slice('/api/hazards/'.length);
       if(!['fires','air','satellite','perimeters'].includes(kind))return json({error:'Unknown hazard product'},404);

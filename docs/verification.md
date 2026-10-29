@@ -1172,3 +1172,43 @@ The hosted AKFM7 comparison returned 70 matching future readings. Two additional
   dashboard rendering remain unverified under the saved browser restriction.
   Database-wide backups/capacity review and broader verified outcome evaluation
   remain outstanding; a portable selected record is not a complete archive backup.
+
+## Shared upkeep completion status (2026-10-29, v50)
+
+- All 661 Node and 19 Python tests passed, plus TypeScript and production build.
+  Lease tests covered concurrent callers, cooldown across service instances,
+  interrupted runs, superseded completion fencing and independent dispatcher
+  failures. UI behavior tests covered stale and overdue status without delivery claims.
+- Migration 0007 added the singleton upkeep status table. Local HTTP readback
+  moved from `never` to `finished` after an alert request; all three phases finished.
+  The local database had no watches, push devices or webhook endpoints.
+- Production publication succeeded at 2026-10-29T07:12:29Z. Read-only production
+  health then reported a pass started at 07:12:33Z and completed at 07:12:34Z,
+  with watch, push and webhook phases finished. This establishes pass completion,
+  not unattended schedule attribution, per-watch coverage or device delivery.
+  Source synced to GitHub at commit `138b4e0de07f6230eaa8f47d6ca150dbc136eee8`.
+- Runtime environment revision and hourly schedule were unchanged. Rendered
+  status QA remains unavailable under the saved browser permission restriction.
+
+## Inspectable NOAA-20 heat detections (2026-10-29, v51)
+
+- All 673 Node and 19 Python tests passed, plus TypeScript and production build.
+  Twelve new tests cover CSV and physical fields, UTC calendar validation, future
+  acquisition rejection, missing/zero values, conflicts, bounded responses,
+  redirect rejection, stable revision reuse, stale source retention, replay hiding,
+  local place filters, region races and export-time aging.
+- Actual NASA CSVs at 2026-10-29T07:20:38Z contained 1,734 usable contiguous-US/Hawaii
+  rows (1,730 within the local rolling 24-hour filter) and four Alaska rows.
+  Both had zero parser-rejected rows. Newest acquisitions were respectively
+  2026-10-28T22:25Z and 2026-10-28T15:52Z. These are thermal detections, not counts
+  of unique fires. Source hashes were
+  `b4ddf87d8bc45fee4469154039c7386866718a248e44eaaafc3497d0c81d0141` and
+  `4d8310136b25f033571250b9cd7b08323926853e358c4948948d67c20e4e2175`.
+- Built Worker HTTP checks at 07:23:18Z returned 200 for the page, both modules and
+  both regional endpoints, with matching source hashes and row counts. Unknown
+  region returned 400. Main-region archive revision
+  `b16aec3497f4d087061c33d8caa69d90346ffbb5b57f256b942e8a896b06bdae`.
+- No schema, secret, schedule or notification changes. Browser rendering, point
+  interaction and direct-edition browser CORS remain unverified. The layer is
+  opt-in and covers NOAA-20 only; it does not establish current fire activity,
+  complete overpass coverage, exposure, evacuation areas or spread predictions.

@@ -112,8 +112,8 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   get('fire-search').oninput=renderFires;
   window.WeatherHazards={
     snapshot(kind){const s=state[kind];return s?.data?{...s.data,stale:isDelayed(kind),error:s.error||s.data.error||null}:null;},
-    updatePlace(value){place=value;renderPlace();window.WeatherAirTrends?.refresh();if(place){load('fires');load('air');}},
-    setReplay(value){window.WeatherSmokeMap?.setReplay(value);replay=value;perimeterRequest++;map.closePopup();sync();},
+    updatePlace(value){place=value;window.WeatherFirms?.updatePlace(value);renderPlace();window.WeatherAirTrends?.refresh();if(place){load('fires');load('air');}},
+    setReplay(value){window.WeatherSmokeMap?.setReplay(value);window.WeatherFirms?.setReplay(value);replay=value;perimeterRequest++;map.closePopup();sync();},
     showMap(value){window.WeatherSmokeMap?.setVisible(value);get('hazard-workspace').hidden=!value;},
   };
   window.setInterval(()=>{for(const kind of Object.keys(sources)){if(get('layer-'+kind).checked||(place&&kind!=='satellite'))load(kind);status(kind);}if(state.air.data)draw('air');renderPlace();},60000);

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/vendor/leaflet.css"><link rel="stylesheet" href="/style.css">
   <script defer src="/vendor/leaflet.js"></script><script defer src="/config.js"></script><script defer src="/weather-core.js"></script><script defer src="/app.js"></script><script defer src="/personal.js"></script>
   <script type="module" src="/hazards.js"></script>
+  <script type="module" src="/firms.js"></script>
   <script type="module" src="/air-trends.js"></script>
   <script type="module" src="/smoke.js"></script>
   <script type="module" src="/hrrr.js"></script>
@@ -165,6 +166,19 @@
           <label class="smoke-opacity">Overlay opacity <input id="smoke-map-opacity" type="range" min="10" max="90" step="5" value="55"><output id="smoke-map-opacity-value" for="smoke-map-opacity">55%</output></label>
           <p class="small">Smoke valid time applies only to this overlay. Official alerts, fires and monitors retain their own timestamps. <a href="https://mapservices.weather.noaa.gov/raster/rest/services/air_quality/ndgd_smoke_sfc_1hr_avg_time/ImageServer" target="_blank" rel="noopener">NOAA source ↗</a></p>
         </div>
+      </section>
+      <section class="firms-panel">
+        <label class="layer-choice"><input type="checkbox" id="layer-firms"><strong>Inspect satellite heat detections</strong></label>
+        <p class="small">NASA FIRMS · NOAA-20 VIIRS · nominal 375 m pixels from the rolling 24-hour NRT file. Acquisition times reflect overpasses. Orange: nominal/high detection confidence; gray: low. Points are pixel centers, not unique fires or boundaries. Other satellites and US territories are not included.</p>
+        <label>Source region <select id="firms-region"><option value="conus">Contiguous US and Hawaii</option><option value="alaska">Alaska</option></select></label>
+        <label>Acquired within <select id="firms-hours"><option value="24">24 hours</option><option value="6">6 hours</option></select></label>
+        <label>Detection confidence <select id="firms-confidence"><option value="all">All</option><option value="nominal-high">Nominal and high</option><option value="high">High only</option></select></label>
+        <label class="layer-choice"><input id="firms-near" type="checkbox" disabled>Within 100 km of selected place</label><p id="firms-place" class="small"></p>
+        <p id="firms-status" class="small" role="status">Enable to load NOAA-20 detections.</p>
+        <button id="firms-refresh" class="text-button">Refresh detections</button> <button id="firms-export" class="text-button" disabled>Export source and selection</button>
+        <p id="firms-replay" class="warning-note" hidden>Current detection points are hidden during alert replay.</p>
+        <div id="firms-results" hidden><p id="firms-count" class="small"></p><div id="firms-list" class="fire-list"></div></div>
+        <p class="small">Thermal anomalies may include industrial heat or volcanoes. No detection does not rule out fire. <a href="https://firms.modaps.eosdis.nasa.gov/content/descriptions/FIRMS_VIIRS_Firehotspots.html" target="_blank" rel="noopener">NASA field definitions ↗</a></p>
       </section>
       <p id="hazard-replay" class="warning-note" hidden>These layers show latest available data and are hidden during alert replay. Return to Live to restore them.</p>
       <div id="fire-browser" hidden><label class="hazard-search">Find a reported fire<input id="fire-search" type="search" placeholder="Incident, state or county"></label><p id="fire-count" class="small"></p><div id="fire-list" class="fire-list"></div></div>

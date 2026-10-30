@@ -169,7 +169,7 @@ body:has(#workspace:not([data-view="live"])) .intro>div:first-child{display:none
 .compact-entry .entry-actions>.text-button,.compact-entry .entry-more>summary{min-height:32px;padding:8px 0;font-size:11px}
 .compact-entry .small{margin:5px 0;line-height:1.45}
 .compact-entry .small:empty,.compact-entry #place-message:empty{display:none}
-.compact-entry .entry-more{margin:0;border:0;padding:0;min-width:0}
+.compact-entry .entry-more,.compact-entry #journey-options{margin:0;border:0;padding:0;min-width:0}
 .compact-entry .entry-more[open]{flex-basis:100%}
 .compact-entry .entry-more[open]>summary{color:var(--accent)}
 .compact-entry .entry-more[open]>div,.compact-entry #journey-options[open]{padding-bottom:4px}
@@ -185,6 +185,5 @@ body:has(#workspace:not([data-view="live"])) .intro>div:first-child{display:none
 .compact-entry .entry-footer>.entry-actions{display:contents}
 .compact-entry .entry-footer>.small{flex:1;min-width:180px;margin:0}
 .compact-entry #journey-options[open]{order:2;flex-basis:100%}
-.compact-entry #journey-options[open]~.small{order:1}
 @media(min-width:901px){#workspace:is([data-view="personal"],[data-view="journey"]) #map-canvas{height:clamp(320px,calc(100dvh - 290px),670px)}}
 @media(max-width:550px){.compact-entry .entry-search-row input{width:0;font-size:14px}.compact-entry .entry-actions{column-gap:12px}.compact-entry .entry-actions>.text-button,.compact-entry .entry-more>summary{min-height:40px;padding:12px 0}.compact-entry .entry-point-row input{font-size:14px}.compact-entry .entry-point-row .text-button{min-width:44px}.compact-entry .entry-search-row .action{font-size:12px}}

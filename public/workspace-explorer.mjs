@@ -78,4 +78,4 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
   window.WeatherLocations?.syncPlace(window.WeatherPersonal.current());
   return {inputs,collapse};
 }
-if(typeof window!=='undefined'){const start=()=>mountWorkspaceExplorer({document,window,fetcher,clock});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}
+if(typeof window!=='undefined'){const start=()=>mountWorkspaceExplorer({document,window});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}

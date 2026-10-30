@@ -8,13 +8,13 @@ import {geocodeResult} from '../public/geocode-core.mjs';
 const html=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const raw=JSON.parse(readFileSync(new URL('./fixtures/geocode.json',import.meta.url),'utf8'));
 const tick=()=>new Promise(r=>setImmediate(r));
-function setup(mode='hosted'){
+function setup(mode='hosted',mount=true){
   const {document}=parseHTML(html),get=id=>document.getElementById(id),layers=new Set(),calls=[],previews=[],runs=[],clears=[];let center,hold=false,release,broken=false,exported,now=10000;
   const originalMap=get('map'),map={setView:p=>center=p,fitBounds:p=>center=p,removeLayer:l=>layers.delete(l)};
   const window={WEATHER_CONFIG:{mode},navigator:{},WeatherMap:{instance:map,setOverlayFit(){}},WeatherPersonal:{current:()=>null,preview(...args){previews.push(args);},clearPreview(){clears.push('personal');}},WeatherJourney:{clear(){clears.push('journey');},async run(){runs.push([get('journey-from-lat').value,get('journey-to-lat').value]);}},WeatherRivers:{search:p=>runs.push(p)},L:{latLngBounds:p=>p,circleMarker(){const layer={addTo(){layers.add(layer);return layer;},bindTooltip(){return layer;}};return layer;}},URL:{createObjectURL:b=>{exported=b;return 'blob:match';},revokeObjectURL(){}},setTimeout:f=>{now+=2100;f();}};
   const fetcher=async(url,options)=>{calls.push({url,options});const query=JSON.parse(options.body).address,r=structuredClone(raw);r.result.input.address.address=query;if(hold){hold=false;await new Promise(res=>release=res);}if(broken)throw Error('offline');return {ok:true,json:async()=>({...geocodeResult(r,query),checked_at:'2026-10-29T06:00:00Z'})};};
   // Layout uses the same controller as production; inject transport/clock only.
-  const mounted=mountWorkspaceExplorer({document,window,fetcher,clock:()=>now});
+  const mounted=mount?mountWorkspaceExplorer({document,window,fetcher,clock:()=>now}):null;
   return {document,get,window,mounted,originalMap,calls,previews,runs,clears,layers,center:()=>center,exported:()=>exported,hold:()=>hold=true,release:()=>release(),break:()=>broken=true};
 }
 test('entry forms move above the persistent map; result categories stay closed and retain controls',()=>{
@@ -70,4 +70,9 @@ test('coordinate parsing validates ranges and does not send numeric errors as ad
   for(const value of ['91,0','0,-181','12,,34'])assert.throws(()=>coordinateQuery(value));
   assert.equal(coordinateQuery('4600 Silver Hill Rd, Suitland MD'),null);
   assert.equal((await locationMatches('0,0',{mode:'direct',fetcher:()=>assert.fail('must not fetch')}))[0].lat,0);
+});
+
+test('browser module startup mounts the layout without injected test-only variables',async()=>{
+  const s=setup('hosted',false);globalThis.window=s.window;globalThis.document=s.document;
+  try{await import('../public/workspace-explorer.mjs?startup');assert.ok(s.get('map-entry').contains(s.get('address-input')));assert.ok(s.window.WeatherLocations);}finally{delete globalThis.window;delete globalThis.document;}
 });

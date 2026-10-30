@@ -22,7 +22,21 @@ coordinate/Unicode recovery, source-time expiry, and fallback after partial
 failure. Storage retains its 24 MiB/2,048-entry limits and public-only key scope.
 These are functional and work-elimination checks, not a cold-browser speed claim.
 
+The exact v111 commit `c0f7a1651e03be45ad1b482f878364629a321081` passed
+[Linux and Windows CI](https://github.com/Doichinstein/ventusiq/actions/runs/41005208590):
+916 JavaScript and 81 Python tests, native checks and the production build.
+Publication succeeded at 04:54:16 UTC. Public browser QA saw 397 mapped alerts
+before and after reload and nine of nine boundaries for a selected Flood Watch
+covering eastern Otero, El Paso and Hudspeth Counties. No console errors were
+captured. This was a functional reload check, not a controlled cold-load benchmark.
+
 ## Reviewed event-to-route passage evaluator — October 30 (v110)
+
+The exact v110 commit `8a6cd556069100eaf809d60e86c22d842887ba0f` passed
+[Linux and Windows CI](https://github.com/Doichinstein/ventusiq/actions/runs/41004403308):
+911 JavaScript and 81 Python tests plus native checks and the production build.
+Publication succeeded at 04:45:38 UTC. The public About → Download source flow
+returned the matching 530-entry source ZIP with no captured console errors.
 
 The new offline `route-event.py` connects exact pinned graph/crosswalk/source
 editions to a separately reviewed WZDx event, then compares its reported window

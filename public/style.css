@@ -160,7 +160,7 @@ body:has(#workspace:not([data-view="live"])) .intro>div:first-child{display:none
 @media(max-width:900px){#workspace>#shared-map{height:auto;max-height:none;min-height:0;position:relative;top:auto}#map-canvas{height:360px}.map-entry-panel{padding:16px}#workspace[data-view="live"] #map-canvas{height:420px}}
 @media(max-width:550px){.journey-point-grid{grid-template-columns:1fr;gap:8px}.entry-search-row{flex-wrap:wrap}.entry-search-row button{padding:10px 12px}.map-entry-panel h2{font-size:17px}.map-entry-panel input{font-size:14px}.result-group>summary{padding:15px 34px 15px 14px}}
 /* Compact location tools keep the map in view; secondary actions expand in place. */
-.map-entry-panel.compact-entry{padding:12px}
+.map-entry-panel.compact-entry{padding:10px 12px}
 .compact-entry label{margin:0 0 4px}
 .compact-entry input,.compact-entry select{padding:9px;min-height:40px}
 .compact-entry .entry-search-row{flex-wrap:nowrap}
@@ -178,5 +178,13 @@ body:has(#workspace:not([data-view="live"])) .intro>div:first-child{display:none
 .entry-point-row{display:flex;align-items:stretch;gap:6px}
 .entry-point-row input{flex:1}
 .entry-point-row .text-button{flex:none;margin:0!important;padding:8px;border:1px solid var(--line);border-radius:6px;min-width:42px;font-size:11px;text-decoration:none}
-@media(min-width:901px){#workspace:is([data-view="personal"],[data-view="journey"]) #map-canvas{height:clamp(320px,calc(100dvh - 340px),620px)}}
+.compact-entry .journey-point-entry{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:0 8px}
+.compact-entry .journey-point-entry>label{margin:0;white-space:nowrap}
+.compact-entry .journey-point-entry>.small,.compact-entry .journey-point-entry>[id$="-matches"]{grid-column:1/-1}
+.compact-entry .entry-footer{display:flex;align-items:center;gap:4px 14px;flex-wrap:wrap;margin-top:6px}
+.compact-entry .entry-footer>.entry-actions{display:contents}
+.compact-entry .entry-footer>.small{flex:1;min-width:180px;margin:0}
+.compact-entry #journey-options[open]{order:2;flex-basis:100%}
+.compact-entry #journey-options[open]~.small{order:1}
+@media(min-width:901px){#workspace:is([data-view="personal"],[data-view="journey"]) #map-canvas{height:clamp(320px,calc(100dvh - 290px),670px)}}
 @media(max-width:550px){.compact-entry .entry-search-row input{width:0;font-size:14px}.compact-entry .entry-actions{column-gap:12px}.compact-entry .entry-actions>.text-button,.compact-entry .entry-more>summary{min-height:40px;padding:12px 0}.compact-entry .entry-point-row input{font-size:14px}.compact-entry .entry-point-row .text-button{min-width:44px}.compact-entry .entry-search-row .action{font-size:12px}}

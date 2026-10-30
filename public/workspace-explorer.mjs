@@ -21,12 +21,16 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
   const personal=entryPanel('personal','Choose a weather location');personal.append(get('address-card'));
   personal.classList.add('compact-entry');get('address-card').querySelector('h2').classList.add('sr-only');
   get('address-form').querySelector('label').textContent='Location';
+  get('address-form').querySelector('label').classList.add('sr-only');
   get('address-input').placeholder='US address or lat, lon';
   const personalPanel=get('personal-workspace'),place=get('place-content'),aside=personalPanel.querySelector('.places-panel');
   get('personal-entry-actions').append(get('pick-on-map'),get('use-location'));
   const saved=el('details',null,'entry-saved entry-more'),savedBody=el('div');saved.append(el('summary','Saved places & options'),savedBody);
   savedBody.append(get('place-storage-note'),get('place-list'),get('place-form'),get('address-clear'),get('address-card').querySelector('.entry-help'));
   get('personal-entry-actions').append(saved);personal.append(get('place-message'));
+  // The map already explains how to choose a place. Reserve the live status
+  // row for lookup progress, errors and selected-location evidence.
+  get('address-status').textContent='';
   get('pick-on-map').className='text-button';get('use-location').className='text-button';
   for(const id of ['place-lat','place-lon']){get(id).type='hidden';get(id).required=false;}
   get('place-form').querySelector('.coordinate-fields').hidden=true;
@@ -56,6 +60,8 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
     extraActions.append(get(`journey-${side}-search`));point.querySelector('.entry-actions').remove();
   }
   get('journey-entry-actions').append(get('journey-submit'),options);
+  const journeyFooter=el('div',null,'entry-footer');
+  get('journey-form').append(journeyFooter);journeyFooter.append(get('journey-entry-actions'),get('journey-pick-status'));
   const reset=el('button','Clear points','text-button');reset.id='journey-clear-points';reset.type='button';extraActions.append(get('journey-example'),reset);options.append(extraActions);
   get('journey-example').textContent='Try Washington → Baltimore';
   get('journey-from-place').parentElement.firstChild.textContent='Point 1 from saved places';

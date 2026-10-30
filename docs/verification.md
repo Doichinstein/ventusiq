@@ -1,5 +1,23 @@
 # Verification record
 
+## Reviewed event-to-route passage evaluator — October 30 (v110)
+
+The new offline `route-event.py` connects exact pinned graph/crosswalk/source
+editions to a separately reviewed WZDx event, then compares its reported window
+with estimated passage through the matched directed-edge fraction. Nine focused
+tests pass. The real native Windows graph check also passes the full file/pin
+pipeline for an overlapping and an after-event departure; the selected partial
+edge passage is 0.561429–2.566531 seconds after departure. Both review assertions
+and the source event in that integration case are explicitly synthetic.
+
+Fresh feed generation does not hide stale event confirmation. Partial lane
+restrictions, unconfirmed starts, ended work, conflicting general-lane status,
+expired reviews and fraction-boundary uncertainty retain distinct outcomes.
+The [contract and reproduction](route-network.md#associate-a-reviewed-event-with-estimated-passage-time)
+document the 15/30-minute freshness policy, native timing approximation and
+single-leg scope. No real closure association is approved, no field access is
+verified and public Journey still uses OSRM. Account testing remains deferred.
+
 ## Hosted dashboard startup bundle — October 30 (v109)
 
 The production build now bundles the 38 feature entry modules and their shared
@@ -17,6 +35,16 @@ Worker route use the optimized URL, and the emitted bytes match their hash.
 Original module sources remain in the Apache-2.0 source download; the Python and
 development editions retain their unbundled paths. See
 [build behavior and reproduction](local-development.md#production-browser-bundle).
+
+The exact pushed v109 commit subsequently passed both Windows and Linux CI:
+911 JavaScript and 72 Python tests, native routing checks and the production
+bundle verifier. The public page loaded the expected content-hashed asset.
+Rendered smoke checks passed for all five workspaces: combined fire/AQI map and
+alert details, a temporary saved place and activity windows, three Washington–
+Baltimore departures, DLAF1 observations/forecast, and the Atka CAP chain.
+The 390×844 viewport had 375 px content and scroll widths; the layer checklist
+worked and no console errors were captured. The test place and viewport override
+were removed. These checks do not measure cold-network page-load timing.
 
 ## First prospective CAMS PM2.5 outcome — October 30 (v108)
 

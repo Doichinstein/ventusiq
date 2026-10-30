@@ -74,6 +74,38 @@ with tempfile.TemporaryDirectory(prefix="ventusiq-route-network-") as temp:
     cross_args.from_measure, cross_args.to_measure, cross_args.output = 10.3, 10.6, work / "inside-partial-edge.json"
     if crosswalk.run(cross_args)["status"] != "matched":
         raise ValueError("Synthetic interior range did not match the real native route")
+    event_spec = importlib.util.spec_from_file_location("route_event", root / "scripts/route-event.py")
+    event = importlib.util.module_from_spec(event_spec)
+    event_spec.loader.exec_module(event)
+    feed = {"type": "FeatureCollection", "road_event_feed_info": {"version": "4.1", "publisher": "Synthetic CI only",
+        "update_date": "2026-10-30T00:00:00Z", "data_sources": [{"data_source_id": "synthetic"}]},
+        "features": [{"type": "Feature", "id": "synthetic", "properties": {
+            "core_details": {"event_type": "work-zone", "data_source_id": "synthetic", "direction": "northbound",
+                "road_names": ["Synthetic"], "update_date": "2026-10-30T00:00:00Z"},
+            "work_zone_type": "static", "vehicle_impact": "all-lanes-closed",
+            "start_date": "2026-10-29T23:00:00Z", "end_date": "2026-10-30T01:00:00Z",
+            "is_start_date_verified": True, "is_end_date_verified": False}}]}
+    feed_path = work / "synthetic-event-feed.json"
+    feed_path.write_text(json.dumps(feed), encoding="utf8")
+    association = {"schema": event.SCHEMA, "event_id": "synthetic", "route_id": "synthetic",
+        "direction": "northbound", "vehicle_impact": "all-lanes-closed", "from_measure": 10.3, "to_measure": 10.6,
+        "crosswalk_sha256": network.digest(mapping_path), "event_source_sha256": network.digest(feed_path),
+        "review": dict(mapping["review"], checks=dict.fromkeys(event.CHECKS, True))}
+    association_path = work / "synthetic-event-association.json"
+    association_path.write_text(json.dumps(association), encoding="utf8")
+    event_args = SimpleNamespace(graph=relocated, expected_graph_sha256=manifest["graph_sha256"],
+        crosswalk=mapping_path, expected_crosswalk_sha256=network.digest(mapping_path), agency_source=agency,
+        association=association_path, expected_association_sha256=network.digest(association_path),
+        route_evidence=output, event_source=feed_path, checked_at="2026-10-30T00:00:00Z",
+        at="2026-10-30T00:00:00Z", departure="2026-10-30T00:00:00Z", output=work / "synthetic-event-result.json")
+    if event.run(event_args)["status"] != "reviewed_reported_closure_overlap":
+        raise ValueError("Synthetic source event failed to associate with the real native passage")
+    event_result = json.loads(event_args.output.read_text())
+    if len(event_result["passages"]) != 1 or event_result["field_closure_verified"]:
+        raise ValueError("Synthetic association returned incorrect coverage or a field-verification claim")
+    event_args.departure, event_args.output = "2026-10-30T02:00:00Z", work / "synthetic-after-event.json"
+    if event.run(event_args)["status"] != "no_reviewed_time_overlap":
+        raise ValueError("Departure after the synthetic event was incorrectly associated")
     http_spec = importlib.util.spec_from_file_location("check_pinned_router", root / "scripts/check-pinned-router.py")
     http_check = importlib.util.module_from_spec(http_spec)
     http_spec.loader.exec_module(http_check)
@@ -82,5 +114,7 @@ with tempfile.TemporaryDirectory(prefix="ventusiq-route-network-") as temp:
         "edges": result["edges"], "relocated_identically": True,
         "reverse_corridor_edge_pairs": len(north),
         "synthetic_crosswalk_partial_edge_checks": "passed",
+        "synthetic_event_arrival_checks": "passed",
+        "synthetic_event_passage": event_result["passages"][0]["estimated_passage"],
         "native_http_route_cases": [case["summary"] for case in http_result["cases"]],
         "closure_attribution_verified": False}, indent=2))

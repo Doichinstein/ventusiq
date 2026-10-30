@@ -163,13 +163,95 @@ source pins. The native Linux/Windows integration check exercises the complete
 CLI function with a real graph and explicitly synthetic agency/review inputs.
 Those synthetic approvals are not a reviewed real-world road association.
 
-This tool currently matches network ranges only. Event-to-LRS interpretation,
-lane impact, effective dates, source freshness and arrival-time overlap remain
-separate requirements before a public closure claim. An empty match does not
+This tool matches network ranges only. The event evaluator below now checks
+separately reviewed event-to-LRS interpretation, lane impact, effective dates,
+freshness and estimated arrival-time overlap. Real approved associations remain
+required before a public closure claim. An empty match does not
 establish an open road. The hosted OSRM path has no compatible pinned graph ID;
 the default dashboard therefore cannot use it for these matches. The new optional
 [native HTTP backend](pinned-router.md) connects pinned routes to Journey's weather
 pipeline, but no real crosswalk has been approved or activated.
+
+## Associate a reviewed event with estimated passage time
+
+`scripts/route-event.py` composes the existing graph/crosswalk verifier with one
+explicitly reviewed WZDx 4.1 event edition. It checks the complete input chain,
+then intersects the event's reported time window with estimated passage through
+each matched directed-edge fraction. It is an offline operator tool, included
+in the open-source download. It does not activate a public closure layer or
+change the configured OSRM router.
+
+A `ventusiq-route-event-association/1` JSON document supplies `event_id`,
+`route_id`, designated `direction`, `from_measure`, `to_measure`,
+`vehicle_impact`, `crosswalk_sha256` and `event_source_sha256`. The event source
+is the full raw WZDx FeatureCollection. A separate `review` has the same named
+reviewer, approval status, timestamps and evidence-reference structure as the
+crosswalk, with these **distinct** required boolean checks:
+
+- `event_to_lrs`: the exact event's location has been reconciled with this agency
+  route and measure reference; raw mileposts are not silently treated as LRS miles.
+- `direction_scope`: the event applies to the designated travel direction.
+- `lane_scope`: the impact applies to these mapped road/carriageway portions.
+- `continuous_schedule`: the reported window applies continuously; unresolved
+  intermittent, recurring or time-of-day restrictions cannot be marked reviewed.
+
+Both review files require separately supplied trusted SHA-256 pins. The event
+review also pins the crosswalk and entire feed edition; a changed feed requires
+a new review. Input files and the graph are checked before and after evaluation.
+These pins detect changes to supplied inputs; they do not authenticate reviewers,
+agency provenance, or the supplied collection timestamp. Do not approve a real
+association from proximity, a road name, or the synthetic CI examples.
+
+```sh
+python scripts/route-event.py work/route-graph --expected-graph-sha256 GRAPH_HASH --crosswalk work/reviewed-crosswalk.json --expected-crosswalk-sha256 CROSSWALK_HASH --agency-source work/agency-edition.json --route-evidence work/route-evidence.json --association work/reviewed-event.json --expected-association-sha256 ASSOCIATION_HASH --event-source work/wzdx.json --checked-at 2026-10-30T00:00:00Z --at 2026-10-30T00:00:00Z --departure 2026-10-30T00:05:00Z --output work/event-passage.json
+```
+
+The adapter requires a unique work-zone event, a listed source ID, a static
+footprint and exact agreement with the reviewed direction and structured vehicle
+impact. It supports current boolean start/end confirmation fields. Under the
+[WZDx definition](https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/objects/WorkZoneRoadEvent.md),
+start confirmation means work has started; end confirmation means work has ended.
+It is not a confidence flag for a future planned end. Ended/cancelled work and
+contradictory confirmation times block the result. An unconfirmed start remains
+a scheduled impact. A full-closure field with a nonclosed or unknown general-lane
+status blocks; an open shoulder alone does not contradict closed travel lanes.
+
+The [structured vehicle-impact enum](https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/enumerated-types/VehicleImpact.md)
+determines whether the source reports all lanes closed, a partial restriction or
+another impact. Closure prose cannot promote partial lanes to a full closure.
+The event's `update_date` records its last update or reconfirmation under the
+[core-details contract](https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/objects/RoadEventCoreDetails.md).
+A newly generated feed does not reconfirm an old event. This conservative research
+policy requires collection and event confirmation within 15 minutes and feed
+generation within 30 minutes, with at most 60 seconds of clock skew. Missing,
+stale or inconsistent times remain blocked. It may exclude still-valid long-lived
+work zones; exclusion is not evidence that the road is open.
+
+Departures must be within 48 hours. The native leg must have monotonic elapsed
+edge times agreeing with its total duration. Timing is interpolated across the
+actual traversed fraction, including partial start/end edges, and the event end
+is exclusive. Review validity must cover the whole leg through arrival. Existing
+fraction-rounding uncertainty stays explicit; a boundary-only match never becomes
+an interior closure match. Rounded router timing and estimated turns are not live
+traffic or a guarantee about when a traveler reaches the event.
+
+Outputs retain source event fields, input hashes, review blocks, network coverage,
+estimated passage and overlap times. States distinguish `blocked`,
+`no_reviewed_time_overlap`, `boundary_uncertain`, `scheduled_impact_overlap`,
+`reviewed_reported_closure_overlap` and `reviewed_reported_impact_overlap`.
+Neither `field_closure_verified` nor `driving_access_established` is asserted.
+Only one driving leg is evaluated; timed stops and subsequent legs require their
+actual shifted departure times. No rerouting, field verification or all-clear is
+performed.
+
+Nine focused tests cover source pins, partial-edge timing, 30-minute departure
+shifts, exclusive event ends, lane semantics, old event confirmations, ambiguous
+directions/duplicates, review expiry, invalid native timing and rounding-only
+overlaps. `check-route-network.py` additionally executes the full file/graph path
+against the actual native fixture, for an overlapping and an after-event departure.
+The event and both approvals are explicitly synthetic. The real Windows graph's
+first selected passage is about 0.56–2.57 seconds after departure; that demonstrates
+the timing path, not a real closure or field timing accuracy.
 
 ## Remaining agency match
 

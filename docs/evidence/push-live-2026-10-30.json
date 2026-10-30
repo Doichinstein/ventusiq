@@ -17,12 +17,27 @@
     "typescript": "passed",
     "production_build": "passed",
     "ci_run": "https://github.com/Doichinstein/ventusiq/actions/runs/41128817544",
-    "ci_platforms": ["Windows", "Linux"],
+    "ci_platforms": [
+      "Windows",
+      "Linux"
+    ],
     "workerd_regression": "Native fetch invocation across collection, push and webhook clients"
   },
   "limits": [
     "One device and one successful test do not establish general delivery reliability.",
     "Two earlier tests remained queued for bounded retries after transport errors.",
     "No private endpoints, device identifiers, ownership capabilities or encryption keys are retained here."
-  ]
+  ],
+  "separate_closed_page_test": {
+    "version": 138,
+    "queued_at": "2026-10-30T21:19:15Z",
+    "dashboard_tab_closed_at": "2026-10-30T21:19:21.117Z",
+    "accepted_at": "2026-10-30T21:19:26Z",
+    "http_status": 201,
+    "attempts": 1,
+    "dashboard_tabs_after_close": 0,
+    "browser_remained_running": true,
+    "owner_response": "I’m not sure",
+    "display": "unverified"
+  }
 }

@@ -2879,3 +2879,22 @@ original warning expired, so it does not prove that alert transition. It correct
 sent no initial webhook and remains enrolled for a subsequent real change. Test
 destinations/capability are retained until that probe can be closed. No personal
 watches, push enrollment, new schedules or paid services were changed.
+
+## October 30: first map-boundary paint
+
+The first usable fetched zone boundary now schedules a draw on the next task,
+instead of waiting a fixed 800 ms. Later arrivals still coalesce within the
+existing 800 ms draw budget. Failed fetches no longer schedule a geometry redraw.
+The 39 focused frontend, map-alert, map-zone and zone-loader tests pass, including
+first/later boundary timing, failed fetch recovery, a valid zero timer identifier
+and changing filters before the queued paint. This removes a scheduling delay;
+it is not a measured 800 ms end-to-end improvement.
+
+An anonymous PageSpeed Insights request hit the shared daily quota (HTTP 429).
+A single developer-machine HTTP sample is not a controlled browser cold-load or
+Core Web Vitals measurement. Those acceptance checks remain open. No paid audit
+service or quota upgrade was enabled.
+
+The owner could not confirm seeing the separately labeled closed-page push test.
+Its provider acceptance and tab-closed timing are retained in the
+[push evidence](evidence/push-live-2026-10-30.json); display remains unverified.

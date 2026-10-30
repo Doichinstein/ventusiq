@@ -22,7 +22,7 @@ let autoRefresh = true, restoredCache = false, auxiliaryPending = false, geometr
 const alertCards = new Map();
 const refreshInterval = config.mode === 'hosted' ? 30000 : 60000;
 const directHistory = [], geometry = new Map(), zoneCache = new Map(), zoneFailed = new Map();
-let geometryTimer = null;
+let geometryTimer = null, lastGeometryDraw = -Infinity;
 const zoneLoader = window.createZoneLoader({
   readCache: url => window.WeatherMapCache?.read('zone/' + new URL(url).pathname.slice('/zones/'.length), 30 * 86400000),
   fetchBatch: config.mode === 'hosted' && typeof DecompressionStream !== 'undefined' ? (urls,deliver) =>
@@ -36,11 +36,10 @@ const zoneLoader = window.createZoneLoader({
     return data;
   },
   onResult(url, data) {
-    if (data?.geometry) zoneCache.set(url, data.geometry);
+    if (data?.geometry) { zoneCache.set(url, data.geometry); scheduleGeometryDraw(); }
     else zoneFailed.set(url, Date.now() + 300000);
-    scheduleGeometryDraw();
   },
-  onError(url) { zoneFailed.set(url, Date.now() + 300000); scheduleGeometryDraw(); },
+  onError(url) { zoneFailed.set(url, Date.now() + 300000); },
 });
 const map = L.map('map', {zoomControl: false, preferCanvas: true, minZoom: 2, maxZoom: 14, worldCopyJump: true});
 L.tileLayer(config.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -345,14 +344,17 @@ function combineZones(f) {
   return geometries.length === zones.length && zones.length > 0;
 }
 function scheduleGeometryDraw() {
-  if (geometryTimer) return;
+  if (geometryTimer !== null) return;
+  // Show the first usable boundaries on the next task. Coalesce later arrivals
+  // within the existing 800 ms budget; failed fetches do not consume that lead.
   geometryTimer = setTimeout(() => {
     geometryTimer = null;
+    lastGeometryDraw = performance.now();
     features.filter(f => !f.geometry).forEach(combineZones);
     geometryRevision++;
     drawMap();
     if (selected) { const f = features.find(f => f.id === selected); if (f) renderDetail(f); }
-  }, 800);
+  }, Math.max(0, 800 - (performance.now() - lastGeometryDraw)));
 }
 function queueGeometry(priority = null) {
   const ordered = priority ? [priority, ...filtered] : filtered;

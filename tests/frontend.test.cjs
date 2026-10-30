@@ -52,7 +52,7 @@ async function setup(mode='direct',options={}) {
     if(options.holdAlerts&&url==='/api/alerts?view=map')await alertsGate;
     if(options.holdAuxiliary&&['/api/health','/api/history','/api/changes'].includes(url))await auxiliaryGate;
     if(error)throw new Error('Simulated outage');
-    if(url.includes('/zones/'))return {ok:true,json:async()=>({geometry:fixture('zone').geometry})};
+    if(url.includes('/zones/')){if(options.failZones)throw Error('Zone unavailable');return {ok:true,json:async()=>({geometry:fixture('zone').geometry})};}
     let result=current;
     if(url==='/api/health')result={last_success:Date.now()/1000,last_error:null};
     if(url==='/api/history')result={snapshots:stored.map(s=>({at:s.collected_at}))};
@@ -66,7 +66,7 @@ async function setup(mode='direct',options={}) {
   for(const element of [...Object.values(els),doc.body])element.ownerDocument=doc;
   doc.createElement=t=>Object.assign(new Element(t),{ownerDocument:doc});
   els.detail.append(els['detail-close'],els['detail-body']);
-  const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,performance:{now:()=>0},console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout(){return 1;}});
+  const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,performance:{now:options.clock||(()=>0)},console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout:options.timer||(()=>1)});
   const run=code=>vm.runInContext(code,ctx);
   if(options.cache)ctx.window.WeatherMapCache={read:async key=>key==='alerts'?options.cache:null,write(){}};
   run(fs.readFileSync(path.join(__dirname,'../public/zone-loader.js'),'utf8'));
@@ -300,4 +300,38 @@ test('late replay response cannot overwrite a return to live',async()=>{
   assert.equal(els['map-mode'].textContent,'LIVE CONDITIONS');
   assert.match(els.feed.textContent,/Flood Warning/);
   assert.doesNotMatch(els.feed.textContent,/Winter Storm Watch/);
+});
+
+test('first usable boundary paints on the next task; a later burst coalesces within the existing budget',async()=>{
+  let clock=0;const timers=[],s=await setup('daemon',{clock:()=>clock,timer:(fn,delay)=>{timers.push({fn,delay});return timers.length-1;}});
+  const a=fixture('zoned');a.geometry=null;a.properties.affectedZones=['https://api.weather.gov/zones/forecast/VAZ001'];
+  s.setData(payload([a]));await s.run('nextFetch=0;refresh()');await s.settle();
+  assert.equal(timers.length,1);assert.equal(timers[0].delay,0);assert.equal(s.els['mapped-count'].textContent,'0');
+  // A valid timer ID of zero still prevents duplicate scheduled work.
+  s.run('scheduleGeometryDraw();scheduleGeometryDraw()');assert.equal(timers.length,1);
+  timers.shift().fn();assert.equal(s.els['mapped-count'].textContent,'1');
+  clock=100;a.properties.affectedZones.push('https://api.weather.gov/zones/forecast/VAZ002');
+  s.setData(payload([a]));await s.run('nextFetch=0;refresh()');await s.settle();
+  assert.equal(timers.length,1);assert.equal(timers[0].delay,700);
+  s.run('scheduleGeometryDraw();scheduleGeometryDraw()');assert.equal(timers.length,1);
+  clock=800;timers.shift().fn();assert.equal(s.run("geometry.get('https://api.weather.gov/alerts/zoned').geometries.length"),2);
+  clock=2000;s.run('scheduleGeometryDraw()');assert.equal(timers[0].delay,0);
+});
+
+test('a failed zone fetch does not consume the first usable boundary paint',async()=>{
+  const timers=[],options={failZones:true,timer:(fn,delay)=>{timers.push({fn,delay});return timers.length;}};
+  const s=await setup('daemon',options);
+  s.run("zoneLoader.enqueue(['https://api.weather.gov/zones/forecast/VAZ001'])");await s.settle();
+  assert.equal(timers.length,0);assert.equal(s.run('zoneFailed.size'),1);
+  options.failZones=false;
+  s.run("zoneLoader.enqueue(['https://api.weather.gov/zones/forecast/VAZ002'])");await s.settle();
+  assert.equal(timers.length,1);assert.equal(timers[0].delay,0);
+});
+
+test('queued boundary paint follows the latest filter instead of restoring an earlier visible alert',async()=>{
+  const timers=[],s=await setup('daemon',{timer:(fn,delay)=>{timers.push({fn,delay});return timers.length;}});
+  const a=fixture('zoned');a.geometry=null;a.properties.affectedZones=['https://api.weather.gov/zones/forecast/VAZ001'];
+  s.setData(payload([a]));await s.run('nextFetch=0;refresh()');await s.settle();
+  s.run("category='Watch';render()");timers.shift().fn();
+  assert.equal(s.els['mapped-count'].textContent,'0');assert.equal(s.run('alertLayer.data.length'),0);
 });

@@ -6,6 +6,30 @@
   const MAX_ENTRIES = 2048, MAX_BYTES = 24 * 1024 * 1024;
   const cachePath = key => typeof key === 'string' ? key : key.url.slice(key.url.indexOf(PREFIX));
   const allowed = key => key === 'alerts' || /^zone\/(county|forecast|fire|coastal|offshore)\/\w{6}$/.test(key);
+  const queued = task => {
+    writes = writes.then(task).catch(() => { sizes = null; });
+    return writes;
+  };
+  async function put(key, payload, encoding, savedAt) {
+    const cache = await root.caches.open(NAME);
+    if (!sizes) {
+      const entries = await Promise.all((await cache.keys()).map(async old => {
+        const response = await cache.match(old);
+        return [cachePath(old), Number(response?.headers.get('X-Cache-Bytes')) || (await response?.text() || '').length * 3];
+      }));
+      sizes = new Map(entries);
+    }
+    await cache.delete(PREFIX + key);
+    const bytes = payload.size;
+    sizes.delete(PREFIX + key);
+    let total = [...sizes.values()].reduce((a,b) => a+b, 0);
+    for (const [old,size] of sizes) {
+      if (sizes.size < MAX_ENTRIES && total + bytes <= MAX_BYTES) break;
+      await cache.delete(old); sizes.delete(old); total -= size;
+    }
+    await cache.put(PREFIX + key, new Response(payload, {headers: {'Content-Type':encoding === 'gzip' ? 'application/gzip' : 'application/json', 'X-Cache-Encoding':encoding, 'X-Saved-At':String(savedAt), 'X-Cache-Bytes':String(bytes)}}));
+    sizes.set(PREFIX + key, bytes);
+  }
   root.WeatherMapCache = {
     async read(key, maxAge) {
       if (!allowed(key)) return null;
@@ -21,7 +45,7 @@
     },
     write(key, value) {
       if (!allowed(key)) return Promise.resolve();
-      writes = writes.then(async () => {
+      return queued(async () => {
         const body = JSON.stringify(value);
         if (body.length > 3000000) return;
         let payload = new Blob([body]), encoding = 'identity';
@@ -31,26 +55,17 @@
             if (compressed.size < payload.size) { payload = compressed; encoding = 'gzip'; }
           } catch { /* Plain JSON remains a supported cache format. */ }
         }
-        const cache = await root.caches.open(NAME);
-        if (!sizes) {
-          const entries = await Promise.all((await cache.keys()).map(async old => {
-            const response = await cache.match(old);
-            return [cachePath(old), Number(response?.headers.get('X-Cache-Bytes')) || (await response?.text() || '').length * 3];
-          }));
-          sizes = new Map(entries);
-        }
-        await cache.delete(PREFIX + key);
-        const bytes = payload.size;
-        sizes.delete(PREFIX + key);
-        let total = [...sizes.values()].reduce((a,b) => a+b, 0);
-        for (const [old,size] of sizes) {
-          if (sizes.size < MAX_ENTRIES && total + bytes <= MAX_BYTES) break;
-          await cache.delete(old); sizes.delete(old); total -= size;
-        }
-        await cache.put(PREFIX + key, new Response(payload, {headers: {'Content-Type':encoding === 'gzip' ? 'application/gzip' : 'application/json', 'X-Cache-Encoding':encoding, 'X-Saved-At':String(Date.now()), 'X-Cache-Bytes':String(bytes)}}));
-        sizes.set(PREFIX + key, bytes);
-      }).catch(() => { sizes = null; });
-      return writes;
+        await put(key,payload,encoding,Date.now());
+      });
+    },
+    // Caller is the bounded batch decoder, after successful JSON/geometry decode.
+    // Preserve source age; downloading a 29-day-old zone must not reset its TTL.
+    writePackedZone(key, payload, checkedAt) {
+      const saved = Date.parse(checkedAt), age = Date.now()-saved;
+      if (!allowed(key) || !key.startsWith('zone/') || !(payload instanceof Blob) ||
+          !payload.size || payload.size > 262500 || !Number.isFinite(saved) || saved <= 0 || age < 0 || age > 30*86400000)
+        return Promise.resolve();
+      return queued(() => put(key,payload,'gzip',saved));
     },
   };
 })(window);

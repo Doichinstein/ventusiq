@@ -19,14 +19,20 @@
     function pumpBatch() {
       while (batchActive < 2 && batchQueue.length) {
         const urls = batchQueue.splice(0,16); batchActive++;
-        Promise.resolve().then(() => fetchBatch(urls)).catch(() => null).then(found => {
+        const remaining = new Set(urls); let accepting = true;
+        const deliver = (url, data) => {
+          if (!accepting || !remaining.has(url) || !data?.geometry) return;
+          remaining.delete(url); finish(url, data);
+        };
+        Promise.resolve().then(() => fetchBatch(urls, deliver)).catch(() => null).then(found => {
           for (const url of urls) {
+            if (!remaining.has(url)) continue;
             const data = found?.get(url);
-            if (data?.geometry) finish(url,data);
+            if (data?.geometry) deliver(url,data);
             else if (urgent.has(url)) networkQueue.unshift(url); else networkQueue.push(url);
           }
           pumpNetwork();
-        }).finally(() => { batchActive--; pumpBatch(); });
+        }).finally(() => { accepting = false; batchActive--; pumpBatch(); });
       }
     }
     function pumpCache() {

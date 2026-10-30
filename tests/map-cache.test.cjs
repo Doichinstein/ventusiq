@@ -1,5 +1,5 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const vm=require('node:vm');const fs=require('node:fs');
-function setup(compression=false){const entries=new Map();let now=1000000000;const cache={async match(k){return entries.get(k)?.clone();},async delete(k){return entries.delete(k);},async put(k,v){entries.set(k,v);},async keys(){return [...entries.keys()];}};const window={caches:{open:async()=>cache}};vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../public/map-cache.js'),'utf8'),{window,Response,Blob,Date:{now:()=>now},...(compression?{CompressionStream,DecompressionStream}:{})});return {api:window.WeatherMapCache,entries,advance:ms=>now+=ms};}
+function setup(compression=false,{initial=1000000000,compress=CompressionStream}={}){const entries=new Map();let now=initial;const cache={async match(k){return entries.get(k)?.clone();},async delete(k){return entries.delete(k);},async put(k,v){entries.set(k,v);},async keys(){return [...entries.keys()];}};const window={caches:{open:async()=>cache}};vm.runInNewContext(fs.readFileSync(require('node:path').join(__dirname,'../public/map-cache.js'),'utf8'),{window,Response,Blob,Date:{now:()=>now,parse:Date.parse},...(compression?{CompressionStream:compress,DecompressionStream}:{})});return {api:window.WeatherMapCache,entries,advance:ms=>now+=ms};}
 test('public map cache restores original collection time, expires entries and excludes private paths',async()=>{
   const s=setup();await s.api.write('alerts',{collected_at:'original',features:[]});assert.equal((await s.api.read('alerts',60000)).collected_at,'original');
   s.advance(60001);assert.equal(await s.api.read('alerts',60000),null);assert.equal(s.entries.size,0);
@@ -31,4 +31,25 @@ test('compressed boundaries preserve exact coordinates and unicode, count stored
 test('broken compressed cache is a miss, and private keys stay excluded with compression available',async()=>{
   const s=setup(true);s.entries.set('/__map_cache__/zone/forecast/VAZ001',new Response('broken',{headers:{'X-Saved-At':'1000000000','X-Cache-Encoding':'gzip'}}));
   assert.equal(await s.api.read('zone/forecast/VAZ001',1e9),null);await s.api.write('api/places',{secret:'no'});assert.equal(s.entries.size,1);
+});
+
+test('verified server gzip is stored byte-for-byte without recompression and keeps source expiry',async()=>{
+  const now=Date.now(),day=86400000,s=setup(true,{initial:now,compress:class {constructor(){assert.fail('must reuse source compression');}}});
+  const data={geometry:{type:'Polygon',coordinates:[[[-76.123456789,39.987654321],[-77,40],[-76,41],[-76.123456789,39.987654321]]]},name:'Māui'};
+  const packed=await new Response(new Blob([JSON.stringify(data)]).stream().pipeThrough(new CompressionStream('gzip'))).blob();
+  const checked=new Date(now-29*day).toISOString(),key='zone/forecast/VAZ001';
+  await s.api.writePackedZone(key,packed,checked);
+  const stored=s.entries.get('/__map_cache__/'+key);
+  assert.deepEqual(Buffer.from(await stored.clone().arrayBuffer()),Buffer.from(await packed.arrayBuffer()));
+  assert.equal(stored.headers.get('X-Saved-At'),String(Date.parse(checked)));
+  assert.deepEqual(await s.api.read(key,30*day),data);
+  s.advance(day+1);assert.equal(await s.api.read(key,30*day),null);
+});
+
+test('packed writes reject private keys, stale/future timestamps and oversized bytes without touching storage',async()=>{
+  const now=Date.now(),s=setup(true,{initial:now}),payload=new Blob(['gzip']);
+  for(const key of ['alerts','api/places','zone/../private'])await s.api.writePackedZone(key,payload,new Date(now).toISOString());
+  for(const stamp of ['bad',new Date(now+1).toISOString(),new Date(now-30*86400000-1).toISOString()])await s.api.writePackedZone('zone/forecast/VAZ001',payload,stamp);
+  await s.api.writePackedZone('zone/forecast/VAZ001',new Blob(['x'.repeat(262501)]),new Date(now).toISOString());
+  assert.equal(s.entries.size,0);
 });

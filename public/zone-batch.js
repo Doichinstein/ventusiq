@@ -1,7 +1,7 @@
 /* Exact public NWS archive geometry; unknown/broken entries fall back individually. */
 (function(root) {
   'use strict';
-  root.fetchZoneBatch = async function(urls, request) {
+  root.fetchZoneBatch = async function(urls, request, onReady) {
     const byId = new Map(urls.map(url => [new URL(url).pathname.slice('/zones/'.length),url]));
     const result = await request('/api/map/zones?ids=' + encodeURIComponent([...byId.keys()].join(',')));
     const found = new Map();
@@ -19,7 +19,13 @@
             length+=part.value.length;if(length>3000000)throw new Error('Boundary exceeds batch decode limit');chunks.push(part.value); }
         } finally { await reader.cancel().catch(()=>{}); }
         const data=JSON.parse(await new Blob(chunks).text());
-        if (data.geometry) found.set(url,{geometry:data.geometry});
+        if (data.geometry) {
+          const boundary = {geometry:data.geometry};
+          found.set(url,boundary);
+          // Deliver before decoding the tail of the batch. These same verified
+          // gzip bytes can go to storage without another compression pass.
+          onReady?.(url,boundary,{payload:new Blob([bytes]),checked_at:row.checked_at});
+        }
       } catch { /* A corrupt/oversize entry does not hide other boundaries. */ }
     }
     return found;

@@ -1,5 +1,27 @@
 # Verification record
 
+## Progressive boundary decoding and cache reuse — October 30 (v111)
+
+Hosted zone batches now deliver each successfully decoded boundary to the map
+loader before the rest of the batch finishes. The loader suppresses duplicate
+callbacks and falls back individually only for missing entries, including after
+a partially successful batch fails. Its existing two-batch/four-individual
+request bounds and the map's drawing scheduler remain in place.
+
+The decoder passes its verified original gzip bytes to the browser cache. Those
+bytes are stored directly rather than recompressing the decoded geometry. New
+batch cache entries retain the server's boundary-check timestamp for expiry;
+downloading a 29-day-old record does not give it another 30 days. Cache failure
+still leaves the already delivered geometry available. Existing legacy entries
+and the single-zone fallback retain their previous cache behavior.
+
+Eighteen focused tests pass across batch decoding, loader scheduling and cache
+storage, including five new regressions. They prove early delivery while a batch
+tail remains pending, exact byte reuse without invoking compression, original
+coordinate/Unicode recovery, source-time expiry, and fallback after partial
+failure. Storage retains its 24 MiB/2,048-entry limits and public-only key scope.
+These are functional and work-elimination checks, not a cold-browser speed claim.
+
 ## Reviewed event-to-route passage evaluator — October 30 (v110)
 
 The new offline `route-event.py` connects exact pinned graph/crosswalk/source

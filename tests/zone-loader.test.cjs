@@ -60,3 +60,24 @@ test('failed batches fall back to four individual requests and selected waiting 
   while(releases.length){for(const release of releases.splice(0))release(boundary);await settle();}
   assert.equal(seen.length,40);assert.equal(new Set(network).size,40);
 });
+
+test('a decoded boundary reaches the map before a slow batch tail, with no duplicate delivery',async()=>{
+  const seen=[],calls=[],gates=[];
+  const loader=make({readCache:async()=>null,fetchBatch:(urls,deliver)=>{
+    deliver(urls[0],boundary);deliver(urls[0],boundary);deliver('foreign',boundary);
+    return new Promise(resolve=>gates.push(()=>resolve(new Map(urls.map(url=>[url,boundary])))));
+  },fetchZone:url=>{calls.push(url);return boundary;},onResult:url=>seen.push(url),onError:()=>assert.fail()});
+  loader.enqueue(['first','tail']);for(let i=0;i<4;i++)await settle();
+  assert.deepEqual(seen,['first']);assert.equal(gates.length,1);
+  gates[0]();for(let i=0;i<3;i++)await settle();
+  assert.deepEqual(seen,['first','tail']);assert.deepEqual(calls,[]);
+});
+
+test('partially decoded failed batches retry only the missing tail and ignore late callbacks',async()=>{
+  const seen=[],calls=[];let late;
+  const loader=make({readCache:async()=>null,fetchBatch:async(urls,deliver)=>{
+    late=deliver;deliver(urls[0],boundary);throw Error('tail failed');
+  },fetchZone:async url=>{calls.push(url);return boundary;},onResult:url=>seen.push(url),onError:()=>assert.fail()});
+  loader.enqueue(['first','tail']);for(let i=0;i<5;i++)await settle();
+  late('tail',boundary);assert.deepEqual(calls,['tail']);assert.deepEqual(seen,['first','tail']);
+});

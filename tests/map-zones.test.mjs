@@ -23,3 +23,16 @@ test('decoder isolates corrupt, old, oversized, foreign and missing geometry ent
   const result=await globalThis.fetchZoneBatch(['VAZ001','VAZ002','VAZ003','VAZ004','VAZ005'].map(url),async()=>({encoding:'gzip-base64',zones:rows}));
   assert.deepEqual([...result.keys()],[url('VAZ001')]);assert.deepEqual(result.get(url('VAZ001')),{geometry});
 });
+
+test('decoder yields verified boundaries and original gzip bytes before batch completion',async()=>{
+  const payload=await pack({geometry,label:'Māui'}),stamp=new Date().toISOString(),ready=[];let complete=false;
+  const urls=['VAZ001','VAZ002'].map(id=>'https://api.weather.gov/zones/forecast/'+id);
+  const found=await globalThis.fetchZoneBatch(urls,async()=>({encoding:'gzip-base64',zones:[
+    {id:'forecast/VAZ001',payload,checked_at:stamp},{id:'forecast/VAZ002',payload:'broken',checked_at:stamp}]}),
+    (url,data,packed)=>{assert.equal(complete,false);ready.push({url,data,packed});});
+  complete=true;
+  assert.equal(ready.length,1);assert.equal(ready[0].url,urls[0]);assert.deepEqual(ready[0].data,{geometry});
+  assert.equal(ready[0].packed.checked_at,stamp);
+  assert.deepEqual(Buffer.from(await ready[0].packed.payload.arrayBuffer()),Buffer.from(payload,'base64'));
+  assert.deepEqual([...found.keys()],[urls[0]]);
+});

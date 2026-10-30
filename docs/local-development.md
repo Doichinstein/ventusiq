@@ -47,6 +47,26 @@ browser caches may differ. It is a payload/request-count result, not a measured
 cold-page-load duration. A changed feature invalidates the whole bundle instead
 of only its individual source module; this is the caching tradeoff.
 
+## Hosted map boundary cache
+
+The hosted map reads up to 16 public archived zones per batch, with two concurrent
+batches. `zone-batch.js` decodes bounded gzip records and calls its `onReady`
+callback for each usable geometry, then returns the complete result map for
+callers that do not use progressive delivery. `zone-loader.js` deduplicates those
+callbacks and retries only undelivered records through its four-request individual
+queue. Batch requests never collect from NWS themselves.
+
+The application passes successfully decoded gzip blobs directly to
+`WeatherMapCache.writePackedZone`. This avoids recompression and stores the
+boundary's original server check time as its expiry reference. The internal API
+is only for the already validated batch decoder; it does not validate arbitrary
+uploaded gzip. Public-key, size, age and storage-budget limits remain enforced.
+Existing JSON/compressed cache records are still readable; failures are cache
+misses. The daemon/direct single-zone path uses the existing ordinary cache writer.
+
+Run `node --test tests/zone-loader.test.cjs tests/map-cache.test.cjs tests/map-zones.test.mjs`
+to check scheduling, fallback, exact bytes, coordinate recovery and expiry.
+
 ## Apply later schema changes
 
 Stop local servers, pull the new source, rebuild, and run `npm run db:local` again.

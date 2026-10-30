@@ -58,7 +58,7 @@ export function nearbyRoadLabels(context,event,spans){
   }
   const rows=[];for(const [i,overlaps] of [...matches].sort((a,b)=>a[0]-b[0])){
     const segment=segments[i];
-    const labels=[segment.name,...segment.ref.split(';')].map(roadLabel).filter(Boolean);
+    const labels=[segment.name,...segment.ref.split(';'),...(segment.source_labels||[])].map(roadLabel).filter(Boolean);
     const shared=[...new Set(labels.filter(v=>sourceLabels.includes(v)))];
     rows.push({...segment,shared_labels:shared,spans:overlaps});
   }

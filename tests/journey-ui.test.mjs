@@ -7,9 +7,18 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {mountJourney} from '../public/journey.js';
 import {normalizeRoute,sampleRoute} from '../public/journey-core.mjs';
+import {normalizePinnedRoute} from '../lib/pinned-route.mjs';
 class Element{constructor(tag='div'){this.tag=tag;this.children=[];this.value='';this.attrs={};this.text='';this.classList={toggle(){}};}set textContent(v){this.text=String(v);this.children=[];}get textContent(){return this.text+this.children.map(n=>n.textContent).join('');}append(...n){this.children.push(...n);}replaceChildren(...n){this.text='';this.children=n;}setAttribute(k,v){this.attrs[k]=v;}click(){this.onclick?.();}}
 const now=Date.parse('2026-10-28T20:00:00Z'),stamp=h=>new Date(now+h*3600000).toISOString();
 const route={vertices:[{coordinate:[-77,39],elapsed:0,distance:0},{coordinate:[-76,40],elapsed:3600,distance:100000}],duration:3600,distance:100000,checked_at:stamp(0),revision:'route',timing_method:'No live traffic',waypoints:[{snap_distance:0},{snap_distance:1}],sampling:{samples:[{lat:39,lon:-77,elapsed:0,distance:0},{lat:40,lon:-76,elapsed:3600,distance:100000}],max_gap_km:100,max_gap_minutes:60,coarse:true}};
+test('pinned native route renders provider and graph evidence and survives Journey export',async()=>{
+  const probe=JSON.parse(readFileSync(new URL('../docs/evidence/route-network-probe-2026-10-30.json',import.meta.url))),points=probe.requests.route.locations.map(p=>[p.lon,p.lat]);
+  const base=normalizePinnedRoute({schema:'ventusiq-pinned-route/1',graph_sha256:probe.graph_sha256,engine_version:'3.9.1',checked_at:probe.checked_at,requested_waypoints:points,legs:[probe]},probe.graph_sha256,points,Date.parse(probe.checked_at));
+  const s=setup('hosted',false,{...base,checked_at:stamp(0),revision:'pinned-test'});await s.mounted.run();
+  assert.equal(s.nodes['journey-comparisons'].children.length,3);assert.equal(s.nodes['journey-routing-provider'].textContent,'Pinned Valhalla / OpenStreetMap');
+  assert.match(s.nodes['journey-roads-list'].textContent,new RegExp(probe.graph_sha256));assert.match(s.nodes['journey-route-note'].textContent,/Rounded native/);
+  s.nodes['journey-export'].onclick();const saved=JSON.parse(await s.exported().text());assert.deepEqual(saved.route.network_references.legs[0].probe,probe);assert.equal(saved.route.network_references.closure_attribution_verified,false);
+});
 function setup(mode='hosted',targeted=false,routeOverride=route){
   const nodes=Object.fromEntries([...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element()]));let roadworkBroken=false,smokeBroken=false,gustBroken=false,broken=false,missing=false,held=false,release,exported,picker;const requests=[];
   const layer=()=>({addTo(){return this;},getBounds(){return {};},bindPopup(p){this.popup=p;return this;}}),map={removeLayer(){},invalidateSize(){},fitBounds(){}};

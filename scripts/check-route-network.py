@@ -74,8 +74,13 @@ with tempfile.TemporaryDirectory(prefix="ventusiq-route-network-") as temp:
     cross_args.from_measure, cross_args.to_measure, cross_args.output = 10.3, 10.6, work / "inside-partial-edge.json"
     if crosswalk.run(cross_args)["status"] != "matched":
         raise ValueError("Synthetic interior range did not match the real native route")
+    http_spec = importlib.util.spec_from_file_location("check_pinned_router", root / "scripts/check-pinned-router.py")
+    http_check = importlib.util.module_from_spec(http_spec)
+    http_spec.loader.exec_module(http_check)
+    http_result = http_check.check(relocated, manifest["graph_sha256"])
     print(json.dumps({"status": "passed", "graph_sha256": manifest["graph_sha256"],
         "edges": result["edges"], "relocated_identically": True,
         "reverse_corridor_edge_pairs": len(north),
         "synthetic_crosswalk_partial_edge_checks": "passed",
+        "native_http_route_cases": [case["summary"] for case in http_result["cases"]],
         "closure_attribution_verified": False}, indent=2))

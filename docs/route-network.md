@@ -167,8 +167,9 @@ This tool currently matches network ranges only. Event-to-LRS interpretation,
 lane impact, effective dates, source freshness and arrival-time overlap remain
 separate requirements before a public closure claim. An empty match does not
 establish an open road. The hosted OSRM path has no compatible pinned graph ID;
-the dashboard cannot consume these results yet. No real crosswalk has been
-approved or activated.
+the default dashboard therefore cannot use it for these matches. The new optional
+[native HTTP backend](pinned-router.md) connects pinned routes to Journey's weather
+pipeline, but no real crosswalk has been approved or activated.
 
 ## Remaining agency match
 
@@ -211,5 +212,6 @@ used as proof of road access.
 This small graph lacks administrative, timezone, elevation and live traffic
 databases. Roads can continue beyond its capture boundary, so it cannot establish
 complete connectivity or optimal real-world routing. It is not a production HTTP
-service. The existing public deployment and hourly upkeep require no new hosting
-account for this research step.
+service by itself. The optional [HTTP adapter](pinned-router.md) can serve its
+native routes to Journey; activating that backend requires a suitable native host.
+The existing public deployment and hourly upkeep continue without one.

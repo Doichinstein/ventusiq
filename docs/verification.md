@@ -1,5 +1,30 @@
 # Verification record
 
+## Native routing HTTP-to-Journey integration — October 30
+
+The retained Sioux Center graph was served through a temporary authenticated
+loopback endpoint, using the real pinned native engine. Both responses passed the
+actual hosted JavaScript adapter. The direct route retained 40 edges/44 vertices,
+195.493 seconds of rounded edge timing and 2,717 m summed rounded edge lengths.
+The via trip retained two connected legs, 40 edges/44 vertices and 195.485 seconds
+of driving, then added the requested 1,800-second stop. Original native probes
+survive normalization; stop timing does not rewrite them. Full source responses
+are retained in the external `native-http-router-v104.json` verification artifact.
+
+Six new adapter/service tests cover source identity, coordinate/time integrity,
+partial edges, via continuity, configuration, graph-separated caching, stale
+retention and rejected wrong-graph responses. A UI test verifies native provider
+display and unchanged native evidence in the Journey export. Four real local HTTP
+tests cover authentication, malformed/bounded requests, configured coverage,
+concurrency and timeout/error recovery. The native build-and-relocate check also
+passes with direct and via HTTP calls. TypeScript's inferred null-only configuration
+type was corrected with an explicit constructor parameter contract.
+
+This does not verify a hosted native service, real agency closure or native-path
+rendering in a browser. Local browser preview remains denied by the saved permission.
+Public browser QA uses the unchanged default OSRM backend after normal publication.
+Account and actual device delivery tests remain deferred.
+
 ## PM2.5 readiness states — October 30
 
 At 02:39 UTC the live 39,-77 comparison still had no eligible forecast checks

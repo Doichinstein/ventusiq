@@ -28,6 +28,7 @@ export function routeNetwork(raw,route){
 }
 
 export function networkExplanation(context,totalLegs){
+  if(context?.kind==='pinned_valhalla')return `Pinned Valhalla ${context.engine_version} · graph ${context.graph_sha256}. Native directed edges and original driving geometry for ${context.legs.length}/${totalLegs} legs are retained in the export. OSM digitization direction does not establish signed traffic direction. Agency association and closure attribution remain unverified.`;
   if(!context?.legs?.length)return 'Router network references are unavailable; agency-to-road matching remains unverified.';
   const conflicts=context.legs.reduce((n,l)=>n+(l.repeated_ids_at_distinct_interior_positions?.length||0),0),mismatches=context.legs.filter(l=>!l.counts_match).length;
   return `Original router node references and driving geometry for ${context.legs.length}/${totalLegs} legs are retained in the JSON export. `+

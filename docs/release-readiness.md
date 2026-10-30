@@ -1,5 +1,16 @@
 # Ten-feature acceptance audit
 
+## Pinned router connected to Journey
+
+An optional authenticated native HTTP service and hosted adapter now carry pinned
+road identities into the existing Journey evaluator, three departures, via-stop
+timing, road-label inspection and export. Real local HTTP tests passed for a direct
+trip and a two-leg trip with a 30-minute stop. Each retained 40 native edges and
+44 geometry vertices. The native build/relocation check includes this pipeline.
+Default public routing remains OSRM; no native host or secrets were provisioned.
+Real agency crosswalk approval and event applicability remain incomplete.
+See [deployment and evidence limits](pinned-router.md).
+
 ## Directed agency-range matcher
 
 The optional offline crosswalk matcher now connects explicitly reviewed agency

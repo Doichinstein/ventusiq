@@ -33,6 +33,7 @@ import { RiversService } from '../../../lib/rivers-service.mjs';
 import { EventsService } from '../../../lib/events-service.mjs';
 import { ObservationsService } from '../../../lib/observations-service.mjs';
 import { JourneyService } from '../../../lib/journey-service.mjs';
+import { pinnedRouterConfig } from '../../../lib/pinned-route.mjs';
 import { AnalogsService } from '../../../lib/analogs-service.mjs';
 import { PlanningService } from '../../../lib/planning-service.mjs';
 import { AirTrendsService } from '../../../lib/air-trends-service.mjs';
@@ -98,7 +99,7 @@ export async function GET(request:Request){
     if(path==='/api/journey/roadwork')return json(await new RoadworkService(service).feed(url.searchParams.get('feed')));
     if(path==='/api/journey/route'){
       let via=[];try{const input=url.searchParams.get('via')||'[]';if(input.length>1000)throw Error();via=journeyStops(JSON.parse(input));}catch{return json({error:'Invalid via points'},400);}
-      return json(await new JourneyService(service).route(url.searchParams.get('fromLat'),url.searchParams.get('fromLon'),url.searchParams.get('toLat'),url.searchParams.get('toLon'),via));
+      return json(await new JourneyService(service,{pinnedRouter:pinnedRouterConfig(env)}).route(url.searchParams.get('fromLat'),url.searchParams.get('fromLon'),url.searchParams.get('toLat'),url.searchParams.get('toLon'),via));
     }
     if(path==='/api/observations/near')return json(await new ObservationsService(service).near(url.searchParams.get('lat'),url.searchParams.get('lon')));
     if(path==='/api/observations/station')return json(await new ObservationsService(service).station(url.searchParams.get('id')));

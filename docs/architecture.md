@@ -229,9 +229,12 @@ or retrieval. Report coverage, sample size and error by location/season/lead tim
 Feature 6's offline `route-crosswalk.py` now matches explicitly reviewed agency
 measure ranges to pinned directed route edges, including clipped trip endpoints.
 Graph/source identity, designated direction, review expiry and incomplete review
-gates are checked. This foundation is not wired to the hosted OSRM router and
-does not interpret event closures. A real approved crosswalk and time-valid event
-association remain required; see [route-network methods](route-network.md).
+gates are checked. The hosted Journey service now has an optional authenticated
+pinned-Valhalla backend and a native HTTP service, preserving edge identity through
+weather sampling, stops and export. OSRM remains the configured public default.
+No agency event closure is interpreted by the native service yet. A real approved
+crosswalk and time-valid event association remain required; see
+[route-network methods](route-network.md) and [backend setup](pinned-router.md).
 
 ## Sequence and current state
 

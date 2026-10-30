@@ -18,4 +18,17 @@ export function renderJourneySmoke(document,journey,format){
     const source=el('td');source.append(el('p','Run '+(r.issued_at?format(r.issued_at):'unavailable')),el('p','Checked '+(r.checked_at?format(r.checked_at):'unavailable')));
     if(r.point)source.append(el('p',`Requested smoke point ${r.point.lat}, ${r.point.lon}`));const link=el('a','NOAA RAP smoke source ↗');link.href=SMOKE_SOURCE;link.target='_blank';link.rel='noopener';source.append(link);tr.append(source);return tr;
   }));
+  const stops=get('journey-stop-smoke');stops.replaceChildren();
+  if(journey.smoke_stops?.length){
+    stops.append(el('h3','Estimated smoke during planned stops'),el('p','These estimates assume a straight-line change between adjacent hourly RAP values at the stop. They are separate from the sample-limit checks above. Missing intervals withhold the whole-stop mean and duration estimate. This method has not been validated against measured personal exposure.'));
+    const minutes=n=>n===null?'Unknown':n>0&&n<0.1?'<0.1 min':n.toLocaleString(undefined,{maximumFractionDigits:1})+' min';
+    for(const stop of journey.smoke_stops){
+      const details=el('details'),summary=el('summary',`Via ${stop.stop_index} · ${minutes(stop.duration_minutes)} stop · ${stop.complete?'estimated mean '+smokeValue(stop.mean_ug_m3):'incomplete smoke coverage'}`);
+      details.append(summary,el('p',`${format(stop.start)} – ${format(stop.end)} · ${minutes(stop.covered_minutes)} with adjacent hourly values; ${minutes(stop.unknown_minutes)} unknown.`));
+      if(stop.limit_ug_m3!==null)details.append(el('p',`Estimated time above your ${smokeValue(stop.limit_ug_m3)} limit: ${minutes(stop.minutes_above_limit)}. This is an interpolation estimate, not observed time above the limit.`));
+      if(stop.reason)details.append(el('p',stop.reason));
+      details.append(el('p',`RAP run: ${stop.source?.issued_at?format(stop.source.issued_at):'Unknown'} · checked: ${stop.source?.checked_at?format(stop.source.checked_at):'Unknown'}. Exact interval endpoints and source samples are included in the journey export.`));
+      stops.append(details);
+    }
+  }
 }

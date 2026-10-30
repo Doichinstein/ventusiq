@@ -28,6 +28,15 @@ browser settings; those paths have not been retried or bypassed in this audit.
 
 ## Shared UI, refresh and startup
 
+- v119 compact location controls passed 34 targeted tests, the production build,
+  and Linux/Windows CI (run 41107987240). Browser measurements at a 390 × 844
+  viewport placed both maps about 190 pixels higher; expanded options and location
+  submission worked without horizontal overflow. This is viewport emulation.
+- Planned-stop smoke now has a separate interpolation diagnostic with whole-stop
+  estimates withheld on missing intervals. Analytical examples, freshness/gap
+  failures, DST, departure changes, UI recovery and exported evidence pass 48
+  focused tests. This does not close measured exposure or road-event attribution.
+
 - v106 keyboard QA reached all ten My weather shortcuts and the correct headings
   at desktop and 390 × 844 viewport sizes. Skip preserved shared event/cutoff URLs.
   This does not establish screen-reader, touch or physical-device usability.

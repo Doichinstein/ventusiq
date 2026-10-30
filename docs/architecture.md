@@ -235,7 +235,7 @@ weather sampling, stops and export. OSRM remains the configured public default.
 The offline event evaluator now connects separately reviewed WZDx 4.1 editions
 to estimated native-edge passage times across ordered legs and planned stops,
 preserving partial restrictions, stale records and boundary uncertainty.
-Stop exposure itself remains unevaluated. The native service does not activate those
+Road-event applicability while stopped remains unevaluated. Separately, the public Journey smoke module now exports stationary-stop linear interpolation diagnostics (whole-stop mean, estimated threshold duration and explicit missing intervals) from its existing RAP products. These estimates are not validated personal exposure. The native service does not activate those
 associations. A real approved crosswalk and time-valid event association remain required; see
 [route-network methods](route-network.md) and [backend setup](pinned-router.md).
 

@@ -2517,3 +2517,32 @@ download includes the builder, verifier, tests, ODbL fixture and retained eviden
 See [the graph contract and reproduction commands](route-network.md). This does
 not verify an agency crosswalk, actual road closure, national routing coverage or
 live traffic. The ten-feature goal remains incomplete on its existing gates.
+
+## October 30, 2026 — planned-stop smoke interpolation
+
+The Journey evaluator now adds separate stationary-stop model diagnostics for
+all three departure scenarios. It reuses each stop's existing RAP product,
+clips adjacent hourly intervals to exact arrival/departure, integrates a linear
+interpolation, and solves strict-above-limit crossings. Missing intervals are
+retained with their source samples; whole-stop means and threshold durations
+are withheld if coverage is incomplete. No extra collection or storage is added.
+
+An independent hand-calculated case starts at 04:15 and ends at 05:15 with
+04:00/05:00/06:00 model values of 10/30/10 µg/m³. The clipped endpoint values are
+15/30/25, the whole-stop mean is 23.75 µg/m³ and the interpolated time strictly
+above 20 µg/m³ is 45 minutes. Removing 06:00 leaves 45 minutes covered and
+15 unknown, with both whole-stop estimates withheld. Removing 05:00 prevents
+both adjacent intervals from being evaluated; no gap is bridged.
+
+Six new numerical tests plus the existing Journey/location suites pass 48 tests.
+They cover zero/equality, source failures, mismatched points, recycled/duplicate
+rasters, bounds, absolute DST times, departure shifts and export propagation.
+The via-stop UI test checks the expandable summary, selected departure changes,
+raw export and removal of prior estimates after a smoke outage. The first test
+run failed because a synthetic route sample lacked elapsed time; that fixture
+was corrected before the passing run. No application failure was concealed.
+
+This is an explicitly unvalidated linear model interpolation experiment at
+stationary points. It does not establish measured personal exposure, actual time
+above a concentration, in-vehicle conditions, moving-route exposure or verified
+closure attribution. The ten-feature goal remains open on its existing gates.

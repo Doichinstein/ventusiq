@@ -204,6 +204,31 @@ for every route point in this increment; its separate place comparison remains
 available. Measured-exposure evaluation and total-air-quality forecasts remain
 future work.
 
+### Planned-stop interpolation experiment
+
+With smoke samples enabled, positive-duration via stops now have a separate
+expandable summary under Smoke forecast. `journey-stop-smoke.mjs` reuses the
+already collected product for each stationary stop, with no extra requests.
+It clips adjacent hourly RAP intervals to the stop's exact arrival/departure and
+assumes linear concentration changes within each interval. Trapezoidal integration
+gives a whole-stop mean; linear threshold crossings give an estimated duration
+strictly above the user's optional sample limit. Equality does not exceed a limit.
+This assumption is explicit and does not alter the original sample-limit results.
+
+Missing, conflicting, wrong-point or stale values cannot be bridged. Covered and
+unknown minutes remain separate; any missing interval withholds both whole-stop
+estimates. No extrapolation, moving-route integration or measured exposure is
+claimed. The calculation uses absolute times, including across daylight-saving
+changes. Pass-throughs have no stationary duration and are omitted.
+
+Journey method `2026-10-30.1` exports `smoke_stops` for each departure, including
+method/assumption, requested times, snapped and rounded model points, source
+revision/run/check times, original bracketing samples, clipped endpoint values,
+segment integrals in µg·h/m³ and duration/coverage in minutes. Whole-stop means use
+µg/m³. These are model interpolation diagnostics, not validated exposure, inhaled
+dose, or a basis for claims about a vehicle's interior. Prospective measurement
+evaluation and the separate reviewed road-event stop applicability remain open.
+
 ## Agency work zones
 
 Select Maryland, Iowa or Washington before comparing to include agency work-zone

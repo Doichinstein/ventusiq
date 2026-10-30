@@ -1,5 +1,16 @@
 # Ten-feature acceptance audit
 
+## PM2.5 comparison readiness
+
+Empty diagnostics distinguish a still-open future measurement period from missing
+or invalid completed measurements and unusable forecast archives. Pending source
+evidence is exported separately and does not increase paired counts or metrics.
+Six added tests cover capture/period boundaries, future-dated checks, invalid latest
+products, real archive retrieval, UI wording and export preservation. All 900
+JavaScript tests, 45 Python tests and TypeScript checks pass locally. Local browser
+QA was blocked by the saved localhost permission; production browser verification
+is separate. A nonempty live CAMS PM2.5 comparison remains unproven.
+
 ## October 30 nonzero river revision verified
 
 DLAF1 public API, browser display and downloaded evidence now demonstrate a real

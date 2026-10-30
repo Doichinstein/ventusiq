@@ -6,6 +6,29 @@ existing shared archive. It also collects the current forecast and monitor
 history on demand so future visits can have earlier evidence. It creates no watch
 or new unattended task. A new point can legitimately have zero eligible pairs.
 
+## When an empty comparison can become ready
+
+An empty result now distinguishes a pending measurement hour, an eligible past
+forecast with a missing/invalid/conflicting monitor reading, and no usable
+archived forecast. For a pending hour, the UI gives its start and end in the
+device's timezone. The hour must finish before it can be scored; provider reporting
+and quality checks can delay or prevent a pair after that time. Revisit explicitly
+to collect updated observations. This does not schedule background collection.
+
+Readiness considers the current UTC hour and the following 24 hourly starts,
+using only checks already retained by evaluation time. The same 1–24-hour lead
+rule, latest-eligible-check selection, point identity, units and sample validation
+apply. An invalid selected product is never replaced by an older, more favorable
+one. Pending forecast evidence is exported under `readiness`, separately from
+scored historical sources and metrics. If a completed target already has an
+eligible model sample but no usable reading, that missing-measurement state takes
+precedence over waiting for a newer hour.
+
+For example, a forecast collected at 01:06 UTC first qualifies for a period
+starting at 03:00 UTC. That measurement hour ends at 04:00 UTC. A 02:00 period
+does not have the required one-hour collection lead. This clock explains
+eligibility, not a promise that a monitor will report a usable value at 04:00.
+
 ## What is compared
 
 Method `2026-10-29.2` considers the last 24 completed UTC observation hours.
@@ -66,7 +89,8 @@ No AQI is derived from an individual concentration or from the error metrics.
 
 `GET /api/air/comparison?lat=...&lon=...&id=...` uses existing D1 tables and
 seven-day forecast/history retention. A bounded scan reads at most 2,000 checks
-over the relevant 47-hour interval, at most 24 selected forecast products and at
+from the first target minus 24 hours through evaluation time (less than 48 hours),
+at most 49 selected forecast products for historical and pending targets, and at
 most 24 old monitor editions. Existing provider caches and admission limits
 apply. Stale collections can still supply historical evidence but are labeled;
 no measurement or model gap is silently repaired. Static and Python-only editions

@@ -4,3 +4,17 @@ async function setup(){const db=database(),f=fixture();let time=(target-2.5*HOUR
 test('real archive query rejects post-target corrections and reads persistence only from pre-forecast editions',async()=>{const s=await setup();try{const r=await s.service.comparison(39,-77,monitor.id);assert.equal(r.pairs[0].forecast_revision,s.original.revision);assert.notEqual(r.pairs[0].forecast_revision,s.correction.revision);assert.equal(r.pairs[0].forecast_pm25,8);assert.equal(r.pairs[0].baseline.pm25,12);assert.equal(r.sources.observations.features[0].properties.PM25,99);assert.equal(r.collection.forecast_revision,s.correction.revision);assert.equal(s.calls(),0);assert.equal((await s.w.statement('SELECT COUNT(*) AS n FROM watches').first()).n,0);assert.equal(r.archive.retention_days,7);}finally{s.db.close();}});
 test('unlisted or distant monitors cannot trigger model/history collection',async()=>{const s=await setup();try{await assert.rejects(s.service.comparison(39,-77,'UNKNOWN'),/Invalid monitor/);await assert.rejects(s.service.comparison(50,-77,monitor.id),/50 km/);await assert.rejects(s.service.comparison('',-77,monitor.id),/Invalid/);assert.equal(s.calls(),0);}finally{s.db.close();}});
 test('source outages preserve historical diagnostics with explicit collection errors',async()=>{const s=await setup();try{s.advance();const r=await s.service.comparison(39,-77,monitor.id);assert.equal(r.metrics.count,1);assert.equal(r.pairs[0].forecast_pm25,8);assert.equal(r.collection.observations_delayed,true);assert.equal(r.collection.forecast_error,'provider down');assert.equal(r.collection.observations_error,'provider down');}finally{s.db.close();}});
+
+test('a first real archive capture is read for readiness without being used as a historical prediction',async()=>{
+  const db=database(),f=fixture(),w=new WeatherService(db,{clock:()=>now/1000,fetcher:async()=>{throw Error('unexpected fetch');}});
+  try{
+    await w.collect('hazards/air',900,async()=>({type:'FeatureCollection',features:[monitor]}));
+    await w.collect('hazards/air-history/'+monitor.id,900,async()=>observations());
+    const captured=await w.collect('hazards/air-forecast/cams-global/39.0,-77.0',3600,async()=>f.forecasts.get('forecast-before'));
+    const r=await new PMComparisonService(w).comparison(39,-77,monitor.id);
+    assert.equal(r.archive.scanned_checks,1);assert.equal(r.coverage.forecast_checks,0);assert.equal(r.metrics.count,0);
+    assert.equal(r.readiness.status,'awaiting_completed_hour');assert.equal(r.readiness.forecast_check.revision,captured.revision);
+    assert.equal(r.readiness.target_at,'2026-10-29T08:00:00.000Z');assert.equal(r.readiness.period_ends_at,'2026-10-29T09:00:00.000Z');
+    assert.equal(r.readiness.forecast_source.product.raw.hourly.pm2_5[24],8);
+  }finally{db.close();}
+});

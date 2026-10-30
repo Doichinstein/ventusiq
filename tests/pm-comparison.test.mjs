@@ -10,3 +10,33 @@ test('model and persistence summaries use identical cases while lead groups acco
 
 
 test('hourly outcomes and persistence must be complete at their collection cutoff',()=>{const f=fixture();f.observations=observations([reading(target)],target+HOUR/2);assert.equal(comparePM(f).metrics.count,0);const b=fixture();b.baselineEditions.set(b.checks[0].at,observations([reading(target-3*HOUR,12)],target-2.5*HOUR));assert.equal(comparePM(b).paired_baseline.model.count,0);const c=fixture();c.observations=observations([reading(target+HOUR)],now);assert.equal(comparePM(c).metrics.count,0);});
+
+test('a mid-hour capture waits for one-hour lead and a full measurement period without scoring its future sample',()=>{
+  const f=fixture();f.checks=[{at:now/1000,revision:'forecast-before'}];
+  const r=comparePM(f);
+  assert.equal(r.readiness.status,'awaiting_completed_hour');
+  assert.equal(r.readiness.target_at,'2026-10-29T08:00:00.000Z');
+  assert.equal(r.readiness.period_ends_at,'2026-10-29T09:00:00.000Z');
+  assert.equal(r.readiness.forecast_check.collection_lead_hours,1.5);
+  assert.equal(r.readiness.forecast_source.product,f.forecasts.get('forecast-before'));
+  assert.equal(r.metrics.count,0);assert.equal(r.metrics.mean_absolute_difference,null);
+  assert.equal(r.coverage.forecast_checks,0);assert.equal(r.sources.forecasts.length,0);
+});
+
+test('readiness uses an exact lead boundary and advances only after the measurement hour ends',()=>{
+  const f=fixture();f.checks=[{at:(target+HOUR)/1000,revision:'forecast-before'}];
+  let r=comparePM(f);assert.equal(r.readiness.target_at,'2026-10-29T07:00:00.000Z');
+  f.now=Date.parse('2026-10-29T07:59:59Z');r=comparePM(f);assert.equal(r.readiness.status,'awaiting_completed_hour');assert.equal(r.readiness.target_at,'2026-10-29T07:00:00.000Z');
+  f.now=Date.parse('2026-10-29T08:00:00Z');r=comparePM(f);assert.equal(r.readiness.status,'measurement_unavailable');assert.equal(r.readiness.target_at,'2026-10-29T07:00:00.000Z');
+  f.observations=observations([reading(Date.parse('2026-10-29T07:00:00Z'))],f.now);
+  r=comparePM(f);assert.equal(r.metrics.count,1);assert.equal(r.readiness.status,'paired');
+});
+
+test('pending readiness rejects invalid latest products, missing samples and future-dated checks without fallback',()=>{
+  for(const mutate of [p=>p.point.lat=40,p=>p.model='other',p=>p.raw.hourly.pm2_5.fill(null),p=>p.raw.hourly_units.pm2_5='mg/m3']){
+    const f=fixture(),bad=structuredClone(f.forecasts.get('forecast-before'));mutate(bad);
+    f.forecasts.set('invalid-latest',bad);f.checks=[{at:(now-60000)/1000,revision:'forecast-before'},{at:now/1000,revision:'invalid-latest'}];
+    const r=comparePM(f);assert.equal(r.readiness.status,'no_pending_forecast');assert.equal(r.metrics.count,0);
+  }
+  const f=fixture();f.checks=[{at:(now+HOUR)/1000,revision:'forecast-before'}];assert.equal(comparePM(f).readiness.status,'no_pending_forecast');
+});

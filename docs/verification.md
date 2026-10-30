@@ -1,5 +1,21 @@
 # Verification record
 
+## PM2.5 readiness states — October 30
+
+At 02:39 UTC the live 39,-77 comparison still had no eligible forecast checks
+for completed target hours. The first retained CAMS capture at 01:06:45 UTC can
+qualify for the 03:00 period only after that hour ends at 04:00, subject to later
+monitor availability. The UI now reports this distinction from missing or invalid
+monitor data and absent usable forecasts. Pending products are kept out of scores.
+
+All 900 JavaScript tests, 45 Python tests and TypeScript checks pass. Six added
+tests cover exact and mid-hour lead boundaries, transition after period completion,
+future-dated checks, rejected latest products without fallback, SQLite retrieval of
+a first capture, UI wording and retained pending evidence. Local preview served
+HTTP 200 but the browser rejected the localhost origin under a saved permission.
+That local rendering check remains unverified; public verification follows the
+normal publication workflow. No new account, watch, secret or schedule was added.
+
 ## Nonzero river forecast revision — DeLand, October 30
 
 Public browser QA at DLAF1 (St. Johns River near DeLand) compared the NOAA issues

@@ -2685,3 +2685,29 @@ These were visitor/mutation-triggered upkeep runs. They verify actual baseline
 integration, private populated feeds and recheck deduplication, not real weather
 transitions, scheduler provenance, rendered enrollment, closed-browser push display
 or external webhook receipt. Those acceptance gates remain open.
+
+## October 30, 2026 — regional prospective GEFS inputs
+
+The v127 Linux/Windows CI run 41118212773 completed successfully. Review of existing
+forecast captures found that the forward analog and GEFS examples cluster around
+Washington. Re-scoring those would not establish broader geographic coverage.
+
+A [separate fixed plan](ensemble-regional-cohort.md) registered Denver, Miami,
+Boston, Chicago, Houston and Anchorage at 19:52:27 UTC, then selected the nearest
+NWS-listed station before forecast requests. Twenty-four future three-hour times
+per station give 144 cases, fixed before any outcome. Six raw identified GEFS
+products and six pre-forecast NWS persistence readings were captured by 19:53:55 UTC.
+All forecast inputs are eligible: all 31 temperature members are finite, the run
+initialized October 30 at 00 UTC, source lead is 30–99 hours and receipt precedes
+each target by over six hours. All six persistence readings have QC V and are less
+than three hours old at receipt. Raw source editions, station candidates, request
+and receipt times are retained with artifact/plan checksums.
+
+The independent stdlib-only readiness audit passes. Its ten tests include nine
+counterfactual changes covering omissions, substitutions, late receipt/persistence,
+missing members, wrong cells, rejected baseline QC and failed collection. Forecast
+or baseline failure preserves the registered coverage denominator. No outcomes were
+fetched; the first becomes eligible October 31 at 06:30 UTC, subject to source lag.
+Outcome collection/scoring against these fixed editions remains next work. This
+is prospective validation preparation, not an accuracy result or a calibrated
+regional/seasonal confidence claim.

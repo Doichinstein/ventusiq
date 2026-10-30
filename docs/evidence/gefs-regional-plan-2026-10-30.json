@@ -1,0 +1,71 @@
+{
+  "document": {
+    "schema": "ventusiq-gefs-regional-plan/1",
+    "registered_at": "2026-10-30T19:52:27.761035Z",
+    "targets": [
+      {
+        "city": "Denver",
+        "lat": 39.8561,
+        "lon": -104.6737
+      },
+      {
+        "city": "Miami",
+        "lat": 25.7959,
+        "lon": -80.287
+      },
+      {
+        "city": "Boston",
+        "lat": 42.3656,
+        "lon": -71.0096
+      },
+      {
+        "city": "Chicago",
+        "lat": 41.9742,
+        "lon": -87.9073
+      },
+      {
+        "city": "Houston",
+        "lat": 29.9902,
+        "lon": -95.3368
+      },
+      {
+        "city": "Anchorage",
+        "lat": 61.1743,
+        "lon": -149.9964
+      }
+    ],
+    "valid_times": [
+      "2026-10-31T06:00:00Z",
+      "2026-10-31T09:00:00Z",
+      "2026-10-31T12:00:00Z",
+      "2026-10-31T15:00:00Z",
+      "2026-10-31T18:00:00Z",
+      "2026-10-31T21:00:00Z",
+      "2026-11-01T00:00:00Z",
+      "2026-11-01T03:00:00Z",
+      "2026-11-01T06:00:00Z",
+      "2026-11-01T09:00:00Z",
+      "2026-11-01T12:00:00Z",
+      "2026-11-01T15:00:00Z",
+      "2026-11-01T18:00:00Z",
+      "2026-11-01T21:00:00Z",
+      "2026-11-02T00:00:00Z",
+      "2026-11-02T03:00:00Z",
+      "2026-11-02T06:00:00Z",
+      "2026-11-02T09:00:00Z",
+      "2026-11-02T12:00:00Z",
+      "2026-11-02T15:00:00Z",
+      "2026-11-02T18:00:00Z",
+      "2026-11-02T21:00:00Z",
+      "2026-11-03T00:00:00Z",
+      "2026-11-03T03:00:00Z"
+    ],
+    "selection": "Fixed airport points reused from the earlier six-region station study. Nearest NWS-listed station before requesting forecasts; ties by station ID. No replacement after missing data or unfavorable results.",
+    "forecast": "First captured identified daily GEFS product per point. Require actual receipt and source check at least six hours before target, initialization lead 6 through 120 hours, and all 31 finite temperature members. No later edition or retrospective substitution.",
+    "observations": "After target plus 30 minutes, nearest NWS station temperature within 30 minutes; ties earlier. Require QC V/G and explicit Celsius/Fahrenheit units. Nearest missing/rejected reading stays missing; conflicting simultaneous readings excluded. Retain raw observation editions and retrieval times.",
+    "baseline": "Freeze the latest station observation retrieved before the forecast request as persistence. Require QC V/G, valid temperature and age at most three hours at forecast receipt. No later replacement. Compare model and persistence on identical eligible cases.",
+    "aggregation": "Keep all 144 planned station-times in coverage accounting. Report each station and disjoint initialization-lead groups 6-<24, 24-<48, 48-120 hours. Report model median MAE/bias, 10th-90th member inclusion/width and same-case persistence MAE. Overall means weight eligible stations equally, with station and pair denominators. Empty groups are null.",
+    "limits": "One fixed convenience cohort, not independent regional/seasonal skill, calibrated probabilities, model ranking or personal exposure. Source hashes detect edits; they are not signatures or independent timestamps. No outcomes fetched during registration/capture."
+  },
+  "sha256": "37434c12340aa5564eb3201faab2e386b44224266a354f26c2dae442458005e5"
+}

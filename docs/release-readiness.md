@@ -83,6 +83,10 @@ checks and the production build. Detailed records are in [verification](verifica
    chronological, baseline-matched evaluation without substituting later forecasts.
    The frozen cohort's first outcome day completes October 31 at 00:00 UTC, with
    additional source publication lag. Do not fetch or score an incomplete day.
+   A separate [six-location GEFS cohort](ensemble-regional-cohort.md) now retains
+   all 144 planned forecasts plus six pre-forecast persistence readings. Its first
+   station outcomes become eligible October 31 at 06:30 UTC, with source lag;
+   fixed-edition outcome collection/scoring remains to be implemented and run.
 4. **Operational evidence: scheduling and recovery.** Hourly upkeep is enabled,
    but the available tools provide no cloud run history/editor and the separate
    browser session is signed out. The bounded recent log sample contains visitor

@@ -63,9 +63,9 @@ provider. This does not restrict the Apache-2.0 application code. No Open-Meteo
 server implementation was copied. Terms should be reviewed before changing the
 deployment's commercial use or collection scale.
 
-Longer outcome archives, lead/season stratification, HRRR comparisons, run-identified
-products and calibrated uncertainty remain roadmap work. Automated core, service
-and DOM behavior checks do not replace rendered browser verification.
+Identified runs and prospective outcome comparisons are described below. Broader
+regional/seasonal grading and calibrated uncertainty remain open. Automated core,
+service and DOM behavior checks do not replace rendered browser verification.
 
 
 ## Identified daily GEFS runs (v77)
@@ -248,3 +248,13 @@ The production evaluator independently reproduces both frozen exports. The
 original first-outcome audit remains unchanged. All evidence here is a frozen
 arithmetic/provenance check, not authentication of arbitrary future files or
 validation of the measuring instrument.
+
+## Six-location prospective extension
+
+The [frozen regional study](ensemble-regional-cohort.md) registered six fixed airport
+points and 144 future station-times before capture on October 30. All forecasts
+and six decision-time persistence baselines were retained by 19:53:55 UTC, with
+no outcome requests. The first target is October 31 at 06:00 UTC; outcomes become
+eligible after 06:30 UTC plus publication lag. This establishes prospective inputs
+for broader evaluation, not completed regional skill. The study's fixed-edition
+contract is distinct from the public evaluator's latest-eligible-edition policy.

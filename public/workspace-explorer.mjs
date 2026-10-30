@@ -68,7 +68,7 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
   get('journey-example').textContent='Try Washington → Baltimore';
   get('journey-from-place').parentElement.firstChild.textContent='Point 1 from saved places';
   get('journey-to-place').parentElement.firstChild.textContent='Point 2 from saved places';
-  get('journey-options').append(el('p','Driving routes up to 2,000 km; driving plus stops up to 24 hours. Selecting two map points starts a comparison. Coordinates are sent to the routing provider and routes are cached on the shared server. Place names and stop durations are not sent to that provider.','small'));
+  get('journey-options').append(el('p','Driving routes up to 2,000 km; driving plus stops up to 24 hours. Selecting two map points starts a comparison. Coordinates are sent to the routing provider and routes are cached on the shared server. Place names are not sent to that provider. Optional reviewed-event checks also send departure times and stop durations.','small'));
   const journeyPanel=get('journey-workspace'),journeyAside=journeyPanel.querySelector('.places-panel');
   const routingSource=get('journey-routing-provider')?.parentElement;if(routingSource)get('journey-options').append(routingSource);
   journeyAside?.remove();journeyPanel.querySelector('.personal-title')?.remove();

@@ -2828,3 +2828,10 @@ validation on Windows. An explicitly synthetic event overlaps the earlier drive;
 a later departure or a 30-minute planned stop removes that event overlap. This
 proves timing/integration, not a real agency restriction. The full suite passed
 all JavaScript checks, 150 Python tests and TypeScript validation.
+
+Public browser QA ran Washington to Baltimore (62.8 km), retained the map and
+three departures with four weather samples each, expanded the initially collapsed
+reviewed-event panel, and exported the result. The [retained browser result](evidence/reviewed-events-public-2026-10-30.json)
+explicitly reports unavailable reviewed-event coverage in all three scenarios.
+No browser console errors were captured. Browser QA also found an older compact
+control privacy sentence, corrected to disclose optional timing transmission.

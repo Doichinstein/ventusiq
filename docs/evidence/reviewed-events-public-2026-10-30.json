@@ -1,0 +1,43 @@
+{
+  "site_version": 140,
+  "evaluated_at": "2026-10-30T22:22:16.185Z",
+  "public_example": "Washington to Baltimore",
+  "route_km": 62.8115,
+  "departures": [
+    {
+      "departure": "2026-10-30T23:22:00.000Z",
+      "weather_samples": 4,
+      "reviewed_events": {
+        "status": "unavailable",
+        "reason": "This deployment has no routing graph with reviewed agency-event coverage."
+      }
+    },
+    {
+      "departure": "2026-10-31T01:22:00.000Z",
+      "weather_samples": 4,
+      "reviewed_events": {
+        "status": "unavailable",
+        "reason": "This deployment has no routing graph with reviewed agency-event coverage."
+      }
+    },
+    {
+      "departure": "2026-10-31T03:22:00.000Z",
+      "weather_samples": 4,
+      "reviewed_events": {
+        "status": "unavailable",
+        "reason": "This deployment has no routing graph with reviewed agency-event coverage."
+      }
+    }
+  ],
+  "observations": [
+    "Persistent map retained route overlay",
+    "Review results initially collapsed",
+    "Expanded result explicitly reported unavailable reviewed-event coverage",
+    "Journey JSON export retained unavailable source and all three comparison results",
+    "No captured browser console errors"
+  ],
+  "limits": [
+    "No production pinned routing backend or approved real event bundle",
+    "Synthetic positive-path tests do not establish field closure attribution"
+  ]
+}

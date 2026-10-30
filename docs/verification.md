@@ -2711,3 +2711,35 @@ fetched; the first becomes eligible October 31 at 06:30 UTC, subject to source l
 Outcome collection/scoring against these fixed editions remains next work. This
 is prospective validation preparation, not an accuracy result or a calibrated
 regional/seasonal confidence claim.
+
+## October 30, 2026 — fixed-input regional outcome scorer
+
+The v128 Linux/Windows CI run 41119435298 completed successfully. The regional
+study now has a stdlib-only outcome collector and scorer, separate from the public
+rolling latest-edition comparison. It uses only the fixed forecast capture and
+registered target/station membership. Every target remains in the denominator.
+
+Outcome collection freezes its eligibility clock, waits until target plus 30
+minutes, restricts pagination to the selected NWS station/window and requires
+complete bounded pagination before scoring. Failed, oversized, repeated-cursor,
+wrong-station or future-dated input remains unavailable. No narrower favorable
+subset is scored. Nearest-reading selection precedes QC; missing/rejected nearest
+readings and conflicting simultaneous records cannot be replaced with farther ones.
+
+Scores preserve raw pages and references, all 31-member median/range arithmetic,
+per-station and disjoint lead summaries, and equal-station aggregate errors. The
+persistence comparison uses exactly the cases with both forecasts and a usable
+pre-forecast baseline. Empty errors remain null. Imported evaluations reproduce
+from retained inputs; follow-up mode reproduces and hashes the prior evaluation
+and explicitly lists changed already-mature targets rather than choosing favorable
+observation revisions.
+
+Twenty analytical/collector/reproduction tests plus ten capture tests passed.
+They include unequal station sample counts, known values, 48-hour lead boundaries,
+missing baselines, near-missing observations, ties/conflicts, correction reporting,
+pagination failures/limits, untrusted cursors and future clocks. No real outcome
+observations were requested. The [readiness artifact](evidence/gefs-regional-readiness-2026-10-30.json)
+at 20:03:33 UTC reports 144 pending cases, zero matched cases, null errors and zero
+source pages. A separate offline CLI reproduction also matched it. This closes
+the operator implementation gap; real regional outcomes and broader validation
+remain pending. See [operator instructions](ensemble-regional-cohort.md#collect-score-and-reproduce-outcomes).

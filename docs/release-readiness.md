@@ -86,7 +86,9 @@ checks and the production build. Detailed records are in [verification](verifica
    A separate [six-location GEFS cohort](ensemble-regional-cohort.md) now retains
    all 144 planned forecasts plus six pre-forecast persistence readings. Its first
    station outcomes become eligible October 31 at 06:30 UTC, with source lag;
-   fixed-edition outcome collection/scoring remains to be implemented and run.
+   fixed-edition outcome collection/scoring is implemented with 30 capture/outcome
+   tests. Its retained readiness report has 144 pending cases and null errors;
+   real outcome collection and evaluation still await eligible observations.
 4. **Operational evidence: scheduling and recovery.** Hourly upkeep is enabled,
    but the available tools provide no cloud run history/editor and the separate
    browser session is signed out. The bounded recent log sample contains visitor

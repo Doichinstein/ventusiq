@@ -52,9 +52,10 @@ it is not a climatology or an independent numerical forecast.
   and state both station and pair denominators. Empty groups retain null errors.
 
 The first outcomes become eligible October 31 at 06:30 UTC, subject to source
-publication. No outcome data was fetched in this capture. The readiness verifier
-does not yet implement outcome collection/scoring; that is the next operator step
-against these immutable inputs, not a claim of completed prospective evaluation.
+publication. No outcome data was fetched in the initial capture. The outcome
+collector/scorer is now implemented; its October 30 readiness run retains all
+144 cases as pending and leaves errors unknown. Real outcome evaluation remains
+pending, not established by the synthetic scoring tests.
 The public per-location GEFS outcome evaluator remains available separately and
 may select later eligible archive editions; its rolling report must not silently
 replace this study's fixed-edition contract.
@@ -95,3 +96,59 @@ members, wrong grid, late persistence capture, rejected baseline QC and a missin
 forecast. Excluded cases remain in the planned denominator. The verifier imports
 no application evaluator. This verifies readiness and provenance constraints,
 not instrument accuracy, calibrated coverage or seasonal forecast skill.
+
+## Collect, score and reproduce outcomes
+
+`scripts/gefs-regional-outcomes.py` uses the fixed plan and frozen inputs. Without
+`--fetch-outcomes` it performs no network requests and reports pending or explicitly
+uncollected outcomes. With that flag, it freezes the clock at collection start and
+requests only the window covering targets that have matured by 30 minutes:
+
+```text
+python scripts/gefs-regional-outcomes.py --plan docs/evidence/gefs-regional-plan-2026-10-30.json --capture docs/evidence/gefs-regional-capture-2026-10-30.json --fetch-outcomes --output NEW_EVALUATION.json
+```
+
+No station request is made before its first eligible target. Requests go directly
+to the fixed NWS station-observations path; they carry no Site or browser credentials.
+Pagination retains the original start/end bounds and follows only that station on
+the official HTTPS origin. Each request has a 30-second timeout and 2 MiB response
+limit; each station is bounded to six pages and the whole response budget to 20 MiB.
+Redirects, unexpected parameters, repeated cursors, future observations and wrong
+station identities are rejected. A failed or truncated collection stays incomplete
+and is not scored from the favorable subset of pages already received.
+
+The report retains every planned station-time, all raw accepted pages, their request
+and receipt times, missing/QC/conflict reasons, source references, per-station
+statistics and disjoint lead groups. An additional count identifies cases without
+a classifiable source lead. Model-only counts and same-case persistence counts
+remain separate; aggregate errors and inclusion fractions weight eligible stations
+equally. Inclusion counts remain descriptive, not calibrated probability coverage.
+
+Reproduce exactly from a prior retained evaluation instead of fetching a new edition:
+
+```text
+python scripts/gefs-regional-outcomes.py --plan docs/evidence/gefs-regional-plan-2026-10-30.json --capture docs/evidence/gefs-regional-capture-2026-10-30.json --outcomes PRIOR_EVALUATION.json --output NEW_REPRODUCTION.json
+```
+
+For a follow-up capture, supply `--previous PRIOR_EVALUATION.json` along with
+`--fetch-outcomes`. The scorer first reproduces that previous report from its
+retained pages, then records changes to already-mature targets, including missing
+data becoming available or an observation correction changing the score. It pins
+the previous evaluation hash and never chooses the lower-error edition. Retain
+both files; all output paths must be new. Omitting `--previous` creates an unlinked
+evaluation and does not establish that corrections have been reconciled.
+
+Twenty outcome tests cover analytical member and persistence arithmetic, equal
+station weighting with unequal sample counts, empty groups, zero/unit conversion,
+nearest missing/rejected readings, earlier tie-breaking, conflicting timestamps,
+48-hour group boundaries, missing baselines, full/failed pagination, external or
+repeated cursors, page limits, identity/window mismatches, future time rejection,
+correction diffs and reproduction of the retained readiness artifact. Together
+with the ten capture tests, 30 targeted tests pass. All outcome fixtures are
+synthetic; none is presented as an observed result.
+
+The [October 30 readiness artifact](evidence/gefs-regional-readiness-2026-10-30.json)
+was created at 20:03:33 UTC without requesting any observations. It contains zero
+matched cases, 144 pending cases, null model/persistence errors and no new source
+pages. Outcome collection remains an explicit operator command, not a newly
+scheduled task or a claim of unattended reliability.

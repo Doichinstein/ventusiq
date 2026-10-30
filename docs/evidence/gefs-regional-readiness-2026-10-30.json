@@ -1,0 +1,1476 @@
+{
+  "document": {
+    "report": {
+      "schema": "ventusiq-gefs-regional-score/1",
+      "as_of": "2026-10-30T20:03:33.497175Z",
+      "plan_sha256": "37434c12340aa5564eb3201faab2e386b44224266a354f26c2dae442458005e5",
+      "capture_sha256": "a8aaeca86dbac50dbc6e307e2e732c04c9c40c4906f183e159a8beea887b4e22",
+      "outcomes_sha256": "dabef0e181a6e5b6792665b6c6926028f86ea13f83defc269e3f62f51bb2446e",
+      "readiness": {
+        "verified": true,
+        "planned_station_times": 144,
+        "forecast_eligible_station_times": 144,
+        "first_target": "2026-10-31T06:00:00Z",
+        "last_target": "2026-11-03T03:00:00Z",
+        "cases": [
+          {
+            "city": "Denver",
+            "station": "KDEN",
+            "forecast_eligible_times": [
+              "2026-10-31T06:00:00Z",
+              "2026-10-31T09:00:00Z",
+              "2026-10-31T12:00:00Z",
+              "2026-10-31T15:00:00Z",
+              "2026-10-31T18:00:00Z",
+              "2026-10-31T21:00:00Z",
+              "2026-11-01T00:00:00Z",
+              "2026-11-01T03:00:00Z",
+              "2026-11-01T06:00:00Z",
+              "2026-11-01T09:00:00Z",
+              "2026-11-01T12:00:00Z",
+              "2026-11-01T15:00:00Z",
+              "2026-11-01T18:00:00Z",
+              "2026-11-01T21:00:00Z",
+              "2026-11-02T00:00:00Z",
+              "2026-11-02T03:00:00Z",
+              "2026-11-02T06:00:00Z",
+              "2026-11-02T09:00:00Z",
+              "2026-11-02T12:00:00Z",
+              "2026-11-02T15:00:00Z",
+              "2026-11-02T18:00:00Z",
+              "2026-11-02T21:00:00Z",
+              "2026-11-03T00:00:00Z",
+              "2026-11-03T03:00:00Z"
+            ],
+            "excluded": {},
+            "persistence_available": true
+          },
+          {
+            "city": "Miami",
+            "station": "KMIA",
+            "forecast_eligible_times": [
+              "2026-10-31T06:00:00Z",
+              "2026-10-31T09:00:00Z",
+              "2026-10-31T12:00:00Z",
+              "2026-10-31T15:00:00Z",
+              "2026-10-31T18:00:00Z",
+              "2026-10-31T21:00:00Z",
+              "2026-11-01T00:00:00Z",
+              "2026-11-01T03:00:00Z",
+              "2026-11-01T06:00:00Z",
+              "2026-11-01T09:00:00Z",
+              "2026-11-01T12:00:00Z",
+              "2026-11-01T15:00:00Z",
+              "2026-11-01T18:00:00Z",
+              "2026-11-01T21:00:00Z",
+              "2026-11-02T00:00:00Z",
+              "2026-11-02T03:00:00Z",
+              "2026-11-02T06:00:00Z",
+              "2026-11-02T09:00:00Z",
+              "2026-11-02T12:00:00Z",
+              "2026-11-02T15:00:00Z",
+              "2026-11-02T18:00:00Z",
+              "2026-11-02T21:00:00Z",
+              "2026-11-03T00:00:00Z",
+              "2026-11-03T03:00:00Z"
+            ],
+            "excluded": {},
+            "persistence_available": true
+          },
+          {
+            "city": "Boston",
+            "station": "KBOS",
+            "forecast_eligible_times": [
+              "2026-10-31T06:00:00Z",
+              "2026-10-31T09:00:00Z",
+              "2026-10-31T12:00:00Z",
+              "2026-10-31T15:00:00Z",
+              "2026-10-31T18:00:00Z",
+              "2026-10-31T21:00:00Z",
+              "2026-11-01T00:00:00Z",
+              "2026-11-01T03:00:00Z",
+              "2026-11-01T06:00:00Z",
+              "2026-11-01T09:00:00Z",
+              "2026-11-01T12:00:00Z",
+              "2026-11-01T15:00:00Z",
+              "2026-11-01T18:00:00Z",
+              "2026-11-01T21:00:00Z",
+              "2026-11-02T00:00:00Z",
+              "2026-11-02T03:00:00Z",
+              "2026-11-02T06:00:00Z",
+              "2026-11-02T09:00:00Z",
+              "2026-11-02T12:00:00Z",
+              "2026-11-02T15:00:00Z",
+              "2026-11-02T18:00:00Z",
+              "2026-11-02T21:00:00Z",
+              "2026-11-03T00:00:00Z",
+              "2026-11-03T03:00:00Z"
+            ],
+            "excluded": {},
+            "persistence_available": true
+          },
+          {
+            "city": "Chicago",
+            "station": "KORD",
+            "forecast_eligible_times": [
+              "2026-10-31T06:00:00Z",
+              "2026-10-31T09:00:00Z",
+              "2026-10-31T12:00:00Z",
+              "2026-10-31T15:00:00Z",
+              "2026-10-31T18:00:00Z",
+              "2026-10-31T21:00:00Z",
+              "2026-11-01T00:00:00Z",
+              "2026-11-01T03:00:00Z",
+              "2026-11-01T06:00:00Z",
+              "2026-11-01T09:00:00Z",
+              "2026-11-01T12:00:00Z",
+              "2026-11-01T15:00:00Z",
+              "2026-11-01T18:00:00Z",
+              "2026-11-01T21:00:00Z",
+              "2026-11-02T00:00:00Z",
+              "2026-11-02T03:00:00Z",
+              "2026-11-02T06:00:00Z",
+              "2026-11-02T09:00:00Z",
+              "2026-11-02T12:00:00Z",
+              "2026-11-02T15:00:00Z",
+              "2026-11-02T18:00:00Z",
+              "2026-11-02T21:00:00Z",
+              "2026-11-03T00:00:00Z",
+              "2026-11-03T03:00:00Z"
+            ],
+            "excluded": {},
+            "persistence_available": true
+          },
+          {
+            "city": "Houston",
+            "station": "KIAH",
+            "forecast_eligible_times": [
+              "2026-10-31T06:00:00Z",
+              "2026-10-31T09:00:00Z",
+              "2026-10-31T12:00:00Z",
+              "2026-10-31T15:00:00Z",
+              "2026-10-31T18:00:00Z",
+              "2026-10-31T21:00:00Z",
+              "2026-11-01T00:00:00Z",
+              "2026-11-01T03:00:00Z",
+              "2026-11-01T06:00:00Z",
+              "2026-11-01T09:00:00Z",
+              "2026-11-01T12:00:00Z",
+              "2026-11-01T15:00:00Z",
+              "2026-11-01T18:00:00Z",
+              "2026-11-01T21:00:00Z",
+              "2026-11-02T00:00:00Z",
+              "2026-11-02T03:00:00Z",
+              "2026-11-02T06:00:00Z",
+              "2026-11-02T09:00:00Z",
+              "2026-11-02T12:00:00Z",
+              "2026-11-02T15:00:00Z",
+              "2026-11-02T18:00:00Z",
+              "2026-11-02T21:00:00Z",
+              "2026-11-03T00:00:00Z",
+              "2026-11-03T03:00:00Z"
+            ],
+            "excluded": {},
+            "persistence_available": true
+          },
+          {
+            "city": "Anchorage",
+            "station": "PANC",
+            "forecast_eligible_times": [
+              "2026-10-31T06:00:00Z",
+              "2026-10-31T09:00:00Z",
+              "2026-10-31T12:00:00Z",
+              "2026-10-31T15:00:00Z",
+              "2026-10-31T18:00:00Z",
+              "2026-10-31T21:00:00Z",
+              "2026-11-01T00:00:00Z",
+              "2026-11-01T03:00:00Z",
+              "2026-11-01T06:00:00Z",
+              "2026-11-01T09:00:00Z",
+              "2026-11-01T12:00:00Z",
+              "2026-11-01T15:00:00Z",
+              "2026-11-01T18:00:00Z",
+              "2026-11-01T21:00:00Z",
+              "2026-11-02T00:00:00Z",
+              "2026-11-02T03:00:00Z",
+              "2026-11-02T06:00:00Z",
+              "2026-11-02T09:00:00Z",
+              "2026-11-02T12:00:00Z",
+              "2026-11-02T15:00:00Z",
+              "2026-11-02T18:00:00Z",
+              "2026-11-02T21:00:00Z",
+              "2026-11-03T00:00:00Z",
+              "2026-11-03T03:00:00Z"
+            ],
+            "excluded": {},
+            "persistence_available": true
+          }
+        ],
+        "scope": "Prospective capture readiness only. No outcomes collected or forecast skill claimed."
+      },
+      "rows": [
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-10-31T06:00:00Z",
+          "lead_hours": 30.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-10-31T09:00:00Z",
+          "lead_hours": 33.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-10-31T12:00:00Z",
+          "lead_hours": 36.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-10-31T15:00:00Z",
+          "lead_hours": 39.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-10-31T18:00:00Z",
+          "lead_hours": 42.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-10-31T21:00:00Z",
+          "lead_hours": 45.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T00:00:00Z",
+          "lead_hours": 48.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T03:00:00Z",
+          "lead_hours": 51.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T06:00:00Z",
+          "lead_hours": 54.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T09:00:00Z",
+          "lead_hours": 57.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T12:00:00Z",
+          "lead_hours": 60.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T15:00:00Z",
+          "lead_hours": 63.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T18:00:00Z",
+          "lead_hours": 66.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-01T21:00:00Z",
+          "lead_hours": 69.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T00:00:00Z",
+          "lead_hours": 72.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T03:00:00Z",
+          "lead_hours": 75.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T06:00:00Z",
+          "lead_hours": 78.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T09:00:00Z",
+          "lead_hours": 81.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T12:00:00Z",
+          "lead_hours": 84.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T15:00:00Z",
+          "lead_hours": 87.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T18:00:00Z",
+          "lead_hours": 90.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-02T21:00:00Z",
+          "lead_hours": 93.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-03T00:00:00Z",
+          "lead_hours": 96.0,
+          "status": "pending"
+        },
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "valid_at": "2026-11-03T03:00:00Z",
+          "lead_hours": 99.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-10-31T06:00:00Z",
+          "lead_hours": 30.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-10-31T09:00:00Z",
+          "lead_hours": 33.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-10-31T12:00:00Z",
+          "lead_hours": 36.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-10-31T15:00:00Z",
+          "lead_hours": 39.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-10-31T18:00:00Z",
+          "lead_hours": 42.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-10-31T21:00:00Z",
+          "lead_hours": 45.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T00:00:00Z",
+          "lead_hours": 48.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T03:00:00Z",
+          "lead_hours": 51.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T06:00:00Z",
+          "lead_hours": 54.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T09:00:00Z",
+          "lead_hours": 57.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T12:00:00Z",
+          "lead_hours": 60.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T15:00:00Z",
+          "lead_hours": 63.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T18:00:00Z",
+          "lead_hours": 66.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-01T21:00:00Z",
+          "lead_hours": 69.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T00:00:00Z",
+          "lead_hours": 72.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T03:00:00Z",
+          "lead_hours": 75.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T06:00:00Z",
+          "lead_hours": 78.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T09:00:00Z",
+          "lead_hours": 81.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T12:00:00Z",
+          "lead_hours": 84.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T15:00:00Z",
+          "lead_hours": 87.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T18:00:00Z",
+          "lead_hours": 90.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-02T21:00:00Z",
+          "lead_hours": 93.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-03T00:00:00Z",
+          "lead_hours": 96.0,
+          "status": "pending"
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "valid_at": "2026-11-03T03:00:00Z",
+          "lead_hours": 99.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-10-31T06:00:00Z",
+          "lead_hours": 30.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-10-31T09:00:00Z",
+          "lead_hours": 33.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-10-31T12:00:00Z",
+          "lead_hours": 36.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-10-31T15:00:00Z",
+          "lead_hours": 39.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-10-31T18:00:00Z",
+          "lead_hours": 42.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-10-31T21:00:00Z",
+          "lead_hours": 45.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T00:00:00Z",
+          "lead_hours": 48.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T03:00:00Z",
+          "lead_hours": 51.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T06:00:00Z",
+          "lead_hours": 54.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T09:00:00Z",
+          "lead_hours": 57.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T12:00:00Z",
+          "lead_hours": 60.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T15:00:00Z",
+          "lead_hours": 63.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T18:00:00Z",
+          "lead_hours": 66.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-01T21:00:00Z",
+          "lead_hours": 69.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T00:00:00Z",
+          "lead_hours": 72.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T03:00:00Z",
+          "lead_hours": 75.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T06:00:00Z",
+          "lead_hours": 78.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T09:00:00Z",
+          "lead_hours": 81.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T12:00:00Z",
+          "lead_hours": 84.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T15:00:00Z",
+          "lead_hours": 87.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T18:00:00Z",
+          "lead_hours": 90.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-02T21:00:00Z",
+          "lead_hours": 93.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-03T00:00:00Z",
+          "lead_hours": 96.0,
+          "status": "pending"
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "valid_at": "2026-11-03T03:00:00Z",
+          "lead_hours": 99.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-10-31T06:00:00Z",
+          "lead_hours": 30.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-10-31T09:00:00Z",
+          "lead_hours": 33.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-10-31T12:00:00Z",
+          "lead_hours": 36.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-10-31T15:00:00Z",
+          "lead_hours": 39.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-10-31T18:00:00Z",
+          "lead_hours": 42.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-10-31T21:00:00Z",
+          "lead_hours": 45.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T00:00:00Z",
+          "lead_hours": 48.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T03:00:00Z",
+          "lead_hours": 51.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T06:00:00Z",
+          "lead_hours": 54.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T09:00:00Z",
+          "lead_hours": 57.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T12:00:00Z",
+          "lead_hours": 60.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T15:00:00Z",
+          "lead_hours": 63.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T18:00:00Z",
+          "lead_hours": 66.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-01T21:00:00Z",
+          "lead_hours": 69.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T00:00:00Z",
+          "lead_hours": 72.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T03:00:00Z",
+          "lead_hours": 75.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T06:00:00Z",
+          "lead_hours": 78.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T09:00:00Z",
+          "lead_hours": 81.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T12:00:00Z",
+          "lead_hours": 84.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T15:00:00Z",
+          "lead_hours": 87.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T18:00:00Z",
+          "lead_hours": 90.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-02T21:00:00Z",
+          "lead_hours": 93.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-03T00:00:00Z",
+          "lead_hours": 96.0,
+          "status": "pending"
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "valid_at": "2026-11-03T03:00:00Z",
+          "lead_hours": 99.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-10-31T06:00:00Z",
+          "lead_hours": 30.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-10-31T09:00:00Z",
+          "lead_hours": 33.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-10-31T12:00:00Z",
+          "lead_hours": 36.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-10-31T15:00:00Z",
+          "lead_hours": 39.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-10-31T18:00:00Z",
+          "lead_hours": 42.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-10-31T21:00:00Z",
+          "lead_hours": 45.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T00:00:00Z",
+          "lead_hours": 48.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T03:00:00Z",
+          "lead_hours": 51.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T06:00:00Z",
+          "lead_hours": 54.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T09:00:00Z",
+          "lead_hours": 57.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T12:00:00Z",
+          "lead_hours": 60.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T15:00:00Z",
+          "lead_hours": 63.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T18:00:00Z",
+          "lead_hours": 66.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-01T21:00:00Z",
+          "lead_hours": 69.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T00:00:00Z",
+          "lead_hours": 72.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T03:00:00Z",
+          "lead_hours": 75.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T06:00:00Z",
+          "lead_hours": 78.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T09:00:00Z",
+          "lead_hours": 81.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T12:00:00Z",
+          "lead_hours": 84.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T15:00:00Z",
+          "lead_hours": 87.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T18:00:00Z",
+          "lead_hours": 90.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-02T21:00:00Z",
+          "lead_hours": 93.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-03T00:00:00Z",
+          "lead_hours": 96.0,
+          "status": "pending"
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "valid_at": "2026-11-03T03:00:00Z",
+          "lead_hours": 99.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-10-31T06:00:00Z",
+          "lead_hours": 30.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-10-31T09:00:00Z",
+          "lead_hours": 33.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-10-31T12:00:00Z",
+          "lead_hours": 36.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-10-31T15:00:00Z",
+          "lead_hours": 39.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-10-31T18:00:00Z",
+          "lead_hours": 42.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-10-31T21:00:00Z",
+          "lead_hours": 45.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T00:00:00Z",
+          "lead_hours": 48.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T03:00:00Z",
+          "lead_hours": 51.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T06:00:00Z",
+          "lead_hours": 54.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T09:00:00Z",
+          "lead_hours": 57.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T12:00:00Z",
+          "lead_hours": 60.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T15:00:00Z",
+          "lead_hours": 63.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T18:00:00Z",
+          "lead_hours": 66.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-01T21:00:00Z",
+          "lead_hours": 69.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T00:00:00Z",
+          "lead_hours": 72.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T03:00:00Z",
+          "lead_hours": 75.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T06:00:00Z",
+          "lead_hours": 78.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T09:00:00Z",
+          "lead_hours": 81.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T12:00:00Z",
+          "lead_hours": 84.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T15:00:00Z",
+          "lead_hours": 87.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T18:00:00Z",
+          "lead_hours": 90.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-02T21:00:00Z",
+          "lead_hours": 93.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-03T00:00:00Z",
+          "lead_hours": 96.0,
+          "status": "pending"
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "valid_at": "2026-11-03T03:00:00Z",
+          "lead_hours": 99.0,
+          "status": "pending"
+        }
+      ],
+      "overall": {
+        "planned_count": 144,
+        "pair_count": 0,
+        "pending_count": 144,
+        "exclusions": {},
+        "model_mae_f": null,
+        "model_bias_f": null,
+        "inside_count": 0,
+        "inclusion_fraction": null,
+        "mean_width_f": null,
+        "persistence_pair_count": 0,
+        "missing_persistence_count": 0,
+        "common_model_mae_f": null,
+        "persistence_mae_f": null,
+        "model_minus_persistence_mae_f": null,
+        "weighting": "equal eligible station means",
+        "station_count": 0,
+        "persistence_station_count": 0
+      },
+      "unclassified_lead_count": 0,
+      "stations": [
+        {
+          "city": "Denver",
+          "planned_count": 24,
+          "pair_count": 0,
+          "pending_count": 24,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null
+        },
+        {
+          "city": "Miami",
+          "planned_count": 24,
+          "pair_count": 0,
+          "pending_count": 24,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null
+        },
+        {
+          "city": "Boston",
+          "planned_count": 24,
+          "pair_count": 0,
+          "pending_count": 24,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null
+        },
+        {
+          "city": "Chicago",
+          "planned_count": 24,
+          "pair_count": 0,
+          "pending_count": 24,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null
+        },
+        {
+          "city": "Houston",
+          "planned_count": 24,
+          "pair_count": 0,
+          "pending_count": 24,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null
+        },
+        {
+          "city": "Anchorage",
+          "planned_count": 24,
+          "pair_count": 0,
+          "pending_count": 24,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null
+        }
+      ],
+      "lead_groups": [
+        {
+          "label": "6 to under 24 hours",
+          "planned_count": 0,
+          "pair_count": 0,
+          "pending_count": 0,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null,
+          "weighting": "equal eligible station means",
+          "station_count": 0,
+          "persistence_station_count": 0
+        },
+        {
+          "label": "24 to under 48 hours",
+          "planned_count": 36,
+          "pair_count": 0,
+          "pending_count": 36,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null,
+          "weighting": "equal eligible station means",
+          "station_count": 0,
+          "persistence_station_count": 0
+        },
+        {
+          "label": "48 to 120 hours",
+          "planned_count": 108,
+          "pair_count": 0,
+          "pending_count": 108,
+          "exclusions": {},
+          "model_mae_f": null,
+          "model_bias_f": null,
+          "inside_count": 0,
+          "inclusion_fraction": null,
+          "mean_width_f": null,
+          "persistence_pair_count": 0,
+          "missing_persistence_count": 0,
+          "common_model_mae_f": null,
+          "persistence_mae_f": null,
+          "model_minus_persistence_mae_f": null,
+          "weighting": "equal eligible station means",
+          "station_count": 0,
+          "persistence_station_count": 0
+        }
+      ],
+      "scope": "Frozen input, same-case persistence comparison. Correlated times and one convenience cohort do not establish calibrated probabilities, regional/seasonal skill or a model ranking."
+    },
+    "outcomes": {
+      "schema": "ventusiq-gefs-regional-outcomes/1",
+      "plan_sha256": "37434c12340aa5564eb3201faab2e386b44224266a354f26c2dae442458005e5",
+      "capture_sha256": "a8aaeca86dbac50dbc6e307e2e732c04c9c40c4906f183e159a8beea887b4e22",
+      "as_of": "2026-10-30T20:03:33.497175Z",
+      "completed_at": "2026-10-30T20:03:33.502185Z",
+      "stations": [
+        {
+          "city": "Denver",
+          "station": "KDEN",
+          "window_start": null,
+          "window_end": null,
+          "pages": [],
+          "complete": false,
+          "error": null
+        },
+        {
+          "city": "Miami",
+          "station": "KMIA",
+          "window_start": null,
+          "window_end": null,
+          "pages": [],
+          "complete": false,
+          "error": null
+        },
+        {
+          "city": "Boston",
+          "station": "KBOS",
+          "window_start": null,
+          "window_end": null,
+          "pages": [],
+          "complete": false,
+          "error": null
+        },
+        {
+          "city": "Chicago",
+          "station": "KORD",
+          "window_start": null,
+          "window_end": null,
+          "pages": [],
+          "complete": false,
+          "error": null
+        },
+        {
+          "city": "Houston",
+          "station": "KIAH",
+          "window_start": null,
+          "window_end": null,
+          "pages": [],
+          "complete": false,
+          "error": null
+        },
+        {
+          "city": "Anchorage",
+          "station": "PANC",
+          "window_start": null,
+          "window_end": null,
+          "pages": [],
+          "complete": false,
+          "error": null
+        }
+      ]
+    },
+    "previous_evaluation_sha256": null,
+    "changed_prior_targets": []
+  },
+  "sha256": "8d5e252b4ebd17d43ad1e2d2a51c2c066daa348170a4c7bd1cc7aeea3f0c7334"
+}

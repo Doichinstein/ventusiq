@@ -1,5 +1,7 @@
 # Optional browser push
 
+Current public behavior: no sign-in is required. A private browser key controls watches and push devices. See [browser ownership](browser-workspaces.md); clearing site storage loses management access but does not unsubscribe push. Disable push first. Older account-specific verification notes below describe the prior architecture.
+
 Hosted My weather includes **Browser push** below persistent watches. Sign in,
 name the device and click **Enable push on this device**. Only this action asks
 for browser notification permission and creates a subscription. Browsing, signing

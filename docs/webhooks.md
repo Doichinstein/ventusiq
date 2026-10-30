@@ -1,10 +1,10 @@
 # Signed watch-change webhooks
 
 The hosted edition can send changes from all your explicitly enrolled watches to
-your own automation. Sign in, add a destination in **My weather → Webhooks**, and
+your own automation. Without signing in, add a destination in **My weather → Webhooks**, and
 confirm that it may receive your watch names, coordinates, event IDs, change titles
 and timestamps. Public browsing never enrolls a destination. The Python and static
-editions do not implement this hosted queue.
+editions do not implement this hosted queue. Management uses a private browser key; see [browser ownership and storage loss](browser-workspaces.md).
 
 Supported HTTPS destinations are Zapier Catch Hook URLs on `hooks.zapier.com`,
 Pipedream HTTP endpoints on `<endpoint>.m.pipedream.net`, and Cloudflare Workers on
@@ -79,7 +79,7 @@ watches and then drains push and webhook queues concurrently; ordinary live aler
 reads can also trigger due work. No second schedule or continuous delivery promise
 is added. Short-lived conditions can occur between checks.
 
-There are two destinations per account and 128 globally, including paused ones.
+There are two destinations per browser and 128 globally, including paused ones.
 Each dispatch considers up to 16 due messages with four workers, a shared
 eight-second transport deadline and 30-second database leases. Interrupted attempts
 count toward the four-attempt limit. Network failures, HTTP 429 and HTTP 5xx retry
@@ -95,7 +95,7 @@ future changes without replaying cancelled ones. Already-sent requests cannot be
 recalled. Browser push quiet hours do not apply to webhooks.
 
 History retains up to 200 deliveries per destination for seven days, pruned during
-dispatch. The dashboard shows the latest 50 across the account and their attempt
+dispatch. The dashboard shows the latest 50 for this browser and their attempt
 records. Deleting a destination removes its secret, URL, deliveries and attempts;
 deleting a watch removes its associated deliveries and attempts. Data already
 received elsewhere remains subject to that receiver's retention policy.
@@ -105,5 +105,5 @@ received elsewhere remains subject to that receiver's retention policy.
 Automated tests use fake transports and an in-memory receiver database. They cover
 signed delivery, duplicate handling, ownership, queue transitions, retries and
 controls. No real external endpoint was enrolled or contacted during development.
-Real sign-in, external delivery and the rendered controls still need user-session
+Real browser ownership, external delivery and the rendered controls still need user-session
 verification; browser automation is blocked by the saved permission setting.

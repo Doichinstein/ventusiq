@@ -1,5 +1,7 @@
 # Account places
 
+Legacy feature: the public dashboard no longer mounts account-place sync or a sign-in link. Places remain device-local. Existing account data stays private; see [the current browser architecture](browser-workspaces.md). The adapter and ownership tests remain for compatibility.
+
 My weather keeps its existing device-local list and adds an optional private
 account list in the hosted edition. Sign in and choose **Use account places** to
 open the account list on each device. Opening it never uploads the device list.

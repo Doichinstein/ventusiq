@@ -1,10 +1,11 @@
 # Persistent watches and private feeds
 
-The hosted edition supports explicitly enrolled, signed-in watches. Public weather
-browsing and device-local places remain available without signing in. Creating a
-watch stores the selected place name, coordinates and chosen rules under the Sites
-user ID. Four watches per account and 64 across this small public deployment are
-enforced in the database. Watches are separate from device-local saved places.
+The hosted edition supports explicitly enrolled watches without signing in.
+Creating a watch stores its name, coordinates and rules under a hashed private
+browser key. Four watches per browser and 64 across this small public deployment
+are enforced in the database. Watches are separate from device-local saved places.
+See [browser ownership](browser-workspaces.md) for isolation, storage-loss and
+legacy-account behavior.
 
 Choose official alert changes and optional sustained wind, precipitation probability,
 high-temperature or low-temperature thresholds, plus any of the six compound rules. Forecast rules ask whether any
@@ -63,7 +64,7 @@ verified values. Never expose raw trusted-header authentication directly to the
 internet. The Python/static editions hide this hosted-only feature and retain their
 existing local places and operator-configured daemon watches.
 
-Core method version: `2026-10-29.1`. Real browser sign-in/rendering verification is
+Core method version: `2026-10-29.1`. Real browser ownership/rendering verification is
 still outstanding; local Worker tests use explicit development identity fixtures.
 
 

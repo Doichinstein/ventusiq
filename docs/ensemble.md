@@ -155,3 +155,47 @@ Local rendered QA: the public Washington test point selected College Park Airpor
 (KCGS), completed the new comparison with 56 missing archive targets, and displayed
 null/unknown errors, collection-time requirements and model-grid distance. No
 browser warning or error was reported. Account testing remains owner-deferred.
+
+
+## First real prospective outcome (October 30, v105)
+
+At 03:30:20 UTC the public comparison produced its first eligible pair at
+39,-77 / College Park Airport (KCGS). The October 29 00 UTC run, snapshot
+`T0BQYQVBY2GZ6P62M66G`, was actually collected October 29 at 20:21:38 UTC,
+6 hours 38 minutes 22 seconds before its October 30 03 UTC target. The model
+lead is separately 27 hours. The 31 retained Celsius members reproduce a
+63.05°F median and 62.15–63.50°F 10th–90th member range.
+
+The nearest station report was at 02:55 UTC, five minutes before the target.
+Its NWS QC V temperature is 12.8°C / 55.04°F. An independent request to the
+[exact official observation](https://api.weather.gov/stations/KCGS/observations/2026-10-30T02:55:00+00:00)
+confirmed its timestamp, unit, quality and temperature. The median warm error is
+8.01°F; the reading is outside the member range. Of 56 candidate times, 55 have
+no eligible captured forecast. The other lead groups retain unknown errors.
+
+The source captures are preserved in
+[evidence](evidence/gefs-first-outcome-2026-10-30.json), alongside the
+[earlier forecast](evidence/gefs-initial-capture-2026-10-29.json) and
+[separately retrieved station record](evidence/gefs-first-outcome-nws-2026-10-30.json).
+JSON whitespace was compacted; values were preserved. Run:
+
+```text
+python scripts/verify-gefs-outcome.py
+node --test tests/ensemble-live-outcome.test.mjs
+```
+
+The Python audit independently converts all 31 raw members and the station
+reading, selects the nearest observation by time, checks capture/lead separation,
+order statistics, errors, inclusion, lead groups and empty-group nulls. It imports
+no application scoring code. The JavaScript regression separately reproduces the
+browser report with the production normalizer and evaluator. Counterfactual tests
+reject a late capture, changed raw member, inconsistent station record, false
+range inclusion and fabricated zero error in an empty group. These are frozen
+artifact checks, not authentication of arbitrary files or a validation of the
+station instrument. The browser displayed the result, provenance row and matching
+JSON export with no captured console errors.
+
+This closes the first nonempty live GEFS comparison gate only. One station/time,
+7.05 km from an uncorrected model cell, cannot establish seasonal skill, calibrated
+coverage, a model ranking or personal exposure. No retrospective forecast was
+loaded to construct this pair. Collection remains on demand.

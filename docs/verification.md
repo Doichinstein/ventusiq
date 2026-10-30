@@ -1,5 +1,27 @@
 # Verification record
 
+## First prospective GEFS outcome — October 30 (v105)
+
+At 03:30:20 UTC the live browser returned one matched time out of 56 targets
+for 39,-77 / KCGS. The October 29 00 UTC model run was captured at 20:21:38 UTC,
+6h 38m 22s before the October 30 03 UTC target. All 31 native members independently
+reproduce median 63.05°F, p10 62.15°F and p90 63.50°F. The nearest NWS report,
+02:55 UTC with QC V, was 12.8°C / 55.04°F, confirmed by a separate official-source
+request. The median error is +8.01°F and the reading misses the member range.
+The 55 absent forecast targets and null empty-group errors remain visible.
+
+The browser export, initial raw provider product and separate observation are
+retained in `docs/evidence/gefs-*.json`; `scripts/verify-gefs-outcome.py` audits
+these without the application's scoring code. Twelve focused JavaScript tests
+and five Python counterfactual audit tests pass. The new production-core regression
+reproduces the complete frozen result. The live metric exposed a crowded label;
+the display now separates the numeric error from its explanation and uses singular
+counts for one time/day/run. Values and exported scoring remain unchanged.
+Public screenshot/export evidence is retained under the external browser QA folder.
+Local browser preview remains denied; the updated public label is checked after
+publication. This closes only the first nonempty live outcome gate, not broader
+accuracy, seasonal performance, calibration or account testing.
+
 ## Native routing HTTP-to-Journey integration — October 30
 
 The retained Sioux Center graph was served through a temporary authenticated

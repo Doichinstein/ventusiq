@@ -9,7 +9,7 @@ paths = [root / name for name in files]
 for directory in ['.github','deploy','weathercommons','tests','scripts','docs','public','app','db','drizzle','lib','worker','vendor']:
     paths.extend(p for p in (root / directory).rglob('*') if p.is_file()
                  and '__pycache__' not in p.parts and p.suffix not in ('.pyc','.zip')
-                 and p.name != 'source.zip')
+                 and p.name != 'source.zip' and not p.is_relative_to(root / 'public/generated'))
 destination = root / 'public/source.zip'
 with ZipFile(destination,'w',ZIP_DEFLATED,strict_timestamps=False) as archive:
     for path in sorted(set(paths)):

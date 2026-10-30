@@ -1,5 +1,23 @@
 # Verification record
 
+## Hosted dashboard startup bundle — October 30 (v109)
+
+The production build now bundles the 38 feature entry modules and their shared
+dependencies into one content-hashed browser asset. The original 85-module graph
+measures 233,660 bytes when its files are gzipped separately; the single bundle
+measures 144,298 gzip bytes, a 38.2% reduction. Classic scripts and all weather/data
+collection behavior remain unchanged. These are local build measurements, not
+a cold-network timing benchmark or proof that all map boundaries load faster.
+
+Two focused tests execute a shared-dependency fixture and verify initialization
+order/state, source preservation, content-hash changes, both HTML delivery paths
+and rejection of unsupported entry tags. The actual production build and asset
+verifier pass: all 38 entry modules remain represented, both the static index and
+Worker route use the optimized URL, and the emitted bytes match their hash.
+Original module sources remain in the Apache-2.0 source download; the Python and
+development editions retain their unbundled paths. See
+[build behavior and reproduction](local-development.md#production-browser-bundle).
+
 ## First prospective CAMS PM2.5 outcome — October 30 (v108)
 
 Public browser comparison and download passed at 04:10:46 UTC for 39,-77 and

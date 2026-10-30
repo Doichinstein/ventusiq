@@ -54,3 +54,4 @@ yarn-error.log*
 # OS metadata
 .DS_Store
 /public/source.zip
+/public/generated/

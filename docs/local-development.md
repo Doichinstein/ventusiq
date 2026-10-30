@@ -17,6 +17,36 @@ For Vite development, stop the built preview and run `npm run dev` after the sam
 database setup. Both commands use the checkout's `.wrangler/state` persistence.
 The portable development server prints its local URL (normally port 5173).
 
+## Production browser bundle
+
+`npm run build` first runs `scripts/build-dashboard.mjs` using the existing locked
+Vite toolchain. It reads the ordered module tags in `public/index.html`, bundles
+their shared dependency graph once, and writes one content-hashed feature asset
+under the ignored `public/generated/dashboard/` directory. No new package or
+runtime CDN is required. The original classic/deferred scripts retain their order.
+
+The build-only Vite plugin supplies the optimized HTML to both the Worker route
+and `dist/client/index.html`. Development and the Python/static source edition
+continue to use the original module files. Generated HTML and measurements live
+in `.sites-runtime/dashboard/`; generated assets are excluded from the source ZIP.
+Rebuild after editing browser modules; do not hand-edit generated files.
+
+Run `node scripts/check-dashboard-build.mjs` after building to verify that both
+delivery paths reference the emitted asset, that its bytes match its hash, and
+that all entry modules and classic scripts are preserved. CI runs this check on
+Linux and Windows. The bundling tests execute a shared-dependency fixture to
+check initialization order, shared state, changed-content URLs and source
+preservation. Live browser checks remain necessary for the full feature graph.
+
+The first measurement contains 38 feature entry modules and 85 source modules.
+Bundling reduces those 85 JavaScript module requests to one self-contained file.
+Locally gzipping each original file separately totals 233,660 bytes; gzipping the
+bundle totals 144,298 bytes (38.2% less). This excludes the unchanged classic
+scripts, HTML, CSS, fonts, map tiles and data requests. Hosting compression and
+browser caches may differ. It is a payload/request-count result, not a measured
+cold-page-load duration. A changed feature invalidates the whole bundle instead
+of only its individual source module; this is the caching tradeoff.
+
 ## Apply later schema changes
 
 Stop local servers, pull the new source, rebuild, and run `npm run db:local` again.

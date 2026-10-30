@@ -2,7 +2,7 @@
 
 The public dashboard keeps one Leaflet map and tile layer mounted across Live,
 Journey, Rivers, Events and My weather. Switching tabs preserves its viewport.
-Explicitly selecting a new route, gauge or archived event may frame that result.
+Explicitly selecting a new route, gauge or archived event may frame that result. Use Fit overlay to return to a result after exploring another area.
 On wide screens tools scroll beside the sticky map; narrow screens show the map
 above the selected tools. Journey map picking stays within Journey.
 

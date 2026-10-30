@@ -4,7 +4,7 @@ A free, Apache-2.0 weather map and personal planning workspace. A small Python d
 National Weather Service active feed, retains 24 hours of snapshots, and serves a
 responsive map with filters, official alert details, replay, and a change feed.
 
-**My weather** adds device-local saved places, optional private [account places](docs/places-sync.md) across devices, geographic alert matching, a 48-hour
+**My weather** adds device-local saved places without sign-in, geographic alert matching, a 48-hour
 hourly outlook, meaningful alert/forecast changes, optional desktop notifications
 while the page is open, share links, and configurable activity windows. Planning
 checks duration, temperature, sustained wind, gusts and hourly rain probability.
@@ -141,8 +141,7 @@ Public source: https://github.com/Doichinstein/ventusiq
 
 The dashboard uses VentusIQ's original wordmark, cloud icon, current terminal
 colors, and Geist typography. The public repository is `ventusiq`; the Python
-distribution and command remain named `weather-commons`. Public browsing requires no account or paid data keys; optional hosted watches
-require sign-in. The Python edition has no runtime dependencies. Python 3.11 or newer is required.
+distribution and command remain named `weather-commons`. Public browsing requires no account or paid data keys; optional hosted watches use a private browser key with no sign-in. See [browser ownership and persistent maps](docs/browser-workspaces.md). The Python edition has no runtime dependencies. Python 3.11 or newer is required.
 
 ## Run locally
 
@@ -332,7 +331,7 @@ npm run build
 runs them with bounded concurrency, then runs the Python daemon tests and
 TypeScript checking. It stops with a nonzero exit code on any failure. Set
 `PYTHON` to a Python executable path if it is not available under the default
-command. Tests use fixtures and temporary databases; real account sign-in,
+command. Tests use fixtures and temporary databases; real browser ownership flows,
 notification delivery, live provider behavior and rendered layouts need separate
 verification.
 
@@ -370,7 +369,7 @@ extensions are permitted under its terms; preserve required notices. See NOTICE.
   copies from VentusIQ's existing assets, under SIL OFL 1.1. Font licenses are
   retained in `public/assets/fonts/`. No external font requests are made. Visitors
   contact NWS (static mode) and the tile service. The hosted edition also offers
-  optional account features; ordinary public weather browsing does not require sign-in.
+  optional server watches, push and webhooks controlled by a private browser key. No public feature requires account sign-in.
 
 
 Historical context: the hosted My weather briefing includes [comparable historical days](docs/historical-analogs.md), using ten years of NASA POWER grid data, explicit similarity limits, following-day distributions, chronological baseline tests and a reproducible evidence export. These are historical comparisons, not calibrated forecasts.

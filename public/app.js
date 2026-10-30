@@ -47,6 +47,7 @@ L.tileLayer(config.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
   maxZoom: 19, attribution: config.tileAttribution || '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
 }).addTo(map).on('tileerror', () => { $('map-subtitle').textContent = 'Basemap unavailable · alert areas still shown'; });
 L.control.zoom({position: 'bottomright'}).addTo(map);
+const overlayFits = new Map();
 let workspaceMode = 'live', pendingMapPick = null;
 let alertLayer = L.geoJSON([], {style: styleFeature, onEachFeature: bindFeature}).addTo(map);
 let geometryAvailable = 0;
@@ -484,6 +485,7 @@ document.addEventListener('keydown', e => {
 });
 window.addEventListener('resize', () => map.invalidateSize());
 // Small public interface keeps personal planning independent of map/replay state.
+$('workspace-map-fit').onclick = () => overlayFits.get(workspaceMode)?.();
 window.WeatherMap = {
   instance: map,
   goLive: returnLive,
@@ -496,7 +498,7 @@ window.WeatherMap = {
       if (pendingMapPick) map.off('click', pendingMapPick);
       pendingMapPick = null; $('map-notice').hidden = true; closeDetail(); map.closePopup();
     }
-    workspaceMode = mode; $('workspace').dataset.view = mode;
+    workspaceMode = mode; $('workspace-map-fit').disabled = !overlayFits.has(mode); $('workspace').dataset.view = mode;
     const live = mode === 'live';
     if (live && $('layer-alerts').checked) alertLayer.addTo(map); else map.removeLayer(alertLayer);
     $('workspace-map-heading').hidden = live;
@@ -506,6 +508,7 @@ window.WeatherMap = {
     window.WeatherWatershed?.setVisible?.(live);
     requestAnimationFrame(() => map.invalidateSize());
   },
+  setOverlayFit: (mode, callback) => { if(callback)overlayFits.set(mode,callback);else overlayFits.delete(mode);if(mode===workspaceMode)$('workspace-map-fit').disabled=!callback; },
   overlayStatus: text => { $('workspace-map-status').textContent = text; },
   refresh,
   focus: (lat,lon) => map.setView([lat,lon],9),

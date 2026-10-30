@@ -1,73 +1,146 @@
-import {renderRouteRoads} from './journey-roads-ui.mjs';
-import {prepareRoadwork,evaluateRoadwork} from './roadwork-core.mjs';
-import {collectRoadwork,renderRoadwork,roadworkSummary,drawRoadwork} from './journey-roadwork.mjs';
-import {collectJourneySmoke,journeySmokeLimit,smokeValue} from './journey-smoke.mjs';
-import {renderJourneySmoke,smokeJourneySummary} from './journey-smoke-ui.mjs';
-import {journeyStops,applyJourneyStops,journeySampleLabel} from './journey-stops.mjs';
-import {gustLimit,gustEvidence,JOURNEY_METHOD} from './journey-gust.mjs';
-import {departureTime,prepareRouteAlerts,evaluateJourney} from './journey-core.mjs';
-export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
-  const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
-  if(window.WEATHER_CONFIG?.mode!=='hosted'){get('nav-journey').hidden=true;return null;}
-  let generation=0,report=null,selected=0,map=window.WeatherMap.instance,layers=null,abort=null,visible=false;const zoneCache=new Map();
-  const format=(stamp,zone)=>{try{return new Date(stamp).toLocaleString(undefined,{timeZone:zone||'UTC',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch{return new Date(stamp).toISOString();}};
-  const value=(n,suffix)=>n===null?'Unknown':Math.round(n)+suffix;
-  function hide(){visible=false;if(layers)map.removeLayer(layers);get('journey-workspace').hidden=true;get('nav-journey').classList.toggle('nav-active',false);get('nav-journey').setAttribute('aria-pressed','false');}
-  function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);visible=true;window.WeatherMap.setWorkspace?.('journey');if(layers){layers.addTo(map);window.WeatherMap.overlayStatus?.(`${report.departures[selected].rows.length} arrival-time weather samples · selected departure ${format(report.departures[selected].departure)}.`);}get('journey-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;get('nav-map').classList.toggle('nav-active',false);get('nav-map').setAttribute('aria-pressed','false');get('nav-journey').classList.toggle('nav-active',true);get('nav-journey').setAttribute('aria-pressed','true');
-    for(const side of ['from','to','via1','via2','via3']){const select=get('journey-'+side+'-place'),old=select.value,empty=el('option','Choose a saved place…');empty.value='';select.replaceChildren(empty,...(window.WeatherPersonal.places?.()||[]).map(p=>{const o=el('option',p.name);o.value=p.id;return o;}));select.value=old||'';}if(map)window.setTimeout(()=>map.invalidateSize(),0);
-  }
-  async function request(path,signal){const response=await fetcher(path,{signal:signal?AbortSignal.any([signal,AbortSignal.timeout(60000)]):AbortSignal.timeout(60000)}),data=await response.json();if(!response.ok)throw Error(data.error||'Source returned HTTP '+response.status);return data;}
-  function draw(){
-    if(!report)return;const route=report.route,journey=report.departures[selected];
-
-    if(layers)map.removeLayer(layers);layers=L.layerGroup();if(visible)layers.addTo(map);
-    let previous=route.vertices[0].coordinate[0];const coords=route.vertices.map(v=>{const lon=previous+((v.coordinate[0]-previous+540)%360)-180;previous=lon;return [v.coordinate[1],lon];});
-    const line=L.polyline(coords,{color:'#88baff',weight:4}).addTo(layers),origin=coords[0][1];
-    journey.rows.forEach((r,i)=>{const popup=el('div');popup.append(el('strong',`${journeySampleLabel(r,i,journey.rows.length)} · ${format(r.at,r.time_zone)}`),el('p',`${value(r.temperature,'°F')} · wind ${value(r.wind,' mph')} · gust ${value(r.gust,' mph')} · rain chance ${value(r.rain,'%')}`),el('p',r.summary),el('p',r.gust_evidence.reason||'Gust interval: '+format(r.gust_evidence.interval.start)+' – '+format(r.gust_evidence.interval.end)));if(r.smoke)popup.append(el('p','Smoke bracket: '+smokeValue(r.smoke.maximum_ug_m3)+' · '+(r.smoke.reason||'Complete samples')));const lon=origin+((r.lon-origin+540)%360)-180;L.circleMarker([r.lat,lon],{radius:5,color:r.missing?'#e7c579':(r.gust_exceeds||r.smoke?.exceeds)?'#ff8fa3':'#88baff',fillOpacity:1}).addTo(layers).bindPopup(popup);});
-    drawRoadwork(L,layers,journey.roadwork,document);if(visible){map.invalidateSize();map.fitBounds(line.getBounds(),{padding:[25,25],maxZoom:11});window.WeatherMap.overlayStatus?.(`${journey.rows.length} arrival-time weather samples · selected departure ${format(journey.departure)}.`);}
-  }
-  function render(){
-    if(!report)return;const route=report.route,current=report.departures[selected];get('journey-results').hidden=false;get('journey-export').disabled=false;
-    get('journey-route-summary').textContent=`${(route.distance/1000).toFixed(1)} km · about ${Math.round(route.driving_duration/60)} minutes driving + ${Math.round(route.stop_duration/60)} minutes stopped · ${route.sampling.samples.length} weather samples. Largest gap: ${route.sampling.max_gap_km.toFixed(1)} km / ${Math.round(route.sampling.max_gap_minutes)} minutes.`;
-    get('journey-route-note').textContent=`${route.provider||'OSRM / FOSSGIS'}. ${route.stale?'Route refresh delayed. ':''}Route checked ${format(route.checked_at)}. Endpoints snap ${Math.round(route.waypoints[0].snap_distance)} m and ${Math.round(route.waypoints.at(-1).snap_distance)} m to roads. ${route.timing_method}. Weather between sample points and the walk/drive to snapped endpoints is unassessed.${route.sampling.coarse?' This long route has coarser weather sampling.':''}`;
-    renderRouteRoads(document,route,current.departure,format);
-    get('journey-routing-provider').textContent=route.provider||'OSRM / FOSSGIS';
-    get('journey-stop-summary').replaceChildren(...route.stops.map(stop=>{const row=el('p',undefined,'small');row.textContent=`Via ${stop.index}: ${stop.requested.lat.toFixed(4)}, ${stop.requested.lon.toFixed(4)} · snapped ${Math.round(stop.snap_distance)} m to road · ${stop.duration/60} minutes stopped · arrive ${format(Date.parse(current.departure)+stop.arrival_elapsed*1000)} · leave ${format(Date.parse(current.departure)+stop.departure_elapsed*1000)} (UTC).`;return row;}));
-    get('journey-comparisons').replaceChildren(...report.departures.map((d,i)=>{const b=el('button',undefined,'journey-option');b.setAttribute('aria-pressed',String(i===selected));b.append(el('strong',`${i===0?'Chosen departure':'Leave '+(i*2)+' hours later'} · ${format(d.departure,d.rows[0]?.time_zone)}`),el('p',`Arrive ${format(d.arrival,d.rows.at(-1)?.time_zone)}`),el('p',`${d.covered_samples}/${d.total_samples} complete hourly weather samples · ${d.covered_gust_samples}/${d.total_samples} gust samples · ${d.alerts.length} current alert matches`),el('p',`Available sampled peaks: sustained wind ${value(d.max_wind,' mph')} · gust ${value(d.max_gust,' mph')} · highest rain chance ${value(d.max_rain,'%')}`));if(d.gust_limit_mph!==null)b.append(el('p',`${d.gust_exceedance_samples}/${d.covered_gust_samples} available gust samples exceed your ${d.gust_limit_mph} mph limit. ${d.total_samples-d.covered_gust_samples} unknown.`));if(d.smoke_requested)b.append(el('p',smokeJourneySummary(d)));if(d.roadwork)b.append(el('p',roadworkSummary(d.roadwork))); b.onclick=()=>{selected=i;render();};return b;}));
-    const notes=[];if(current.covered_samples<current.total_samples)notes.push('Some weather fields or forecast hours are unavailable. Missing coverage must not be read as favorable weather.');if(current.covered_gust_samples<current.total_samples)notes.push('Gust coverage is incomplete. Available peaks and exceedance counts exclude unknown samples and cannot establish conditions along the entire route.');if(current.alert_collection_stale)notes.push('The active-alert collection is missing or delayed.');if(current.unknown_geometry)notes.push(`${current.unknown_geometry} active alerts lack complete loaded boundaries, so route alert coverage is incomplete.`);
-    notes.push('These are current forecasts and currently issued alerts, not predictions of future warnings. Rain chance is not expected rain duration. A gust-limit exceedance is a sample comparison, not time spent above the limit or a driving-safety judgment. Roadwork context, when requested, is proximity to selected agency geometry; route road/direction, traffic, road-surface and evacuation suitability remain unverified.');if(current.smoke_requested&&current.complete_smoke_samples<current.total_samples)notes.push('Smoke time brackets are incomplete or delayed; missing values cannot be treated as clear air.');get('journey-coverage').textContent=notes.join(' ');renderJourneySmoke(document,current,format);renderRoadwork(document,current.roadwork,format);
-    get('journey-weather-body').replaceChildren(...current.rows.map((r,i)=>{const tr=el('tr');for(const v of [journeySampleLabel(r,i,current.rows.length),`${r.lat.toFixed(4)}, ${r.lon.toFixed(4)}`,format(r.at,r.time_zone),value(r.temperature,'°F'),value(r.wind,' mph'),value(r.gust,' mph'),value(r.rain,'%'),[r.error||r.summary,r.gust_evidence.reason].filter(Boolean).join(' · ')])tr.append(el('td',v));const source=el('td');if(String(r.source_url).startsWith('https://api.weather.gov/gridpoints/')){const a=el('a','NWS forecast ↗');a.href=r.source_url;a.target='_blank';a.rel='noopener';source.append(a);}source.append(el('p','Checked '+(r.forecast_checked_at?format(r.forecast_checked_at):'unavailable'),'small'),el('p','Issued '+(r.forecast_issued_at?format(r.forecast_issued_at):'unavailable'),'small'));const g=r.gust_evidence;if(String(g.source_url).startsWith('https://api.weather.gov/gridpoints/')){const a=el('a','NWS gust grid ↗');a.href=g.source_url;a.target='_blank';a.rel='noopener';source.append(a);}source.append(el('p','Gust checked '+(g.checked_at?format(g.checked_at):'unavailable'),'small'),el('p','Gust issued '+(g.issued_at?format(g.issued_at):'unavailable'),'small'));if(g.interval)source.append(el('p','Gust valid '+format(g.interval.start)+' – '+format(g.interval.end),'small'));tr.append(source);return tr;}));
-    const alerts=current.alerts.map(a=>{const card=el('article',undefined,'plan-window');card.append(el('strong',a.event),el('p',`${a.severity||'Unknown severity'} · ${a.coverage}${a.time_unknown?' · alert timing unavailable':''}`));for(const [start,end] of a.spans)card.append(el('p',`Route overlap ${format(start)} – ${format(end)}`));if(a.instruction)card.append(el('p',a.instruction,'official-instructions'));const link=el('a','Official alert ↗');link.href=String(a.id).startsWith('https://api.weather.gov/alerts/')?a.id:'https://www.weather.gov/';link.target='_blank';link.rel='noopener';card.append(link);return card;});
-    get('journey-alerts').replaceChildren(...(alerts.length?alerts:[el('p','No time-overlapping alerts found in the evaluated boundaries. Review the coverage notes above.')]));get('journey-evaluated').textContent=`Evaluated ${format(report.evaluated_at)} · alert collection ${current.alert_checked_at?format(current.alert_checked_at):'unavailable'}. Comparisons are snapshots; use Compare journey again to refresh.`;draw();
-  }
-  async function run(){
-    const gen=++generation;if(abort)abort.abort();abort=new AbortController();const signal=abort.signal;report=null;if(layers)map.removeLayer(layers);layers=null;get('journey-results').hidden=true;get('journey-export').disabled=true;get('journey-submit').disabled=true;
-    try{
-      const roadworkIds=['md','ia','wa'].filter(id=>get('journey-roadwork-'+id).checked),smokeRequested=!!get('journey-smoke-enabled').checked,smokeCeiling=smokeRequested?journeySmokeLimit(get('journey-smoke-limit').value):null,ceiling=gustLimit(get('journey-gust-limit').value),departure=departureTime(get('journey-departure').value,clock()),params=new URLSearchParams();for(const [param,id] of [['fromLat','from-lat'],['fromLon','from-lon'],['toLat','to-lat'],['toLon','to-lon']])params.set(param,get('journey-'+id).value);
-      const via=journeyStops(['via1','via2','via3'].map(side=>({lat:get('journey-'+side+'-lat').value,lon:get('journey-'+side+'-lon').value,minutes:get('journey-'+side+'-minutes').value})).filter(p=>String(p.lat).trim()!==''||String(p.lon).trim()!==''||Number(p.minutes)!==0));
-      if(via.length)params.set('via',JSON.stringify(via.map(({lat,lon})=>({lat,lon}))));
-      get('journey-status').textContent='Finding a road route…';const baseRoute=await request('/api/journey/route?'+params,signal);if(gen!==generation)return;const route=applyJourneyStops(baseRoute,via);
-      const samples=route.sampling.samples,forecasts=new Array(samples.length),grids=new Array(samples.length),gridRequests=new Map(),forecastRequests=new Map();let next=0,done=0;
-      const work=async()=>{while(next<samples.length&&gen===generation){const i=next++,s=samples[i];try{const url=`/api/forecast?lat=${s.lat.toFixed(4)}&lon=${s.lon.toFixed(4)}`;if(!forecastRequests.has(url))forecastRequests.set(url,request(url,signal));forecasts[i]=await forecastRequests.get(url);}catch(error){forecasts[i]={error:error.message};}if(gen!==generation)return;const gridURL=forecasts[i]?.metadata?.properties?.forecastGridData;if(gridURL){if(!gridRequests.has(gridURL))gridRequests.set(gridURL,request(`/api/planning/grid?lat=${s.lat.toFixed(4)}&lon=${s.lon.toFixed(4)}`,signal).then(gustEvidence).catch(error=>({error:error.message})));grids[i]=await gridRequests.get(gridURL);}else grids[i]={error:'No NWS grid mapping for this sample'};if(gen!==generation)return;get('journey-status').textContent=`Reading hourly weather and gusts along the route: ${++done}/${samples.length} locations…`;}};
-      const roadworkPromise=collectRoadwork(roadworkIds,request,signal);const alertPromise=request('/api/alerts',signal).catch(error=>({features:[],error:error.message,collected_at:null}));await Promise.all([work(),work(),work()]);const alerts=await alertPromise;if(gen!==generation)return;
-      const smoke=smokeRequested?await collectJourneySmoke(samples,request,{signal,onProgress:(done,total)=>{if(gen===generation)get('journey-status').textContent=`Reading smoke forecasts: ${done}/${total} locations…`;}}):[];if(gen!==generation)return;
-      // Prioritize alert zones named by route-point metadata, while reusing the live map's cache.
-      const pointZones=new Set(forecasts.flatMap(f=>{const p=f?.metadata?.properties||{};return [p.forecastZone,p.county,p.fireWeatherZone].filter(Boolean);}));
-      const zones=[...new Set(alerts.features.filter(f=>!f.geometry).flatMap(f=>f.properties.affectedZones||[]))].filter(z=>pointZones.has(z)&&/^https:\/\/api\.weather\.gov\/zones\/(county|forecast|fire|coastal|offshore)\/\w{6}$/.test(z)&&!zoneCache.has(z)&&!window.WeatherMap.zoneGeometry?.(z)).slice(0,75);
-      let zoneNext=0;const zoneWork=async()=>{while(zoneNext<zones.length&&gen===generation){const z=zones[zoneNext++];get('journey-status').textContent=`Loading alert boundaries near route samples: ${zoneNext}/${zones.length}…`;try{const body=await request('/api'+new URL(z).pathname,signal);if(body.geometry)zoneCache.set(z,body.geometry);}catch{ /* Missing boundaries remain explicit in the result. */ }}};await Promise.all([zoneWork(),zoneWork(),zoneWork()]);if(gen!==generation)return;
-      const features=alerts.features.map(f=>{if(f.geometry)return {...f,coverage:'Alert polygon',coverage_complete:true};const zones=f.properties.affectedZones||[],geometries=zones.map(z=>zoneCache.get(z)||window.WeatherMap.zoneGeometry?.(z)).filter(Boolean);return {...f,geometry:geometries.length?{type:'GeometryCollection',geometries}:null,coverage:'Official zone coverage',coverage_complete:zones.length>0&&geometries.length===zones.length};});
-      const roadwork=await roadworkPromise;if(gen!==generation)return;const preparedRoadwork=roadworkIds.length?prepareRoadwork(route,roadwork):null;const prepared=prepareRouteAlerts(route,features),evaluated=clock();report={method_version:JOURNEY_METHOD,route,sources:{hourly:forecasts,gust:grids,smoke,roadwork},departures:[0,2,4].map(hours=>({...evaluateJourney(route,samples,forecasts,prepared,departure+hours*3600000,{now:evaluated,alertCheckedAt:alerts.collected_at,grids,gustCeiling:ceiling,smoke,smokeRequested,smokeCeiling}),roadwork:preparedRoadwork?evaluateRoadwork(preparedRoadwork,departure+hours*3600000,evaluated):null})),evaluated_at:new Date(evaluated).toISOString(),selected_departure:0,alert_error:alerts.error||null,scope:'Estimated driving route, sampled NWS hourly weather and gust intervals, optional RAP smoke brackets, available current alert boundaries and selected agency work-zone proximity; no verified route road/direction match or navigation'};selected=0;render();get('journey-status').textContent='Three departure times compared. Select a card to inspect its arrival-time weather and alert overlaps.';
-    }catch(error){if(gen===generation)get('journey-status').textContent='Journey unavailable: '+error.message;}finally{if(gen===generation)get('journey-submit').disabled=false;}
-  }
-  get('journey-smoke-enabled').onchange=()=>{get('journey-smoke-limit').disabled=!get('journey-smoke-enabled').checked;};
-  get('nav-journey').onclick=show;get('journey-form').onsubmit=e=>{e.preventDefault();run();};get('journey-departure').value=new Date(Math.ceil((clock()+3600000)/60000)*60000).toISOString().slice(0,16)+'Z';
-  for(const side of ['from','to','via1','via2','via3']){
-    get('journey-'+side+'-place').onchange=()=>{const p=window.WeatherPersonal.places?.().find(p=>p.id===get('journey-'+side+'-place').value);if(p){get('journey-'+side+'-lat').value=p.lat;get('journey-'+side+'-lon').value=p.lon;}};
-    get('journey-'+side+'-map').onclick=()=>{show();get('map-notice').hidden=false;get('map-notice').textContent='Click a road location for your journey '+(side==='from'?'start':side==='to'?'destination':side.replace('via','via '))+'.';window.WeatherMap.pick((lat,lon)=>{get('journey-'+side+'-lat').value=lat.toFixed(4);get('journey-'+side+'-lon').value=lon.toFixed(4);show();});};
-  }
-  for(const side of ['via1','via2','via3'])get('journey-'+side+'-clear').onclick=()=>{get('journey-'+side+'-lat').value='';get('journey-'+side+'-lon').value='';get('journey-'+side+'-minutes').value='0';get('journey-'+side+'-place').value='';};
-  get('journey-example').onclick=()=>{for(const [id,v] of [['via1-lat',''],['via1-lon',''],['via1-minutes',0],['via2-lat',''],['via2-lon',''],['via2-minutes',0],['via3-lat',''],['via3-lon',''],['via3-minutes',0],['from-lat',38.8977],['from-lon',-77.0365],['to-lat',39.2904],['to-lon',-76.6122]])get('journey-'+id).value=v;};
-  get('journey-export').onclick=()=>{if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify({...report,selected_departure:selected},null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-journey.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherJourney={show,hide};return {show,hide,run};
-}
-if(typeof window!=='undefined'){const start=()=>mountJourney({document,window,L:window.L});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}
+import {renderRouteRoads} from './journey-roads-ui.mjs';
+
+import {prepareRoadwork,evaluateRoadwork} from './roadwork-core.mjs';
+
+import {collectRoadwork,renderRoadwork,roadworkSummary,drawRoadwork} from './journey-roadwork.mjs';
+
+import {collectJourneySmoke,journeySmokeLimit,smokeValue} from './journey-smoke.mjs';
+
+import {renderJourneySmoke,smokeJourneySummary} from './journey-smoke-ui.mjs';
+
+import {journeyStops,applyJourneyStops,journeySampleLabel} from './journey-stops.mjs';
+
+import {gustLimit,gustEvidence,JOURNEY_METHOD} from './journey-gust.mjs';
+
+import {departureTime,prepareRouteAlerts,evaluateJourney} from './journey-core.mjs';
+
+export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
+
+  const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
+
+  if(window.WEATHER_CONFIG?.mode!=='hosted'){get('nav-journey').hidden=true;return null;}
+
+  let generation=0,report=null,selected=0,map=window.WeatherMap.instance,layers=null,abort=null,visible=false;const zoneCache=new Map();
+
+  const format=(stamp,zone)=>{try{return new Date(stamp).toLocaleString(undefined,{timeZone:zone||'UTC',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch{return new Date(stamp).toISOString();}};
+
+  const value=(n,suffix)=>n===null?'Unknown':Math.round(n)+suffix;
+
+  function hide(){visible=false;if(layers)map.removeLayer(layers);get('journey-workspace').hidden=true;get('nav-journey').classList.toggle('nav-active',false);get('nav-journey').setAttribute('aria-pressed','false');}
+
+  function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);visible=true;window.WeatherMap.setWorkspace?.('journey');if(layers){layers.addTo(map);window.WeatherMap.overlayStatus?.(`${report.departures[selected].rows.length} arrival-time weather samples · selected departure ${format(report.departures[selected].departure)}.`);}get('journey-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;get('nav-map').classList.toggle('nav-active',false);get('nav-map').setAttribute('aria-pressed','false');get('nav-journey').classList.toggle('nav-active',true);get('nav-journey').setAttribute('aria-pressed','true');
+
+    for(const side of ['from','to','via1','via2','via3']){const select=get('journey-'+side+'-place'),old=select.value,empty=el('option','Choose a saved place…');empty.value='';select.replaceChildren(empty,...(window.WeatherPersonal.places?.()||[]).map(p=>{const o=el('option',p.name);o.value=p.id;return o;}));select.value=old||'';}if(map)window.setTimeout(()=>map.invalidateSize(),0);
+
+  }
+
+  async function request(path,signal){const response=await fetcher(path,{signal:signal?AbortSignal.any([signal,AbortSignal.timeout(60000)]):AbortSignal.timeout(60000)}),data=await response.json();if(!response.ok)throw Error(data.error||'Source returned HTTP '+response.status);return data;}
+
+  function draw(){
+
+    if(!report)return;const route=report.route,journey=report.departures[selected];
+
+
+
+    if(layers)map.removeLayer(layers);layers=L.layerGroup();if(visible)layers.addTo(map);
+
+    let previous=route.vertices[0].coordinate[0];const coords=route.vertices.map(v=>{const lon=previous+((v.coordinate[0]-previous+540)%360)-180;previous=lon;return [v.coordinate[1],lon];});
+
+    const line=L.polyline(coords,{color:'#88baff',weight:4}).addTo(layers),origin=coords[0][1];
+
+    journey.rows.forEach((r,i)=>{const popup=el('div');popup.append(el('strong',`${journeySampleLabel(r,i,journey.rows.length)} · ${format(r.at,r.time_zone)}`),el('p',`${value(r.temperature,'°F')} · wind ${value(r.wind,' mph')} · gust ${value(r.gust,' mph')} · rain chance ${value(r.rain,'%')}`),el('p',r.summary),el('p',r.gust_evidence.reason||'Gust interval: '+format(r.gust_evidence.interval.start)+' – '+format(r.gust_evidence.interval.end)));if(r.smoke)popup.append(el('p','Smoke bracket: '+smokeValue(r.smoke.maximum_ug_m3)+' · '+(r.smoke.reason||'Complete samples')));const lon=origin+((r.lon-origin+540)%360)-180;L.circleMarker([r.lat,lon],{radius:5,color:r.missing?'#e7c579':(r.gust_exceeds||r.smoke?.exceeds)?'#ff8fa3':'#88baff',fillOpacity:1}).addTo(layers).bindPopup(popup);});
+
+    drawRoadwork(L,layers,journey.roadwork,document);window.WeatherMap.setOverlayFit?.('journey',()=>map.fitBounds(line.getBounds(),{padding:[25,25],maxZoom:11}));if(visible){map.invalidateSize();map.fitBounds(line.getBounds(),{padding:[25,25],maxZoom:11});window.WeatherMap.overlayStatus?.(`${journey.rows.length} arrival-time weather samples · selected departure ${format(journey.departure)}.`);}
+
+  }
+
+  function render(){
+
+    if(!report)return;const route=report.route,current=report.departures[selected];get('journey-results').hidden=false;get('journey-export').disabled=false;
+
+    get('journey-route-summary').textContent=`${(route.distance/1000).toFixed(1)} km · about ${Math.round(route.driving_duration/60)} minutes driving + ${Math.round(route.stop_duration/60)} minutes stopped · ${route.sampling.samples.length} weather samples. Largest gap: ${route.sampling.max_gap_km.toFixed(1)} km / ${Math.round(route.sampling.max_gap_minutes)} minutes.`;
+
+    get('journey-route-note').textContent=`${route.provider||'OSRM / FOSSGIS'}. ${route.stale?'Route refresh delayed. ':''}Route checked ${format(route.checked_at)}. Endpoints snap ${Math.round(route.waypoints[0].snap_distance)} m and ${Math.round(route.waypoints.at(-1).snap_distance)} m to roads. ${route.timing_method}. Weather between sample points and the walk/drive to snapped endpoints is unassessed.${route.sampling.coarse?' This long route has coarser weather sampling.':''}`;
+
+    renderRouteRoads(document,route,current.departure,format);
+
+    get('journey-routing-provider').textContent=route.provider||'OSRM / FOSSGIS';
+
+    get('journey-stop-summary').replaceChildren(...route.stops.map(stop=>{const row=el('p',undefined,'small');row.textContent=`Via ${stop.index}: ${stop.requested.lat.toFixed(4)}, ${stop.requested.lon.toFixed(4)} · snapped ${Math.round(stop.snap_distance)} m to road · ${stop.duration/60} minutes stopped · arrive ${format(Date.parse(current.departure)+stop.arrival_elapsed*1000)} · leave ${format(Date.parse(current.departure)+stop.departure_elapsed*1000)} (UTC).`;return row;}));
+
+    get('journey-comparisons').replaceChildren(...report.departures.map((d,i)=>{const b=el('button',undefined,'journey-option');b.setAttribute('aria-pressed',String(i===selected));b.append(el('strong',`${i===0?'Chosen departure':'Leave '+(i*2)+' hours later'} · ${format(d.departure,d.rows[0]?.time_zone)}`),el('p',`Arrive ${format(d.arrival,d.rows.at(-1)?.time_zone)}`),el('p',`${d.covered_samples}/${d.total_samples} complete hourly weather samples · ${d.covered_gust_samples}/${d.total_samples} gust samples · ${d.alerts.length} current alert matches`),el('p',`Available sampled peaks: sustained wind ${value(d.max_wind,' mph')} · gust ${value(d.max_gust,' mph')} · highest rain chance ${value(d.max_rain,'%')}`));if(d.gust_limit_mph!==null)b.append(el('p',`${d.gust_exceedance_samples}/${d.covered_gust_samples} available gust samples exceed your ${d.gust_limit_mph} mph limit. ${d.total_samples-d.covered_gust_samples} unknown.`));if(d.smoke_requested)b.append(el('p',smokeJourneySummary(d)));if(d.roadwork)b.append(el('p',roadworkSummary(d.roadwork))); b.onclick=()=>{selected=i;render();};return b;}));
+
+    const notes=[];if(current.covered_samples<current.total_samples)notes.push('Some weather fields or forecast hours are unavailable. Missing coverage must not be read as favorable weather.');if(current.covered_gust_samples<current.total_samples)notes.push('Gust coverage is incomplete. Available peaks and exceedance counts exclude unknown samples and cannot establish conditions along the entire route.');if(current.alert_collection_stale)notes.push('The active-alert collection is missing or delayed.');if(current.unknown_geometry)notes.push(`${current.unknown_geometry} active alerts lack complete loaded boundaries, so route alert coverage is incomplete.`);
+
+    notes.push('These are current forecasts and currently issued alerts, not predictions of future warnings. Rain chance is not expected rain duration. A gust-limit exceedance is a sample comparison, not time spent above the limit or a driving-safety judgment. Roadwork context, when requested, is proximity to selected agency geometry; route road/direction, traffic, road-surface and evacuation suitability remain unverified.');if(current.smoke_requested&&current.complete_smoke_samples<current.total_samples)notes.push('Smoke time brackets are incomplete or delayed; missing values cannot be treated as clear air.');get('journey-coverage').textContent=notes.join(' ');renderJourneySmoke(document,current,format);renderRoadwork(document,current.roadwork,format);
+
+    get('journey-weather-body').replaceChildren(...current.rows.map((r,i)=>{const tr=el('tr');for(const v of [journeySampleLabel(r,i,current.rows.length),`${r.lat.toFixed(4)}, ${r.lon.toFixed(4)}`,format(r.at,r.time_zone),value(r.temperature,'°F'),value(r.wind,' mph'),value(r.gust,' mph'),value(r.rain,'%'),[r.error||r.summary,r.gust_evidence.reason].filter(Boolean).join(' · ')])tr.append(el('td',v));const source=el('td');if(String(r.source_url).startsWith('https://api.weather.gov/gridpoints/')){const a=el('a','NWS forecast ↗');a.href=r.source_url;a.target='_blank';a.rel='noopener';source.append(a);}source.append(el('p','Checked '+(r.forecast_checked_at?format(r.forecast_checked_at):'unavailable'),'small'),el('p','Issued '+(r.forecast_issued_at?format(r.forecast_issued_at):'unavailable'),'small'));const g=r.gust_evidence;if(String(g.source_url).startsWith('https://api.weather.gov/gridpoints/')){const a=el('a','NWS gust grid ↗');a.href=g.source_url;a.target='_blank';a.rel='noopener';source.append(a);}source.append(el('p','Gust checked '+(g.checked_at?format(g.checked_at):'unavailable'),'small'),el('p','Gust issued '+(g.issued_at?format(g.issued_at):'unavailable'),'small'));if(g.interval)source.append(el('p','Gust valid '+format(g.interval.start)+' – '+format(g.interval.end),'small'));tr.append(source);return tr;}));
+
+    const alerts=current.alerts.map(a=>{const card=el('article',undefined,'plan-window');card.append(el('strong',a.event),el('p',`${a.severity||'Unknown severity'} · ${a.coverage}${a.time_unknown?' · alert timing unavailable':''}`));for(const [start,end] of a.spans)card.append(el('p',`Route overlap ${format(start)} – ${format(end)}`));if(a.instruction)card.append(el('p',a.instruction,'official-instructions'));const link=el('a','Official alert ↗');link.href=String(a.id).startsWith('https://api.weather.gov/alerts/')?a.id:'https://www.weather.gov/';link.target='_blank';link.rel='noopener';card.append(link);return card;});
+
+    get('journey-alerts').replaceChildren(...(alerts.length?alerts:[el('p','No time-overlapping alerts found in the evaluated boundaries. Review the coverage notes above.')]));get('journey-evaluated').textContent=`Evaluated ${format(report.evaluated_at)} · alert collection ${current.alert_checked_at?format(current.alert_checked_at):'unavailable'}. Comparisons are snapshots; use Compare journey again to refresh.`;draw();
+
+  }
+
+  async function run(){
+
+    const gen=++generation;if(abort)abort.abort();abort=new AbortController();const signal=abort.signal;report=null;window.WeatherMap.setOverlayFit?.('journey',null);if(layers)map.removeLayer(layers);layers=null;get('journey-results').hidden=true;get('journey-export').disabled=true;get('journey-submit').disabled=true;
+
+    try{
+
+      const roadworkIds=['md','ia','wa'].filter(id=>get('journey-roadwork-'+id).checked),smokeRequested=!!get('journey-smoke-enabled').checked,smokeCeiling=smokeRequested?journeySmokeLimit(get('journey-smoke-limit').value):null,ceiling=gustLimit(get('journey-gust-limit').value),departure=departureTime(get('journey-departure').value,clock()),params=new URLSearchParams();for(const [param,id] of [['fromLat','from-lat'],['fromLon','from-lon'],['toLat','to-lat'],['toLon','to-lon']])params.set(param,get('journey-'+id).value);
+
+      const via=journeyStops(['via1','via2','via3'].map(side=>({lat:get('journey-'+side+'-lat').value,lon:get('journey-'+side+'-lon').value,minutes:get('journey-'+side+'-minutes').value})).filter(p=>String(p.lat).trim()!==''||String(p.lon).trim()!==''||Number(p.minutes)!==0));
+
+      if(via.length)params.set('via',JSON.stringify(via.map(({lat,lon})=>({lat,lon}))));
+
+      get('journey-status').textContent='Finding a road route…';const baseRoute=await request('/api/journey/route?'+params,signal);if(gen!==generation)return;const route=applyJourneyStops(baseRoute,via);
+
+      const samples=route.sampling.samples,forecasts=new Array(samples.length),grids=new Array(samples.length),gridRequests=new Map(),forecastRequests=new Map();let next=0,done=0;
+
+      const work=async()=>{while(next<samples.length&&gen===generation){const i=next++,s=samples[i];try{const url=`/api/forecast?lat=${s.lat.toFixed(4)}&lon=${s.lon.toFixed(4)}`;if(!forecastRequests.has(url))forecastRequests.set(url,request(url,signal));forecasts[i]=await forecastRequests.get(url);}catch(error){forecasts[i]={error:error.message};}if(gen!==generation)return;const gridURL=forecasts[i]?.metadata?.properties?.forecastGridData;if(gridURL){if(!gridRequests.has(gridURL))gridRequests.set(gridURL,request(`/api/planning/grid?lat=${s.lat.toFixed(4)}&lon=${s.lon.toFixed(4)}`,signal).then(gustEvidence).catch(error=>({error:error.message})));grids[i]=await gridRequests.get(gridURL);}else grids[i]={error:'No NWS grid mapping for this sample'};if(gen!==generation)return;get('journey-status').textContent=`Reading hourly weather and gusts along the route: ${++done}/${samples.length} locations…`;}};
+
+      const roadworkPromise=collectRoadwork(roadworkIds,request,signal);const alertPromise=request('/api/alerts',signal).catch(error=>({features:[],error:error.message,collected_at:null}));await Promise.all([work(),work(),work()]);const alerts=await alertPromise;if(gen!==generation)return;
+
+      const smoke=smokeRequested?await collectJourneySmoke(samples,request,{signal,onProgress:(done,total)=>{if(gen===generation)get('journey-status').textContent=`Reading smoke forecasts: ${done}/${total} locations…`;}}):[];if(gen!==generation)return;
+
+      // Prioritize alert zones named by route-point metadata, while reusing the live map's cache.
+
+      const pointZones=new Set(forecasts.flatMap(f=>{const p=f?.metadata?.properties||{};return [p.forecastZone,p.county,p.fireWeatherZone].filter(Boolean);}));
+
+      const zones=[...new Set(alerts.features.filter(f=>!f.geometry).flatMap(f=>f.properties.affectedZones||[]))].filter(z=>pointZones.has(z)&&/^https:\/\/api\.weather\.gov\/zones\/(county|forecast|fire|coastal|offshore)\/\w{6}$/.test(z)&&!zoneCache.has(z)&&!window.WeatherMap.zoneGeometry?.(z)).slice(0,75);
+
+      let zoneNext=0;const zoneWork=async()=>{while(zoneNext<zones.length&&gen===generation){const z=zones[zoneNext++];get('journey-status').textContent=`Loading alert boundaries near route samples: ${zoneNext}/${zones.length}…`;try{const body=await request('/api'+new URL(z).pathname,signal);if(body.geometry)zoneCache.set(z,body.geometry);}catch{ /* Missing boundaries remain explicit in the result. */ }}};await Promise.all([zoneWork(),zoneWork(),zoneWork()]);if(gen!==generation)return;
+
+      const features=alerts.features.map(f=>{if(f.geometry)return {...f,coverage:'Alert polygon',coverage_complete:true};const zones=f.properties.affectedZones||[],geometries=zones.map(z=>zoneCache.get(z)||window.WeatherMap.zoneGeometry?.(z)).filter(Boolean);return {...f,geometry:geometries.length?{type:'GeometryCollection',geometries}:null,coverage:'Official zone coverage',coverage_complete:zones.length>0&&geometries.length===zones.length};});
+
+      const roadwork=await roadworkPromise;if(gen!==generation)return;const preparedRoadwork=roadworkIds.length?prepareRoadwork(route,roadwork):null;const prepared=prepareRouteAlerts(route,features),evaluated=clock();report={method_version:JOURNEY_METHOD,route,sources:{hourly:forecasts,gust:grids,smoke,roadwork},departures:[0,2,4].map(hours=>({...evaluateJourney(route,samples,forecasts,prepared,departure+hours*3600000,{now:evaluated,alertCheckedAt:alerts.collected_at,grids,gustCeiling:ceiling,smoke,smokeRequested,smokeCeiling}),roadwork:preparedRoadwork?evaluateRoadwork(preparedRoadwork,departure+hours*3600000,evaluated):null})),evaluated_at:new Date(evaluated).toISOString(),selected_departure:0,alert_error:alerts.error||null,scope:'Estimated driving route, sampled NWS hourly weather and gust intervals, optional RAP smoke brackets, available current alert boundaries and selected agency work-zone proximity; no verified route road/direction match or navigation'};selected=0;render();get('journey-status').textContent='Three departure times compared. Select a card to inspect its arrival-time weather and alert overlaps.';
+
+    }catch(error){if(gen===generation)get('journey-status').textContent='Journey unavailable: '+error.message;}finally{if(gen===generation)get('journey-submit').disabled=false;}
+
+  }
+
+  get('journey-smoke-enabled').onchange=()=>{get('journey-smoke-limit').disabled=!get('journey-smoke-enabled').checked;};
+
+  get('nav-journey').onclick=show;get('journey-form').onsubmit=e=>{e.preventDefault();run();};get('journey-departure').value=new Date(Math.ceil((clock()+3600000)/60000)*60000).toISOString().slice(0,16)+'Z';
+
+  for(const side of ['from','to','via1','via2','via3']){
+
+    get('journey-'+side+'-place').onchange=()=>{const p=window.WeatherPersonal.places?.().find(p=>p.id===get('journey-'+side+'-place').value);if(p){get('journey-'+side+'-lat').value=p.lat;get('journey-'+side+'-lon').value=p.lon;}};
+
+    get('journey-'+side+'-map').onclick=()=>{show();get('map-notice').hidden=false;get('map-notice').textContent='Click a road location for your journey '+(side==='from'?'start':side==='to'?'destination':side.replace('via','via '))+'.';window.WeatherMap.pick((lat,lon)=>{get('journey-'+side+'-lat').value=lat.toFixed(4);get('journey-'+side+'-lon').value=lon.toFixed(4);show();});};
+
+  }
+
+  for(const side of ['via1','via2','via3'])get('journey-'+side+'-clear').onclick=()=>{get('journey-'+side+'-lat').value='';get('journey-'+side+'-lon').value='';get('journey-'+side+'-minutes').value='0';get('journey-'+side+'-place').value='';};
+
+  get('journey-example').onclick=()=>{for(const [id,v] of [['via1-lat',''],['via1-lon',''],['via1-minutes',0],['via2-lat',''],['via2-lon',''],['via2-minutes',0],['via3-lat',''],['via3-lon',''],['via3-minutes',0],['from-lat',38.8977],['from-lon',-77.0365],['to-lat',39.2904],['to-lon',-76.6122]])get('journey-'+id).value=v;};
+
+  get('journey-export').onclick=()=>{if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify({...report,selected_departure:selected},null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-journey.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
+
+  window.WeatherJourney={show,hide};return {show,hide,run};
+
+}
+
+if(typeof window!=='undefined'){const start=()=>mountJourney({document,window,L:window.L});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}
+

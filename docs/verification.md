@@ -1,5 +1,19 @@
 # Verification record
 
+## Agency/route GIS review export — 2026-10-30
+
+All 893 JavaScript tests, 45 Python tests and TypeScript checking pass locally.
+The optional native Windows graph check also passes build, query, relocation and
+21 reverse-corridor edge pairs. The real two-trip GIS export contains 75 features:
+40 outbound edges, 34 return edges and the agency candidate. An independent
+readback confirmed original agency geometry, every input hash, exact agency XY
+coordinates and continuity of both routed chains. Four new Python tests reject
+unsupported CRS/units, missing or nonmonotonic measures, graph changes and malformed
+polylines, and retain opposing digitization flags without signed-direction claims.
+
+No website UI or hosted routing behavior changed; this increment needs no new
+browser check. Agency identity and verified closure attribution remain unresolved.
+
 ## NASA air forecast alternative (v81)
 
 The new reader/UI and existing CAMS regressions pass 20 focused tests. TypeScript

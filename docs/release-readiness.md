@@ -1,5 +1,20 @@
 # Ten-feature acceptance audit
 
+## October 30 agency crosswalk review tooling
+
+The offline GIS exporter preserves pinned route edges, agency measured geometry
+and input hashes in one review file. Real Sioux Center captures produced 74 route
+edges and one candidate agency path. A native reverse-trip check verifies 21
+opposite edge pairs across two OSM ways whose digitization directions differ.
+Four standard-library tests cover source CRS/measure rejection, coordinate
+decoding, graph compatibility and preservation of direction uncertainty.
+
+Iowa reference-post records explain the earlier measure mismatch, but their
+agreement with WZDx endpoints is still an inferred feed-to-network association.
+Feature 6 remains incomplete until the agency crosswalk, designated direction,
+partial-edge applicability and incident validity are established. No public
+closure claim or hosted routing behavior changes in this increment.
+
 ## Reproducible route graph foundation
 
 A new optional local tool builds a version-pinned Valhalla graph, verifies source,

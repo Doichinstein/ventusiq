@@ -34,6 +34,22 @@ with tempfile.TemporaryDirectory(prefix="ventusiq-route-network-") as temp:
     second = json.loads(args.output.read_text())
     if first["route"] != second["route"] or first["trace_attributes"] != second["trace_attributes"]:
         raise ValueError("Relocation changed the source route or directed edges")
+    args.start, args.end = args.end, args.start
+    args.output = work / "reverse-route.json"
+    network.route(args)
+    reverse = json.loads(args.output.read_text())
+    # These two captured US-75 ways have opposite OSM digitization orders.
+    # Direction cannot be assigned by treating every `forward` flag as northbound.
+    ways = {16020868, 45097030}
+    north = [e for e in first["trace_attributes"]["edges"] if e["way_id"] in ways]
+    south = [e for e in reverse["trace_attributes"]["edges"] if e["way_id"] in ways]
+    if len(north) != 21 or len(south) != 21 or {e["forward"] for e in north} != {True, False}:
+        raise ValueError("Captured opposite-digitization corridor did not reproduce")
+    for a, b in zip(north, reversed(south)):
+        if (a["way_id"] != b["way_id"] or a["id"] == b["id"] or a["forward"] == b["forward"] or
+                a["node_id"] != b["end_node"]["node_id"] or a["end_node"]["node_id"] != b["node_id"]):
+            raise ValueError("Reverse traversal did not preserve opposite directed edge identities")
     print(json.dumps({"status": "passed", "graph_sha256": manifest["graph_sha256"],
         "edges": result["edges"], "relocated_identically": True,
+        "reverse_corridor_edge_pairs": len(north),
         "closure_attribution_verified": False}, indent=2))

@@ -257,6 +257,14 @@ same source geometry, and exports the graph identity for future agency crosswalk
 It is a reproducible research boundary; it does not replace the hosted OSRM service
 or satisfy verified closure attribution by itself.
 
+`scripts/route-review.py` combines pinned route exports and an explicitly measured
+agency path into a GIS review file. It preserves both source geometries and their
+hashes, keeps LRS measures separate from altitude, and includes every route edge
+without approving proximity matches. A reverse-trip native check exercises 21
+real opposite directed edge pairs across two differently digitized OSM ways.
+This prepares the agency crosswalk review; it does not change hosted routing or
+claim that the candidate range is a verified closure.
+
 ## Station temperature evaluation
 
 `StationAnalogsService` collects a bounded, fixed-window daily temperature series

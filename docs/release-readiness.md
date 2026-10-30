@@ -1,5 +1,16 @@
 # Ten-feature acceptance audit
 
+## Directed agency-range matcher
+
+The optional offline crosswalk matcher now connects explicitly reviewed agency
+measure ranges to pinned directed route edges. Separate graph/crosswalk/source
+pins, review expiry, six road-identity checks and partial-edge clipping are
+enforced. Nine focused tests pass; the native integration check now exercises
+inside/outside matches on a real snapped route with synthetic agency assertions.
+No real agency crosswalk is approved. Event interpretation and a compatible
+hosted router remain necessary before verified closure attribution is available.
+See [the contract and use](route-network.md#match-an-explicitly-reviewed-crosswalk).
+
 ## PM2.5 comparison readiness
 
 Empty diagnostics distinguish a still-open future measurement period from missing
@@ -8,8 +19,10 @@ evidence is exported separately and does not increase paired counts or metrics.
 Six added tests cover capture/period boundaries, future-dated checks, invalid latest
 products, real archive retrieval, UI wording and export preservation. All 900
 JavaScript tests, 45 Python tests and TypeScript checks pass locally. Local browser
-QA was blocked by the saved localhost permission; production browser verification
-is separate. A nonempty live CAMS PM2.5 comparison remains unproven.
+QA was blocked by the saved localhost permission. Public v102 browser verification
+passed: the 03:00–04:00 UTC pending period and zero pairs agreed with the downloaded
+evidence, with no captured console errors. A nonempty live CAMS PM2.5 comparison
+remains unproven.
 
 ## October 30 nonzero river revision verified
 

@@ -116,6 +116,60 @@ The northbound trip uses `forward: true` on the first way and `forward: false` o
 the second. The native Linux/Windows check now tests this real direction reversal.
 It does not use compass bearing to declare a signed road direction.
 
+## Match an explicitly reviewed crosswalk
+
+`scripts/route-crosswalk.py` is the offline bridge from an agency's measured road
+range to the exact directed edges in a pinned route export. It requires a separate
+trusted crosswalk-file SHA-256, the graph pin and the original agency edition file.
+It verifies graph contents and all input hashes before and after evaluation. It
+does not infer a crosswalk from nearby geometry, road names or compass bearings.
+
+A `ventusiq-route-crosswalk/1` document contains:
+
+- `graph_sha256` and `agency` (`network_url`, `edition_sha256`, `route_id`, `units: "miles"`).
+- `review`: `status: "approved"`, a named `reviewer`, timezone-bearing `reviewed_at`
+  and exclusive `expires_at`, and `evidence` entries with `url`, `sha256` and `note`.
+- Six explicit boolean review `checks`: `road_identity`, `measure_reference`,
+  `signed_direction`, `carriageway`, `grade_separation`, `partial_edge_coverage`.
+- `mappings`: directed `edge_id`, `way_id`, `begin_node_id`, `end_node_id`,
+  `osm_forward`, designated `direction`, and `from_fraction`, `to_fraction`,
+  `from_measure`, `to_measure`. Fractions increase in directed-edge order;
+  agency measures can increase or decrease. Each row asserts a linear measure
+  mapping over that span; use multiple reviewed rows where necessary.
+
+```sh
+python scripts/route-crosswalk.py work/route-graph --expected-graph-sha256 GRAPH_HASH --crosswalk work/reviewed-crosswalk.json --expected-crosswalk-sha256 CROSSWALK_HASH --agency-source work/agency-edition.json --route-evidence work/route-evidence.json --route-id AGENCY_ROUTE_ID --direction northbound --from-measure 12.3 --to-measure 12.8 --at 2026-10-30T00:00:00Z --output work/network-match.json
+```
+
+Pending, future-dated, expired and incomplete reviews produce a blocked report
+with no matches. Conflicting identities, overlapping edge mappings, changed
+editions and discontinuous measures at shared boundaries fail validation. Hashes
+identify supplied evidence; reviewer assertions and evidence references are not
+independently authenticated by this tool. A hash supplied alongside an untrusted
+document does not make that document authoritative.
+
+The matcher clips the requested measure interval to mapped fractions and the
+portion actually traversed. Valhalla's
+[3.9.1 serializer](https://github.com/valhalla/valhalla/blob/3.9.1/src/tyr/trace_serializer.cc)
+emits partial-edge fractions with `edge.length`; absent fractions denote 0 or 1.
+Explicit values have three-decimal resolution. The matcher retains a conservative
+0.001 fraction allowance and distinguishes interior overlap from a rounding-only
+boundary candidate. It does not claim survey accuracy. The retained real route
+starts at fraction 0.216 of its first edge; a range wholly before that point must
+not match merely because it shares the edge ID.
+
+Nine focused tests cover these cases, direction reversal, partial mappings and
+source pins. The native Linux/Windows integration check exercises the complete
+CLI function with a real graph and explicitly synthetic agency/review inputs.
+Those synthetic approvals are not a reviewed real-world road association.
+
+This tool currently matches network ranges only. Event-to-LRS interpretation,
+lane impact, effective dates, source freshness and arrival-time overlap remain
+separate requirements before a public closure claim. An empty match does not
+establish an open road. The hosted OSRM path has no compatible pinned graph ID;
+the dashboard cannot consume these results yet. No real crosswalk has been
+approved or activated.
+
 ## Remaining agency match
 
 An Iowa public-road query returned 91 source segments around this test region.
@@ -145,6 +199,14 @@ geometry and distinguish carriageways, ramps and grade-separated roads before
 mapping event applicability to these pinned edges. A reviewed crosswalk must pin
 both source editions, declare directional and partial-edge coverage, and invalidate
 on graph changes. Event dates, lane definitions and freshness remain separate gates.
+
+Further official project context also needs careful temporal interpretation. The
+city's [August 26 construction update](https://www.siouxcenter.org/m/newsflash/Home/Detail/832)
+anticipated fully opening the highway in November. Iowa DOT's
+[October 5 ceremony notice](https://iowadot.gov/news/2026-10-05/media-advisory-us-75-project-ribbon-cutting-ceremony-monday-oct-12-4-pm-sioux-center)
+announced an October 12 ribbon cutting. Neither notice establishes the exact
+current open/closed segment; a ceremony date must not override the feed or be
+used as proof of road access.
 
 This small graph lacks administrative, timezone, elevation and live traffic
 databases. Roads can continue beyond its capture boundary, so it cannot establish

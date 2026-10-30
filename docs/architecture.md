@@ -226,6 +226,13 @@ or retrieval. Report coverage, sample size and error by location/season/lead tim
 | 9 | Compound hazards / explainable rule engine | Time/spatial overlaps among official hazards, observations and forecasts; mechanism and actionable context | Reviewed rules, provenance for every premise, temporal overlap and missing-data tests, no multiplied uncalibrated probabilities |
 | 10 | Event story / persistent event identity | CAP chains + revisions + observations + reports; forecast-to-outcome timeline | Stable event links, replay without future leakage, source/observation timestamps, export and no-report vs no-event distinction |
 
+Feature 6's offline `route-crosswalk.py` now matches explicitly reviewed agency
+measure ranges to pinned directed route edges, including clipped trip endpoints.
+Graph/source identity, designated direction, review expiry and incomplete review
+gates are checked. This foundation is not wired to the hosted OSRM router and
+does not interpret event closures. A real approved crosswalk and time-valid event
+association remain required; see [route-network methods](route-network.md).
+
 ## Sequence and current state
 
 1. Foundations and first useful release: My Places, meaningful on-page updates,

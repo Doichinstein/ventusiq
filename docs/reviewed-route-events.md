@@ -8,6 +8,17 @@ collapsed and distinguishes reported full closures, other restrictions,
 scheduled work, uncertain boundaries, blocked evidence and no overlap with the
 specific supplied event. None establishes that roads are open or safe to drive.
 
+The evaluator accepts WZDx 4.0–4.2 and the complete vehicle-impact vocabulary.
+Records reporting all lanes open or an unknown impact use a separate work-zone
+overlap label, not a restriction label. Moving and planned-moving-area records
+cannot establish a stationary passage. A source's static label still requires
+the independent stationary-footprint review. Dual feed headers may differ in
+serializer `$id` annotations only; actual source identities must agree.
+
+The event timestamp means last update or reconfirmation, not independent field
+confirmation. Its existing 15-minute age gate remains separate from feed age;
+a freshly generated feed cannot make an old or placeholder event timestamp current.
+
 The public deployment still uses OSRM and has no approved real event bundle or
 native host. Its optional check reports unavailable coverage. This release does
 not activate closure claims, provision hosting or change billing. The original

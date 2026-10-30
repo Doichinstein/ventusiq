@@ -1,11 +1,25 @@
 /* Agency work-zone context, not network-level closure matching. Apache-2.0. */
 import {nearbyRoadLabels} from './journey-roads.mjs';
-export const ROADWORK_METHOD='2026-10-30.1';
+export const ROADWORK_METHOD='2026-10-30.2';
 export const ROADWORK_FEEDS=Object.freeze({
   md:{name:'Maryland DOT SHA',region:'Maryland',url:'https://filter.ritis.org/wzdx_v4.1/mdot.geojson'},
   ia:{name:'Iowa DOT',region:'Iowa',url:'https://iowa-atms.cloud-q-free.com/api/rest/dataprism/wzdx/wzdxfeed'},
   wa:{name:'Washington State DOT',region:'Washington',url:'https://wzdx.wsdot.wa.gov/api/v4/WorkZoneFeed'},
+  ne:{name:'Northern New England DOTs',region:'New Hampshire, Vermont and Maine',url:'https://api.dx.ne-compass.com/wzdx-latest/'},
 });
+export const ROADWORK_MAX_FEEDS=3;
+export function selectRoadworkFeeds(ids){
+  if(!Array.isArray(ids)||ids.some(id=>!Object.hasOwn(ROADWORK_FEEDS,id)))throw Error('Invalid road-agency selection.');
+  const selected=[...new Set(ids)];if(selected.length>ROADWORK_MAX_FEEDS)throw Error('Choose up to three agency feeds per comparison.');return selected;
+}
+export function roadMotion(properties){
+  if(!Object.hasOwn(properties,'work_zone_type'))return {type:null,status:'unspecified',fixed_geometry_comparison:true,reason:'Work-zone motion is not reported. Supplied geometry does not confirm its location at arrival.'};
+  const type=properties.work_zone_type;
+  if(type==='static')return {type,status:'reported_static',fixed_geometry_comparison:true,reason:'The source describes a static work zone. This does not verify road matching, continuous work or driving access.'};
+  if(type==='moving')return {type,status:'moving',fixed_geometry_comparison:false,reason:'This operation is moving. Its supplied location cannot be projected to your arrival time.'};
+  if(type==='planned-moving-area')return {type,status:'planned_moving_area',fixed_geometry_comparison:false,reason:'This is an area planned for moving work. The crew location and time at a particular road segment are unknown.'};
+  return {type:typeof type==='string'?type:null,status:'invalid',fixed_geometry_comparison:false,reason:'The supplied work-zone motion type is unsupported; future location is unknown.'};
+}
 export const ROADWORK_RADIUS=250;
 const stamp=s=>typeof s==='string'&&/(Z|[+-]\d{2}:\d{2})$/.test(s)&&Number.isFinite(Date.parse(s))?Date.parse(s):null;
 const valid=p=>Array.isArray(p)&&p.length>=2&&p.every(Number.isFinite)&&p[0]>=-130&&p[0]<=-60&&p[1]>=20&&p[1]<=55;
@@ -51,7 +65,7 @@ export function normalizeRoadwork(raw,feed){
     const start=stamp(p.start_date),end=stamp(p.end_date),timesKnown=start!==null&&end!==null&&end>start;
     const verification={start_date:roadVerification(p,'is_start_date_verified','start_date_accuracy'),end_date:roadVerification(p,'is_end_date_verified','end_date_accuracy'),start_position:roadVerification(p,'is_start_position_verified','beginning_accuracy'),end_position:roadVerification(p,'is_end_position_verified','ending_accuracy')};
     const text=value=>typeof value==='string'&&value.length<=500?value:null,number=value=>typeof value==='number'&&Number.isFinite(value)?value:null;
-    events.push({id:f.id,roads:c.road_names,direction:typeof c.direction==='string'?c.direction:'unknown',description:typeof c.description==='string'?c.description:'',vehicle_impact:typeof p.vehicle_impact==='string'?p.vehicle_impact:'unknown',source_id:c.data_source_id||null,source_id_listed:sourceListed,start_date:p.start_date||null,end_date:p.end_date||null,start_ms:timesKnown?start:null,end_ms:timesKnown?end:null,updated_at:stamp(c.update_date)!==null?c.update_date:null,event_status:typeof p.event_status==='string'?p.event_status:null,verification,start_verified:verification.start_date.value,end_verified:verification.end_date.value,start_position_verified:verification.start_position.value,end_position_verified:verification.end_position.value,
+    events.push({id:f.id,roads:c.road_names,direction:typeof c.direction==='string'?c.direction:'unknown',description:typeof c.description==='string'?c.description:'',vehicle_impact:typeof p.vehicle_impact==='string'?p.vehicle_impact:'unknown',source_id:c.data_source_id||null,source_id_listed:sourceListed,start_date:p.start_date||null,end_date:p.end_date||null,start_ms:timesKnown?start:null,end_ms:timesKnown?end:null,updated_at:stamp(c.update_date)!==null&&stamp(c.update_date)>=0?c.update_date:null,motion:roadMotion(p),event_status:typeof p.event_status==='string'?p.event_status:null,verification,start_verified:verification.start_date.value,end_verified:verification.end_date.value,start_position_verified:verification.start_position.value,end_position_verified:verification.end_position.value,
       location_method:text(p.location_method),beginning_cross_street:text(p.beginning_cross_street),ending_cross_street:text(p.ending_cross_street),beginning_milepost:number(p.beginning_milepost),ending_milepost:number(p.ending_milepost),geometry:g});
   }
   return {method:ROADWORK_METHOD,feed,provider:ROADWORK_FEEDS[feed],issued_at:meta.update_date,meta,audit,events,raw};
@@ -77,6 +91,6 @@ export function prepareRoadwork(route,products,{maxChecks=2000000}={}){
 export function evaluateRoadwork(prepared,departure,now=Date.now()){
   const {road_context,...base}=prepared;
   return {...base,feeds:prepared.feeds.map(feed=>{const issued=stamp(feed.issued_at),checked=stamp(feed.checked_at),fresh=!feed.error&&!feed.stale&&issued!==null&&checked!==null&&now-issued<=1800000&&now-issued>=-60000&&now-checked<=900000&&now-checked>=-60000;
-    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length){const activity=roadActivity(event,feed.issued_at),eventFreshness=roadEventFreshness(event,feed.issued_at,now);candidates.push({...event,activity,event_freshness:eventFreshness,road_labels:nearbyRoadLabels(road_context,event,spans.map(s=>s.map(t=>(t-departure)/1000))),time_known:timeKnown,usable_timing:fresh&&eventFreshness.fresh&&event.source_id_listed&&timeKnown&&activity.usable,passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}}
+    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length){const activity=roadActivity(event,feed.issued_at),eventFreshness=roadEventFreshness(event,feed.issued_at,now);candidates.push({...event,activity,event_freshness:eventFreshness,road_labels:nearbyRoadLabels(road_context,event,spans.map(s=>s.map(t=>(t-departure)/1000))),time_known:timeKnown,usable_timing:fresh&&eventFreshness.fresh&&event.source_id_listed&&timeKnown&&activity.usable&&event.motion?.fixed_geometry_comparison!==false,passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}}
     return {...feed,fresh,candidates};})};
 }

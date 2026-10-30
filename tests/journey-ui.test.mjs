@@ -36,6 +36,11 @@ test('journey renders three departure comparisons, timed sample rows and honest 
 test('partial weather failures remain missing and cannot improve a departure comparison',async()=>{
   const s=setup();s.missing();await s.mounted.run();assert.match(s.nodes['journey-comparisons'].textContent,/1\/2 complete/);assert.match(s.nodes['journey-weather-body'].textContent,/Unknown/);assert.match(s.nodes['journey-coverage'].textContent,/Missing coverage/);
 });
+
+test('four selected work-zone feeds show an actionable limit before routing or collecting weather',async()=>{
+  const s=setup();for(const id of ['md','ia','wa','ne'])s.nodes['journey-roadwork-'+id].checked=true;
+  await s.mounted.run();assert.equal(s.requests.length,0);assert.match(s.nodes['journey-status'].textContent,/up to three/);
+});
 test('failed rerun clears the old result and export rather than presenting an unrelated route',async()=>{
   const s=setup();await s.mounted.run();s.break();await s.mounted.run();assert.equal(s.nodes['journey-results'].hidden,true);assert.equal(s.nodes['journey-export'].disabled,true);assert.match(s.nodes['journey-status'].textContent,/Router unavailable/);
 });

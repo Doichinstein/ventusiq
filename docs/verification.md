@@ -2835,3 +2835,21 @@ reviewed-event panel, and exported the result. The [retained browser result](evi
 explicitly reports unavailable reviewed-event coverage in all three scenarios.
 No browser console errors were captured. Browser QA also found an older compact
 control privacy sentence, corrected to disclose optional timing transmission.
+
+## October 30: Northern New England and work-zone motion
+
+The public regional source list adds the registered, keyless Northern New England
+feed for New Hampshire, Vermont and Maine. The unchanged request budget remains
+three selected feeds, 4 MiB per response and five-minute shared caching. Excess
+selections now fail before requests instead of silently discarding a choice.
+The [retained source edition](evidence/new-england-roadwork-2026-10-30.json)
+preserves both headers and an unchanged I-93 record. Its year-0001 event update
+normalizes to unknown even though the feed was freshly generated. The full
+response contained 192 source records; this is source context, not closure proof.
+
+Regression checks cover motion semantics, original geometry/raw export, missing
+timestamps, source/record freshness separation, uncertain map styling and the
+selection limit. Native checks cover WZDx 4.2 date representations, serializer
+annotations versus actual source identity, moving footprints and all-lanes-open
+or unknown impact labels. The graph/HTTP/subprocess integration check passed on
+Windows; its event/reviews are explicitly synthetic.

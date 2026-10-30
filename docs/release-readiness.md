@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v138, the October 30 live browser-capability and rendered compound-watch audits, real Cloudflare webhook receipt, one owner-confirmed Brave push display, and the full-stop weather checks described below.
+Current evidence: public releases through v141, the October 30 live browser-capability and rendered compound-watch audits, real Cloudflare webhook receipt, one owner-confirmed Brave push display, and the full-stop weather checks described below.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
@@ -29,6 +29,13 @@ browser settings; those paths have not been retried or bypassed in this audit.
 | 10. Event story | CAP chains, stable links, historical cutoff, source/observation times, matched station/gauge records, JSON/HTML downloads and JSON verification passed within their documented scope. | Offline HTML rendering is blocked by the file-URL policy. Download success is not rendering evidence. Matched readings do not establish verified physical impacts; broader outcome retention and hosted recovery remain open. |
 
 ## Shared UI, refresh and startup
+
+- v140/v141 connect optional reviewed road events to Journey departures, stop
+  timing, collapsed details and evidence export. Native integration and both CI
+  operating systems passed; public browser QA correctly showed unavailable
+  coverage with the current OSRM deployment. Real reviewed road attribution and
+  a native host remain open. New regional feed and motion support extends
+  agency context without changing that acceptance gate.
 
 - v119 compact location controls passed 34 targeted tests, the production build,
   and Linux/Windows CI (run 41107987240). Browser measurements at a 390 × 844

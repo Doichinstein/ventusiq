@@ -1,0 +1,326 @@
+{
+  "source": {
+    "id": "necdot",
+    "state": "New Hampshire, Vermont, Maine",
+    "active": true,
+    "url": "https://api.dx.ne-compass.com/wzdx-latest/",
+    "bytes": 514583,
+    "version": "4.2",
+    "issued": "2026-10-30T22:30:01.6213684+00:00",
+    "publisher": "NEC DOT",
+    "features": 192,
+    "work_zone_types": [
+      "None"
+    ],
+    "sha256": "d35235dd4a8933b2aa215cc1374fb4df429f6f27818a78325938f6438ce62839",
+    "collected_at": "2026-10-30T22:30:02.481245+00:00"
+  },
+  "registry_url": "https://data.transportation.gov/resource/69qe-yiui.json",
+  "scope": "Original feed headers and one unchanged source event; full response hash retained. No road mapping or closure approval.",
+  "subset": {
+    "road_event_feed_info": {
+      "$id": "1",
+      "publisher": "NEC DOT",
+      "update_date": "2026-10-30T22:30:01.6213684+00:00",
+      "version": "4.2",
+      "data_sources": [
+        {
+          "data_source_id": "NEC DOT",
+          "organization_name": "NEC DOT",
+          "contact_name": "PLACEHOLDER",
+          "contact_email": "PLACEHOLDER",
+          "update_date": "2026-10-30T22:30:01.6213684+00:00"
+        }
+      ]
+    },
+    "feed_info": {
+      "publisher": "NEC DOT",
+      "update_date": "2026-10-30T22:30:01.6213684+00:00",
+      "version": "4.2",
+      "data_sources": [
+        {
+          "data_source_id": "NEC DOT",
+          "organization_name": "NEC DOT",
+          "contact_name": "PLACEHOLDER",
+          "contact_email": "PLACEHOLDER",
+          "update_date": "2026-10-30T22:30:01.6213684+00:00"
+        }
+      ]
+    },
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "properties": {
+          "beginning_accuracy": "estimated",
+          "is_start_position_verified": false,
+          "ending_accuracy": "estimated",
+          "is_end_position_verified": false,
+          "start_date": "2026-09-15T17:57:04.263+00:00",
+          "end_date": "2026-11-02T15:00:00+00:00",
+          "start_date_accuracy": "estimated",
+          "is_start_date_verified": false,
+          "end_date_accuracy": "estimated",
+          "is_end_date_verified": false,
+          "vehicle_impact": "some-lanes-closed",
+          "location_method": "unknown",
+          "impacted_cds_curb_zones": [],
+          "restrictions": [],
+          "types_of_work": [],
+          "lanes": [
+            {
+              "order": 1,
+              "status": "closed",
+              "type": "shoulder",
+              "restrictions": []
+            },
+            {
+              "order": 2,
+              "status": "closed",
+              "type": "general",
+              "restrictions": []
+            },
+            {
+              "order": 3,
+              "status": "open",
+              "type": "general",
+              "restrictions": []
+            },
+            {
+              "order": 4,
+              "status": "open",
+              "type": "shoulder",
+              "restrictions": []
+            }
+          ],
+          "core_details": {
+            "data_source_id": "NEC DOT",
+            "event_type": "work-zone",
+            "related_road_events": [],
+            "road_names": [
+              "I-93"
+            ],
+            "direction": "northbound",
+            "description": "Long Term Construction Project: Littleton, I-93 North from Mile 123.6 to 124.4, left lane closed. Project #43809",
+            "creation_date": "0001-01-01T00:00:00+00:00",
+            "update_date": "0001-01-01T00:00:00+00:00"
+          }
+        },
+        "id": "NH26-004762:em:event:NewHampshire:NH26-004762:em:event:NewHampshire",
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -71.782963,
+              44.304569
+            ],
+            [
+              -71.78305,
+              44.30457
+            ],
+            [
+              -71.783396,
+              44.30456
+            ],
+            [
+              -71.784094,
+              44.30452
+            ],
+            [
+              -71.784444,
+              44.304489
+            ],
+            [
+              -71.784792,
+              44.304449
+            ],
+            [
+              -71.785134,
+              44.304399
+            ],
+            [
+              -71.785472,
+              44.304339
+            ],
+            [
+              -71.785808,
+              44.304272
+            ],
+            [
+              -71.786141,
+              44.304196
+            ],
+            [
+              -71.786473,
+              44.304111
+            ],
+            [
+              -71.786801,
+              44.304015
+            ],
+            [
+              -71.787127,
+              44.303912
+            ],
+            [
+              -71.78777,
+              44.303694
+            ],
+            [
+              -71.788712,
+              44.303341
+            ],
+            [
+              -71.789028,
+              44.303225
+            ],
+            [
+              -71.789349,
+              44.303116
+            ],
+            [
+              -71.789677,
+              44.303016
+            ],
+            [
+              -71.79001,
+              44.302928
+            ],
+            [
+              -71.790349,
+              44.302856
+            ],
+            [
+              -71.790695,
+              44.302804
+            ],
+            [
+              -71.791046,
+              44.302769
+            ],
+            [
+              -71.791398,
+              44.30275
+            ],
+            [
+              -71.791751,
+              44.302747
+            ],
+            [
+              -71.792102,
+              44.302759
+            ],
+            [
+              -71.792451,
+              44.302788
+            ],
+            [
+              -71.792794,
+              44.302833
+            ],
+            [
+              -71.79313,
+              44.302894
+            ],
+            [
+              -71.793459,
+              44.302974
+            ],
+            [
+              -71.793776,
+              44.30307
+            ],
+            [
+              -71.794081,
+              44.303181
+            ],
+            [
+              -71.794374,
+              44.303308
+            ],
+            [
+              -71.794657,
+              44.303449
+            ],
+            [
+              -71.794927,
+              44.303604
+            ],
+            [
+              -71.795061,
+              44.303682
+            ],
+            [
+              -71.795138,
+              44.303741
+            ],
+            [
+              -71.795282,
+              44.303844
+            ],
+            [
+              -71.795427,
+              44.303948
+            ],
+            [
+              -71.795658,
+              44.304133
+            ],
+            [
+              -71.79588,
+              44.304324
+            ],
+            [
+              -71.796091,
+              44.304522
+            ],
+            [
+              -71.796288,
+              44.304727
+            ],
+            [
+              -71.796303,
+              44.304744
+            ],
+            [
+              -71.796315,
+              44.304758
+            ],
+            [
+              -71.796472,
+              44.30494
+            ],
+            [
+              -71.796597,
+              44.305102
+            ],
+            [
+              -71.796642,
+              44.30516
+            ],
+            [
+              -71.796681,
+              44.305215
+            ],
+            [
+              -71.796796,
+              44.305379
+            ]
+          ],
+          "bbox": [
+            -71.796796,
+            44.302747,
+            -71.782963,
+            44.305379
+          ]
+        },
+        "bbox": [
+          -71.796796,
+          44.302747,
+          -71.782963,
+          44.305379
+        ]
+      }
+    ]
+  }
+}

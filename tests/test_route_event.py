@@ -76,7 +76,7 @@ class EventTests(unittest.TestCase):
     def test_legacy_dates_preserve_time_and_source_in_both_editions(self):
         expected = self.evaluate()['passages']
         self.use_legacy_dates('4.0')
-        for version in ('4.0', '4.1'):
+        for version in ('4.0', '4.1', '4.2'):
             with self.subTest(version=version):
                 self.feed['road_event_feed_info']['version'] = version
                 raw = copy.deepcopy(self.feed)
@@ -98,11 +98,53 @@ class EventTests(unittest.TestCase):
         self.assertEqual(result['status'], 'blocked')
         self.assertIn('Source reports work ended or cancelled', result['blocks'])
 
+    def test_42_modern_dates_and_motion_preserve_separate_review_gate(self):
+        self.feed['road_event_feed_info']['version'] = '4.2'
+        self.assertEqual(self.evaluate()['date_confirmations']['start']['field'], 'is_start_date_verified')
+        for motion in ('moving', 'planned-moving-area', 'unsupported', None):
+            with self.subTest(motion=motion):
+                self.p['work_zone_type'] = motion
+                result = self.evaluate()
+                self.assertEqual(result['status'], 'blocked')
+                self.assertEqual(result['passages'], [])
+                self.assertIn('Source motion type does not support a stationary work-zone footprint', result['blocks'])
+        self.p['work_zone_type'] = 'static'
+        self.assertEqual(self.evaluate()['status'], 'reviewed_reported_closure_overlap')
+        self.association['review']['checks']['stationary_footprint'] = False
+        self.assertEqual(self.evaluate()['status'], 'blocked')
+
+    def test_dual_headers_ignore_serializer_annotations_but_not_source_identity(self):
+        self.feed['feed_info'] = copy.deepcopy(self.feed['road_event_feed_info'])
+        self.feed['road_event_feed_info']['$id'] = '1'
+        self.feed['road_event_feed_info']['data_sources'][0]['$id'] = '2'
+        self.assertEqual(self.evaluate()['status'], 'reviewed_reported_closure_overlap')
+        self.feed['feed_info']['data_sources'][0]['data_source_id'] = 'changed'
+        with self.assertRaisesRegex(ValueError, 'Conflicting WZDx headers'):
+            self.evaluate()
+
+    def test_all_open_and_unknown_impacts_do_not_become_restrictions(self):
+        self.p['lanes'] = []
+        for impact in ('all-lanes-open', 'unknown', 'flagging', 'temporary-traffic-signal', 'some-lanes-closed-split'):
+            with self.subTest(impact=impact):
+                self.p['vehicle_impact'] = self.association['vehicle_impact'] = impact
+                result = self.evaluate()
+                expected = 'reviewed_reported_work_zone_overlap' if impact in ('all-lanes-open', 'unknown') else 'reviewed_reported_impact_overlap'
+                self.assertEqual(result['status'], expected)
+                self.assertFalse(result['field_closure_verified'])
+                self.assertFalse(result['driving_access_established'])
+
+    def test_placeholder_record_time_cannot_borrow_feed_freshness(self):
+        self.p['core_details']['update_date'] = '0001-01-01T00:00:00+00:00'
+        result = self.evaluate()
+        self.assertEqual(result['status'], 'blocked')
+        self.assertEqual(result['passages'], [])
+        self.assertIn('event update/reconfirmation is stale or future-dated', result['blocks'])
+
     def test_date_formats_must_match_declared_version_and_each_other(self):
         self.feed['road_event_feed_info']['version'] = '4.0'
         with self.assertRaisesRegex(ValueError, 'Missing'):
             self.evaluate()
-        self.feed['road_event_feed_info']['version'] = '4.2'
+        self.feed['road_event_feed_info']['version'] = '5.0'
         with self.assertRaisesRegex(ValueError, 'requires WZDx'):
             self.evaluate()
         self.feed['road_event_feed_info']['version'] = '4.1'
@@ -134,7 +176,7 @@ class EventTests(unittest.TestCase):
         self.assertEqual(self.evaluate()['status'], 'blocked')
         self.p['start_date'] = '2026-10-29T23:00:00Z'
         self.p['core_details']['update_date'] = '2026-08-10T20:39:34Z'
-        self.assertIn('event confirmation is stale or future-dated', self.evaluate()['blocks'])
+        self.assertIn('event update/reconfirmation is stale or future-dated', self.evaluate()['blocks'])
 
     def test_stationarity_requires_separate_review_not_a_producer_extension(self):
         del self.association['review']['checks']['stationary_footprint']
@@ -171,7 +213,7 @@ class EventTests(unittest.TestCase):
         self.p['core_details']['update_date'] = '2026-10-29T00:00:00Z'
         result = self.evaluate()
         self.assertEqual(result['status'], 'blocked')
-        self.assertIn('event confirmation is stale or future-dated', result['blocks'])
+        self.assertIn('event update/reconfirmation is stale or future-dated', result['blocks'])
         self.assertEqual(result['passages'], [])
         self.assertEqual(result['source_event']['properties']['core_details']['update_date'], '2026-10-29T00:00:00Z')
 

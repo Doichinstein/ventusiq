@@ -2,7 +2,7 @@ import {renderRouteRoads} from './journey-roads-ui.mjs';
 import {reviewedEventSummary,selectReviewedEvents,renderReviewedEvents} from './journey-events.mjs';
 import {renderStopWeather} from './journey-stop-weather.mjs';
 
-import {prepareRoadwork,evaluateRoadwork} from './roadwork-core.mjs';
+import {ROADWORK_FEEDS,selectRoadworkFeeds,prepareRoadwork,evaluateRoadwork} from './roadwork-core.mjs';
 
 import {collectRoadwork,renderRoadwork,roadworkSummary,drawRoadwork} from './journey-roadwork.mjs';
 
@@ -94,7 +94,7 @@ export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
 
     try{
 
-      const roadworkIds=['md','ia','wa'].filter(id=>get('journey-roadwork-'+id).checked),smokeRequested=!!get('journey-smoke-enabled').checked,smokeCeiling=smokeRequested?journeySmokeLimit(get('journey-smoke-limit').value):null,ceiling=gustLimit(get('journey-gust-limit').value),departure=departureTime(get('journey-departure').value,clock()),params=new URLSearchParams();for(const [param,id] of [['fromLat','from-lat'],['fromLon','from-lon'],['toLat','to-lat'],['toLon','to-lon']])params.set(param,get('journey-'+id).value);
+      const roadworkIds=selectRoadworkFeeds(Object.keys(ROADWORK_FEEDS).filter(id=>get('journey-roadwork-'+id).checked)),smokeRequested=!!get('journey-smoke-enabled').checked,smokeCeiling=smokeRequested?journeySmokeLimit(get('journey-smoke-limit').value):null,ceiling=gustLimit(get('journey-gust-limit').value),departure=departureTime(get('journey-departure').value,clock()),params=new URLSearchParams();for(const [param,id] of [['fromLat','from-lat'],['fromLon','from-lon'],['toLat','to-lat'],['toLon','to-lon']])params.set(param,get('journey-'+id).value);
 
       const via=journeyStops(['via1','via2','via3'].map(side=>({lat:get('journey-'+side+'-lat').value,lon:get('journey-'+side+'-lon').value,minutes:get('journey-'+side+'-minutes').value})).filter(p=>String(p.lat).trim()!==''||String(p.lon).trim()!==''||Number(p.minutes)!==0));
 

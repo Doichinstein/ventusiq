@@ -1,6 +1,7 @@
 export const EVENT_LABELS=Object.freeze({
   reviewed_reported_closure_overlap:'Reported full closure overlaps your estimated passage',
   reviewed_reported_impact_overlap:'Reported restriction overlaps your estimated passage',
+  reviewed_reported_work_zone_overlap:'Reported work zone overlaps your estimated passage',
   scheduled_impact_overlap:'Scheduled work overlaps your estimated passage',
   boundary_uncertain:'Road-event boundary is uncertain',
   no_reviewed_time_overlap:'No overlap with this reviewed event',
@@ -18,7 +19,7 @@ export function eventDepartures(values,now){
 export function reviewedEventSummary(value){
   if(!value)return 'Reviewed road events not requested.';
   if(value.status==='unavailable')return 'Reviewed road events unavailable: '+value.reason;
-  const results=value.results||[],overlaps=results.filter(r=>['reviewed_reported_closure_overlap','reviewed_reported_impact_overlap','scheduled_impact_overlap'].includes(r.status)).length;
+  const results=value.results||[],overlaps=results.filter(r=>['reviewed_reported_closure_overlap','reviewed_reported_impact_overlap','reviewed_reported_work_zone_overlap','scheduled_impact_overlap'].includes(r.status)).length;
   const unknown=results.filter(r=>['blocked','boundary_uncertain'].includes(r.status)).length;
   return `${results.length} supplied events assessed · ${overlaps} reported/scheduled overlaps · ${unknown} blocked or uncertain. Other roads and events remain unknown.`;
 }
@@ -39,6 +40,7 @@ export function renderReviewedEvents(document,value,format){
     details.append(el('p','Snapshot evaluated '+format(value.evaluated_at)+'. Compare again to refresh.'));
     for(const result of value.results){
       const row=el('details','');row.append(el('summary',EVENT_LABELS[result.status]),el('p','Agency event '+result.event_id));
+      if(result.legs[0])row.append(el('p','Agency vehicle impact: '+result.legs[0].vehicle_impact+'. This does not establish driving access.'));
       for(const block of result.blocks)row.append(el('p',block));
       for(const passage of result.passages.slice(0,100))row.append(el('p',`Leg ${passage.leg_index+1} · estimated passage ${format(passage.estimated_passage[0])} – ${format(passage.estimated_passage[1])}`));
       if(result.passages.length>100)row.append(el('p','Additional passages are in the journey export.'));

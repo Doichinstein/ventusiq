@@ -1,7 +1,9 @@
 # Agency work-zone context along journeys
 
-Journey offers optional Maryland DOT SHA, Iowa DOT and Washington State DOT work-zone
-feeds. Select the relevant agencies before comparing departures. The existing
+Journey offers optional Maryland DOT SHA, Iowa DOT, Washington State DOT and
+Northern New England DOT work-zone feeds. Select up to three relevant feeds
+before comparing departures. Excess selections produce a message before any
+network request; no selected agency is silently dropped. The existing
 weather results remain available if an agency fails. Each comparison uses one
 edition per selected feed for all three departures and includes the original
 JSON in its export. Whole feeds are fetched through a shared cache; no journey
@@ -15,8 +17,9 @@ The fixed source URLs are listed in the
 | Maryland DOT SHA, distributed through RITIS | [WZDx feed](https://filter.ritis.org/wzdx_v4.1/mdot.geojson) |
 | Iowa DOT | [WZDx feed](https://iowa-atms.cloud-q-free.com/api/rest/dataprism/wzdx/wzdxfeed) |
 | Washington State DOT | [WZDx feed](https://wzdx.wsdot.wa.gov/api/v4/WorkZoneFeed) |
+| Northern New England DOTs: New Hampshire, Vermont and Maine | [WZDx feed](https://api.dx.ne-compass.com/wzdx-latest/) |
 
-These are three selected regional sources, not national incident or closure coverage.
+These are four selected regional sources, not national incident or closure coverage.
 No matching record does not establish that a road is open. Feed availability is
 independent of whether a route enters a supported region. The feature does not
 reroute the journey or change travel-time estimates.
@@ -35,6 +38,16 @@ identical duplicate records collapse to one. Unsupported/invalid records are cou
 Raw metadata and the full original feed survive export, including details that
 the summary does not interpret, such as vehicle restrictions or intermittent
 schedules embedded in descriptions.
+
+The [retained Northern New England edition](evidence/new-england-roadwork-2026-10-30.json)
+contains an unchanged source record with a year-0001 update placeholder. Such
+pre-epoch event times normalize to unknown while the raw source remains intact.
+A current feed timestamp does not make those records current.
+
+WZDx 4.2 motion types are shown in detail cards, map popups and exports. Moving
+and planned-moving-area work keeps its supplied geometry as context, with future
+location applicability withheld. Omitted motion is explicitly unreported; even a
+static source label does not prove road/direction matching or continuous work.
 
 [WZDx geometry](https://raw.githubusercontent.com/usdot-jpo-ode/wzdx/main/spec-content/objects/RoadEventFeature.md)
 distinguishes a supplied road-event line from endpoint-only MultiPoint locations.

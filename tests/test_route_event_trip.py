@@ -83,7 +83,7 @@ class TripTests(unittest.TestCase):
         self.assertEqual(result['status'], 'blocked')
         self.assertEqual(result['passages'], [])
         self.assertTrue(any('At trip arrival:' in b for b in result['blocks']))
-        self.assertNotIn('event confirmation is stale or future-dated', ' '.join(result['blocks']))
+        self.assertNotIn('event update/reconfirmation is stale or future-dated', ' '.join(result['blocks']))
 
     def test_initial_48_hour_horizon_allows_later_legs_but_not_an_unbounded_initial_departure(self):
         self.departure += timedelta(hours=48)

@@ -175,7 +175,7 @@ pipeline, but no real crosswalk has been approved or activated.
 ## Associate a reviewed event with estimated passage time
 
 `scripts/route-event.py` composes the existing graph/crosswalk verifier with one
-explicitly reviewed WZDx 4.0 or 4.1 event edition. It checks the complete input chain,
+explicitly reviewed WZDx 4.0, 4.1 or 4.2 event edition. It checks the complete input chain,
 then intersects the event's reported time window with estimated passage through
 each matched directed-edge fraction. It is an offline operator tool, included
 in the open-source download. It does not activate a public closure layer or
@@ -211,14 +211,14 @@ python scripts/route-event.py work/route-graph --expected-graph-sha256 GRAPH_HAS
 
 The adapter requires a unique work-zone event, a listed source ID, a static
 footprint and exact agreement with the reviewed direction and structured vehicle
-impact. WZDx does not define a `work_zone_type` property in either supported
-edition, and its [work-zone event type](https://github.com/usdot-jpo-ode/wzdx/blob/v4.1/spec-content/enumerated-types/EventType.md)
-includes moving activities. Stationarity is therefore a distinct review check,
-not inferred from a missing field or from construction prose. An optional producer
-extension declaring a nonstatic footprint still blocks a contradictory review.
+impact. WZDx 4.2 defines [work-zone motion](https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/enumerated-types/WorkZoneType.md)
+as static, moving or planned-moving-area. A supplied moving, planned-moving-area
+or unsupported value blocks a fixed-footprint passage. Stationarity remains a
+distinct review check, not inferred from omission, construction prose or a static
+source label. Earlier editions may supply this property as an extension.
 
 The adapter uses the declared edition's date fields. Version 4.0 requires
-`start_date_accuracy` and `end_date_accuracy`; version 4.1 accepts those legacy
+`start_date_accuracy` and `end_date_accuracy`; versions 4.1 and 4.2 accept those legacy
 fields or explicit boolean confirmations. [TimeVerification](https://github.com/usdot-jpo-ode/wzdx/blob/v4.0/spec-content/enumerated-types/TimeVerification.md)
 distinguishes estimated activity times from actual reported times. Unknown values,
 missing required representations, nonboolean confirmations, unsupported editions,

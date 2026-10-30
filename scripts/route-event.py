@@ -22,12 +22,22 @@ CHECKS = ('event_to_lrs', 'direction_scope', 'lane_scope', 'continuous_schedule'
 IMPACTS = {'all-lanes-closed', 'some-lanes-closed', 'all-lanes-open', 'alternating-one-way',
            'some-lanes-closed-merge-left', 'some-lanes-closed-merge-right',
            'all-lanes-open-shift-left', 'all-lanes-open-shift-right'}
+IMPACTS.update({'some-lanes-closed-split', 'flagging', 'temporary-traffic-signal', 'unknown'})
+
+
+def header_content(value):
+    """Ignore serializer $id annotations, never actual source identity fields."""
+    if isinstance(value, dict):
+        return {k: header_content(v) for k, v in value.items() if k != '$id'}
+    if isinstance(value, list):
+        return [header_content(v) for v in value]
+    return value
 
 
 def date_confirmations(properties, version):
     """Interpret the declared WZDx edition without rewriting source evidence."""
-    if version not in ('4.0', '4.1'):
-        raise ValueError('This event adapter requires WZDx 4.0 or 4.1')
+    if version not in ('4.0', '4.1', '4.2'):
+        raise ValueError('This event adapter requires WZDx 4.0, 4.1 or 4.2')
     result = {'wzdx_version': version}
     for boundary in ('start', 'end'):
         modern, legacy = f'is_{boundary}_date_verified', f'{boundary}_date_accuracy'
@@ -40,8 +50,8 @@ def date_confirmations(properties, version):
             raise ValueError('Missing WZDx date confirmation for the declared version')
         if has_modern and has_legacy and properties[modern] != (properties[legacy] == 'verified'):
             raise ValueError('Conflicting WZDx date confirmation fields')
-        # 4.0 requires TimeVerification; 4.1 accepts either representation.
-        field = modern if version == '4.1' and has_modern else legacy
+        # 4.0 requires TimeVerification; 4.1/4.2 accept either representation.
+        field = modern if version in ('4.1', '4.2') and has_modern else legacy
         result[boundary] = {'confirmed': properties[field] is True or properties[field] == 'verified',
                             'field': field, 'value': properties[field]}
     return result
@@ -75,9 +85,9 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
     if feed.get('type') != 'FeatureCollection' or not isinstance(feed.get('features'), list) or len(feed['features']) > 5000:
         raise ValueError('Unsupported WZDx collection')
     meta = feed.get('road_event_feed_info', feed.get('feed_info'))
-    if not isinstance(meta, dict) or meta.get('version') not in ('4.0', '4.1'):
-        raise ValueError('This event adapter requires WZDx 4.0 or 4.1')
-    if 'road_event_feed_info' in feed and 'feed_info' in feed and feed['road_event_feed_info'] != feed['feed_info']:
+    if not isinstance(meta, dict) or meta.get('version') not in ('4.0', '4.1', '4.2'):
+        raise ValueError('This event adapter requires WZDx 4.0, 4.1 or 4.2')
+    if 'road_event_feed_info' in feed and 'feed_info' in feed and header_content(feed['road_event_feed_info']) != header_content(feed['feed_info']):
         raise ValueError('Conflicting WZDx headers')
     events = [e for e in feed['features'] if isinstance(e, dict) and e.get('id') == association['event_id']]
     if len(events) != 1 or events[0].get('type') != 'Feature':
@@ -101,7 +111,7 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
                         association['from_measure'], association['to_measure'], now)
     blocks = match['blocks'] + review_blocks(association, now)
     # Fresh feed generation is not evidence that an old event was reconfirmed.
-    for label, stamp, maximum in [('collection', checked_at, 900), ('feed', issued, 1800), ('event confirmation', updated, 900)]:
+    for label, stamp, maximum in [('collection', checked_at, 900), ('feed', issued, 1800), ('event update/reconfirmation', updated, 900)]:
         age = (now - stamp).total_seconds()
         if age < -60 or age > maximum:
             blocks.append(label + ' is stale or future-dated')
@@ -111,10 +121,10 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
         blocks.append('Source reports work ended or cancelled')
     if confirmations['start']['confirmed'] and start > issued + timedelta(seconds=60):
         blocks.append('Source confirms a start later than feed generation')
-    # WZDx 4.0/4.1 do not define work_zone_type. Stationarity needs its own
-    # evidence-backed review; an optional producer extension cannot grant it.
+    # WZDx 4.2 defines static/moving/planned-moving-area. Earlier versions may
+    # supply an extension. Neither a static label nor omission replaces review.
     if 'work_zone_type' in p and p['work_zone_type'] != 'static':
-        blocks.append('Producer extension contradicts a stationary work-zone footprint')
+        blocks.append('Source motion type does not support a stationary work-zone footprint')
     lanes = p.get('lanes', [])
     if not isinstance(lanes, list) or any(not isinstance(l, dict) for l in lanes):
         raise ValueError('Invalid lane records')
@@ -160,6 +170,8 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
         status = 'scheduled_impact_overlap'
     elif impact == 'all-lanes-closed':
         status = 'reviewed_reported_closure_overlap'
+    elif impact in ('all-lanes-open', 'unknown'):
+        status = 'reviewed_reported_work_zone_overlap'
     else:
         status = 'reviewed_reported_impact_overlap'
     return {'schema': 'ventusiq-route-event-result/1', 'evaluated_at': now.isoformat(), 'status': status,
@@ -249,7 +261,7 @@ def evaluate_trip(association, feed, crosswalk, route, manifest, checked_at, dep
     blocks += ['At trip arrival: ' + b for b in cross.review_blocks(crosswalk, current)]
     blocks += ['At trip arrival: ' + b for b in review_blocks(association, current)]
     priorities = ['reviewed_reported_closure_overlap', 'reviewed_reported_impact_overlap',
-                  'scheduled_impact_overlap', 'boundary_uncertain', 'no_reviewed_time_overlap']
+                  'scheduled_impact_overlap', 'reviewed_reported_work_zone_overlap', 'boundary_uncertain', 'no_reviewed_time_overlap']
     status = 'blocked' if blocks else next(s for s in priorities if any(r['status'] == s for r in results))
     return {'schema': 'ventusiq-route-event-trip-result/1', 'evaluated_at': now.isoformat(), 'status': status,
             'blocks': list(dict.fromkeys(blocks)), 'departure': departure.isoformat(), 'arrival': current.isoformat(),

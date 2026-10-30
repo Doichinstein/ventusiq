@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v131, the October 30 live browser-capability and source-backed watch-baseline audits, and the full-stop weather checks described below.
+Current evidence: public releases through v137, the October 30 live browser-capability and source-backed watch-baseline audits, one owner-confirmed Brave push display, and the full-stop weather checks described below.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
@@ -72,9 +72,10 @@ checks and the production build. Detailed records are in [verification](verifica
 ## Open gates and next work
 
 1. **Delivery: device/receiver evidence.** Browser-capability management is public
-   and its live HTTP lifecycle now passes. Rendered enrollment, actual push display
-   and external-receiver checks remain unverified. Keep legacy account tests and
-   notification enrollment deferred; do not repeatedly ask while deferred.
+   and its live HTTP lifecycle now passes. Brave enrollment and one real test
+   display are confirmed: v137's provider response was HTTP 201 and the owner
+   confirmed display. Closed-page delivery and external-receiver checks remain
+   unverified. Legacy account tests remain deferred; notification testing is authorized.
 2. **Road attribution: source and engineering work.** Establish a real reviewed
    agency crosswalk and current incident association before activating closure
    claims. Multi-leg event evaluation is implemented and tested; hosted activation remains additional work;

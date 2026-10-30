@@ -44,7 +44,7 @@ import { EventReportsService } from '../../../lib/event-reports-service.mjs';
 import { EventObservationsService } from '../../../lib/event-observations-service.mjs';
 import { WatchService } from '../../../lib/watch-service.mjs';
 import { PushService } from '../../../lib/push-service.mjs';
-import { pushGet,pushPost } from '../../../lib/push-http.mjs';
+import { pushGet,pushPost,schedulePushDispatch } from '../../../lib/push-http.mjs';
 import { watchGet,watchPost } from '../../../lib/watch-http.mjs';
 
 function pushService(weather:WeatherService){let jwk=null;try{jwk=JSON.parse(env.VENTUSIQ_VAPID_PRIVATE_JWK||'null');}catch{}return new PushService(weather,{jwk});}
@@ -158,7 +158,7 @@ export async function POST(request:Request){
   if(new URL(request.url).pathname==='/api/geocode')return geocodePost(request,new GeocodeService(new WeatherService(env.DB)));
   if(new URL(request.url).pathname==='/api/places')return placesPost(request,new PlacesService(new WeatherService(env.DB)),(await getChatGPTUser())?.userId||null);
   if(new URL(request.url).pathname==='/api/webhooks'){const service=new WebhookService(new WeatherService(env.DB)),response=await webhookPost(request,service,await browserOwner(request));if(response.ok)after(()=>service.dispatch());return response;}
-  if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,await browserOwner(request));if(response.ok)after(()=>service.dispatch());return response;}
+  if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,await browserOwner(request));await schedulePushDispatch(service,response,after);return response;}
   if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);
   const service=new WeatherService(env.DB),watches=new WatchService(service);
   const response=await watchPost(request,watches,await browserOwner(request));

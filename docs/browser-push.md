@@ -54,6 +54,16 @@ push service accepted the request; it does not prove display, receipt or reading
 There is no device-display acknowledgement. Up to 200 records per device and seven
 days are retained; the UI lists the latest 50 records for this browser owner.
 
+**Test with dashboard closed** queues a separately labeled test with a ten-second
+server delay. After the queued confirmation, close every VentusIQ tab in that
+browser and keep the browser running. Look for **VentusIQ closed-page test**, then
+reopen the dashboard and inspect delivery history. The delay does not depend on a
+page timer, and concurrent upkeep cannot send it before its stored due time.
+Both test buttons share the five-minute cooldown and obey quiet hours. A removed
+device cannot receive the queued test. If the short server task is interrupted,
+the durable queue remains eligible for later upkeep; ten seconds is not a delivery
+guarantee. Closing the entire browser or turning off the device is a separate test.
+
 ## Per-device quiet hours
 
 Each enrolled device has an optional daily schedule. Choose start/end wall-clock
@@ -132,10 +142,13 @@ Automated tests verify encryption, signatures, ownership, quotas, quiet baseline
 deduplication, retries, expiry, pause/removal, explicit permission actions and the
 service worker's notification/navigation behavior. Live HTTP checks verify the
 browser ownership boundary and empty device lists without enrolling a device.
-Public browser access works; real browser permission, operating-system display
-and closed-browser delivery remain unverified because device enrollment/testing
-has been deferred. A user can
-verify actual display with the explicit test control; API acceptance alone is not
-reported as successful display. Email, SMS and device-display acknowledgements
+On October 30, the owner enrolled Brave with its Google push service. v137 fixed
+Worker-native fetch invocation and rejected redirects without using the unsupported
+`error` redirect mode. A real test was accepted with HTTP 201 at 21:09:31 UTC,
+and the owner confirmed that the notification appeared. Linux/Windows CI and a
+workerd regression check passed. This establishes one enrolled-device display;
+closed-page delivery remains a separate check. A user can verify actual display
+with either explicit test control; API acceptance alone is not reported as
+successful display. Email, SMS and device-display acknowledgements
 are not implemented. Signed webhooks have their own implementation and separate
 [external-receiver verification gate](webhooks.md).

@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {setup,pushKeys,subscription} from './fixtures/push.mjs';
 import {PushService} from '../lib/push-service.mjs';
-import {pushGet,pushPost} from '../lib/push-http.mjs';
+import {pushGet,pushPost,schedulePushDispatch} from '../lib/push-http.mjs';
 async function fixture(){const s=setup();let code=201,calls=0,request=null;const push=new PushService(s.weather,{jwk:await pushKeys(),fetcher:async(url,options)=>{calls++;request={url,...options};return new Response(null,{status:code,headers:code===429?{'Retry-After':'7200'}:{}});}});return {...s,push,calls:()=>calls,last:()=>request,code:v=>code=v};}
 async function enroll(s){return (await s.push.subscribe('alice',{subscription,label:'Laptop'})).id;}
 test('enrollment errors distinguish unsupported services and malformed keys without leaking endpoint secrets',async()=>{
@@ -31,6 +31,29 @@ test('redirect responses are rejected without following or retrying the provider
 test('expired endpoint disables future delivery and clears queued messages; unsubscribe removes data',async()=>{const s=await fixture(),id=await enroll(s);await change(s);s.code(410);await s.push.dispatch();assert.equal((await s.push.list('alice')).devices[0].enabled,false);assert.equal((await s.push.list('alice')).deliveries[0].status,'expired');s.advance();s.wind(5);await s.service.evaluate(s.input.id,s.alerts());await s.push.dispatch();assert.equal(s.calls(),1);await s.push.remove('alice',id);assert.equal((await s.push.list('alice')).devices.length,0);assert.equal((await s.push.list('alice')).deliveries.length,0);s.db.close();});
 test('pause cancels pending delivery, resume does not replay it, and watch deletion removes queued evidence',async()=>{const s=await fixture();await enroll(s);await change(s);await s.service.change('alice',s.input.id,'pause');await s.service.change('alice',s.input.id,'resume');await s.push.dispatch();assert.equal(s.calls(),0);assert.equal((await s.push.list('alice')).deliveries[0].status,'cancelled');await s.service.change('alice',s.input.id,'delete');assert.equal((await s.push.list('alice')).deliveries.length,0);s.db.close();});
 test('test notifications require ownership, explicit request, active configuration and cooldown',async()=>{const s=await fixture(),id=await enroll(s);await assert.rejects(s.push.test('bob',id),e=>e.status===404);await s.push.test('alice',id);await assert.rejects(s.push.test('alice',id),e=>e.status===429);await s.push.dispatch();assert.equal(s.calls(),1);const d=(await s.push.list('alice')).deliveries[0];assert.equal(d.payload.title,'VentusIQ push test');assert.equal(d.status,'accepted');s.db.close();});
+
+test('delayed test survives the response and cannot be sent by concurrent upkeep before its due time',async()=>{
+ const s=await fixture(),id=await enroll(s);let now=s.weather.clock(),background,release;s.weather.clock=()=>now;
+ const response=await pushPost(post({action:'test',id,delay_seconds:10}),s.push,'alice');assert.equal(response.status,200);
+ await schedulePushDispatch(s.push,response,task=>background=task,ms=>{assert.equal(ms,10000);return new Promise(resolve=>release=resolve);});
+ assert.deepEqual(await response.json(),{queued:true,delay_seconds:10});const running=background();await s.push.dispatch();assert.equal(s.calls(),0);
+ now+=9;await s.push.dispatch();assert.equal(s.calls(),0);assert.equal((await s.push.list('alice')).deliveries[0].attempts,0);
+ now++;release();await running;assert.equal(s.calls(),1);assert.equal((await s.push.list('alice')).deliveries[0].payload.title,'VentusIQ closed-page test');s.db.close();
+});
+
+test('delayed tests keep ownership, cooldown, quiet policy and device removal controls',async()=>{
+ const s=await fixture(),id=await enroll(s);for(const delay of [-1,1,11,100000,'10',null])assert.equal((await pushPost(post({action:'test',id,delay_seconds:delay}),s.push,'alice')).status,400);
+ assert.equal((await pushPost(post({action:'test',id,delay_seconds:10}),s.push,'bob')).status,404);
+ await s.push.setQuiet('alice',id,{enabled:true,start:'20:00',end:'23:00',time_zone:'UTC'});await s.push.test('alice',id,10);await assert.rejects(s.push.test('alice',id,0),e=>e.status===429);
+ s.advance();await s.push.dispatch();assert.equal(s.calls(),0);assert.equal((await s.push.list('alice')).deliveries[0].status,'muted');
+ await s.push.setQuiet('alice',id,null);await s.push.test('alice',id,10);await s.push.remove('alice',id);s.advance();await s.push.dispatch();assert.equal(s.calls(),0);s.db.close();
+});
+
+test('only successful delayed tests schedule the bounded server wait',async()=>{
+ for(const [response,waited,scheduled] of [[Response.json({queued:true,delay_seconds:10}),true,true],[Response.json({queued:true,delay_seconds:1000}),false,true],[Response.json({removed:true}),false,true],[Response.json({error:'Wait five minutes'},{status:429}),false,false]]){
+  let task,calls=0,waits=0;await schedulePushDispatch({dispatch:async()=>calls++},response,fn=>task=fn,async()=>waits++);assert.equal(!!task,scheduled);if(task)await task();assert.equal(calls,scheduled?1:0);assert.equal(waits,waited?1:0);
+ }
+});
 test('authentication, origin and body-size checks protect all push mutations',async()=>{const s=await fixture();assert.equal((await pushGet(s.push,null)).status,401);assert.equal((await pushPost(post({action:'subscribe',subscription}),s.push,null)).status,401);assert.equal((await pushPost(post({action:'subscribe',subscription},'https://other.test'),s.push,'alice')).status,403);assert.equal((await pushPost(post({data:'x'.repeat(9000)}),s.push,'alice')).status,413);assert.equal((await s.push.list('alice')).devices.length,0);s.db.close();});
 test('failed service authorization is terminal and old queued updates expire without a network send',async()=>{const s=await fixture();await enroll(s);await change(s);s.code(403);await s.push.dispatch();assert.equal((await s.push.list('alice')).deliveries[0].status,'failed');s.advance();s.wind(5);await s.service.evaluate(s.input.id,s.alerts());for(let i=0;i<24;i++)s.advance();await s.push.dispatch();assert.equal(s.calls(),1);assert.ok((await s.push.list('alice')).deliveries.some(d=>d.status==='expired'));s.db.close();});
 test('transient failures stop at four attempts and disabled configuration sends nothing',async()=>{const s=await fixture();await enroll(s);await change(s);s.code(503);for(let i=0;i<4;i++){await s.weather.statement('UPDATE push_deliveries SET next_attempt=0').run();await s.push.dispatch();}let d=(await s.push.list('alice')).deliveries[0];assert.equal(d.status,'failed');assert.equal(d.attempts,4);await s.push.dispatch();assert.equal(s.calls(),4);const disabled=new PushService(s.weather);assert.equal((await disabled.list('alice')).configured,false);await assert.rejects(disabled.subscribe('alice',{subscription}),e=>e.status===503);await disabled.dispatch();assert.equal(s.calls(),4);s.db.close();});

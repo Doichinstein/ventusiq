@@ -1,0 +1,28 @@
+{
+  "site": "https://ventusiq.com",
+  "version": 137,
+  "commit": "8afd9a1931ae7dfd2d6562c7aeca8afc8bbe0839",
+  "browser": "Brave",
+  "provider": "fcm.googleapis.com",
+  "title": "VentusIQ push test",
+  "queued_at": "2026-10-30T21:09:30Z",
+  "accepted_at": "2026-10-30T21:09:31Z",
+  "http_status": 201,
+  "attempts": 1,
+  "display": "Owner confirmed: Yes, it appeared",
+  "closed_page": "not verified by this test",
+  "validation": {
+    "javascript_tests": 964,
+    "python_tests": 143,
+    "typescript": "passed",
+    "production_build": "passed",
+    "ci_run": "https://github.com/Doichinstein/ventusiq/actions/runs/41128817544",
+    "ci_platforms": ["Windows", "Linux"],
+    "workerd_regression": "Native fetch invocation across collection, push and webhook clients"
+  },
+  "limits": [
+    "One device and one successful test do not establish general delivery reliability.",
+    "Two earlier tests remained queued for bounded retries after transport errors.",
+    "No private endpoints, device identifiers, ownership capabilities or encryption keys are retained here."
+  ]
+}

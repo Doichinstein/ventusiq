@@ -1,5 +1,21 @@
 # Ten-feature acceptance audit
 
+## Reproducible route graph foundation (v97)
+
+A new optional local tool builds a version-pinned Valhalla graph, verifies source,
+configuration, native engine and tile hashes, and exports strict route-edge identity.
+The retained Iowa OSM fixture produced a 40-edge route with connected endpoint IDs
+and exact geometry. Moving the bundle preserved the route and edge response.
+Seven integrity/identity tests and the real native smoke check passed locally;
+Linux/Windows CI includes the native check as a separate step. See
+[methods and retained evidence](route-network.md).
+
+This advances the routing-side prerequisite for feature 6. The agency crosswalk,
+directional interpretation, source-coordinate discrepancy and actual closure
+attribution remain open; the hosted router is unchanged. Account and delivery
+checks remain deferred, and the other ten-feature acceptance requirements retain
+their existing status.
+
 ## First prospective ozone outcome (v96)
 
 A real completed monitor hour now matches a forecast retained before it began.

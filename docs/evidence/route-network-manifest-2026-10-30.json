@@ -1,0 +1,92 @@
+{
+  "schema": "ventusiq-route-network/1",
+  "created_at": "2026-10-30T01:54:42.840626+00:00",
+  "engine": {
+    "package": "pyvalhalla",
+    "version": "3.9.1",
+    "builder_sha256": "8e2f2021444a53d00a98cb7ccc70da4c1dce95a4ac3bf505a530f518867902e6",
+    "binding_sha256": "326f467583c3e9bd780693c8e8b85e2bacafe41f95de9592fc1977ba1548f2fb",
+    "bundled_libraries": {
+      "abseil_dll-04fa1fe5c03e52a350d90eac3c363b56.dll": "ec54b9182a68d4117d25474b403615e8208be12ceba08205f465167f20b5f433",
+      "freexl-1-bc3e41b35e1d4afbd579f3bac93b7121.dll": "d62ff51e5ccac08628fe5a9ed352dbc13256182ba379d7b3072afdba8f818490",
+      "geos-91588814238e7fdf580ff48bd6c1574c.dll": "4ba7898e60b44c7d3f9bd7e4339f0d0e3ff9c38c0efe6cd9c477f14267373bf4",
+      "geos_c-661953094508c896fc925eccd6b94195.dll": "a3fb1b927349193679a9b417b4b38265c8a5b98b06749353786a668049b36249",
+      "geotiff-4d417188ca3db850a735132d7be4ff70.dll": "38f66dfa764681d7831ffccfaf80dbb4bdc8de215b3ed24460e3974f040d1138",
+      "iconv-2-91533c26c726a7519f6e12c51132bf16.dll": "91533c26c726a7519f6e12c51132bf16baea803dfd6dcf285d94e097c5f933e7",
+      "jpeg62-34759b776d451d3db7a66f1ec634b865.dll": "34759b776d451d3db7a66f1ec634b8651f9c0c50e69507a57822a3808cbba1d0",
+      "libcrypto-3-x64-d0459feddffdcf1beda606727b786694.dll": "d0459feddffdcf1beda606727b78669485995e0d382e6065d4160243a8ce755a",
+      "libcurl-f261fc3e99832d4586a9c4079d0860bf.dll": "22773b320bdd043c0e6ddb3d9d0172af6758ac993121b42d04b0991dc608b17c",
+      "libczmq-29cd50ad6b66c0f367acdc6395d830ba.dll": "3ae03a9ae5172294515345f9f1b56fc8ee1df568c00a0ab91d503789ce3e12d8",
+      "libexpat-d7312f46318c3086e1845ebcf0014446.dll": "d7312f46318c3086e1845ebcf0014446cf67fbb8440e062fd2a1009cd070f67d",
+      "liblzma-17fe53edaf07a6b147e0cf5455df47fb.dll": "17fe53edaf07a6b147e0cf5455df47fb62f3a5d45a604fd0a5e5db2453e9b559",
+      "libprotobuf-lite-e07b6af4d15fc36d1cd0d0cd916c8eb4.dll": "4fde2453fba91837fa72dc972a83807ac39f079671426ab4908e94fde5e73b8b",
+      "libxml2-20f8265823d0993fcf48b9e5e2d03970.dll": "cf20cb04ac875b0123b249857ce39a65e2719c66135f3e3f8379c17ef4aedd4c",
+      "libzmq-mt-4_3_5-2014d99aa0345572196d2b7a156709f7.dll": "eb65b1ffa0578ca4fbb230eadfa2b57dde3d562a285ededc2d522425138d5adb",
+      "lua51-a860ce92ecce03bf91470b1646a67da7.dll": "a860ce92ecce03bf91470b1646a67da71c69dad6ac4f9e50c47c98101e94e3cc",
+      "lz4-c1492fee6e18b21aab0998a06e42e7eb.dll": "c1492fee6e18b21aab0998a06e42e7ebe3c9167ac939502882df1c99cfc0f6a4",
+      "minizip-95fe799d6bf1a76f98085154cef5c9cd.dll": "f36fa47a040295951ca5dea3a6108e427f193b6303cb1f3fd346017fd0bf5776",
+      "msvcp140-aa30f46a44704dd3d8207f5fe859b4f9.dll": "aa30f46a44704dd3d8207f5fe859b4f9ac0d4e53de486b18841fc586827ea946",
+      "msvcp140_1-2d2e8be4d239b1f66b612d98a2c5e82b.dll": "4ca52516b3477bc6e8621183466f4ba9ea843347e0c4a7e21e90f7c79e4b596b",
+      "prime_server-4ace0ded17f96ff3a352880b6915679c.dll": "78c8511a300b268a8caff8619bde8b781dd2bd14ee391c3b69e88e7995d0ded7",
+      "proj_9-4e2b415487ff87c5daf481593fab8332.dll": "b13b11a160435158666ecc5cfd48b3088bf3c6e0d6efab66a0fa89569e0a0415",
+      "spatialite-5c1f208ac137ca26a19f64727a39c1fa.dll": "f158365694026b4f4190d3536f477da2095d1d1a5df62ac6f2a2581aa262857a",
+      "sqlite3-1c50ce1301258a14bc549c095b0b8964.dll": "1c50ce1301258a14bc549c095b0b89645f76752e4e9c7b30c4ab3cea8329792b",
+      "tiff-42970f89246a1d70271db3a382566242.dll": "bca2afa9584e1933445841944f6c2020fa44af4a8af3ed46c2f94ad13decd6a2",
+      "zlib1-1e193924aee93f2987bfad5ab28f7040.dll": "1e193924aee93f2987bfad5ab28f7040a33f727d95647e78c19d9f1a28edb436"
+    }
+  },
+  "dataset_id": 265597273676509,
+  "source": {
+    "sha256": "f18f2f269add76adee52d7dd01fb764269c64ca9026558c704f748ae10984acf",
+    "url": "https://overpass-api.de/api/interpreter",
+    "license": "ODbL-1.0 / OpenStreetMap contributors"
+  },
+  "files": [
+    {
+      "path": "source.osm.pbf",
+      "bytes": 82502,
+      "sha256": "f18f2f269add76adee52d7dd01fb764269c64ca9026558c704f748ae10984acf"
+    },
+    {
+      "path": "tiles/0/002/990.gph",
+      "bytes": 24448,
+      "sha256": "f6cb9faebbf748533bc7139cbc5a521dafcdb48ea05cd9cd86c9277539834c49"
+    },
+    {
+      "path": "tiles/1/047/963.gph",
+      "bytes": 69120,
+      "sha256": "807100c9cb24681245b6d9c9f25bd6696ec73b9848818e281168b6e593be2d85"
+    },
+    {
+      "path": "tiles/2/000/764/975.gph",
+      "bytes": 528,
+      "sha256": "1cc85853fc07cd691c1b02f009873021a0f35c07043d762ed7c239d8f2db18d9"
+    },
+    {
+      "path": "tiles/2/000/766/414.gph",
+      "bytes": 600,
+      "sha256": "72808611956324a29966a47eb9addc34c45b325513d3cacc23de86384bc572c0"
+    },
+    {
+      "path": "tiles/2/000/766/415.gph",
+      "bytes": 503336,
+      "sha256": "60e577bea09fa5edbbf7c23baf3c29fd254fe22ff4ffd005eeb97a279e1db510"
+    },
+    {
+      "path": "tiles/2/000/767/855.gph",
+      "bytes": 576,
+      "sha256": "b52f94b7fec4645d37b06e945b9a4d57ea3c66e1ad189a697cee8a4863aed4fc"
+    },
+    {
+      "path": "valhalla.json",
+      "bytes": 9682,
+      "sha256": "439a19abd6612d8ad3abda3f9f03340b6b87311f54f7fd89e6b69a5a920524bc"
+    }
+  ],
+  "limits": [
+    "Bounded research extract; border connectivity is incomplete.",
+    "No administrative, timezone, live traffic or elevation database.",
+    "No agency crosswalk or verified closure attribution."
+  ],
+  "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e"
+}

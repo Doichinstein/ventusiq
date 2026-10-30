@@ -198,3 +198,9 @@ traffic direction, plus incident validity and freshness. No supplied bearing,
 GPS verification flag, node ID, name match or corridor overlap is promoted to that
 claim. The current feature remains agency context near a route, without rerouting
 or live traffic timing.
+
+The optional [pinned graph tool](route-network.md) now builds and verifies a local
+Valhalla graph from an explicit OSM source edition and exports connected directed
+edges using strict edge walking. It provides a reproducible routing-side basis for
+the crosswalk work. It does not yet connect agency records to those edges or change
+the hosted route provider.

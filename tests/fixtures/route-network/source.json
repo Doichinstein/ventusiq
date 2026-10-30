@@ -1,0 +1,17 @@
+{
+  "source": "https://overpass-api.de/api/interpreter",
+  "query": "[out:xml][timeout:45][maxsize:33554432];way[highway](43.04,-96.20,43.11,-96.15);(._;rel(bw)[type=restriction];);(._;>>;);out meta;",
+  "collected_at": "2026-10-30T01:47:05.503768+00:00",
+  "bytes": 1463221,
+  "sha256": "cee9a392a5b4c3d35374e804dc04cc3bac3abe61d3ab051c255484c680c01e74",
+  "license": "ODbL-1.0 / OpenStreetMap contributors",
+  "coverage": "Small Iowa research extract; not a complete state or production routing dataset.",
+  "osm_base": "2026-10-30T01:45:20Z",
+  "pbf_sha256": "f18f2f269add76adee52d7dd01fb764269c64ca9026558c704f748ae10984acf",
+  "conversion": "osmium 4.3.2 SimpleHandler -> SimpleWriter, preserving all returned nodes, ways, relations and metadata",
+  "element_counts": {
+    "nodes": 6017,
+    "ways": 1319,
+    "relations": 0
+  }
+}

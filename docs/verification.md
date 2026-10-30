@@ -2221,3 +2221,21 @@ One preliminary hour does not establish model skill, general accuracy, personal
 exposure, or CAMS PM2.5 outcomes.
 
 The complete local Python suite passed all 34 tests. JavaScript/runtime sources are unchanged; cross-platform CI runs the complete suite and hosted build for this publication.
+# Pinned routing graph checks — October 30 (v97)
+
+The optional Valhalla 3.9.1 tool built a real Sioux Center graph from the retained
+82,502-byte OSM PBF. Its local Windows build pinned all input/config/tile and native
+engine hashes. The selected route returned 40 connected edges, with exact route
+and trace geometry. A second independent build had the same graph identity, and
+copying the graph to a new directory reproduced both responses exactly.
+
+Seven focused stdlib tests passed for relocation, modified source/config/tiles,
+missing/additional tiles, rewritten manifest pins, escaping paths, valid reverse
+traversal and missing/conflicting edge evidence. All 41 Python tests passed. The
+new real native build/query/relocation smoke check passed locally and is included
+in both CI platforms. No web UI or hosted routing behavior changed. The source
+download includes the builder, verifier, tests, ODbL fixture and retained evidence.
+
+See [the graph contract and reproduction commands](route-network.md). This does
+not verify an agency crosswalk, actual road closure, national routing coverage or
+live traffic. The ten-feature goal remains incomplete on its existing gates.

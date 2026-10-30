@@ -251,6 +251,12 @@ medians on identical cases, weights shared grid/day outcomes equally, and report
 pending/missing outcomes explicitly. This is an operator validation path, not an
 accuracy badge or a substitute for the forecast-outcome acceptance evidence.
 
+The optional [pinned route-network tool](route-network.md) builds and fingerprints
+a local Valhalla graph, validates complete directed-edge responses against the
+same source geometry, and exports the graph identity for future agency crosswalks.
+It is a reproducible research boundary; it does not replace the hosted OSRM service
+or satisfy verified closure attribution by itself.
+
 ## Station temperature evaluation
 
 `StationAnalogsService` collects a bounded, fixed-window daily temperature series

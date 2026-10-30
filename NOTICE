@@ -20,6 +20,11 @@ ODbL; visible attribution links to its copyright page. NWS data and external map
 services retain their own applicable terms. Apache-2.0 covers this project's
 original code, not a relicensing of third-party data or dependencies.
 
+The Sioux Center road-network test fixture in tests/fixtures/route-network/ and
+derived route evidence in docs/evidence/route-network-* contain OpenStreetMap data
+under ODbL 1.0. Their source attribution and collection metadata are retained.
+The optional pyvalhalla runtime is installed separately and retains its own license.
+
 Hosted runtime build tools include the OpenAI Sites Vite integration, copyright
 2026 OpenAI, under its retained MIT license in scripts/vite/sites-vite-plugin.LICENSE.
 Installed dependencies retain their own licenses; Apache-2.0 applies to original

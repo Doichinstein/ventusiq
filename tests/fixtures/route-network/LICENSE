@@ -1,0 +1,9 @@
+The file sioux-center-roads.osm.pbf is OpenStreetMap data.
+Copyright OpenStreetMap contributors, licensed under the Open Database License 1.0.
+https://www.openstreetmap.org/copyright
+https://opendatacommons.org/licenses/odbl/1-0/
+
+The data was retrieved from the public Overpass API and converted without changing
+its OSM elements. The request, source time, conversion and hashes are in source.json.
+Individual OSM objects retain their source attribution and version metadata.
+This dataset is separate from VentusIQ application code licensed under Apache-2.0.

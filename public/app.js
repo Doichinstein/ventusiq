@@ -485,6 +485,7 @@ document.addEventListener('keydown', e => {
 });
 window.addEventListener('resize', () => map.invalidateSize());
 // Small public interface keeps personal planning independent of map/replay state.
+map.on('click', e => { if(pendingMapPick || (e.sourceTarget && e.sourceTarget!==map))return; window.WeatherLocations?.mapPoint(workspaceMode,e.latlng.lat,((e.latlng.lng+180)%360+360)%360-180); });
 $('workspace-map-fit').onclick = () => overlayFits.get(workspaceMode)?.();
 window.WeatherMap = {
   instance: map,
@@ -506,6 +507,7 @@ window.WeatherMap = {
     $('workspace-map-status').textContent = {journey:'Choose endpoints on the map, then compare a journey.',rivers:'Search this map area or select a gauge to see its observations.',events:'Select an event to map its recorded geometry. Current alerts are hidden.',personal:'Choose a place on the map or enter its coordinates.'}[mode] || '';
     window.WeatherHazards?.showMap(live);
     window.WeatherWatershed?.setVisible?.(live);
+    window.WeatherLocations?.setWorkspace(mode);
     requestAnimationFrame(() => map.invalidateSize());
   },
   setOverlayFit: (mode, callback) => { if(callback)overlayFits.set(mode,callback);else overlayFits.delete(mode);if(mode===workspaceMode)$('workspace-map-fit').disabled=!callback; },

@@ -1,11 +1,13 @@
 # Address search
 
-My weather accepts an explicit street-address search before the saved-place form.
-Submit a house number/street with city and state or ZIP, inspect the returned
-candidates and review the selected point on the map. **Use these coordinates**
-fills the existing form without saving it, enrolling a watch or loading a watershed.
-The user can edit the name/coordinates and save to the currently selected device
-or account list. Saved places are available to the journey and watershed tools.
+My weather, Journey and Rivers share location entry above the persistent map.
+Enter a US street address or `latitude, longitude`; coordinates need no geocoder.
+A single address match immediately previews that point. Multiple matches remain
+explicit choices. My weather map clicks preview immediately without saving a place.
+Use the separate Saved places section only to retain a location on this device.
+Journey accepts two submitted addresses or coordinates, or two map clicks; selecting
+both points on the map starts the comparison. Submitted addresses are serialized
+with at least 2.1 seconds between requests to respect the shared provider quota.
 
 ## Source and precision
 
@@ -56,20 +58,19 @@ chunked upload is not supported. Local operators should choose quotas suitable
 for their deployment before exposing it broadly.
 
 The Census API does not support browser CORS in its documented contract. Static
-copies therefore link to the official geocoder and retain manual coordinate/map
-entry. No third-party JSONP script is injected into the dashboard.
+copies therefore retain coordinate/map entry and show the address-search limitation. No third-party JSONP script is injected into the dashboard.
 
 ## UI and verification
 
 Changing or clearing the query aborts the request and invalidates old candidate
 buttons, exports and map markers. Late replies cannot restore an old result.
-Map review shows a labeled marker at the returned coordinate; form selection
-preserves full returned numeric precision. Place names default to a neutral
-“Selected address” instead of copying the submitted address into shared links.
-Existing names are preserved. The original saved-place form controls all saving.
+Map review shows a labeled marker at the returned coordinate; selection preserves
+full returned numeric precision. An address preview uses the returned address as
+its title; coordinate previews use “Selected place.” Saving remains explicit and
+allows renaming. Sharing includes the current name and coordinates.
 
 Tests cover malformed requests/results, provider bounds, ambiguity, quota rollover,
 error privacy, archive absence, explicit selection and asynchronous races. Built
 Worker and Python HTTP checks use public government-building examples. These
 checks establish service behavior, not parcel-level positional accuracy. Rendered
-browser verification remains unavailable under the saved permission restriction.
+browser verification is separate from the automated source-contract tests.

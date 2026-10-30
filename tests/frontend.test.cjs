@@ -34,7 +34,7 @@ async function setup(mode='direct',options={}) {
   const els=Object.fromEntries(ids.map(id=>[id,new Element()]));
   els.severity.value='all';els.region.value='conus';
   for(const c of ['all','Warning','Watch','Advisory']) {const b=new Element('button');b.dataset.category=c;els.categories.append(b);}
-  const map={fitBounds(){return this;},invalidateSize(){}};
+  const map={listeners:{},on(type,fn){this.listeners[type]=fn;return this;},fitBounds(){return this;},invalidateSize(){}};
   const L={map:()=>map,tileLayer:()=>({addTo(){return this;},on(){return this;}}),control:{zoom:()=>({addTo(){}})},geoJSON(data,options){
     const own=Array.isArray(data)?data:data?.type==='Feature'?[data]:[],children=new Set();
     for(const f of own)options?.onEachFeature?.(f,{bindTooltip(){},on(){}});
@@ -77,6 +77,13 @@ async function setup(mode='direct',options={}) {
   await settle();
   return {els,run,settle,stored,doc,requests,intervals,releaseAuxiliary,releaseAlerts,visibility:()=>documentListeners.visibilitychange(),key:event=>documentListeners.keydown(event),setData(data){current=data;},fail(){error=true;}};
 }
+
+test('map background picks the active workspace point while overlay and one-shot clicks remain separate',async()=>{
+  const s=await setup();s.run("window.picks=[];window.WeatherLocations={mapPoint:(...args)=>window.picks.push(args)};workspaceMode='personal';map.listeners.click({sourceTarget:map,latlng:{lat:40,lng:260}})");
+  assert.equal(s.run('JSON.stringify(window.picks)'),JSON.stringify([['personal',40,-100]]));
+  s.run("map.listeners.click({sourceTarget:{},latlng:{lat:41,lng:-101}});pendingMapPick=()=>{};map.listeners.click({sourceTarget:map,latlng:{lat:42,lng:-102}})");
+  assert.equal(s.run('window.picks.length'),1);
+});
 
 test('first network check labels fresh cached alerts as checking, then confirms the live collection',async()=>{
   const cache=payload([fixture('cached')]);

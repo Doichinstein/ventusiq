@@ -1,19 +1,94 @@
-import {addressQuery,geocodeResult} from './geocode-core.mjs';
-export function mountGeocode({document,window,fetcher=fetch}){
-  const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
-  let generation=0,controller=null,report=null,marker=null;
-  function clear(){if(marker){window.WeatherMap.instance.removeLayer(marker);marker=null;}generation++;controller?.abort();controller=null;report=null;get('address-results').replaceChildren();get('address-search').disabled=false;get('address-export').disabled=true;}
-  get('address-input').oninput=()=>{clear();get('address-status').textContent='Submit to search. No lookup runs while you type.';};
-  get('address-clear').onclick=()=>{clear();get('address-input').value='';get('address-status').textContent='Search cleared.';};
-  async function search(event){event?.preventDefault();clear();const token=generation;let query;try{query=addressQuery(get('address-input').value);}catch(e){get('address-status').textContent=e.message;return;}
-    controller=new AbortController();get('address-search').disabled=true;get('address-status').textContent='Finding address matches…';
-    try{const response=await fetcher('/api/geocode',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:query}),signal:AbortSignal.any([controller.signal,AbortSignal.timeout(25000)])}),value=await response.json();if(!response.ok)throw Error(value.error||'Address search failed.');if(token!==generation)return;
-      report={...value,...geocodeResult(value.raw,query)};get('address-export').disabled=false;get('address-status').textContent=report.matches.length?`${report.matches.length} match${report.matches.length===1?'':'es'}. Review the address and point before saving.`:'No address match returned. Include the street number, city and state or ZIP, or choose on the map.';
-      const nodes=report.matches.map(match=>{const box=el('article',undefined,'address-match');box.append(el('strong',match.address),el('p',`${match.lat.toFixed(6)}, ${match.lon.toFixed(6)} · approximate street-range location`,'small'));const use=el('button','Use these coordinates','action secondary');use.type='button';use.onclick=()=>{if(token!==generation)return;get('place-lat').value=String(match.lat);get('place-lon').value=String(match.lon);if(!get('place-name').value.trim())get('place-name').value='Selected address';get('place-message').textContent='Address coordinates filled in. Review on the map, give the place a name, then save.';get('place-name').focus();};const view=el('button','Review point on map','text-button');view.type='button';view.onclick=()=>{if(token!==generation)return;window.WeatherPersonal.show(false);window.WeatherMap.goLive();window.WeatherMap.instance.setView([match.lat,match.lon],16);if(marker)window.WeatherMap.instance.removeLayer(marker);marker=window.L.circleMarker([match.lat,match.lon],{radius:7,color:'#e7c579',fillOpacity:.6}).addTo(window.WeatherMap.instance).bindTooltip('Approximate Census address point').openTooltip();get('map-notice').hidden=false;get('map-notice').textContent='Map centered on the approximate Census address point. Return to My weather to use its coordinates, or choose a more precise point.';};box.append(use,view);return box;});get('address-results').replaceChildren(...nodes);
-    }catch(e){if(token===generation)get('address-status').textContent='Address search unavailable: '+e.message;}finally{if(token===generation){get('address-search').disabled=false;controller=null;}}
+import {coordinateQuery,locationMatches} from './location-entry-core.mjs';
+
+export function mountGeocode({document,window,fetcher=fetch,clock=Date.now}){
+  const get=id=>document.getElementById(id),map=window.WeatherMap.instance,L=window.L;
+  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
+  const controls={
+    personal:{input:'address-input',status:'address-status',results:'address-results',lat:'place-lat',lon:'place-lon'},
+    from:{input:'journey-from-query',status:'journey-from-status',results:'journey-from-matches',lat:'journey-from-lat',lon:'journey-from-lon'},
+    to:{input:'journey-to-query',status:'journey-to-status',results:'journey-to-matches',lat:'journey-to-lat',lon:'journey-to-lon'},
+    river:{input:'river-place-query',status:'river-place-status',results:'river-place-matches',lat:'river-lat',lon:'river-lon'},
+  };
+  for(const c of Object.values(controls))Object.assign(c,{generation:0,controller:null,selected:null});
+  let mode=get('workspace').dataset.view||'live',pickSide='from',editGeneration=0,tripBusy=false,lastLookup=0,queue=Promise.resolve(),report=null,placeId=null;
+  const markers=new Map();
+  function removeMarker(key){const old=markers.get(key);if(old)map.removeLayer(old);markers.delete(key);}
+  function renderMarkers(){
+    for(const key of ['personal','from','to']){
+      removeMarker(key);const c=controls[key];if(!c.selected||(key==='personal'?mode!=='personal':mode!=='journey'))continue;
+      const label=key==='personal'?'Selected place':key==='from'?'1':'2';
+      const marker=L.circleMarker([c.selected.lat,c.selected.lon],{radius:key==='personal'?8:10,color:'#101018',weight:2,fillColor:key==='to'?'#e7c579':'#88baff',fillOpacity:1});
+      marker.bindTooltip(el('span',label),{permanent:key!=='personal',direction:key==='personal'?'top':'center',className:'location-point-label'}).addTo(map);markers.set(key,marker);
+    }
   }
-  get('address-form').onsubmit=search;get('address-export').onclick=()=>{if(!report)return;const blob=new Blob([JSON.stringify({...report,exported_at:new Date().toISOString()},null,2)],{type:'application/json'}),url=window.URL.createObjectURL(blob),a=el('a');a.href=url;a.download='ventusiq-address-match.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  const supported=['hosted','daemon'].includes(window.WEATHER_CONFIG?.mode);get('address-controls').hidden=!supported;get('address-static-note').hidden=supported;get('address-card').hidden=false;
-  return {search,clear};
+  function fitPoints(keys){const points=keys.map(k=>controls[k].selected).filter(Boolean);if(!points.length)return;if(points.length===1)map.setView([points[0].lat,points[0].lon],11);else map.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lon])),{padding:[45,45],maxZoom:11});}
+  function invalidate(key,userEdit=true){const c=controls[key];c.generation++;c.controller?.abort();c.controller=null;c.selected=null;get(c.results).replaceChildren();get(c.lat).value='';get(c.lon).value='';removeMarker(key);if(key==='from'||key==='to'){if(userEdit)editGeneration++;window.WeatherJourney?.clear?.();}}
+  function pointText(p){return `${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}`;}
+  function accept(key,p,{focus=true,query=get(controls[key].input).value}={}){
+    const c=controls[key];c.selected={...p,query};get(c.input).value=query;get(c.lat).value=String(p.lat);get(c.lon).value=String(p.lon);get(c.results).replaceChildren();
+    get(c.status).textContent=`${pointText(p)}${p.kind==='address'?' · approximate Census street-range point':''}`;
+    if(key==='personal'){
+      report=p.evidence||null;get('address-export').disabled=!report;
+      window.WeatherPersonal.preview(p.kind==='address'?p.address:'Selected place',p.lat,p.lon,{query});
+    }else if(key==='from'||key==='to'){
+      window.WeatherJourney?.clear?.();pickSide=controls.from.selected?(controls.to.selected?null:'to'):'from';
+      get('journey-pick-status').textContent=pickSide?`Click point ${pickSide==='from'?'1':'2'} on the map, or enter its address.`:'Both points selected. Compare the journey or choose a point to change.';
+      window.WeatherMap.setOverlayFit?.('journey',()=>fitPoints(['from','to']));
+    }else window.WeatherRivers.search({lat:p.lat,lon:p.lon});
+    renderMarkers();if(focus)fitPoints(key==='from'||key==='to'?['from','to']:[key]);return p;
+  }
+  async function matches(query,signal){
+    const coordinate=coordinateQuery(query);if(coordinate)return [coordinate];
+    // Serialize submitted Journey addresses to respect the shared Census limit.
+    const work=queue.catch(()=>{}).then(async()=>{const wait=Math.max(0,2100-(clock()-lastLookup));if(wait)await new Promise(r=>window.setTimeout(r,wait));signal.throwIfAborted();lastLookup=clock();return locationMatches(query,{fetcher,signal,mode:window.WEATHER_CONFIG?.mode});});queue=work;return work;
+  }
+  async function resolve(key,{focus=true}={}){
+    const c=controls[key],query=get(c.input).value.trim();if(c.selected?.query===query)return c.selected;
+    invalidate(key,false);const token=c.generation;c.controller=new AbortController();get(c.status).textContent='Finding this location…';
+    try{
+      const results=await matches(query,AbortSignal.any([c.controller.signal,AbortSignal.timeout(55000)]));if(token!==c.generation)return null;
+      if(results.length===1)return accept(key,results[0],{query,focus});
+      get(c.status).textContent=results.length?'Choose the matching address below.':'No address match. Include street number, city and state or ZIP, or click the map.';
+      get(c.results).replaceChildren(...results.map(p=>{const button=el('button',`${p.address} · ${pointText(p)}`,'address-choice');button.type='button';button.onclick=()=>{if(token===c.generation)accept(key,p,{query,focus:true});};return button;}));return null;
+    }catch(error){if(token===c.generation)get(c.status).textContent=error.message;return null;}
+    finally{if(token===c.generation)c.controller=null;}
+  }
+  async function compare(event){
+    event?.preventDefault();if(tripBusy)return;tripBusy=true;const token=editGeneration;get('journey-submit').disabled=true;
+    try{const first=await resolve('from',{focus:false});if(!first||token!==editGeneration)return;const second=await resolve('to',{focus:false});if(!second||token!==editGeneration)return;fitPoints(['from','to']);await window.WeatherJourney.run();}
+    finally{tripBusy=false;get('journey-submit').disabled=false;}
+  }
+  for(const [key,c] of Object.entries(controls))get(c.input).oninput=()=>{invalidate(key);if(key==='personal'){window.WeatherPersonal.clearPreview();report=null;get('address-export').disabled=true;}get(c.status).textContent='Submit to use this location. No lookup runs while you type.';};
+  get('address-form').onsubmit=e=>{e.preventDefault();return resolve('personal');};
+  get('address-clear').onclick=()=>{invalidate('personal');get('address-input').value='';report=null;get('address-export').disabled=true;window.WeatherPersonal.clearPreview();get('address-status').textContent='Click the map or enter a location.';};
+  get('pick-on-map').textContent='Pick on map';get('pick-on-map').onclick=()=>{get('address-status').textContent='Click anywhere on the map to see its weather.';get('map-canvas').scrollIntoView({behavior:'smooth',block:'nearest'});};
+  get('use-location').onclick=()=>{
+    if(!window.navigator.geolocation){get('address-status').textContent='Location is unavailable. Use the map or enter coordinates.';return;}
+    get('address-status').textContent='Requesting your location…';window.navigator.geolocation.getCurrentPosition(p=>{invalidate('personal');const point={lat:p.coords.latitude,lon:p.coords.longitude,kind:'coordinates'};accept('personal',point,{query:pointText(point)});},()=>{get('address-status').textContent='Location could not be read. Use the map or enter coordinates.';},{timeout:12000});
+  };
+  for(const key of ['from','to']){
+    get(`journey-${key}-search`).onclick=()=>resolve(key);
+    get(`journey-${key}-map`).onclick=()=>{pickSide=key;get('journey-pick-status').textContent=`Click point ${key==='from'?'1':'2'} on the map.`;get('map-canvas').scrollIntoView({behavior:'smooth',block:'nearest'});};
+  }
+  get('journey-form').onsubmit=compare;
+  get('journey-clear-points').onclick=()=>{for(const key of ['from','to']){invalidate(key);get(controls[key].input).value='';get(controls[key].status).textContent='';}pickSide='from';get('journey-pick-status').textContent='Click point 1, then point 2 on the map.';};
+  get('river-region-form').onsubmit=e=>{e.preventDefault();return resolve('river');};
+  get('address-static-note').hidden=['hosted','daemon'].includes(window.WEATHER_CONFIG?.mode);
+  get('address-export').onclick=()=>{if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-address-match.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
+  window.WeatherLocations={
+    setWorkspace(value){mode=value;renderMarkers();},
+    syncPlace(p){
+      get('place-form').querySelector('button[type="submit"]').disabled=!p;
+      if((p?.id||null)===placeId)return;placeId=p?.id||null;const c=controls.personal;c.selected=p?{...p,query:p.input_query||pointText(p)}:null;
+      if(p){get('address-input').value=c.selected.query;get('place-lat').value=p.lat;get('place-lon').value=p.lon;get('place-name').value=p.name;window.WeatherMap.setOverlayFit?.('personal',()=>fitPoints(['personal']));}
+      else window.WeatherMap.setOverlayFit?.('personal',null);renderMarkers();
+    },
+    journeyFilled(){const points=['from','to'].map(key=>({key,lat:Number(get(controls[key].lat).value),lon:Number(get(controls[key].lon).value),valid:get(controls[key].lat).value!==''&&get(controls[key].lon).value!==''}));for(const {key,lat,lon,valid} of points)if(valid){invalidate(key);accept(key,{lat,lon,kind:'coordinates'},{query:pointText({lat,lon}),focus:false});}},
+    mapPoint(view,lat,lon){const point={lat,lon,kind:'coordinates'};
+      if(view==='personal'){invalidate('personal');accept('personal',point,{query:pointText(point),focus:false});}
+      if(view==='journey'&&pickSide){const key=pickSide;invalidate(key);accept(key,point,{query:pointText(point),focus:false});if(controls.from.selected&&controls.to.selected)window.WeatherJourney.run();}
+      if(view==='rivers'){invalidate('river');accept('river',point,{query:pointText(point),focus:false});}
+    },
+  };
+  return {resolve,compare,controls};
 }
-if(typeof window!=='undefined'){const start=()=>mountGeocode({document,window});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}

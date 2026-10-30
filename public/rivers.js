@@ -84,7 +84,7 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
 
     try{id=gaugeId(id);}catch(error){get('river-status').textContent=error.message;return;}
 
-    show();const generation=++gaugeGeneration;selected=id;window.WeatherWatches?.refreshGauge(null);window.WeatherRiverChanges?.updateGauge(null);window.WeatherRiverNetwork?.updateGauge(null);get('river-id').value=id;get('river-status').textContent='Loading '+id+' observations and forecast…';get('river-detail').hidden=true;renderList();
+    show();window.WeatherExplorer?.collapse(get("river-detail"));const generation=++gaugeGeneration;selected=id;window.WeatherWatches?.refreshGauge(null);window.WeatherRiverChanges?.updateGauge(null);window.WeatherRiverNetwork?.updateGauge(null);get('river-id').value=id;get('river-status').textContent='Loading '+id+' observations and forecast…';get('river-detail').hidden=true;renderList();
 
     const entry=await load('gauge/'+id);if(generation!==gaugeGeneration)return;renderGauge(entry);if(entry.data){drawMarkers(pointCollection(entry.data),'gauge/'+id);const m=entry.data.metadata;if(visible&&Number.isFinite(m.latitude)&&Number.isFinite(m.longitude))window.WeatherMap.focus(m.latitude,m.longitude);}
 
@@ -206,7 +206,7 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
 
   }
 
-  get('nav-rivers').onclick=()=>{show();if(!region){const center=map.getCenter();search({lat:center.lat,lon:((center.lng+180)%360+360)%360-180});}};
+  get('nav-rivers').onclick=show;
 
   get('river-map-center').onclick=()=>{const center=map.getCenter();search({lat:center.lat,lon:((center.lng+180)%360+360)%360-180});};
 
@@ -220,7 +220,7 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
 
   get('river-map-clear').onclick=()=>{if(markers)map.removeLayer(markers);markers=null;markerData=null;window.WeatherMap.setOverlayFit?.('rivers',null);syncMarkers();};
 
-  window.WeatherRivers={hide,openGauge,currentProduct:()=>cache.get('gauge/'+selected)?.data||null,acceptProduct(data){if(data?.metadata?.lid!==selected)return;const entry={data,retry:clock()+900000,error:data.error||null};cache.set('gauge/'+selected,entry);renderGauge(entry);},setReplay(value){replay=value;syncMarkers();},updatePlace(value){place=value;renderPlace();}};
+  window.WeatherRivers={hide,openGauge,search,currentProduct:()=>cache.get('gauge/'+selected)?.data||null,acceptProduct(data){if(data?.metadata?.lid!==selected)return;const entry={data,retry:clock()+900000,error:data.error||null};cache.set('gauge/'+selected,entry);renderGauge(entry);},setReplay(value){replay=value;syncMarkers();},updatePlace(value){place=value;renderPlace();}};
 
   window.setInterval(()=>{if(visible){if(region&&regionOrigin)search(regionOrigin,{showOnMap:markerData?.key===region});if(selected){const id=selected;load('gauge/'+id).then(entry=>{if(selected===id)renderGauge(entry);});}}if(place)renderPlace();if(markerData){const key=markerData.key;load(key).then(entry=>{if(markerData?.key!==key)return;drawMarkers(entry.data?(key.startsWith('gauge/')?pointCollection(entry.data):entry.data):{...markerData.data,stale:true},key);});}},60000);
 

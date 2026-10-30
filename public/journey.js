@@ -82,7 +82,9 @@ export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
 
   }
 
+  function clear(){generation++;abort?.abort();report=null;if(layers)map.removeLayer(layers);layers=null;window.WeatherMap.setOverlayFit?.("journey",null);get("journey-results").hidden=true;get("journey-export").disabled=true;get("journey-submit").disabled=false;get("journey-status").textContent="Choose two points above the map to compare your journey.";}
   async function run(){
+    window.WeatherExplorer?.collapse(get("journey-results"));
 
     const gen=++generation;if(abort)abort.abort();abort=new AbortController();const signal=abort.signal;report=null;window.WeatherMap.setOverlayFit?.('journey',null);if(layers)map.removeLayer(layers);layers=null;get('journey-results').hidden=true;get('journey-export').disabled=true;get('journey-submit').disabled=true;
 
@@ -126,7 +128,7 @@ export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
 
   for(const side of ['from','to','via1','via2','via3']){
 
-    get('journey-'+side+'-place').onchange=()=>{const p=window.WeatherPersonal.places?.().find(p=>p.id===get('journey-'+side+'-place').value);if(p){get('journey-'+side+'-lat').value=p.lat;get('journey-'+side+'-lon').value=p.lon;}};
+    get('journey-'+side+'-place').onchange=()=>{const p=window.WeatherPersonal.places?.().find(p=>p.id===get('journey-'+side+'-place').value);if(p){get('journey-'+side+'-lat').value=p.lat;get('journey-'+side+'-lon').value=p.lon;if(side==='from'||side==='to')window.WeatherLocations?.journeyFilled();}};
 
     get('journey-'+side+'-map').onclick=()=>{show();get('map-notice').hidden=false;get('map-notice').textContent='Click a road location for your journey '+(side==='from'?'start':side==='to'?'destination':side.replace('via','via '))+'.';window.WeatherMap.pick((lat,lon)=>{get('journey-'+side+'-lat').value=lat.toFixed(4);get('journey-'+side+'-lon').value=lon.toFixed(4);show();});};
 
@@ -134,11 +136,11 @@ export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
 
   for(const side of ['via1','via2','via3'])get('journey-'+side+'-clear').onclick=()=>{get('journey-'+side+'-lat').value='';get('journey-'+side+'-lon').value='';get('journey-'+side+'-minutes').value='0';get('journey-'+side+'-place').value='';};
 
-  get('journey-example').onclick=()=>{for(const [id,v] of [['via1-lat',''],['via1-lon',''],['via1-minutes',0],['via2-lat',''],['via2-lon',''],['via2-minutes',0],['via3-lat',''],['via3-lon',''],['via3-minutes',0],['from-lat',38.8977],['from-lon',-77.0365],['to-lat',39.2904],['to-lon',-76.6122]])get('journey-'+id).value=v;};
+  get('journey-example').onclick=()=>{for(const [id,v] of [['via1-lat',''],['via1-lon',''],['via1-minutes',0],['via2-lat',''],['via2-lon',''],['via2-minutes',0],['via3-lat',''],['via3-lon',''],['via3-minutes',0],['from-lat',38.8977],['from-lon',-77.0365],['to-lat',39.2904],['to-lon',-76.6122]])get('journey-'+id).value=v;window.WeatherLocations?.journeyFilled();};
 
   get('journey-export').onclick=()=>{if(!report)return;const url=window.URL.createObjectURL(new Blob([JSON.stringify({...report,selected_departure:selected},null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-journey.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
 
-  window.WeatherJourney={show,hide};return {show,hide,run};
+  window.WeatherJourney={show,hide,run,clear};return {show,hide,run,clear};
 
 }
 

@@ -13,6 +13,28 @@ without substituting current boundaries. Live alerts, fires, air, satellite,
 smoke, detections and watershed context detach when entering unrelated tools.
 Late requests may update cached results but cannot attach an inactive overlay.
 
+## Entry and results
+
+`workspace-explorer.mjs` moves existing controls above the map while retaining their
+IDs and listeners. The left column contains a concise selection summary and native
+`details` categories, closed initially and on a new selection. Background updates
+preserve expanded sections. On narrow screens entry and map precede results.
+
+My weather starts without a selected place, even if saved places exist. Address,
+coordinate and map selections create an in-memory briefing; they do not persist a
+place or enroll a watch. Saving is a separate explicit action. Shared place links
+also preview without saving. The location controller marks the selected point and
+invalidates pending lookups when the query changes. Older forecasts cannot replace
+a newer selection.
+
+Journey accepts Point 1 and Point 2 as US street addresses or coordinate pairs.
+Two map clicks fill the endpoints and run a comparison; point-specific map buttons
+allow replacing either endpoint. Departure time, saved places, via points and
+provider options are in an expandable panel. Route results are grouped by departure
+comparison, weather, alerts, roads, smoke and source coverage. Rivers keeps search
+above the map and groups gauge matches and gauge detail. Events keeps archive
+filters above the map and groups matching events and historical evidence.
+
 ## No sign-in
 
 Places and planner preferences remain in local browser storage. There is no

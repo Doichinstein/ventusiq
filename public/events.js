@@ -51,7 +51,7 @@ export function mountEvents({document,window,fetcher=fetch}){
 
   async function openStory(nextId,nextAt=null,{resolve=false,focus=false}={}){
 
-    show();clearMap();const gen=++generation;story=null;window.WeatherEventBundle?.refresh();window.WeatherEventReports?.updateStory(null);window.WeatherEventObservations?.updateStory(null);window.WeatherEventGauges?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
+    show();window.WeatherExplorer?.collapse(get("event-detail"));clearMap();const gen=++generation;story=null;window.WeatherEventBundle?.refresh();window.WeatherEventReports?.updateStory(null);window.WeatherEventObservations?.updateStory(null);window.WeatherEventGauges?.updateStory(null);get('event-detail').hidden=true;try{validEventId(nextId);}catch(error){get('event-status').textContent=error.message;return;}
 
     id=nextId;asof=nextAt;story=null;get('event-detail').hidden=true;get('event-status').textContent=resolve?'Retrieving up to five referenced messages from NWS…':'Reading the collected timeline…';
 

@@ -90,8 +90,10 @@ let users navigate related gauges and export the original associations. Directio
 conflicts, incomplete coverage and stale checks remain explicit.
 
 **Address search** finds Census street-address matches in the hosted and Python
-editions. Review the approximate point on the map, then fill the existing place
-form and save explicitly. Searches are not archived; raw match evidence can be
+editions. Enter addresses or coordinates above the map in My weather, Journey
+or Rivers. Map clicks choose points directly; My weather opens a temporary briefing
+without saving a place. Results are grouped into collapsed categories. Searches
+are not archived; raw match evidence can be
 downloaded. See [address search](docs/address-search.md).
 
 **Watershed geography** links a selected place to its USGS catchment and indexed

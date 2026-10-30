@@ -45,8 +45,23 @@ test('save a place, load source shape, show windows and restore on reload',async
   assert.match(app.els['place-alerts'].textContent,/No matching alerts/);
   assert.equal(app.requests.length,2);
   const next=await setup(app.saved());next.els['nav-personal'].onclick();
-  assert.equal(next.els['place-title'].textContent,'Home');
   assert.equal(next.els['place-list'].children.length,1);
+  assert.equal(next.window.WeatherPersonal.current(),undefined);
+  assert.equal(next.els['place-content'].hidden,true);
+  next.els['place-list'].children[0].onclick();
+  assert.equal(next.els['place-title'].textContent,'Home');
+});
+
+test('temporary selections load immediately without persisting; old responses cannot replace a newer point',async()=>{
+  const app=await setup();app.delay();
+  app.window.WeatherPersonal.preview('First point',37,-122);await app.settle();
+  assert.equal(app.els['place-content'].hidden,false);
+  assert.equal(app.saved(),null);assert.equal(app.window.WeatherPersonal.places().length,0);
+  app.window.WeatherPersonal.preview('Second point',38,-121);await app.settle();
+  app.release(1,80);await app.settle();app.release(0,40);await app.settle();
+  assert.equal(app.els['place-title'].textContent,'Second point');
+  assert.match(app.els['place-outlook'].textContent,/80–80°F/);
+  app.window.WeatherPersonal.clearPreview();assert.equal(app.els['place-content'].hidden,true);assert.equal(app.saved(),null);
 });
 test('place removal persists and does not leave the old briefing visible',async()=>{
   const app=await setup();await app.add();app.els['remove-place'].onclick();

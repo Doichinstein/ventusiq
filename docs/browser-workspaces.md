@@ -113,3 +113,44 @@ credentials: watch creation, optional push enablement and webhook enrollment wer
 available, with zero watches/devices/destinations. Refresh retained the empty list
 and produced no captured browser warnings or errors. No enrollment button was
 clicked in that browser check; it verifies the initial controls only.
+
+### Live baseline and populated-feed verification
+
+`scripts/check-watch-baselines-live.py` is a separate, explicit hosted integration
+check. It creates three disposable watches sequentially: four forecast thresholds
+at the public 39,-77 sample point, the precipitation/wind rule at Atka, and the
+official minor-flood threshold at DLAF1. It requires usable source evidence rather
+than treating an empty or unknown baseline as a pass. A river forecast may remain
+unknown with an explicit coverage explanation; its latest observation must be usable.
+
+Each case waits for its initial baseline, compares populated Atom IDs with retained
+history, pauses/resumes, and verifies a newly timestamped check without duplicating
+the initial baseline. It retains matching forecast/gauge editions for independent
+arithmetic checks. All watches are deleted, their detail/feed reads must return 404,
+and the fresh browser owner must finish with no watches, push devices or webhooks.
+
+```sh
+python scripts/check-watch-baselines-live.py --origin https://YOUR-SITE --output baseline-evidence.json --run-live-check
+```
+
+Run only against a deployment you operate. The output must be a new file. Service
+authorization is entered through hidden stdin; random browser/feed capabilities stay
+in process memory. Redirects are rejected, private responses require no-store, and
+the retained report is checked for credential leakage. Cleanup retries retain the
+process and prompt after repeated failures; do not terminate before cleanup succeeds.
+
+This triggers the existing visitor/mutation upkeep path. It does not prove scheduled
+execution, a real weather-state transition, rendered enrollment, closed-browser push
+display or delivery to an external webhook receiver. No delivery destination is enrolled.
+
+The October 30 run completed at 19:40 UTC with all three cases passing and cleanup
+verified. Its [retained source-backed evidence](evidence/watch-baselines-live-2026-10-30.json)
+contains six initial/recheck snapshots and 151 HTTP requests, including progress
+polls. The request count is not a count of independent acceptance tests.
+`python scripts/verify-watch-baselines.py docs/evidence/watch-baselines-live-2026-10-30.json`
+independently reconstructs weather peaks/first-hit times, compound windows and
+premise references, river observed/future states and sampled coverage, and feed IDs.
+It imports no application calculation code and performs no network requests.
+Ten retained-evidence tests include nine deliberately corrupted cases to check
+that wrong values, omitted conditions, duplicate premises/baselines, wrong segment
+references, observed/forecast confusion and feed mismatches are rejected.

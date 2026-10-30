@@ -2648,3 +2648,40 @@ production packaging. The preceding compact-layout v124 CI run 41113953918 compl
 successfully; the v125 Linux/Windows matrix also passed in run 41114963604.
 These live checks establish one source-backed display/export flow, not field accuracy
 or physical-device behavior.
+
+## October 30, 2026 — source-backed live watch baselines
+
+The v126 Linux/Windows CI run 41115537287 completed successfully. The next live
+audit used one fresh browser capability, three temporary watches and no account,
+push device or webhook receiver. Initial checks and post-resume rechecks completed
+between 19:33:40 and 19:40:03 UTC; the report finished at 19:40:11 UTC. Every watch
+was removed, its detail and feed returned 404, and final watch/device/receiver lists
+were empty. There are 151 HTTP requests, mostly progress polls, not 151 separate
+feature tests.
+
+- Weather at the public 39,-77 sample point: the next 24 hours had complete hourly
+  coverage. Wind peaked at 12 mph against a 10 mph threshold; rain probability
+  peaked at 1% against 50%; the high was 73°F against 80°F and low 44°F against 40°F.
+- Atka compound watch: precipitation probability at least 60% and sustained wind
+  at least 25 mph produced 20 hourly premises grouped into three windows. The first
+  retained period had 50 mph wind and 93% rain probability. The already-started
+  current hourly period remains in the rule's source-valid window.
+- DLAF1 river watch: the official minor threshold was 4 ft. The latest observation
+  was 3.96 ft at 18:30 UTC, below that threshold. Twelve future samples fell within
+  the 72-hour window; the first reaching 4 ft was October 31 at 00:00 UTC. Source
+  samples bracketed both window ends with no gaps exceeding 12 hours. This does
+  not establish a continuous crossing instant or address-level flooding.
+
+All cases retained one initial baseline after the repeat check. Their populated
+Atom IDs matched history and contained no management/feed capabilities. The
+[sanitized evidence](evidence/watch-baselines-live-2026-10-30.json) includes exact
+hourly/gauge editions matching both snapshots' revisions. The stdlib-only
+`verify-watch-baselines.py` independently reconstructs threshold peaks/first times,
+all compound windows and segment-to-premise mappings, gauge observation/forecast
+states and sampled coverage. It imports no application evaluator. Ten evidence
+tests passed, including nine counterfactual corruptions that must fail.
+
+These were visitor/mutation-triggered upkeep runs. They verify actual baseline
+integration, private populated feeds and recheck deduplication, not real weather
+transitions, scheduler provenance, rendered enrollment, closed-browser push display
+or external webhook receipt. Those acceptance gates remain open.

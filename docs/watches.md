@@ -70,6 +70,9 @@ their existing local places and operator-configured daemon watches.
 Core method version: `2026-10-29.1`. The live HTTP ownership lifecycle is checked
 separately from rendered enrollment and actual delivery; see
 [browser ownership verification](browser-workspaces.md#live-http-ownership-verification).
+Live weather, compound and river baselines, populated feeds and pause/resume
+rechecks also have [independent retained-source verification](browser-workspaces.md#live-baseline-and-populated-feed-verification).
+Those checks establish baseline integration, not actual weather transitions or delivery.
 
 
 ## River gauge watches

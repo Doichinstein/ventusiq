@@ -80,7 +80,7 @@ checks and the production build. Detailed records are in [verification](verifica
    remains pending. Legacy account tests remain deferred; notification testing is authorized.
 2. **Road attribution: source and engineering work.** Establish a real reviewed
    agency crosswalk and current incident association before activating closure
-   claims. Multi-leg event evaluation is implemented and tested; hosted activation remains additional work;
+   claims. Multi-leg event evaluation is connected through the optional native endpoint to hosted comparisons and export; real reviewed-data activation remains additional work;
    native deployment needs an appropriate host and coverage plan.
 3. **Scientific evaluation: outcome availability and broader samples.** Continue
    chronological, baseline-matched evaluation without substituting later forecasts.

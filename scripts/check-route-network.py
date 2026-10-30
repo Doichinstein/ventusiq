@@ -117,4 +117,5 @@ with tempfile.TemporaryDirectory(prefix="ventusiq-route-network-") as temp:
         "synthetic_event_arrival_checks": "passed",
         "synthetic_event_passage": event_result["passages"][0]["estimated_passage"],
         "native_http_route_cases": [case["summary"] for case in http_result["cases"]],
+        "reviewed_event_endpoint": http_result["reviewed_event_endpoint"],
         "closure_attribution_verified": False}, indent=2))

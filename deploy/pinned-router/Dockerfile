@@ -6,7 +6,7 @@ COPY deploy/pinned-router/requirements.txt /app/requirements.txt
 RUN python -m pip install --no-cache-dir --only-binary=:all: --require-hashes -r requirements.txt \
     && useradd --create-home --uid 10001 router \
     && mkdir /data && chown router:router /data
-COPY scripts/route-network.py scripts/pinned-router.py /app/scripts/
+COPY scripts/route-network.py scripts/pinned-router.py scripts/pinned-events.py scripts/route-event.py scripts/route-crosswalk.py scripts/route-review.py /app/scripts/
 COPY LICENSE NOTICE /app/
 USER 10001:10001
 EXPOSE 8766

@@ -99,6 +99,11 @@ export async function GET(request:Request){
     if(path==='/api/history/stations/daily')return json(await new StationHistoryService(service).daily(url.searchParams.get('id'),url.searchParams.get('date')));
     if(path==='/api/history/stations/temperatures')return json(await new StationAnalogsService(service).history(url.searchParams.get('id')));
     if(path==='/api/journey/roadwork')return json(await new RoadworkService(service).feed(url.searchParams.get('feed')));
+    if(path==='/api/journey/events'){
+      let via=[],departures=[];try{const input=url.searchParams.get('via')||'[]',dates=url.searchParams.get('departures')||'[]';if(input.length>1000||dates.length>200)throw Error();via=journeyStops(JSON.parse(input));departures=JSON.parse(dates);}catch{return json({error:'Invalid road-event timing or via points'},400);}
+      const {reviewedEvents}=await import('../../../lib/journey-events.mjs');
+      return json(await reviewedEvents(new JourneyService(service,{pinnedRouter:pinnedRouterConfig(env)}),url.searchParams.get('fromLat'),url.searchParams.get('fromLon'),url.searchParams.get('toLat'),url.searchParams.get('toLon'),via,departures,url.searchParams.get('revision')));
+    }
     if(path==='/api/journey/route'){
       let via=[];try{const input=url.searchParams.get('via')||'[]';if(input.length>1000)throw Error();via=journeyStops(JSON.parse(input));}catch{return json({error:'Invalid via points'},400);}
       return json(await new JourneyService(service,{pinnedRouter:pinnedRouterConfig(env)}).route(url.searchParams.get('fromLat'),url.searchParams.get('fromLon'),url.searchParams.get('toLat'),url.searchParams.get('toLon'),via));

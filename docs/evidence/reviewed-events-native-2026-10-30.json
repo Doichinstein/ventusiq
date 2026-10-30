@@ -1,0 +1,83 @@
+{
+  "observed_at": "2026-10-30T22:17:35.710501+00:00",
+  "platform": "Windows amd64; Python 3.13; pyvalhalla 3.9.1",
+  "command": "python scripts/check-route-network.py",
+  "reviews_are_synthetic": true,
+  "report": {
+    "status": "passed",
+    "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+    "edges": 40,
+    "relocated_identically": true,
+    "reverse_corridor_edge_pairs": 21,
+    "synthetic_crosswalk_partial_edge_checks": "passed",
+    "synthetic_event_arrival_checks": "passed",
+    "synthetic_event_passage": [
+      "2026-10-30T00:00:00.561429+00:00",
+      "2026-10-30T00:00:02.566531+00:00"
+    ],
+    "native_http_route_cases": [
+      {
+        "legs": 1,
+        "vertices": 44,
+        "edges": 40,
+        "driving_seconds": 195.493,
+        "stopped_seconds": 0,
+        "graph": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+        "event_timing": {
+          "event_and_reviews": "synthetic",
+          "without_stops": "reviewed_reported_closure_overlap",
+          "with_stops": "reviewed_reported_closure_overlap",
+          "stop_seconds": 0,
+          "final_leg_departure": "2026-10-30T00:00:00+00:00",
+          "final_leg_passage_without_stops": [
+            "2026-10-30T00:00:01.310000+00:00",
+            "2026-10-30T00:00:03.930000+00:00"
+          ],
+          "field_closure_verified": false
+        }
+      },
+      {
+        "legs": 2,
+        "vertices": 44,
+        "edges": 40,
+        "driving_seconds": 195.485,
+        "stopped_seconds": 1800,
+        "graph": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+        "event_timing": {
+          "event_and_reviews": "synthetic",
+          "without_stops": "reviewed_reported_closure_overlap",
+          "with_stops": "no_reviewed_time_overlap",
+          "stop_seconds": 1800,
+          "final_leg_departure": "2026-10-30T00:32:07.459000+00:00",
+          "final_leg_passage_without_stops": [
+            "2026-10-30T00:02:07.812500+00:00",
+            "2026-10-30T00:02:08.519500+00:00"
+          ],
+          "field_closure_verified": false
+        }
+      }
+    ],
+    "reviewed_event_endpoint": {
+      "status": "passed",
+      "real_http_subprocess_and_js_contract": true,
+      "reviews": "synthetic",
+      "cases": [
+        {
+          "stop_minutes": 0,
+          "statuses": [
+            "reviewed_reported_closure_overlap",
+            "no_reviewed_time_overlap"
+          ]
+        },
+        {
+          "stop_minutes": 30,
+          "statuses": [
+            "no_reviewed_time_overlap",
+            "no_reviewed_time_overlap"
+          ]
+        }
+      ]
+    },
+    "closure_attribution_verified": false
+  }
+}

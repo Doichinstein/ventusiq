@@ -51,7 +51,7 @@ not proof of a successful route, full coverage or valid incident attribution.
 `deploy/pinned-router/Dockerfile` provides an optional Linux amd64 image. Its
 official Python 3.12 base is pinned by manifest digest; the pyvalhalla 3.9.1 wheel
 is pinned by [PyPI's SHA-256](https://pypi.org/project/pyvalhalla/3.9.1/#files).
-The dedicated Docker build context admits only two service scripts, the dependency
+The dedicated Docker build context admits only the six routing/review scripts, the dependency
 lock and license notices. Graphs and runtime secrets are never image inputs.
 Other architectures are not supported by this wheel lock or tested by this check.
 Updating either pin is an explicit rebuild and native validation task.
@@ -163,9 +163,11 @@ Results show the actual provider, graph identity and original native evidence.
 Stop insertion changes the displayed timeline, while retained native probes keep
 their original geometry and times. This makes them usable by the offline
 [crosswalk matcher](route-network.md#match-an-explicitly-reviewed-crosswalk).
-The matcher is not yet applied to live agency events by the service: an approved
-real crosswalk, event-to-LRS semantics, lane impact, freshness and arrival-time
-applicability are still required before a verified closure is displayed.
+The optional [reviewed-event endpoint](reviewed-route-events.md) now applies the
+matcher to an operator-pinned bundle for each departure and stop plan. It remains
+unconfigured on the public deployment. A real reviewed crosswalk and current
+event association are still required; output describes reported restrictions,
+never field verification or driving access.
 
 ## Reproduce the integration check
 

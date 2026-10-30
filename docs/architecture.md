@@ -236,8 +236,10 @@ weather sampling, stops and export. OSRM remains the configured public default.
 The offline event evaluator now connects separately reviewed WZDx 4.1 editions
 to estimated native-edge passage times across ordered legs and planned stops,
 preserving partial restrictions, stale records and boundary uncertainty.
-Road-event applicability while stopped remains unevaluated. Journey now summarizes full-stop hourly weather coverage and ranges from its existing NWS forecast/gust products, independently of its driving samples; missing fields withhold their whole-stop ranges. Separately, the public Journey smoke module now exports stationary-stop linear interpolation diagnostics (whole-stop mean, estimated threshold duration and explicit missing intervals) from its existing RAP products. These estimates are not validated personal exposure. The native service does not activate those
-associations. A real approved crosswalk and time-valid event association remain required; see
+Road-event applicability while stopped remains unevaluated. Journey now summarizes full-stop hourly weather coverage and ranges from its existing NWS forecast/gust products, independently of its driving samples; missing fields withhold their whole-stop ranges. Separately, the public Journey smoke module now exports stationary-stop linear interpolation diagnostics (whole-stop mean, estimated threshold duration and explicit missing intervals) from its existing RAP products. These estimates are not validated personal exposure. The native service now has an optional [reviewed-event HTTP path](reviewed-route-events.md),
+connected to hosted Journey comparisons and export. It requires an operator-pinned
+bundle and remains unconfigured on the public deployment. A real approved crosswalk
+and time-valid event association remain required; see
 [route-network methods](route-network.md) and [backend setup](pinned-router.md).
 
 ## Sequence and current state

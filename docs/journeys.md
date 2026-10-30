@@ -268,3 +268,11 @@ coverage, clipped segments, hourly source indices and original gust interval evi
 The existing source collection in the same export retains the raw hourly periods.
 These summaries concern the snapped road point; access to an off-road stop remains
 unassessed. They do not establish road-event attribution or physical conditions.
+
+## Optional reviewed road events
+
+The opt-in [reviewed-event path](reviewed-route-events.md) evaluates pinned agency
+associations for each departure, including planned stop delays, with collapsed
+source/review evidence and JSON export. It sends departure times and stop durations
+to the configured native service. Public OSRM routing has no reviewed-event
+coverage; unavailable results never remove available weather or establish open roads.

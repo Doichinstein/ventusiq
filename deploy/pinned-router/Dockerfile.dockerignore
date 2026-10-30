@@ -2,6 +2,10 @@
 !scripts/
 !scripts/pinned-router.py
 !scripts/route-network.py
+!scripts/pinned-events.py
+!scripts/route-event.py
+!scripts/route-crosswalk.py
+!scripts/route-review.py
 !deploy/
 !deploy/pinned-router/
 !deploy/pinned-router/requirements.txt

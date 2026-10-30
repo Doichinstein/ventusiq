@@ -2798,3 +2798,33 @@ browser export and direct NOAA response are retained in the external verificatio
 folder. The frozen regression reproduces this real transition; evaluating the
 old collection later returns stale instead of continuing to assert applicability.
 Thirteen focused revision tests passed.
+
+
+## October 30: receiver template and rendered compound watch (v139)
+
+The public source now includes the Apache-2.0 Cloudflare receiver deployment
+bundle. [Live receiver evidence](evidence/webhook-live-2026-10-30.json) records
+signed receipt into the external D1 inbox, duplicate handling and rejection
+checks. The real queue retry remains pending until 22:48:01 UTC or later upkeep.
+[Rendered compound-watch evidence](evidence/compound-watch-rendered-2026-10-30.json)
+records enrollment, an initial baseline, expandable premises, export and pause at
+the public Atka test point. Independent NOAA source arithmetic matched all 12
+premises. This is not a live threshold transition or notification-display result.
+Linux and Windows CI run 41135015900 passed for source 6e77a6a.
+
+## October 30: reviewed road-event path
+
+The native reviewed-event endpoint is connected to hosted Journey comparisons,
+collapsed source/review details and export. An opt-in request sends departure and
+stop timing; event assessments are never reused from the geometry cache. Source
+pin, review, freshness and trip timing refusals remain in force. Actual Python
+output passes the JavaScript response contract; Journey opt-in and source-failure
+flow tests pass. Real agency attribution remains unproven and no native host or
+reviewed bundle is configured on the public site. No paid service was enabled.
+
+The [retained native integration result](evidence/reviewed-events-native-2026-10-30.json)
+passes actual graph construction, HTTP, the evaluation subprocess and JavaScript
+validation on Windows. An explicitly synthetic event overlaps the earlier drive;
+a later departure or a 30-minute planned stop removes that event overlap. This
+proves timing/integration, not a real agency restriction. The full suite passed
+all JavaScript checks, 150 Python tests and TypeScript validation.

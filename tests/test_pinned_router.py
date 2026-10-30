@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import threading
 import unittest
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
 ROOT = Path(__file__).parents[1]
@@ -42,6 +43,13 @@ class PinnedRouterTests(unittest.TestCase):
             value = json.dumps(body if body is not None else {"points": [[-96, 43], [-96, 43.01]]})
             fields = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
             fields.update(headers or {})
+            # Header refusals do not need a body. Avoid racing an intentional
+            # early close by sending a GET/unauthorized body in a second packet.
+            if method == 'GET' or token != TOKEN or path not in ('/route', '/route-events') or fields['Content-Type'] != 'application/json':
+                value = None
+            elif len(value.encode()) > (8*1024*1024 if path == '/route-events' else 2048):
+                fields['Content-Length'] = str(len(value.encode()))
+                value = None
             conn.request(method, path, value, fields)
             response = conn.getresponse()
             return response.status, json.loads(response.read())
@@ -122,6 +130,31 @@ class PinnedRouterTests(unittest.TestCase):
         self.assertEqual(self.request()[0], 504)
         self.behavior = lambda *_: {"synthetic": True}
         self.assertEqual(self.request()[0], 200)
+
+    def test_reviewed_event_endpoint_requires_auth_valid_timing_and_explicit_bundle(self):
+        body = {'request_id': 'synthetic-request-1234', 'route': {'legs': [{}], 'requested_waypoints': [[-96, 43], [-96, 43.01]]},
+                'departures': [(datetime.now(timezone.utc)+timedelta(hours=1)).isoformat()], 'stop_minutes': []}
+        self.assertEqual(self.request(body, path='/route-events', token='wrong')[0], 401)
+        self.assertEqual(self.request(body, path='/route-events')[0], 503)
+        self.assertEqual(self.calls, [])
+        self.close()
+        bundle = Path(self.temp.name)/'bundle.json'
+        bundle.write_text('{}')
+        pin = router.network.digest(bundle)
+        event_calls = []
+        def evaluate(*args):
+            event_calls.append(args)
+            return {'synthetic': True}
+        with patch.object(router.network, 'verify', return_value={'engine': {}}), patch.object(router.network, 'engine', return_value=(None, None, {})):
+            self.server = router.make_server(self.temp.name, 'a'*64, TOKEN, [-97, 42, -95, 44], port=0,
+                event_bundle=bundle, event_bundle_pin=pin, event_fn=evaluate)
+        self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        self.thread.start()
+        self.assertEqual(self.request(body, path='/route-events'), (200, {'synthetic': True}))
+        self.assertEqual(event_calls[0][-1], body)
+        body['stop_minutes'] = [30]
+        self.assertEqual(self.request(body, path='/route-events')[0], 400)
+        self.assertEqual(len(event_calls), 1)
 
 
 if __name__ == "__main__":

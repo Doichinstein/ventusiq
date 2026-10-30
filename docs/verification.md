@@ -1,5 +1,28 @@
 # Verification record
 
+## Nonzero river forecast revision — DeLand, October 30
+
+Public browser QA at DLAF1 (St. Johns River near DeLand) compared the NOAA issues
+from October 29 12:53 UTC and October 30 00:46 UTC. There were 18 matching future
+timestamps and seven nonzero changes. The largest was +0.1 ft at October 30
+12:00 UTC; the maximum across shared samples remained 4 ft in both products.
+The current product contained 20 future samples and the prior product 18.
+
+Independent Python arithmetic reproduced all 18 pairs directly from the raw
+forecasts. The browser export matched the API's pairs, revisions, thresholds,
+shared horizon and summaries. A direct NOAA stageflow read also exactly matched
+the current forecast in that export. The desktop UI showed the positive change,
+the unchanged maximum, missing datum disclosure and unknown crossing times;
+no browser console errors were captured. Full evidence is retained in
+[the DeLand capture](evidence/river-revisions-DLAF1-2026-10-30.json), with a frozen
+real-data regression test. Screenshots and the direct source response are in the
+external October 29 browser QA directory.
+
+This closes the live nonzero-level revision check. Action and minor thresholds
+were already reached at the beginning of the shared horizon, so this does not
+verify a changed threshold-crossing window. No forecast-accuracy or physical
+flood-impact claim follows from the comparison. Account checks remain deferred.
+
 ## Agency/route GIS review export — 2026-10-30
 
 All 893 JavaScript tests, 45 Python tests and TypeScript checking pass locally.

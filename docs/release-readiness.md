@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v124, the October 30 live browser-capability API audit, and the full-stop weather checks described below.
+Current evidence: public releases through v125, the October 30 live browser-capability API audit, and the full-stop weather checks described below.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
@@ -64,7 +64,9 @@ checks and the production build. Detailed records are in [verification](verifica
 - Full-stop hourly weather now splits at source interval boundaries and reports
   per-field coverage and ranges, reusing the existing forecast/grid requests.
   Missing or ambiguous periods withhold the affected whole-stop ranges. Synthetic
-  tests cover gaps, source identity, DST, departure changes and export; this does
+  tests cover gaps, source identity, DST, departure changes and export. One live
+  90-minute stop and all three departures were independently checked against raw
+  source periods; desktop and phone-width views passed. This does
   not establish measured exposure or road-event applicability while stopped.
 
 ## Open gates and next work

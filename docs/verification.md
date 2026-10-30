@@ -2624,4 +2624,27 @@ default departure is one hour after its evaluation time; independent timing give
 51–53°F. The assertion was corrected, not the calculation. All 34 new/related
 calculation and Journey UI tests then passed. These synthetic checks do not establish
 observed forecast accuracy, measured exposure, real closure attribution or unattended
-delivery. Rendered public verification follows publication.
+delivery.
+
+v125 public QA used a 21.1 km Washington-area route with one 90-minute stop at
+requested 39, -77 (snapped to 38.999711, -77.00003). All three departures had
+90/90 minutes of coverage for all four fields. The first stop yielded 68–72°F,
+maximum sustained wind 12 mph and maximum gust 23.0156 mph; leaving two hours
+later changed these to 59–68°F, 9 mph and 20.7140 mph. The selected departure
+updated the visible summary and persisted in the downloaded JSON.
+
+An independent Python check read that browser download, reconstructed the three
+absolute stop windows, checked contiguous source intervals without gaps/overlaps,
+converted raw km/h gusts to mph, and matched all 12 per-field ranges/coverage values.
+The retained [live evidence](evidence/journey-stop-weather-live-2026-10-30.json)
+includes the raw hourly/gust products, stop coordinates/timing, all three results
+and the original download hash. The check imported no application calculation code.
+
+The result remained inside the collapsed Weather along the route group by default.
+Desktop and 390 × 844 viewport checks showed readable source/gap explanations and
+no horizontal overflow or captured console warnings/errors. The 34 calculation/UI
+checks and 31 related geocoding/gust/stop/smoke checks passed (65 total), along with
+production packaging. The preceding compact-layout v124 CI run 41113953918 completed
+successfully; the v125 Linux/Windows matrix also passed in run 41114963604.
+These live checks establish one source-backed display/export flow, not field accuracy
+or physical-device behavior.

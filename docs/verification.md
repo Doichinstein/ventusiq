@@ -2546,3 +2546,26 @@ This is an explicitly unvalidated linear model interpolation experiment at
 stationary points. It does not establish measured personal exposure, actual time
 above a concentration, in-vehicle conditions, moving-route exposure or verified
 closure attribution. The ten-feature goal remains open on its existing gates.
+
+## October 30, 2026 — expanded prospective GEFS outcome evidence
+
+The public comparison captured at 18:51:56 UTC contains five matches (03, 06,
+09, 12 and 15 UTC) and one unavailable nearest observation (18 UTC). All six
+targets use the identified GEFS run actually collected October 29 at 20:21:38
+UTC; no retrospective forecast was fetched. A separate direct NWS request
+confirmed the candidate timestamps, temperatures and QC, including the missing
+17:55 reading. The farther valid 17:35 reading is correctly not substituted.
+
+`verify-gefs-followup.py` independently rebuilds the 56-candidate denominator,
+all raw member conversions, nearest observations, missing outcome, source leads,
+member quantiles, signed errors and aggregate/disjoint-group statistics. It
+imports no application scoring code. Eight counterfactual tests pass; the two
+production-evaluator fixture checks reproduce both the original and follow-up
+exports. Frozen raw responses and scope are in [ensemble](ensemble.md#follow-up-outcomes-october-30-1851-utc).
+
+Five matched times yield 8.0145°F median MAE, +6.1245°F bias and 0/5 inclusion
+in the 10th–90th member range. Fifty candidates lack an eligible captured
+forecast, and one has no usable nearest measurement. This is one station, cell,
+run and day: broader regional/seasonal/lead-time validation remains open. The
+follow-up does not close the separate frozen historical-analog cohort, whose
+first outcome day has not finished yet.

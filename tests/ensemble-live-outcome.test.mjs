@@ -5,9 +5,9 @@ import {ensembleTargets, ensembleChoices, temperatureEvidence, compareEnsemble} 
 import {verificationObservations} from '../public/verification-leads.mjs';
 
 const read=name=>JSON.parse(readFileSync(new URL('../docs/evidence/'+name,import.meta.url),'utf8'));
-test('real prospective GEFS capture reproduces the browser pair, exclusions and lead groups',()=>{
+for(const [file, count] of [['gefs-first-outcome-2026-10-30.json',1],['gefs-followup-outcomes-2026-10-30.json',5]])test(`real prospective GEFS capture reproduces ${count} matches, exclusions and lead groups`,()=>{
   const initial=read('gefs-initial-capture-2026-10-29.json').product;
-  const live=read('gefs-first-outcome-2026-10-30.json'),now=Date.parse(live.generated_at);
+  const live=read(file),now=Date.parse(live.generated_at);
   const targets=ensembleTargets(now),checks=[{at:Date.parse(initial.checked_at)/1000,revision:initial.revision}];
   const choices=ensembleChoices(checks,targets),forecast=temperatureEvidence(initial,live.point,now);
   const observed=verificationObservations(live.observation_evidence,now);
@@ -16,4 +16,6 @@ test('real prospective GEFS capture reproduces the browser pair, exclusions and 
   assert.equal(actual.pairs[0].members.length,31);
   assert.equal(actual.pairs[0].valid_at,'2026-10-30T03:00:00.000Z');
   assert.equal(actual.pairs[0].inside_p10_p90,false);
+  assert.equal(actual.sample_count,count);
+  if(count===5){assert.equal(actual.skipped.observation_unavailable,1);assert.ok(!actual.pairs.some(p=>p.valid_at==='2026-10-30T18:00:00.000Z'));}
 });

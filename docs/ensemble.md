@@ -199,3 +199,52 @@ This closes the first nonempty live GEFS comparison gate only. One station/time,
 7.05 km from an uncorrected model cell, cannot establish seasonal skill, calibrated
 coverage, a model ranking or personal exposure. No retrospective forecast was
 loaded to construct this pair. Collection remains on demand.
+
+## Follow-up outcomes (October 30, 18:51 UTC)
+
+The same October 29 forecast capture now supplies six eligible targets. Five
+have usable nearest observations; the sixth remains unknown. The seven-day
+window contains 56 candidates: 50 without an eligible forecast capture, five
+matches and one missing observation. No new or retrospective forecast was used.
+
+| Target UTC, October 30 | Model lead | Median °F | Observed °F | Signed error °F |
+|---|---:|---:|---:|---:|
+| 03:00 | 27 h | 63.05 | 55.04 | +8.01 |
+| 06:00 | 30 h | 61.03 | 51.44 | +9.59 |
+| 09:00 | 33 h | 59.68 | 50.18 | +9.49 |
+| 12:00 | 36 h | 59.34 | 51.08 | +8.26 |
+| 15:00 | 39 h | 66.88 | 71.60 | −4.72 |
+| 18:00 | 42 h | — | Unknown | Unknown |
+
+Displayed values are rounded; the audit uses unrounded source values. Across the
+five matches, median MAE is 8.0145°F, warm bias is 6.1245°F, and mean member-range
+width is 1.3725°F. Zero of five readings fall within the 10th–90th member range.
+These are correlated times from one run, one grid cell and one station on one
+day. They do not establish calibrated coverage, regional skill or a model ranking.
+
+The 18:00 target's nearest reading is 17:55, with a null temperature and QC Z.
+The farther 17:35 reading is valid at 23.8°C, but substituting it would violate
+the predeclared nearest-reading rule. The missing target remains in the coverage
+denominator. The 6–<24 h and 48–120 h lead groups still have unknown errors.
+
+The full [comparison export](evidence/gefs-followup-outcomes-2026-10-30.json) and
+[separate NWS response](evidence/gefs-followup-nws-2026-10-30.json) are retained.
+The independent response queried KCGS observations from 02:30 through 18:30 UTC;
+its 44 records cover all six nearest candidates. Its older continuation cannot
+displace those candidates. The audit checks this temporal coverage, all 31 raw
+members at every eligible target, capture provenance, nearest-reading selection,
+missing outcomes, aggregate arithmetic and disjoint lead groups:
+
+```text
+python scripts/verify-gefs-followup.py
+python -m unittest discover -s tests -p test_gefs_followup_evidence.py
+node --test tests/ensemble-live-outcome.test.mjs
+```
+
+Eight counterfactual checks include omitted unfavorable matches, a dropped
+missing denominator, replacement of the missing nearest reading, late capture,
+changed raw members, independent-source corrections and false zero-error groups.
+The production evaluator independently reproduces both frozen exports. The
+original first-outcome audit remains unchanged. All evidence here is a frozen
+arithmetic/provenance check, not authentication of arbitrary future files or
+validation of the measuring instrument.

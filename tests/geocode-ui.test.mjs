@@ -29,6 +29,7 @@ test('entry forms move above the persistent map; result categories stay closed a
   const ids=[...s.document.querySelectorAll('[id]')].map(n=>n.id);assert.equal(ids.length,new Set(ids).size);
   for(const match of html.matchAll(/id="([^"]+)"/g))assert.ok(s.get(match[1]),'preserve '+match[1]);
   const group=s.get('place-content').querySelector('details');s.window.WeatherExplorer.placeChanged({id:'a'});group.open=true;s.window.WeatherExplorer.placeChanged({id:'a'});assert.equal(group.open,true);s.window.WeatherExplorer.placeChanged({id:'b'});assert.equal(group.open,false);
+  for(const [list,detail] of [['river-list','river-detail'],['event-list','event-detail']]){const matches=s.get(list).closest('details');matches.open=true;s.mounted.collapse(s.get(detail));assert.equal(matches.open,false,'selected results should not sit below an expanded match list');}
 });
 test('coordinate selection previews immediately without an address lookup; clearing removes the selection',async()=>{
   const s=setup();s.window.WeatherLocations.setWorkspace('personal');s.get('address-input').value='38.90, -77.04';await s.mounted.inputs.resolve('personal');

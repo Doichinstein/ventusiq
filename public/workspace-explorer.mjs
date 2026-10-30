@@ -13,7 +13,11 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
     const body=el('div',null,'result-group-body');body.append(...nodes);details.append(body);parent.append(details);return details;
   }
   function directCards(parent){return [...parent.children].filter(n=>n.matches('section.weather-card, details.weather-card'));}
-  function collapse(panel){for(const d of panel.querySelectorAll('details[data-result-group], details[data-result-group] details'))d.open=false;}
+  function collapse(panel){
+    for(const d of panel.querySelectorAll('details[data-result-group], details[data-result-group] details'))d.open=false;
+    const matches=panel.id==='river-detail'?get('river-list'):panel.id==='event-detail'?get('event-list'):null;
+    const matchGroup=matches?.closest('details[data-result-group]');if(matchGroup)matchGroup.open=false;
+  }
   const personal=entryPanel('personal','Choose a weather location');personal.append(get('address-card'));
   const personalPanel=get('personal-workspace'),place=get('place-content'),aside=personalPanel.querySelector('.places-panel');
   get('personal-entry-actions').append(get('pick-on-map'),get('use-location'));

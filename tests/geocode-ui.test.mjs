@@ -23,13 +23,36 @@ test('entry forms move above the persistent map; result categories stay closed a
   assert.equal(s.get('place-content').contains(s.get('address-input')),false);
   assert.ok(s.get('place-content').querySelectorAll('details[data-result-group]').length>=5);
   assert.equal(s.document.querySelectorAll('details[data-result-group][open]').length,0);
-  assert.ok(s.get('place-content').contains(s.get('notify-enable')));
+  assert.ok(s.get('watch-management').contains(s.get('notify-enable')));
+  assert.equal(s.get('place-content').contains(s.get('watch-management')),false);
+  assert.equal(s.get('watch-management').hidden,true);
   assert.equal(s.get('journey-submit').closest('details'),null);
   for(const form of s.document.querySelectorAll('form'))assert.equal(form.parentElement.closest('form'),null,form.id);
   const ids=[...s.document.querySelectorAll('[id]')].map(n=>n.id);assert.equal(ids.length,new Set(ids).size);
   for(const match of html.matchAll(/id="([^"]+)"/g))assert.ok(s.get(match[1]),'preserve '+match[1]);
   const group=s.get('place-content').querySelector('details');s.window.WeatherExplorer.placeChanged({id:'a'});group.open=true;s.window.WeatherExplorer.placeChanged({id:'a'});assert.equal(group.open,true);s.window.WeatherExplorer.placeChanged({id:'b'});assert.equal(group.open,false);
   for(const [list,detail] of [['river-list','river-detail'],['event-list','event-detail']]){const matches=s.get(list).closest('details');matches.open=true;s.mounted.collapse(s.get(detail));assert.equal(matches.open,false,'selected results should not sit below an expanded match list');}
+});
+test('watch deep links open without a selected place and survive personal refresh',()=>{
+  const s=setup('hosted',false),listeners={};let shown=0,selected=null;
+  s.window.location={hash:'#watches'};s.window.addEventListener=(name,fn)=>listeners[name]=fn;
+  s.window.WeatherPersonal.current=()=>selected;
+  s.window.WeatherPersonal.show=()=>{shown++;s.get('personal-workspace').hidden=false;s.window.WeatherExplorer.placeChanged(selected);};
+  mountWorkspaceExplorer({document:s.document,window:s.window});
+  const tracking=s.get('watch-management');
+  assert.equal(shown,1);assert.equal(tracking.hidden,false);assert.equal(tracking.open,true);
+  assert.equal(s.get('place-content').hidden,true);assert.equal(s.get('place-empty').hidden,true);
+  assert.equal(s.window.WeatherExplorer.trackingOpen(),true);
+  s.window.WeatherExplorer.placeChanged(null);assert.equal(tracking.hidden,false);
+  selected={id:'selected'};s.window.WeatherExplorer.placeChanged(selected);
+  tracking.open=false;listeners.hashchange();assert.equal(tracking.open,true);
+  assert.equal(s.window.WeatherPersonal.current(),selected,'opening watches preserves the location');
+});
+test('watch management is reachable from options without populating the empty location panel',()=>{
+  const s=setup();let shown=0;s.window.WeatherPersonal.show=()=>shown++;
+  const manage=[...s.get('map-entry').querySelectorAll('button')].find(n=>n.textContent==='Watches & notifications');
+  assert.ok(manage);manage.onclick();assert.equal(shown,1);
+  assert.equal(s.get('watch-management').open,true);assert.equal(s.get('place-content').hidden,true);
 });
 test('coordinate selection previews immediately without an address lookup; clearing removes the selection',async()=>{
   const s=setup();s.window.WeatherLocations.setWorkspace('personal');s.get('address-input').value='38.90, -77.04';await s.mounted.inputs.resolve('personal');

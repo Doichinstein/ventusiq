@@ -4,7 +4,11 @@ No sign-in is required. A private browser key controls watches and push devices.
 See [browser ownership](browser-workspaces.md); clearing site storage loses
 management access but does not unsubscribe push. Disable push first.
 
-Hosted My weather includes **Browser push** below persistent watches. Name the
+In hosted My weather, open **Saved places & options → Watches & notifications**.
+This section also opens directly at `/#watches` and from river watch management,
+even without a selected location. The normal empty My weather view stays empty
+until a place is chosen or watch management is explicitly opened.
+**Browser push** appears below persistent watches. Name the
 device and click **Enable push on this device**. Only this action asks
 for browser notification permission and creates a subscription. Browsing,
 saving a place and creating a watch do not enroll a device. The browser must

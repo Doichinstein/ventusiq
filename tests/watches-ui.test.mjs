@@ -6,6 +6,10 @@ import {mountWatches} from '../public/watches.js';
 import {riverNow,riverProduct} from './fixtures/river-watch.mjs';
 class Element{constructor(tag='div'){this.tag=tag;this.children=[];this.text='';this.value='';this.checked=false;}set textContent(v){this.text=String(v);this.children=[];}get textContent(){return this.text+this.children.map(c=>c.textContent).join('');}append(...v){this.children.push(...v);}replaceChildren(...v){this.text='';this.children=v;}setAttribute(k,v){this[k]=v;}}
 const flush=()=>new Promise(r=>setImmediate(r));
+test('river manage action opens the independent watch section',()=>{
+ const s=setup();let opened=0;s.window.WeatherExplorer={openTracking(){opened++;}};
+ s.nodes['river-watch-manage'].onclick();assert.equal(opened,1);
+});
 function setup({signedIn=true,mode='hosted'}={}){
  const nodes=Object.fromEntries([...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element()]));nodes['watch-alerts'].checked=true;
  let records=[],failCreate=false,place={name:'Home <script>',lat:39,lon:-77};const calls=[];

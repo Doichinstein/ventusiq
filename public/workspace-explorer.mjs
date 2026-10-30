@@ -46,7 +46,9 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
   group(place,'Forecast confidence & observations',['observation-card','ensemble-card','forecast-stability-card','hrrr-temperature-card'].map(get),'Compare forecasts with other evidence');
   group(place,'History & comparable days',['analog-card','station-history-card','station-analogs-card','storm-history-card'].map(get),'Historical observations and reported impacts');
   group(place,'Compound hazards',[get('compound-card')],'Conditions that overlap');
-  group(place,'Changes, watches & notifications',notificationNodes,'Optional tracking and delivery');
+  const tracking=group(place.parentElement,'Watches & notifications',notificationNodes,'Saved watches, changes and delivery');
+  tracking.id='watch-management';tracking.hidden=true;
+  const manage=el('button','Watches & notifications','text-button');manage.type='button';savedBody.prepend(manage);
   group(place,'More weather tools',directCards(place));
 
   const journey=entryPanel('journey','Choose journey endpoints');journey.classList.add('compact-entry');journey.append(el('h2','Plan a journey','sr-only'),get('journey-form'));
@@ -96,10 +98,20 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
     group(eventDetail,card.querySelector('h3')?.textContent||'Event evidence',[card]);
   }
   group(eventDetail,'Alert timeline',[get('event-timeline')],'Official messages and recorded changes');
-  let placeId=null;
-  window.WeatherExplorer={collapse,placeChanged(p){if(p?.id!==placeId){placeId=p?.id||null;collapse(place);}}};
+  let placeId=null,trackingRequested=false;
+  function openTracking(){
+    trackingRequested=true;window.WeatherPersonal?.show?.(true);
+    tracking.hidden=false;tracking.open=true;get('place-empty').hidden=true;saved.open=false;
+    const summary=tracking.querySelector('summary');summary.setAttribute('tabindex','-1');summary.focus();
+    tracking.scrollIntoView?.({behavior:'smooth',block:'nearest'});
+  }
+  manage.onclick=openTracking;
+  window.WeatherExplorer={collapse,openTracking,trackingOpen:()=>trackingRequested,placeChanged(p){tracking.hidden=!p&&!trackingRequested;if(p?.id!==placeId){placeId=p?.id||null;collapse(place);}}};
   const inputs=mountGeocode({document,window,fetcher,clock});
   window.WeatherLocations?.syncPlace(window.WeatherPersonal.current());
+  window.WeatherExplorer.placeChanged(window.WeatherPersonal.current());
+  const followHash=()=>{if(window.location?.hash==='#watches')openTracking();};
+  window.addEventListener?.('hashchange',followHash);followHash();
   return {inputs,collapse};
 }
 if(typeof window!=='undefined'){const start=()=>mountWorkspaceExplorer({document,window});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();}

@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-10-30T21:52:19.466Z",
-  "test_identity": "isolated; no saved watches",
+  "checked_at": "2026-10-30T22:48:11.748Z",
+  "test_identity": "Isolated test capability; a separate labeled public-coordinate watch was enrolled during the retry wait. Its initial baseline sent no webhook.",
   "delivery": {
     "id": "4835a6c0-f305-4a81-b036-e6a82a07410a",
     "endpoint_id": "6254a51b-533f-46ab-8424-190728902814",
@@ -31,18 +31,18 @@
     }
   ],
   "receiver_storage_confirmed": true,
-  "retry_verification": "pending",
+  "retry_verification": "passed",
   "retry": {
     "delivery": {
       "id": "919a6d27-d47d-4903-9b09-03ada0a90969",
       "endpoint_id": "66fc2bbf-9d41-4d48-a4cd-efc08a5e80b7",
       "created_at": "2026-10-30T21:48:01.000Z",
-      "status": "pending",
-      "attempts": 1,
-      "next_attempt": "2026-10-30T22:48:01.000Z",
-      "accepted_at": null,
-      "http_status": 503,
-      "error": "Receiver temporarily unavailable (HTTP 503)",
+      "status": "accepted",
+      "attempts": 2,
+      "next_attempt": "2026-10-31T00:48:08.000Z",
+      "accepted_at": "2026-10-30T22:48:08.000Z",
+      "http_status": 202,
+      "error": null,
       "payload": {
         "schema_version": "1",
         "id": "919a6d27-d47d-4903-9b09-03ada0a90969",
@@ -53,6 +53,14 @@
       }
     },
     "attempts": [
+      {
+        "delivery_id": "919a6d27-d47d-4903-9b09-03ada0a90969",
+        "attempt": 2,
+        "at": "2026-10-30T22:48:08.000Z",
+        "http_status": 202,
+        "outcome": "accepted",
+        "error": null
+      },
       {
         "delivery_id": "919a6d27-d47d-4903-9b09-03ada0a90969",
         "attempt": 1,
@@ -66,7 +74,15 @@
       "id": "919a6d27-d47d-4903-9b09-03ada0a90969",
       "rows": 1
     },
-    "status": "awaiting successful scheduled retry"
+    "status": "passed: real retry accepted, one stored row",
+    "receiver_receipt": {
+      "id": "919a6d27-d47d-4903-9b09-03ada0a90969",
+      "queried_at": "2026-10-30T22:49:02.916Z",
+      "received_at": "2026-10-30T21:48:01.000Z",
+      "body": "{\"schema_version\":\"1\",\"id\":\"919a6d27-d47d-4903-9b09-03ada0a90969\",\"type\":\"webhook.test\",\"created_at\":\"2026-10-30T21:48:01.000Z\",\"message\":\"VentusIQ webhook test\",\"dashboard_path\":\"/#watches\"}",
+      "sha256": "ad0650ab368bdf805ac7243348c01f0c968bed4e4092fd7d7c265dbe875959bf",
+      "row_count": 1
+    }
   },
   "receiver_checks": {
     "duplicate": 202,
@@ -78,5 +94,8 @@
   "duplicate_probe_rows": 1,
   "direct_https_verified_at": "2026-10-30T21:50:28.483Z",
   "probe_note": "Initial helper used superseded enrollment secret; explicit current secret passed all checks.",
-  "receiver_provider": "Cloudflare Workers with D1; destination URL and account/database identifiers omitted"
+  "receiver_provider": "Cloudflare Workers with D1; destination URL and account/database identifiers omitted",
+  "retry_trigger": "Ordinary /api/alerts request triggered eligible upkeep; no direct resend or retry-state mutation. Unattended scheduler attribution remains unverified.",
+  "test_destinations_removed": false,
+  "cleanup_note": "Retained temporarily for the isolated live-watch transition test. No owner watches or push devices are attached."
 }

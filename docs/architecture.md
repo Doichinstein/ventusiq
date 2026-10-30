@@ -233,7 +233,7 @@ Graph/source identity, designated direction, review expiry and incomplete review
 gates are checked. The hosted Journey service now has an optional authenticated
 pinned-Valhalla backend and a native HTTP service, preserving edge identity through
 weather sampling, stops and export. OSRM remains the configured public default.
-The offline event evaluator now connects separately reviewed WZDx 4.1 editions
+The offline event evaluator now connects separately reviewed WZDx 4.0–4.2 editions
 to estimated native-edge passage times across ordered legs and planned stops,
 preserving partial restrictions, stale records and boundary uncertainty.
 Road-event applicability while stopped remains unevaluated. Journey now summarizes full-stop hourly weather coverage and ranges from its existing NWS forecast/gust products, independently of its driving samples; missing fields withhold their whole-stop ranges. Separately, the public Journey smoke module now exports stationary-stop linear interpolation diagnostics (whole-stop mean, estimated threshold duration and explicit missing intervals) from its existing RAP products. These estimates are not validated personal exposure. The native service now has an optional [reviewed-event HTTP path](reviewed-route-events.md),
@@ -606,7 +606,8 @@ no new schema or schedule is needed. See [methods](storm-history.md).
 
 ### Agency work-zone proximity
 
-`RoadworkService` collects three fixed agency WZDx feeds under shared leases,
+`RoadworkService` offers four fixed agency WZDx feeds, with at most three selected
+per comparison, under shared leases,
 stream/geometry bounds and bounded edition retention. `roadwork-core.mjs` preserves
 source semantics and uses a route-segment bounding-volume tree plus capsule
 intersections to find approximate 250 m proximity intervals, including stops.

@@ -2853,3 +2853,29 @@ selection limit. Native checks cover WZDx 4.2 date representations, serializer
 annotations versus actual source identity, moving footprints and all-lanes-open
 or unknown impact labels. The graph/HTTP/subprocess integration check passed on
 Windows; its event/reviews are explicitly synthetic.
+
+v142 public browser QA compared the same 1.2644 km I-93 journey across three
+departures, with two weather samples and four nearby agency records. All three
+exported comparisons preserved source geometry and explicitly unknown event
+update times. The [independent export audit](evidence/new-england-journey-public-2026-10-30.json)
+retains the revision, export hash and results. No console errors were captured.
+981 JavaScript tests, 154 Python tests, TypeScript, native integration and the
+production build passed; Linux/Windows CI run 41139570567 also passed.
+
+## October 30: real webhook retry accepted
+
+The pending receiver test completed at 22:48:08 UTC. The sender's retained
+attempts show 503 then 202, 3,607 seconds apart, with the same delivery identity.
+An independent D1 query at 22:49:02 UTC found one row, its original 21:48:01 receipt
+time and the exact original body. The [updated live evidence](evidence/webhook-live-2026-10-30.json)
+and `python scripts/verify-webhook-retry.py docs/evidence/webhook-live-2026-10-30.json`
+reproduce those checks. Three counterfactual tests reject premature or unrelated
+attempts, direct-replay-only evidence, changed bytes and duplicate receiver rows.
+
+An ordinary alert request triggered eligible upkeep. No manual resend or queue
+timestamp edit was used; unattended scheduler attribution remains unverified.
+The separate isolated Clark County watch recorded its first baseline after the
+original warning expired, so it does not prove that alert transition. It correctly
+sent no initial webhook and remains enrolled for a subsequent real change. Test
+destinations/capability are retained until that probe can be closed. No personal
+watches, push enrollment, new schedules or paid services were changed.

@@ -1,0 +1,40 @@
+{
+  "site": "https://ventusiq.com/",
+  "version": 142,
+  "commit": "8028545487f5d6a730c4df57d82f33ed777a9505",
+  "evaluated_at": "2026-10-30T22:40:36.806Z",
+  "export_sha256": "79506279970ada6e707d5da59d7bcb7c20ea297e419438d20e0462b1146665ba",
+  "route_km": 1.2644000000000002,
+  "source_revision": "2ab6e90cbb48d8007b57769f012e6b9f162246cbed1ee42784fa96cfb2aa04f1",
+  "source_records": 192,
+  "checks": [
+    {
+      "departure": "2026-10-30T23:41:00.000Z",
+      "nearby": 4,
+      "unknown_event_times": 4,
+      "geometry_retained": true,
+      "current_applicability_established": false
+    },
+    {
+      "departure": "2026-10-31T01:41:00.000Z",
+      "nearby": 4,
+      "unknown_event_times": 4,
+      "geometry_retained": true,
+      "current_applicability_established": false
+    },
+    {
+      "departure": "2026-10-31T03:41:00.000Z",
+      "nearby": 4,
+      "unknown_event_times": 4,
+      "geometry_retained": true,
+      "current_applicability_established": false
+    }
+  ],
+  "console_errors": 0,
+  "ci": {
+    "run": 41139570567,
+    "linux": "passed",
+    "windows": "passed"
+  },
+  "scope": "Rendered public I-93 test route and exported source geometry/freshness. No road closure attribution."
+}

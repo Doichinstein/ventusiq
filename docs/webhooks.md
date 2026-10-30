@@ -110,9 +110,18 @@ confirmed its body in D1. Live probes accepted an identical delivery with one
 row, rejected a conflicting signed body with 409, and rejected invalid signatures,
 stale timestamps and unsigned requests with 401.
 
-A second signed test was stored before a deliberate one-time 503. The normal
-receiver was restored; a real scheduled retry is pending in that audit, eligible
-October 30 at 22:48:01 UTC. A successful direct duplicate probe does not prove
-queue retry execution. These tests used an isolated capability with no saved
-watches and did not enroll the owner's browser or forward private watch changes.
+A second signed test was stored before a deliberate one-time 503. After restoring
+the normal receiver, the real queue retried at 22:48:08 UTC, 3,607 seconds after
+the first attempt, and received 202. An independent D1 query after acceptance
+found one row with the original receipt time and exact original payload bytes.
+The [offline evidence verifier](../scripts/verify-webhook-retry.py) compares sender
+attempts, backoff, delivery identity and that receiver row. Its counterfactual
+checks reject direct-replay-only evidence, changed bytes and duplicate rows.
+
+An ordinary alert read triggered this due-work pass. This verifies automatic
+queue retry and receiver deduplication, not unattended scheduler attribution.
+The isolated capability has no personal watches or enrolled push devices. A
+labeled public-coordinate watch was subsequently enrolled for a separate real
+alert-transition check; its initial baseline correctly sent no webhook. The
+test destinations and capability are temporarily retained for that probe.
 Rendered webhook enrollment and downstream consumer actions remain unverified.

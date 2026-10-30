@@ -1,5 +1,23 @@
 # Verification record
 
+## First prospective CAMS PM2.5 outcome — October 30 (v108)
+
+Public browser comparison and download passed at 04:10:46 UTC for 39,-77 and
+McMillan Reservoir. The 03:00–04:00 target has one prior forecast sample of
+17.6 µg/m³ and one preliminary measured concentration of 6 µg/m³. Independent
+offline arithmetic reproduces the +11.6 difference and 1.8875-hour collection
+lead. A direct EPA retrieval agrees with the exact source record. The 02:55
+pending export proves that the identical raw forecast was retained before the
+target. The 23 missing forecast targets and null empty baseline/groups remain
+explicit. No browser console errors were captured.
+
+Twenty focused JavaScript tests and six independent Python audit tests pass.
+The UI fixes singular-hour wording and states the one-pair sample limitation.
+[Source evidence and reproduction](particulate-comparison.md#first-real-prospective-pair--october-30-v108)
+preserve the raw inputs and timing caveats. This closes the first nonempty CAMS
+comparison gate; it is not broader skill or exposure validation. Account and
+delivery checks remain deferred.
+
 ## Native-router container packaging — October 30
 
 The optional native service now has a separate Linux amd64 Docker image, pinned
@@ -10,6 +28,11 @@ Seven focused HTTP/configuration tests pass locally. The real Windows native
 direct/via check still reproduces 40 edges and 44 vertices, including the explicit
 1,800-second stop. Docker is unavailable on the local Windows machine, so image
 execution is verified separately by the new Linux CI step before publication.
+
+The v107 [Linux/Windows CI run](https://github.com/Doichinstein/ventusiq/actions/runs/41001086668)
+subsequently passed 908 JavaScript and 66 Python tests. Its real Linux container
+check passed with UID/GID 10001, custom port 9080, read-only storage, healthcheck,
+rejected unauthorized/outside requests, both native routes and clean termination.
 
 `check-router-container.py` builds the retained fixture inside the image and
 requires real HTTP/JavaScript-adapter routes from a read-only runtime, a Docker

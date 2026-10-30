@@ -102,3 +102,48 @@ evaluation, identified model runs, aligned temporal averages, broader monitor
 coverage and outcome-based validation remain future work.
 
 The completed-hour rule follows [AirNow’s hourly timestamp definition](https://docs.airnowapi.org/docs/HourlyAQObsFactSheet.pdf). Method 2026-10-29.2 corrects the earlier timestamp-only check; old exported method versions retain their original semantics.
+
+## First real prospective pair — October 30 (v108)
+
+At 04:10:46 UTC, the public browser compared the saved 39,-77 point with McMillan
+Reservoir (110010043), 8.76 km away. The October 30 03:00 UTC target, treated by
+this method as the 03:00–04:00 observation period, paired a CAMS sample of
+17.6 µg/m³ with the preliminary monitor concentration of 6 µg/m³. The difference
+is +11.6 µg/m³. Source NowCast AQI 36 is a separate value and is not used in this
+arithmetic.
+
+The forecast revision `c427e19c76ab8b94fe220d7aa6eb222f7058bc2795120fe93db7dbbab59c9f65`
+was collected at 01:06:45 UTC, 1h 53m 15s before the target. A prior browser export
+at 02:55:02 UTC retained the identical complete raw forecast while the target
+was still pending. The later 04:10 forecast collection is a different revision
+and is not substituted for that prediction. Model initialization remains unknown.
+
+The monitor edition was first archived at 03:29:21 and successfully checked again
+at 04:01:31 UTC. The period-end gate uses that later check; this does not certify
+that a preliminary reading is final or that the provider revised it after the
+period ended. A separate direct EPA request at 04:11:26 UTC returned the identical
+record, ID 850284791, with the same site, geometry, units, measured flag and value.
+The raw record differs by less than 100 m from the selected discovery location.
+
+The exported window has 22 usable measurement hours, one eligible forecast and
+one pair. Twenty-three target hours lack eligible forecasts. No pre-forecast
+persistence baseline is retained, and empty baseline/lead-group errors stay null.
+The UI explicitly says that one paired hour at one monitor is insufficient to
+judge forecast skill. Regional instantaneous model samples and hourly monitor
+concentrations still differ in spatial and temporal representativeness.
+
+Retained files in `docs/evidence/`:
+
+- `pm-initial-capture-2026-10-30.json`: the complete earlier pending export.
+- `pm-first-outcome-2026-10-30.json`: the complete public browser comparison export.
+- `pm-first-outcome-epa-2026-10-30.json`: separate EPA retrieval with its URL and check time.
+
+Run `python scripts/verify-pm-outcome.py` to reconstruct the target, prior capture,
+raw model sample, monitor reading, geometry tolerance, completed-period gate,
+difference, exclusions and empty metrics without importing application scoring
+code. Six tests include altered captures, raw forecasts, independently retrieved
+readings, incomplete hours and falsely zeroed empty groups. The production-core
+regression separately reproduces the full browser pairs, audit, sources and
+metrics. This verifies the frozen evidence's internal consistency and source
+agreement, not file authenticity, completeness of the entire hosted archive,
+calibrated skill, exposure, or broader monitor/season performance.

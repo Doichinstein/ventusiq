@@ -1,0 +1,2339 @@
+{
+  "status": "passed",
+  "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+  "real_native_http_and_adapter": true,
+  "cases": [
+    {
+      "summary": {
+        "legs": 1,
+        "vertices": 44,
+        "edges": 40,
+        "driving_seconds": 195.493,
+        "stopped_seconds": 0,
+        "graph": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+        "event_timing": {
+          "event_and_reviews": "synthetic",
+          "without_stops": "reviewed_reported_closure_overlap",
+          "with_stops": "reviewed_reported_closure_overlap",
+          "stop_seconds": 0,
+          "final_leg_departure": "2026-10-30T00:00:00+00:00",
+          "final_leg_passage_without_stops": [
+            "2026-10-30T00:00:01.310000+00:00",
+            "2026-10-30T00:00:03.930000+00:00"
+          ],
+          "field_closure_verified": false
+        }
+      },
+      "source": {
+        "schema": "ventusiq-pinned-route/1",
+        "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+        "engine_version": "3.9.1",
+        "requested_waypoints": [
+          [
+            -96.1757,
+            43.075
+          ],
+          [
+            -96.1757,
+            43.096
+          ]
+        ],
+        "checked_at": "2026-10-30T05:11:20.136768+00:00",
+        "legs": [
+          {
+            "schema": "ventusiq-route-network-probe/1",
+            "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+            "checked_at": "2026-10-30T05:11:20.107778+00:00",
+            "requests": {
+              "route": {
+                "locations": [
+                  {
+                    "lat": 43.075,
+                    "lon": -96.1757
+                  },
+                  {
+                    "lat": 43.096,
+                    "lon": -96.1757
+                  }
+                ],
+                "costing": "auto",
+                "units": "kilometers",
+                "directions_type": "none"
+              },
+              "trace": {
+                "encoded_polyline": "qzadqA|wamvDvl@I?xh@@xk@az@Imy@~@ws@^yOH{CB_FDWqk@OuYCyEEsGeeAhAkfArA}GL_~@yAqfA~Aqb@p@ac@r@{c@b@y`@^{`@Gyh@FmKE{T?ab@EqQCy`@BwT@oH@kW@{jADoYBuG?wO@sP@ow@FwP@_y@?k]@gnCG_Y?",
+                "costing": "auto",
+                "shape_match": "edge_walk",
+                "units": "kilometers",
+                "filters": {
+                  "action": "include",
+                  "attributes": [
+                    "shape",
+                    "osm_changeset",
+                    "edge.id",
+                    "edge.way_id",
+                    "edge.forward",
+                    "edge.names",
+                    "edge.length",
+                    "edge.begin_shape_index",
+                    "edge.end_shape_index",
+                    "edge.begin_osm_node_id",
+                    "edge.end_osm_node_id",
+                    "edge.bridge",
+                    "edge.tunnel",
+                    "edge.traversability",
+                    "node.elapsed_time"
+                  ]
+                }
+              }
+            },
+            "route": {
+              "trip": {
+                "locations": [
+                  {
+                    "type": "break",
+                    "lat": 43.075,
+                    "lon": -96.1757,
+                    "side_of_street": "right",
+                    "original_index": 0
+                  },
+                  {
+                    "type": "break",
+                    "lat": 43.096,
+                    "lon": -96.1757,
+                    "original_index": 1
+                  }
+                ],
+                "legs": [
+                  {
+                    "summary": {
+                      "has_time_restrictions": false,
+                      "has_toll": false,
+                      "has_highway": false,
+                      "has_ferry": false,
+                      "min_lat": 43.074267,
+                      "min_lon": -96.176937,
+                      "max_lat": 43.096,
+                      "max_lon": -96.175497,
+                      "time": 195.492,
+                      "length": 2.719,
+                      "cost": 257.509
+                    },
+                    "shape": "qzadqA|wamvDvl@I?xh@@xk@az@Imy@~@ws@^yOH{CB_FDWqk@OuYCyEEsGeeAhAkfArA}GL_~@yAqfA~Aqb@p@ac@r@{c@b@y`@^{`@Gyh@FmKE{T?ab@EqQCy`@BwT@oH@kW@{jADoYBuG?wO@sP@ow@FwP@_y@?k]@gnCG_Y?"
+                  }
+                ],
+                "summary": {
+                  "has_time_restrictions": false,
+                  "has_toll": false,
+                  "has_highway": false,
+                  "has_ferry": false,
+                  "min_lat": 43.074267,
+                  "min_lon": -96.176937,
+                  "max_lat": 43.096,
+                  "max_lon": -96.175497,
+                  "time": 195.492,
+                  "length": 2.719,
+                  "cost": 257.509
+                },
+                "status_message": "Found route between points",
+                "status": 0,
+                "units": "kilometers",
+                "language": "en-US"
+              }
+            },
+            "trace_attributes": {
+              "units": "kilometers",
+              "osm_changeset": 265597273676509,
+              "shape": "qzadqA|wamvDvl@I?xh@@xk@az@Imy@~@ws@^yOH{CB_FDWqk@OuYCyEEsGeeAhAkfArA}GL_~@yAqfA~Aqb@p@ac@r@{c@b@y`@^{`@Gyh@FmKE{T?ab@EqQCy`@BwT@oH@kW@{jADoYBuG?wO@sP@ow@FwP@_y@?k]@gnCG_Y?",
+              "edges": [
+                {
+                  "way_id": 1546027734,
+                  "node_id": 14061743326,
+                  "id": 4093664624,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "forward",
+                  "end_shape_index": 1,
+                  "begin_shape_index": 0,
+                  "forward": true,
+                  "length": 0.081,
+                  "source_percent_along": 0.216,
+                  "names": [
+                    "South Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 5.24,
+                    "elapsed_cost": 5.24,
+                    "node_id": 14061743333
+                  }
+                },
+                {
+                  "way_id": 16022571,
+                  "node_id": 14061743333,
+                  "id": 5436201689,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 2,
+                  "begin_shape_index": 1,
+                  "forward": false,
+                  "length": 0.054,
+                  "names": [
+                    "4th Street Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 10.585,
+                    "elapsed_cost": 15.88,
+                    "node_id": 882797400
+                  }
+                },
+                {
+                  "way_id": 16022571,
+                  "node_id": 882797400,
+                  "id": 5536864985,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 3,
+                  "begin_shape_index": 2,
+                  "forward": false,
+                  "length": 0.058,
+                  "names": [
+                    "4th Street Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 14.072,
+                    "elapsed_cost": 19.96,
+                    "node_id": 161024866
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 161024866,
+                  "id": 44700634746,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 4,
+                  "begin_shape_index": 3,
+                  "forward": true,
+                  "length": 0.105,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 25.627,
+                    "elapsed_cost": 38.01,
+                    "node_id": 161022753
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 161022753,
+                  "id": 44834852474,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 5,
+                  "begin_shape_index": 4,
+                  "forward": true,
+                  "length": 0.104,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 35.006,
+                    "elapsed_cost": 54.336,
+                    "node_id": 161024868
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 161024868,
+                  "id": 44901961338,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 6,
+                  "begin_shape_index": 5,
+                  "forward": true,
+                  "length": 0.094,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 43.473,
+                    "elapsed_cost": 69.184,
+                    "node_id": 8345817579
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 8345817579,
+                  "id": 43962437242,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 7,
+                  "begin_shape_index": 6,
+                  "forward": true,
+                  "length": 0.03,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 46.18,
+                    "elapsed_cost": 73.467,
+                    "node_id": 10805573181
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 10805573181,
+                  "id": 43761110650,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 9,
+                  "begin_shape_index": 7,
+                  "forward": true,
+                  "length": 0.021,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 48.077,
+                    "elapsed_cost": 76.959,
+                    "node_id": 161024509
+                  }
+                },
+                {
+                  "way_id": 16022968,
+                  "node_id": 161024509,
+                  "id": 43660447354,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 10,
+                  "begin_shape_index": 9,
+                  "forward": false,
+                  "length": 0.058,
+                  "names": [
+                    "West 1st Street"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 54.532,
+                    "elapsed_cost": 89.501,
+                    "node_id": 882797326
+                  }
+                },
+                {
+                  "way_id": 16022968,
+                  "node_id": 882797326,
+                  "id": 43291348602,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 11,
+                  "begin_shape_index": 10,
+                  "forward": false,
+                  "length": 0.035,
+                  "names": [
+                    "West 1st Street"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 57.164,
+                    "elapsed_cost": 93.71,
+                    "node_id": 10805573186
+                  }
+                },
+                {
+                  "way_id": 16022968,
+                  "node_id": 10805573186,
+                  "id": 43090022010,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 13,
+                  "begin_shape_index": 11,
+                  "forward": false,
+                  "length": 0.02,
+                  "names": [
+                    "West 1st Street"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 58.671,
+                    "elapsed_cost": 97.01,
+                    "node_id": 14061743323
+                  }
+                },
+                {
+                  "way_id": 1546027728,
+                  "node_id": 14061743323,
+                  "id": 3422575984,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 14,
+                  "begin_shape_index": 13,
+                  "forward": false,
+                  "length": 0.125,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 73.198,
+                    "elapsed_cost": 123.385,
+                    "node_id": 14061743322
+                  }
+                },
+                {
+                  "way_id": 1546027728,
+                  "node_id": 14061743322,
+                  "id": 3019922800,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 15,
+                  "begin_shape_index": 14,
+                  "forward": false,
+                  "length": 0.127,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 82.742,
+                    "elapsed_cost": 132.91,
+                    "node_id": 14061743321
+                  }
+                },
+                {
+                  "way_id": 1546027728,
+                  "node_id": 14061743321,
+                  "id": 2818596208,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 17,
+                  "begin_shape_index": 15,
+                  "forward": false,
+                  "length": 0.128,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 92.35,
+                    "elapsed_cost": 147.07,
+                    "node_id": 161013486
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 161013486,
+                  "id": 2717932912,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 18,
+                  "begin_shape_index": 17,
+                  "forward": true,
+                  "length": 0.127,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 100.538,
+                    "elapsed_cost": 161.63,
+                    "node_id": 161013491
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 161013491,
+                  "id": 2113953136,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 19,
+                  "begin_shape_index": 18,
+                  "forward": true,
+                  "length": 0.063,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 104.596,
+                    "elapsed_cost": 165.579,
+                    "node_id": 8344975808
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 8344975808,
+                  "id": 2181062000,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 20,
+                  "begin_shape_index": 19,
+                  "forward": true,
+                  "length": 0.064,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 108.717,
+                    "elapsed_cost": 169.59,
+                    "node_id": 161013496
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 161013496,
+                  "id": 2248170864,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 21,
+                  "begin_shape_index": 20,
+                  "forward": true,
+                  "length": 0.065,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 112.968,
+                    "elapsed_cost": 173.727,
+                    "node_id": 14232235359
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 14232235359,
+                  "id": 2315279728,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 22,
+                  "begin_shape_index": 21,
+                  "forward": true,
+                  "length": 0.06,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 116.832,
+                    "elapsed_cost": 177.488,
+                    "node_id": 161013498
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013498,
+                  "id": 2382388592,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 23,
+                  "begin_shape_index": 22,
+                  "forward": false,
+                  "length": 0.06,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 122.697,
+                    "elapsed_cost": 185.649,
+                    "node_id": 6927866910
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866910,
+                  "id": 2415943024,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 24,
+                  "begin_shape_index": 23,
+                  "forward": false,
+                  "length": 0.074,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 127.461,
+                    "elapsed_cost": 190.287,
+                    "node_id": 161013499
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013499,
+                  "id": 2483051888,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 25,
+                  "begin_shape_index": 24,
+                  "forward": false,
+                  "length": 0.022,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 128.882,
+                    "elapsed_cost": 192.216,
+                    "node_id": 6927866889
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866889,
+                  "id": 2550160752,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 26,
+                  "begin_shape_index": 25,
+                  "forward": false,
+                  "length": 0.039,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 131.41,
+                    "elapsed_cost": 194.66,
+                    "node_id": 6927866887
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866887,
+                  "id": 1543527792,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 27,
+                  "begin_shape_index": 26,
+                  "forward": false,
+                  "length": 0.062,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 135.403,
+                    "elapsed_cost": 198.546,
+                    "node_id": 6927866893
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866893,
+                  "id": 1610636656,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 28,
+                  "begin_shape_index": 27,
+                  "forward": false,
+                  "length": 0.032,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 137.531,
+                    "elapsed_cost": 200.615,
+                    "node_id": 161013501
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013501,
+                  "id": 1677745520,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 29,
+                  "begin_shape_index": 28,
+                  "forward": false,
+                  "length": 0.06,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 141.395,
+                    "elapsed_cost": 204.375,
+                    "node_id": 6927866895
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866895,
+                  "id": 1744854384,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 30,
+                  "begin_shape_index": 29,
+                  "forward": false,
+                  "length": 0.039,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 143.909,
+                    "elapsed_cost": 206.82,
+                    "node_id": 8704575305
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8704575305,
+                  "id": 1811963248,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 31,
+                  "begin_shape_index": 30,
+                  "forward": false,
+                  "length": 0.017,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 145.009,
+                    "elapsed_cost": 207.885,
+                    "node_id": 8704575300
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8704575300,
+                  "id": 1879072112,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 32,
+                  "begin_shape_index": 31,
+                  "forward": false,
+                  "length": 0.044,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 147.845,
+                    "elapsed_cost": 210.643,
+                    "node_id": 12625550808
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 12625550808,
+                  "id": 1946180976,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 33,
+                  "begin_shape_index": 32,
+                  "forward": false,
+                  "length": 0.135,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 156.53,
+                    "elapsed_cost": 219.105,
+                    "node_id": 8237311489
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311489,
+                  "id": 2013289840,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 34,
+                  "begin_shape_index": 33,
+                  "forward": false,
+                  "length": 0.047,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 159.559,
+                    "elapsed_cost": 222.051,
+                    "node_id": 8237311497
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311497,
+                  "id": 1476418928,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 35,
+                  "begin_shape_index": 34,
+                  "forward": false,
+                  "length": 0.015,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 160.53,
+                    "elapsed_cost": 222.991,
+                    "node_id": 8237311480
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311480,
+                  "id": 1409310064,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 36,
+                  "begin_shape_index": 35,
+                  "forward": false,
+                  "length": 0.03,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 162.465,
+                    "elapsed_cost": 224.871,
+                    "node_id": 161013506
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013506,
+                  "id": 1342201200,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 37,
+                  "begin_shape_index": 36,
+                  "forward": false,
+                  "length": 0.031,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 164.465,
+                    "elapsed_cost": 227.364,
+                    "node_id": 8237311488
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311488,
+                  "id": 1275092336,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 38,
+                  "begin_shape_index": 37,
+                  "forward": false,
+                  "length": 0.101,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "elapsed_time": 170.965,
+                    "elapsed_cost": 233.695,
+                    "node_id": 10700652115
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 10700652115,
+                  "id": 1241537904,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 39,
+                  "begin_shape_index": 38,
+                  "forward": false,
+                  "length": 0.032,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 172.565,
+                    "elapsed_cost": 235.255,
+                    "node_id": 161013511
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 161013511,
+                  "id": 1140874608,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 40,
+                  "begin_shape_index": 39,
+                  "forward": false,
+                  "length": 0.103,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 177.722,
+                    "elapsed_cost": 240.147,
+                    "node_id": 8289223869
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 8289223869,
+                  "id": 1073765744,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 41,
+                  "begin_shape_index": 40,
+                  "forward": false,
+                  "length": 0.054,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 180.429,
+                    "elapsed_cost": 242.712,
+                    "node_id": 161013514
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 161013514,
+                  "id": 1006656880,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 42,
+                  "begin_shape_index": 41,
+                  "forward": false,
+                  "length": 0.255,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 193.186,
+                    "elapsed_cost": 255.325,
+                    "node_id": 161013517
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 161013517,
+                  "id": 939548016,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 43,
+                  "begin_shape_index": 42,
+                  "forward": false,
+                  "length": 0.046,
+                  "target_percent_along": 0.474,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "elapsed_time": 195.493,
+                    "elapsed_cost": 257.511,
+                    "node_id": 10700652113
+                  }
+                }
+              ],
+              "alternate_paths": []
+            },
+            "closure_attribution_verified": false
+          }
+        ]
+      }
+    },
+    {
+      "summary": {
+        "legs": 2,
+        "vertices": 44,
+        "edges": 40,
+        "driving_seconds": 195.485,
+        "stopped_seconds": 1800,
+        "graph": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+        "event_timing": {
+          "event_and_reviews": "synthetic",
+          "without_stops": "reviewed_reported_closure_overlap",
+          "with_stops": "no_reviewed_time_overlap",
+          "stop_seconds": 1800,
+          "final_leg_departure": "2026-10-30T00:32:07.459000+00:00",
+          "final_leg_passage_without_stops": [
+            "2026-10-30T00:02:07.812500+00:00",
+            "2026-10-30T00:02:08.519500+00:00"
+          ],
+          "field_closure_verified": false
+        }
+      },
+      "source": {
+        "schema": "ventusiq-pinned-route/1",
+        "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+        "engine_version": "3.9.1",
+        "requested_waypoints": [
+          [
+            -96.1757,
+            43.075
+          ],
+          [
+            -96.1757,
+            43.0855
+          ],
+          [
+            -96.1757,
+            43.096
+          ]
+        ],
+        "checked_at": "2026-10-30T05:11:20.749190+00:00",
+        "legs": [
+          {
+            "schema": "ventusiq-route-network-probe/1",
+            "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+            "checked_at": "2026-10-30T05:11:20.640534+00:00",
+            "requests": {
+              "route": {
+                "locations": [
+                  {
+                    "lat": 43.075,
+                    "lon": -96.1757
+                  },
+                  {
+                    "lat": 43.0855,
+                    "lon": -96.1757
+                  }
+                ],
+                "costing": "auto",
+                "units": "kilometers",
+                "directions_type": "none"
+              },
+              "trace": {
+                "encoded_polyline": "qzadqA|wamvDvl@I?xh@@xk@az@Imy@~@ws@^yOH{CB_FDWqk@OuYCyEEsGeeAhAkfArA}GL_~@yAqfA~Aqb@p@ac@r@{c@b@y`@^{`@Gyh@F",
+                "costing": "auto",
+                "shape_match": "edge_walk",
+                "units": "kilometers",
+                "filters": {
+                  "action": "include",
+                  "attributes": [
+                    "shape",
+                    "osm_changeset",
+                    "edge.id",
+                    "edge.way_id",
+                    "edge.forward",
+                    "edge.names",
+                    "edge.length",
+                    "edge.begin_shape_index",
+                    "edge.end_shape_index",
+                    "edge.begin_osm_node_id",
+                    "edge.end_osm_node_id",
+                    "edge.bridge",
+                    "edge.tunnel",
+                    "edge.traversability",
+                    "node.elapsed_time"
+                  ]
+                }
+              }
+            },
+            "route": {
+              "trip": {
+                "locations": [
+                  {
+                    "type": "break",
+                    "lat": 43.075,
+                    "lon": -96.1757,
+                    "side_of_street": "right",
+                    "original_index": 0
+                  },
+                  {
+                    "type": "break",
+                    "lat": 43.0855,
+                    "lon": -96.1757,
+                    "original_index": 1
+                  }
+                ],
+                "legs": [
+                  {
+                    "summary": {
+                      "has_time_restrictions": false,
+                      "has_toll": false,
+                      "has_highway": false,
+                      "has_ferry": false,
+                      "min_lat": 43.074267,
+                      "min_lon": -96.176937,
+                      "max_lat": 43.085525,
+                      "max_lon": -96.175497,
+                      "time": 127.459,
+                      "length": 1.554,
+                      "cost": 190.285
+                    },
+                    "shape": "qzadqA|wamvDvl@I?xh@@xk@az@Imy@~@ws@^yOH{CB_FDWqk@OuYCyEEsGeeAhAkfArA}GL_~@yAqfA~Aqb@p@ac@r@{c@b@y`@^{`@Gyh@F"
+                  }
+                ],
+                "summary": {
+                  "has_time_restrictions": false,
+                  "has_toll": false,
+                  "has_highway": false,
+                  "has_ferry": false,
+                  "min_lat": 43.074267,
+                  "min_lon": -96.176937,
+                  "max_lat": 43.085525,
+                  "max_lon": -96.175497,
+                  "time": 127.459,
+                  "length": 1.554,
+                  "cost": 190.285
+                },
+                "status_message": "Found route between points",
+                "status": 0,
+                "units": "kilometers",
+                "language": "en-US"
+              }
+            },
+            "trace_attributes": {
+              "units": "kilometers",
+              "osm_changeset": 265597273676509,
+              "shape": "qzadqA|wamvDvl@I?xh@@xk@az@Imy@~@ws@^yOH{CB_FDWqk@OuYCyEEsGeeAhAkfArA}GL_~@yAqfA~Aqb@p@ac@r@{c@b@y`@^{`@Gyh@F",
+              "edges": [
+                {
+                  "way_id": 1546027734,
+                  "node_id": 14061743326,
+                  "id": 4093664624,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "forward",
+                  "end_shape_index": 1,
+                  "begin_shape_index": 0,
+                  "forward": true,
+                  "length": 0.081,
+                  "source_percent_along": 0.216,
+                  "names": [
+                    "South Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 5.24,
+                    "elapsed_cost": 5.24,
+                    "node_id": 14061743333
+                  }
+                },
+                {
+                  "way_id": 16022571,
+                  "node_id": 14061743333,
+                  "id": 5436201689,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 2,
+                  "begin_shape_index": 1,
+                  "forward": false,
+                  "length": 0.054,
+                  "names": [
+                    "4th Street Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 10.585,
+                    "elapsed_cost": 15.88,
+                    "node_id": 882797400
+                  }
+                },
+                {
+                  "way_id": 16022571,
+                  "node_id": 882797400,
+                  "id": 5536864985,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 3,
+                  "begin_shape_index": 2,
+                  "forward": false,
+                  "length": 0.058,
+                  "names": [
+                    "4th Street Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 14.072,
+                    "elapsed_cost": 19.96,
+                    "node_id": 161024866
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 161024866,
+                  "id": 44700634746,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 4,
+                  "begin_shape_index": 3,
+                  "forward": true,
+                  "length": 0.105,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 25.627,
+                    "elapsed_cost": 38.01,
+                    "node_id": 161022753
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 161022753,
+                  "id": 44834852474,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 5,
+                  "begin_shape_index": 4,
+                  "forward": true,
+                  "length": 0.104,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 35.006,
+                    "elapsed_cost": 54.336,
+                    "node_id": 161024868
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 161024868,
+                  "id": 44901961338,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 6,
+                  "begin_shape_index": 5,
+                  "forward": true,
+                  "length": 0.094,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 43.473,
+                    "elapsed_cost": 69.184,
+                    "node_id": 8345817579
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 8345817579,
+                  "id": 43962437242,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 7,
+                  "begin_shape_index": 6,
+                  "forward": true,
+                  "length": 0.03,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 46.18,
+                    "elapsed_cost": 73.467,
+                    "node_id": 10805573181
+                  }
+                },
+                {
+                  "way_id": 16021890,
+                  "node_id": 10805573181,
+                  "id": 43761110650,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 9,
+                  "begin_shape_index": 7,
+                  "forward": true,
+                  "length": 0.021,
+                  "names": [
+                    "1st Avenue Southwest"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 48.077,
+                    "elapsed_cost": 76.959,
+                    "node_id": 161024509
+                  }
+                },
+                {
+                  "way_id": 16022968,
+                  "node_id": 161024509,
+                  "id": 43660447354,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 10,
+                  "begin_shape_index": 9,
+                  "forward": false,
+                  "length": 0.058,
+                  "names": [
+                    "West 1st Street"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 54.532,
+                    "elapsed_cost": 89.501,
+                    "node_id": 882797326
+                  }
+                },
+                {
+                  "way_id": 16022968,
+                  "node_id": 882797326,
+                  "id": 43291348602,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 11,
+                  "begin_shape_index": 10,
+                  "forward": false,
+                  "length": 0.035,
+                  "names": [
+                    "West 1st Street"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 57.164,
+                    "elapsed_cost": 93.71,
+                    "node_id": 10805573186
+                  }
+                },
+                {
+                  "way_id": 16022968,
+                  "node_id": 10805573186,
+                  "id": 43090022010,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 13,
+                  "begin_shape_index": 11,
+                  "forward": false,
+                  "length": 0.02,
+                  "names": [
+                    "West 1st Street"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 58.671,
+                    "elapsed_cost": 97.01,
+                    "node_id": 14061743323
+                  }
+                },
+                {
+                  "way_id": 1546027728,
+                  "node_id": 14061743323,
+                  "id": 3422575984,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 14,
+                  "begin_shape_index": 13,
+                  "forward": false,
+                  "length": 0.125,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 73.198,
+                    "elapsed_cost": 123.385,
+                    "node_id": 14061743322
+                  }
+                },
+                {
+                  "way_id": 1546027728,
+                  "node_id": 14061743322,
+                  "id": 3019922800,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 15,
+                  "begin_shape_index": 14,
+                  "forward": false,
+                  "length": 0.127,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 82.742,
+                    "elapsed_cost": 132.91,
+                    "node_id": 14061743321
+                  }
+                },
+                {
+                  "way_id": 1546027728,
+                  "node_id": 14061743321,
+                  "id": 2818596208,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 17,
+                  "begin_shape_index": 15,
+                  "forward": false,
+                  "length": 0.128,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 92.35,
+                    "elapsed_cost": 147.07,
+                    "node_id": 161013486
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 161013486,
+                  "id": 2717932912,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 18,
+                  "begin_shape_index": 17,
+                  "forward": true,
+                  "length": 0.127,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 100.538,
+                    "elapsed_cost": 161.63,
+                    "node_id": 161013491
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 161013491,
+                  "id": 2113953136,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 19,
+                  "begin_shape_index": 18,
+                  "forward": true,
+                  "length": 0.063,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 104.596,
+                    "elapsed_cost": 165.579,
+                    "node_id": 8344975808
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 8344975808,
+                  "id": 2181062000,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 20,
+                  "begin_shape_index": 19,
+                  "forward": true,
+                  "length": 0.064,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 108.717,
+                    "elapsed_cost": 169.59,
+                    "node_id": 161013496
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 161013496,
+                  "id": 2248170864,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 21,
+                  "begin_shape_index": 20,
+                  "forward": true,
+                  "length": 0.065,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 112.968,
+                    "elapsed_cost": 173.727,
+                    "node_id": 14232235359
+                  }
+                },
+                {
+                  "way_id": 16020868,
+                  "node_id": 14232235359,
+                  "id": 2315279728,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 22,
+                  "begin_shape_index": 21,
+                  "forward": true,
+                  "length": 0.06,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 116.832,
+                    "elapsed_cost": 177.488,
+                    "node_id": 161013498
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013498,
+                  "id": 2382388592,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 23,
+                  "begin_shape_index": 22,
+                  "forward": false,
+                  "length": 0.06,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 122.697,
+                    "elapsed_cost": 185.649,
+                    "node_id": 6927866910
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866910,
+                  "id": 2415943024,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 24,
+                  "begin_shape_index": 23,
+                  "forward": false,
+                  "length": 0.074,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "elapsed_time": 127.461,
+                    "elapsed_cost": 190.287,
+                    "node_id": 161013499
+                  }
+                }
+              ],
+              "alternate_paths": []
+            },
+            "closure_attribution_verified": false
+          },
+          {
+            "schema": "ventusiq-route-network-probe/1",
+            "graph_sha256": "5367e4823503d5fc08fe065ad7a3226d290743fdeed64a1409248df7674ee53e",
+            "checked_at": "2026-10-30T05:11:20.726590+00:00",
+            "requests": {
+              "route": {
+                "locations": [
+                  {
+                    "lat": 43.0855,
+                    "lon": -96.1757
+                  },
+                  {
+                    "lat": 43.096,
+                    "lon": -96.1757
+                  }
+                ],
+                "costing": "auto",
+                "units": "kilometers",
+                "directions_type": "none"
+              },
+              "trace": {
+                "encoded_polyline": "ilvdqAvebmvDmKE{T?ab@EqQCy`@BwT@oH@kW@{jADoYBuG?wO@sP@ow@FwP@_y@?k]@gnCG_Y?",
+                "costing": "auto",
+                "shape_match": "edge_walk",
+                "units": "kilometers",
+                "filters": {
+                  "action": "include",
+                  "attributes": [
+                    "shape",
+                    "osm_changeset",
+                    "edge.id",
+                    "edge.way_id",
+                    "edge.forward",
+                    "edge.names",
+                    "edge.length",
+                    "edge.begin_shape_index",
+                    "edge.end_shape_index",
+                    "edge.begin_osm_node_id",
+                    "edge.end_osm_node_id",
+                    "edge.bridge",
+                    "edge.tunnel",
+                    "edge.traversability",
+                    "node.elapsed_time"
+                  ]
+                }
+              }
+            },
+            "route": {
+              "trip": {
+                "locations": [
+                  {
+                    "type": "break",
+                    "lat": 43.0855,
+                    "lon": -96.1757,
+                    "original_index": 0
+                  },
+                  {
+                    "type": "break",
+                    "lat": 43.096,
+                    "lon": -96.1757,
+                    "original_index": 1
+                  }
+                ],
+                "legs": [
+                  {
+                    "summary": {
+                      "has_time_restrictions": false,
+                      "has_toll": false,
+                      "has_highway": false,
+                      "has_ferry": false,
+                      "min_lat": 43.085525,
+                      "min_lon": -96.175733,
+                      "max_lat": 43.096,
+                      "max_lon": -96.175716,
+                      "time": 68.024,
+                      "length": 1.165,
+                      "cost": 66.673
+                    },
+                    "shape": "ilvdqAvebmvDmKE{T?ab@EqQCy`@BwT@oH@kW@{jADoYBuG?wO@sP@ow@FwP@_y@?k]@gnCG_Y?"
+                  }
+                ],
+                "summary": {
+                  "has_time_restrictions": false,
+                  "has_toll": false,
+                  "has_highway": false,
+                  "has_ferry": false,
+                  "min_lat": 43.085525,
+                  "min_lon": -96.175733,
+                  "max_lat": 43.096,
+                  "max_lon": -96.175716,
+                  "time": 68.024,
+                  "length": 1.165,
+                  "cost": 66.673
+                },
+                "status_message": "Found route between points",
+                "status": 0,
+                "units": "kilometers",
+                "language": "en-US"
+              }
+            },
+            "trace_attributes": {
+              "units": "kilometers",
+              "osm_changeset": 265597273676509,
+              "shape": "ilvdqAvebmvDmKE{T?ab@EqQCy`@BwT@oH@kW@{jADoYBuG?wO@sP@ow@FwP@_y@?k]@gnCG_Y?",
+              "edges": [
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013499,
+                  "id": 2483051888,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 1,
+                  "begin_shape_index": 0,
+                  "forward": false,
+                  "length": 0.022,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 1.414,
+                    "elapsed_cost": 1.378,
+                    "node_id": 6927866889
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866889,
+                  "id": 2550160752,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 2,
+                  "begin_shape_index": 1,
+                  "forward": false,
+                  "length": 0.039,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 3.942,
+                    "elapsed_cost": 3.823,
+                    "node_id": 6927866887
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866887,
+                  "id": 1543527792,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 3,
+                  "begin_shape_index": 2,
+                  "forward": false,
+                  "length": 0.062,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 7.934,
+                    "elapsed_cost": 7.709,
+                    "node_id": 6927866893
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866893,
+                  "id": 1610636656,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 4,
+                  "begin_shape_index": 3,
+                  "forward": false,
+                  "length": 0.032,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 10.063,
+                    "elapsed_cost": 9.777,
+                    "node_id": 161013501
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013501,
+                  "id": 1677745520,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 5,
+                  "begin_shape_index": 4,
+                  "forward": false,
+                  "length": 0.06,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 13.927,
+                    "elapsed_cost": 13.538,
+                    "node_id": 6927866895
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 6927866895,
+                  "id": 1744854384,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 6,
+                  "begin_shape_index": 5,
+                  "forward": false,
+                  "length": 0.039,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 16.441,
+                    "elapsed_cost": 15.983,
+                    "node_id": 8704575305
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8704575305,
+                  "id": 1811963248,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 7,
+                  "begin_shape_index": 6,
+                  "forward": false,
+                  "length": 0.017,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 17.54,
+                    "elapsed_cost": 17.048,
+                    "node_id": 8704575300
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8704575300,
+                  "id": 1879072112,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 8,
+                  "begin_shape_index": 7,
+                  "forward": false,
+                  "length": 0.044,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 20.376,
+                    "elapsed_cost": 19.806,
+                    "node_id": 12625550808
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 12625550808,
+                  "id": 1946180976,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 9,
+                  "begin_shape_index": 8,
+                  "forward": false,
+                  "length": 0.135,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 29.061,
+                    "elapsed_cost": 28.268,
+                    "node_id": 8237311489
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311489,
+                  "id": 2013289840,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 10,
+                  "begin_shape_index": 9,
+                  "forward": false,
+                  "length": 0.047,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 32.09,
+                    "elapsed_cost": 31.213,
+                    "node_id": 8237311497
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311497,
+                  "id": 1476418928,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 11,
+                  "begin_shape_index": 10,
+                  "forward": false,
+                  "length": 0.015,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 33.061,
+                    "elapsed_cost": 32.154,
+                    "node_id": 8237311480
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311480,
+                  "id": 1409310064,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 12,
+                  "begin_shape_index": 11,
+                  "forward": false,
+                  "length": 0.03,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 34.996,
+                    "elapsed_cost": 34.034,
+                    "node_id": 161013506
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 161013506,
+                  "id": 1342201200,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 13,
+                  "begin_shape_index": 12,
+                  "forward": false,
+                  "length": 0.031,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 36.996,
+                    "elapsed_cost": 36.527,
+                    "node_id": 8237311488
+                  }
+                },
+                {
+                  "way_id": 45097030,
+                  "node_id": 8237311488,
+                  "id": 1275092336,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 14,
+                  "begin_shape_index": 13,
+                  "forward": false,
+                  "length": 0.101,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "elapsed_time": 43.496,
+                    "elapsed_cost": 42.858,
+                    "node_id": 10700652115
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 10700652115,
+                  "id": 1241537904,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 15,
+                  "begin_shape_index": 14,
+                  "forward": false,
+                  "length": 0.032,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 45.096,
+                    "elapsed_cost": 44.418,
+                    "node_id": 161013511
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 161013511,
+                  "id": 1140874608,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 16,
+                  "begin_shape_index": 15,
+                  "forward": false,
+                  "length": 0.103,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 50.253,
+                    "elapsed_cost": 49.31,
+                    "node_id": 8289223869
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 8289223869,
+                  "id": 1073765744,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 17,
+                  "begin_shape_index": 16,
+                  "forward": false,
+                  "length": 0.054,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {}
+                    ],
+                    "elapsed_time": 52.96,
+                    "elapsed_cost": 51.875,
+                    "node_id": 161013514
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 161013514,
+                  "id": 1006656880,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 18,
+                  "begin_shape_index": 17,
+                  "forward": false,
+                  "length": 0.255,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "intersecting_edges": [
+                      {},
+                      {}
+                    ],
+                    "elapsed_time": 65.717,
+                    "elapsed_cost": 64.488,
+                    "node_id": 161013517
+                  }
+                },
+                {
+                  "way_id": 1150292206,
+                  "node_id": 161013517,
+                  "id": 939548016,
+                  "bridge": false,
+                  "tunnel": false,
+                  "traversability": "both",
+                  "end_shape_index": 19,
+                  "begin_shape_index": 18,
+                  "forward": false,
+                  "length": 0.046,
+                  "target_percent_along": 0.474,
+                  "names": [
+                    "North Main Avenue",
+                    "US 75"
+                  ],
+                  "end_node": {
+                    "elapsed_time": 68.024,
+                    "elapsed_cost": 66.673,
+                    "node_id": 10700652113
+                  }
+                }
+              ],
+              "alternate_paths": []
+            },
+            "closure_attribution_verified": false
+          }
+        ]
+      }
+    }
+  ],
+  "closure_attribution_verified": false
+}

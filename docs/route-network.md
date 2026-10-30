@@ -240,9 +240,9 @@ estimated passage and overlap times. States distinguish `blocked`,
 `no_reviewed_time_overlap`, `boundary_uncertain`, `scheduled_impact_overlap`,
 `reviewed_reported_closure_overlap` and `reviewed_reported_impact_overlap`.
 Neither `field_closure_verified` nor `driving_access_established` is asserted.
-Only one driving leg is evaluated; timed stops and subsequent legs require their
-actual shifted departure times. No rerouting, field verification or all-clear is
-performed.
+Single-probe input evaluates one driving leg. Pinned route envelopes additionally
+support ordered legs and explicit planned stop durations as described below.
+No rerouting, field verification or all-clear is performed.
 
 Nine focused tests cover source pins, partial-edge timing, 30-minute departure
 shifts, exclusive event ends, lane semantics, old event confirmations, ambiguous
@@ -252,6 +252,47 @@ against the actual native fixture, for an overlapping and an after-event departu
 The event and both approvals are explicitly synthetic. The real Windows graph's
 first selected passage is about 0.56–2.57 seconds after departure; that demonstrates
 the timing path, not a real closure or field timing accuracy.
+
+### Multi-leg trips and planned stops (v113)
+
+The same CLI accepts a `ventusiq-pinned-route/1` response from the optional native
+HTTP service. Supply `--stop-minutes '[30]'` for a two-leg trip with a 30-minute
+via stop; supply `[]` explicitly for a one-leg envelope. The original single-probe
+input remains supported and rejects stop arguments instead of silently ignoring them.
+Stop values are whole minutes from 0 to 120, one per via point, with at most three
+via points. Driving and stops together must fit within 24 hours and 2,000 km.
+
+Every leg must retain the pinned graph/engine/dataset, its exact driving edge-walk
+request, the corresponding ordered requested endpoints, continuous trace geometry
+and compatible edge times/distances. Adjacent legs must meet at the identical
+snapped coordinate. A requested waypoint more than 1 km from the snapped road,
+mixed graphs, reordered legs, partial interior edges or inconsistent timing fail.
+Edge and vertex capacity bounds match the hosted native adapter.
+
+The initial departure must be within 48 hours of evaluation. Each subsequent leg
+starts after prior driving and all preceding stops; source freshness is still
+evaluated at the original evaluation time. Both reviews must remain valid through
+the entire trip arrival. No later-leg clock is reset to the initial departure.
+Explicit timezone offsets are interpreted as absolute instants across daylight
+saving transitions. Stationary exposure during stops is **not evaluated**; stops
+only shift later road passage. Other events and unmapped roads remain unknown.
+
+The `ventusiq-route-event-trip-result/1` output retains per-leg diagnostics and
+indices, stop arrivals/departures, driving/stop totals and aggregate passages.
+A blocked leg or trip-expired review blocks the aggregate and suppresses its
+passages. Per-leg results remain diagnostic evidence, not permission to travel.
+No public route provider or event overlay is activated by this offline tool.
+
+Eight additional tests cover stop-induced changes, exclusive event boundaries,
+fall-back timezone offsets, review expiry during stops, the initial horizon,
+disconnected/mixed/reordered traces, all three stops, limits and source pins.
+The real Windows native HTTP integration returned 40 edges and 44 vertices for
+both direct and two-leg trips. With a synthetic event on the final leg, the
+two-leg passage at 00:02:07.8125–00:02:08.5195 UTC overlaps a synthetic event ending
+at 00:10. A 30-minute stop shifts final-leg departure to 00:32:07.459 and removes
+that overlap. The agency mapping and event assertions are explicitly synthetic.
+The same integration runs in Linux/Windows CI and against the Linux container.
+See [retained native response and summaries](evidence/trip-event-native-2026-10-30.json).
 
 ## Remaining agency match
 

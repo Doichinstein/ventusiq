@@ -1,4 +1,4 @@
-"""Associate a reviewed WZDx event with a pinned route leg and estimated passage times.
+"""Associate a reviewed WZDx event with pinned driving legs and planned stops.
 
 Offline research path; does not authenticate reviews, verify field access or reroute.
 Apache-2.0.
@@ -7,12 +7,16 @@ import argparse
 from datetime import timedelta
 import importlib.util
 import json
+import math
 from pathlib import Path
 import sys
 
 spec = importlib.util.spec_from_file_location('route_crosswalk', Path(__file__).with_name('route-crosswalk.py'))
 cross = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(cross)
+review_spec = importlib.util.spec_from_file_location('route_review', Path(__file__).with_name('route-review.py'))
+geometry = importlib.util.module_from_spec(review_spec)
+review_spec.loader.exec_module(geometry)
 SCHEMA = 'ventusiq-route-event-association/1'
 CHECKS = ('event_to_lrs', 'direction_scope', 'lane_scope', 'continuous_schedule')
 IMPACTS = {'all-lanes-closed', 'some-lanes-closed', 'all-lanes-open', 'alternating-one-way',
@@ -31,6 +35,14 @@ def review_blocks(association, at):
 
 
 def evaluate(association, feed, crosswalk, probe, manifest, checked_at, departure, now):
+    if not now <= departure <= now + timedelta(hours=48):
+        raise ValueError('Departure must be within the next 48 hours')
+    return evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, departure, now)
+
+
+def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, departure, now):
+    # The caller bounds the initial departure. Later legs use that departure
+    # plus actual accumulated driving and planned stop durations.
     if association.get('schema') != SCHEMA:
         raise ValueError('Unsupported event association')
     if (association.get('route_id') != crosswalk.get('agency', {}).get('route_id') or
@@ -59,8 +71,8 @@ def evaluate(association, feed, crosswalk, probe, manifest, checked_at, departur
         raise ValueError('Source vehicle impact differs from the reviewed interpretation')
     issued, updated = cross.timestamp(meta.get('update_date')), cross.timestamp(core.get('update_date'))
     start, end = cross.timestamp(p.get('start_date')), cross.timestamp(p.get('end_date'))
-    if start >= end or not now <= departure <= now + timedelta(hours=48):
-        raise ValueError('A valid event window and departure within the next 48 hours are required')
+    if start >= end:
+        raise ValueError('A valid event window is required')
     for name in ('is_start_date_verified', 'is_end_date_verified'):
         if type(p.get(name)) is not bool:
             raise ValueError('Explicit current WZDx date confirmation booleans are required')
@@ -140,6 +152,92 @@ def evaluate(association, feed, crosswalk, probe, manifest, checked_at, departur
                        'Empty or blocked results are not evidence of an open road; no rerouting is performed.']}
 
 
+def trip_legs(route, manifest, stop_minutes):
+    if (route.get('schema') != 'ventusiq-pinned-route/1' or route.get('graph_sha256') != manifest['graph_sha256'] or
+            route.get('engine_version') != cross.network.VERSION):
+        raise ValueError('Trip differs from the pinned graph or native engine')
+    points, legs = route.get('requested_waypoints'), route.get('legs')
+    if (not isinstance(points, list) or not 2 <= len(points) <= 5 or not isinstance(legs, list) or len(legs) != len(points) - 1 or
+            any(not isinstance(p, list) or len(p) != 2 or not all(cross.number(v) for v in p) or
+                abs(p[0]) > 180 or abs(p[1]) > 90 for p in points)):
+        raise ValueError('Trip requires 2–5 finite ordered waypoints and corresponding legs')
+    if (not isinstance(stop_minutes, list) or len(stop_minutes) != len(legs) - 1 or
+            any(type(m) is not int or not 0 <= m <= 120 for m in stop_minutes)):
+        raise ValueError('Provide one explicit 0–120 whole-minute stop per via point')
+    previous, durations, total_edges, total_vertices, total_km = None, [], 0, 0, 0
+    for i, probe in enumerate(legs):
+        trip, trace, requests = probe['route']['trip'], probe['trace_attributes'], probe['requests']
+        locations = requests['route'].get('locations', [])
+        shape = trace.get('shape')
+        if (probe.get('schema') != 'ventusiq-route-network-probe/1' or probe.get('graph_sha256') != manifest['graph_sha256'] or
+                len(trip['legs']) != 1 or trip.get('status') != 0 or trip.get('units') != 'kilometers' or
+                requests['route'].get('costing') != 'auto' or requests['trace'].get('shape_match') != 'edge_walk' or
+                requests['trace'].get('encoded_polyline') != shape or not isinstance(shape, str) or len(shape) > 1000000 or
+                [[p.get('lon'), p.get('lat')] for p in locations] != points[i:i+2]):
+            raise ValueError('Trip leg identity, request or exact driving trace is inconsistent')
+        cross.network.validate_trace(probe['route'], trace, manifest['dataset_id'])
+        coordinates = geometry.polyline6(shape)
+        total_vertices += len(coordinates) - (1 if i else 0)
+        if previous is not None and previous != coordinates[0]:
+            raise ValueError('Trip legs do not meet at the same snapped waypoint')
+        previous = coordinates[-1]
+        for requested, snapped in zip(points[i:i+2], [coordinates[0], coordinates[-1]]):
+            lon1, lat1, lon2, lat2 = map(math.radians, requested + snapped)
+            h = math.sin((lat2-lat1)/2)**2 + math.cos(lat1)*math.cos(lat2)*math.sin((lon2-lon1)/2)**2
+            if 12742000 * math.asin(math.sqrt(min(1, h))) > 1000:
+                raise ValueError('A waypoint is more than 1 km from the pinned road')
+        edges, summary = trace['edges'], trip['legs'][0]['summary']
+        total_edges += len(edges)
+        seconds, km = summary.get('time'), summary.get('length')
+        if not cross.number(seconds) or seconds <= 0 or not cross.number(km) or km <= 0:
+            raise ValueError('Trip leg duration or distance is unavailable')
+        durations.append(seconds)
+        total_km += km
+        for j, edge in enumerate(edges):
+            a, b, _, _ = cross.edge_range(edge)
+            if (j > 0 and a != 0) or (j < len(edges)-1 and b != 1):
+                raise ValueError('Interior trip edges have partial coverage')
+        if abs(sum(e['length'] for e in edges) - km) * 1000 > len(edges) + 1:
+            raise ValueError('Trip edge distances disagree with the leg')
+    if total_edges > 50000 or total_vertices > 50004 or total_km > 2000 or sum(durations) + sum(stop_minutes)*60 > 86400:
+        raise ValueError('Trip exceeds edge, 2,000 km or 24-hour driving-plus-stop limits')
+    return durations
+
+
+def evaluate_trip(association, feed, crosswalk, route, manifest, checked_at, departure, now, stop_minutes):
+    if not now <= departure <= now + timedelta(hours=48):
+        raise ValueError('Departure must be within the next 48 hours')
+    durations = trip_legs(route, manifest, stop_minutes)
+    current, results, stops, passages, blocks = departure, [], [], [], []
+    for i, (probe, duration) in enumerate(zip(route['legs'], durations)):
+        result = evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, current, now)
+        results.append(dict(result, leg_index=i))
+        passages.extend(dict(p, leg_index=i) for p in result['passages'])
+        blocks.extend('Leg ' + str(i+1) + ': ' + b for b in result['blocks'])
+        current += timedelta(seconds=duration)
+        if i < len(stop_minutes):
+            stop_end = current + timedelta(minutes=stop_minutes[i])
+            stops.append({'via_index': i+1, 'requested_coordinate': route['requested_waypoints'][i+1],
+                          'arrival': current.isoformat(), 'departure': stop_end.isoformat(),
+                          'duration_seconds': stop_minutes[i]*60, 'event_assessment': 'not_evaluated'})
+            current = stop_end
+    # A single review must cover the complete proposed trip, including delays.
+    blocks += ['At trip arrival: ' + b for b in cross.review_blocks(crosswalk, current)]
+    blocks += ['At trip arrival: ' + b for b in review_blocks(association, current)]
+    priorities = ['reviewed_reported_closure_overlap', 'reviewed_reported_impact_overlap',
+                  'scheduled_impact_overlap', 'boundary_uncertain', 'no_reviewed_time_overlap']
+    status = 'blocked' if blocks else next(s for s in priorities if any(r['status'] == s for r in results))
+    return {'schema': 'ventusiq-route-event-trip-result/1', 'evaluated_at': now.isoformat(), 'status': status,
+            'blocks': list(dict.fromkeys(blocks)), 'departure': departure.isoformat(), 'arrival': current.isoformat(),
+            'driving_seconds': sum(durations), 'stop_seconds': sum(stop_minutes)*60,
+            'legs': results, 'stops': stops, 'passages': passages if not blocks else [],
+            'field_closure_verified': False, 'driving_access_established': False,
+            'limits': ['Only the one supplied event/crosswalk is evaluated; unmapped roads and other events remain unknown.',
+                       'Stop durations shift subsequent driving passages; stationary stop exposure is not evaluated.',
+                       'A blocked trip suppresses aggregate passages; per-leg diagnostics are not trip clearance.',
+                       'All single-leg source, review, timing and driving-access limitations still apply.']}
+
+
 def run(args):
     graph = Path(args.graph).resolve(strict=True)
     manifest = cross.network.verify(graph, args.expected_graph_sha256)
@@ -154,8 +252,15 @@ def run(args):
             association.get('event_source_sha256') != hashes['event_source'] or
             crosswalk.get('agency', {}).get('edition_sha256') != hashes['agency_source']):
         raise ValueError('Event, crosswalk or agency edition differs from the review')
-    result = evaluate(association, data['event_source'], crosswalk, data['route_evidence'], manifest,
-                      cross.timestamp(args.checked_at), cross.timestamp(args.departure), cross.timestamp(args.at))
+    parameters = (association, data['event_source'], crosswalk, data['route_evidence'], manifest,
+                  cross.timestamp(args.checked_at), cross.timestamp(args.departure), cross.timestamp(args.at))
+    stops = getattr(args, 'stop_minutes', None)
+    if data['route_evidence'].get('schema') == 'ventusiq-pinned-route/1':
+        result = evaluate_trip(*parameters, json.loads(stops) if stops is not None else None)
+    else:
+        if stops is not None:
+            raise ValueError('Stop durations require a pinned multi-leg route envelope')
+        result = evaluate(*parameters)
     cross.network.verify(graph, args.expected_graph_sha256)
     if hashes != {role: cross.network.digest(path) for role, path in paths.items()}:
         raise ValueError('Inputs changed during evaluation')
@@ -171,6 +276,7 @@ def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('graph')
+    parser.add_argument('--stop-minutes', help='JSON array of 0–120 whole minutes per via point; required for a pinned route envelope')
     for name in ('expected-graph-sha256', 'association', 'expected-association-sha256', 'crosswalk',
                  'expected-crosswalk-sha256', 'agency-source', 'route-evidence', 'event-source', 'checked-at', 'departure', 'at', 'output'):
         parser.add_argument('--' + name, required=True)

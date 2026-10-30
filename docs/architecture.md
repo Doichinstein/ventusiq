@@ -233,8 +233,9 @@ gates are checked. The hosted Journey service now has an optional authenticated
 pinned-Valhalla backend and a native HTTP service, preserving edge identity through
 weather sampling, stops and export. OSRM remains the configured public default.
 The offline event evaluator now connects separately reviewed WZDx 4.1 editions
-to estimated native-edge passage times, preserving partial restrictions, stale
-records and boundary uncertainty. The native service does not activate those
+to estimated native-edge passage times across ordered legs and planned stops,
+preserving partial restrictions, stale records and boundary uncertainty.
+Stop exposure itself remains unevaluated. The native service does not activate those
 associations. A real approved crosswalk and time-valid event association remain required; see
 [route-network methods](route-network.md) and [backend setup](pinned-router.md).
 

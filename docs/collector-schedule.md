@@ -81,3 +81,11 @@ request alerts through the authorized task path, then read health after backgrou
 processing finishes. Check both source timestamps and upkeep completion. A run
 does not identify whether its caller was a visitor or the hourly task, so it cannot
 alone prove unattended scheduling. The existing hourly schedule is unchanged.
+
+An October 30 operator audit confirmed that this linked task is enabled. The
+available Sites tools expose its configuration but not its run history or task
+editing controls; plugin discovery did not find a relevant task-management
+connector. The separate browser session was signed out of ChatGPT, so its task
+history was not inspected. No duplicate schedule or substitute local scheduler
+was created. Distinguishing scheduler-triggered runs remains an operational gate;
+visitor completion timestamps must not be relabeled as unattended execution.

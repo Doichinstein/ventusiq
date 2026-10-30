@@ -1,5 +1,33 @@
 # Verification record
 
+## Multi-leg reviewed-event timing — October 30 (v113)
+
+The offline route-event evaluator now accepts the native service's ordered route
+envelope plus explicit stop minutes. It verifies leg requests, pinned identities,
+snapped continuity, distance/timing and capacity, and shifts each later departure
+by all earlier driving and stops. Review validity covers final arrival; event
+freshness retains the original evaluation clock. Blocked trip results suppress
+aggregate passages, and stationary stop exposure remains unevaluated.
+
+All 89 Python tests pass, including eight new multi-leg regressions and the nine
+existing single-leg checks. New cases cover a 30-minute stop removing an overlap,
+exclusive event ends across fall-back timezone offsets, expiry during a stop,
+initial-departure horizon, mixed/disconnected/reordered traces, three cumulative
+stops, bounds and pinned CLI inputs. Original single-leg behavior is retained.
+
+The real local native HTTP/JavaScript-adapter check also passed for direct and
+two-leg routes, each with 40 edges and 44 vertices. Two-leg driving duration was
+195.485 seconds. A synthetic event matched passage at 00:02:07.8125–00:02:08.5195;
+the planned 1,800-second stop moved the final departure to 00:32:07.459, after
+the synthetic 00:10 event end. [Retained raw responses and summaries](evidence/trip-event-native-2026-10-30.json)
+make the scope inspectable. These are synthetic agency/event assertions over
+real native geometry, not a verified closure, field timing or hosted activation.
+
+Operational follow-up confirmed the existing hourly task is enabled, but exposed
+no supported run-history/editing tool; the separate ChatGPT browser session was
+signed out. No account testing, duplicate schedule or local replacement task was
+started. Unattended-run attribution remains unverified.
+
 ## Progressive boundary decoding and cache reuse — October 30 (v111)
 
 Hosted zone batches now deliver each successfully decoded boundary to the map

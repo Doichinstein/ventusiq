@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v111, audited October 30, 2026 UTC.
+Current evidence: public releases through v112, plus the v113 multi-leg validation below, audited October 30, 2026 UTC.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
@@ -20,7 +20,7 @@ browser settings; those paths have not been retried or bypassed in this audit.
 | 3. Activity windows | Public duration/limit changes, gust rejection, local time, missing air coverage, alternatives and evidence export passed. v89 checks draft/export consistency; v94 controlled source-outage QA covers stale, missing and recovered inputs. | Physical-device usability and broader observation-based evaluation remain open. Synthetic outage tests do not establish provider uptime; no calibrated probability or continuous exposure is established. See [planning](activity-planning.md). |
 | 4. Fire and smoke | Live checks cover all seven map layers, fire size/perimeter details, age/containment, smoke playback, replay hiding, measured trends and modeled-source comparisons. v95 CAMS recovery/export, v96 first NASA ozone pair and v108 first CAMS PM2.5 pair were independently reproduced. | Broader model/monitor performance, CAMS run identification and personal exposure remain unvalidated. A first pair is not calibrated skill. See [PM2.5 comparison](particulate-comparison.md) and [ozone observations](ozone-observations.md). |
 | 5. Rivers and flood impacts | IDs, units/datum, observed/forecast hydrographs, official impact links, connected gauges and missing-prior states were checked. v101 DLAF1 yielded 18 matched future readings, seven nonzero revisions and a largest increase of 0.1 ft. | A changed live crossing-time window remains unverified. Address-level inundation, hydraulic travel time and owned gauge push display require separate evidence. See [rivers](rivers.md). |
-| 6. Journey exposure | Route/time, stops, DST and sparse-coverage tests pass. Public QA compared three departures and a 30-minute via stop with agency proximity kept distinct from closure. Native graph/crosswalk/event tooling has reproducible tests. | Real approved road identity, direction/carriageway/grade, partial-edge applicability and current event association are missing. The v110 event evaluator is single-leg and offline; its integration event/reviews are synthetic. Public routing remains OSRM; the optional native host is unprovisioned. See [route network](route-network.md). |
+| 6. Journey exposure | Route/time, stops, DST and sparse-coverage tests pass. Public QA compared three departures and a 30-minute via stop with agency proximity kept distinct from closure. Native graph/crosswalk/event tooling has reproducible tests. | Real approved road identity, direction/carriageway/grade, partial-edge applicability and current event association are missing. The v113 offline event evaluator handles ordered legs and planned stops; its integration event/reviews are synthetic. Stationary stop exposure and hosted event activation remain open. Public routing remains OSRM; the optional native host is unprovisioned. See [route network](route-network.md). |
 | 7. Forecast confidence | NWS outcomes/revisions, HRRR prospective outcomes with a same-case persistence baseline, and the first 31-member GEFS prospective outcome have retained source arithmetic. Leads, missing denominators and uncertainty labels remain explicit. | Broader prospective, regional, seasonal and lead-time grading remains open. Small outcome samples and correlated ensemble spread do not establish calibrated confidence. See [ensemble](ensemble.md) and [verification](verification.md). |
 | 8. Historical analogs | Public historical-date/station selection, diagnostics and exports passed. Six-station chronological holdout results were reconstructed independently from retained raw inputs. | Forecast-to-history transfer, wider regional/seasonal coverage, climate drift and validated impact associations remain open. A frozen prospective cohort is waiting for eligible completed outcomes. See [station analogs](station-analogs.md) and [historical analogs](historical-analogs.md). |
 | 9. Compound hazards | Six source-reviewed rules have premise, overlap and missing-data tests. Atka live QA reproduced 41 precipitation/wind premises in two windows; unrelated missing geography no longer contaminates other rules. | Owned watch controls and real notification display are deferred. Source review does not substitute for independent domain endorsement or outcome validation. See [compound hazards](compound-hazards.md). |
@@ -56,15 +56,16 @@ checks and the production build. Detailed records are in [verification](verifica
    explicitly unverified. Do not repeatedly ask for enrollment while deferred.
 2. **Road attribution: source and engineering work.** Establish a real reviewed
    agency crosswalk and current incident association before activating closure
-   claims. Multi-leg event evaluation and hosted activation are additional work;
+   claims. Multi-leg event evaluation is implemented and tested; hosted activation remains additional work;
    native deployment needs an appropriate host and coverage plan.
 3. **Scientific evaluation: outcome availability and broader samples.** Continue
    chronological, baseline-matched evaluation without substituting later forecasts.
    The frozen cohort's first outcome day completes October 31 at 00:00 UTC, with
    additional source publication lag. Do not fetch or score an incomplete day.
 4. **Operational evidence: scheduling and recovery.** Hourly upkeep is enabled,
-   but the bounded recent log sample contains visitor requests and does not
-   distinguish scheduler-triggered collection. Add attributable execution evidence
+   but the available tools provide no cloud run history/editor and the separate
+   browser session is signed out. The bounded recent log sample contains visitor
+   requests and does not distinguish scheduler-triggered collection. Add attributable execution evidence
    before asserting unattended reliability. Local SQLite recovery tests passed;
    production D1 export/restore, provider quotas and an isolated production-sized
    recovery drill remain unsupported/unverified. See [archive operations](archive-operations.md).

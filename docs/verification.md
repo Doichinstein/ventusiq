@@ -2918,3 +2918,26 @@ revision matches the browser export, and all source periods match a separately
 retrieved NOAA hourly forecast. The remaining four alert/air results were displayed
 but are not independently validated by this arithmetic. No watch was enrolled,
 notification sent, personal location used or paid service enabled in this check.
+
+## October 30: expired push enrollment recovery
+
+Native Brave inspection found the earlier device disabled with “Browser
+subscription expired.” A test was rejected, while the stale UI still offered test
+buttons and described the disabled record as enrolled. The summary now separates
+active and disabled devices from occupied slots, expired records explain recovery,
+and a rejected test reloads device state while preserving the error. Permission
+progress explains Brave's persistent-permission choice. All 35 focused push UI and
+service tests pass, including expiry between rendering and test submission.
+
+The browser's permission prompt was observed with “until I close this site.” The
+owner subsequently reported selecting **Forever**. This is evidence about the
+permission choice, not proof of closed-page display or an assertion that all
+subscription expirations have that cause. No permission change, re-enrollment,
+record deletion or test is performed merely by opening the page.
+
+With explicit owner approval, the expired test device and its delivery history
+were removed and the current browser enrolled successfully. At 23:22 UTC the
+page confirmed a ten-second delayed test was queued. Browser automation stopped
+while attempting to close the dashboard because it could not verify the current
+URL; closure and notification display are therefore unconfirmed. This attempt
+does not close the closed-page delivery gate.

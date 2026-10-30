@@ -152,3 +152,19 @@ with either explicit test control; API acceptance alone is not reported as
 successful display. Email, SMS and device-display acknowledgements
 are not implemented. Signed webhooks have their own implementation and separate
 [external-receiver verification gate](webhooks.md).
+
+## Expired subscriptions and Brave permission duration
+
+The device summary separates active delivery from disabled records and shows total
+slot usage. An expired device remains listed, including its delivery history, until
+its owner explicitly removes it; it still occupies one of the two slots. Removing
+it also removes that device's old delivery records. The UI does not silently delete
+records or subscribe again. A rejected test refreshes the device list so an expired
+subscription no longer retains enabled test buttons.
+
+Brave can remember notification permission only until the site closes. For ongoing
+closed-page delivery, choose **Forever** in the permission prompt's **Remember my
+decision** control before allowing notifications. See [Brave's permission-duration
+controls](https://brave.com/privacy-features/). The website cannot determine or
+change that browser setting. Expiry can have other causes; successful enrollment
+or provider acceptance still does not prove notification display.

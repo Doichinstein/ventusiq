@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v142, the October 30 live browser-capability and rendered compound-watch audits, real Cloudflare webhook receipt and queued retry, one owner-confirmed Brave push display, and the full-stop weather checks described below.
+Current evidence: public releases through v144, the October 30 live browser-capability and rendered compound-watch audits, real Cloudflare webhook receipt and queued retry, one owner-confirmed Brave push display, and the full-stop weather checks described below.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
@@ -82,7 +82,7 @@ checks and the production build. Detailed records are in [verification](verifica
    and its live HTTP lifecycle now passes. Brave enrollment and one real test
    display are confirmed: v137's provider response was HTTP 201 and the owner
    confirmed display. The closed-page test was accepted after the dashboard tab
-   closed, but display confirmation is pending. Real external receiver storage,
+   closed, but the owner was unsure whether it appeared; display remains unverified. Real external receiver storage,
    signature rejection, direct duplicate handling and the real queued retry now
    pass. Unattended scheduler attribution remains open. Legacy account tests
    remain deferred; notification testing is authorized.

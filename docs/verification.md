@@ -2898,3 +2898,23 @@ service or quota upgrade was enabled.
 The owner could not confirm seeing the separately labeled closed-page push test.
 Its provider acceptance and tab-closed timing are retained in the
 [push evidence](evidence/push-live-2026-10-30.json); display remains unverified.
+
+## October 30: shared-place map synchronization and compound negative results
+
+A fresh public South Lake Tahoe briefing link loaded weather details but left the
+map at its national extent with the empty-selection instruction. Location entry
+synchronized its marker without fitting the new point. Shared links and saved-place
+choices now fit a changed point when My weather is active, and the map status names
+the selected point. Background refreshes do not reset a user's pan; map-click
+selection preserves the clicked view. Inactive workspaces keep their own map status
+and extent. All 34 focused location, personal-workspace and navigation tests pass.
+
+The same v144 browser check displayed all six compound-rule coverage rows and
+exported their evidence. The [retained independent forecast audit](evidence/tahoe-compound-rendered-2026-10-30.json)
+reproduces the two forecast-based negative results using 49 intersecting hourly
+periods covering exactly 48 hours. No period satisfies either freezing air plus
+precipitation chances or stronger wind plus precipitation chances. The exact hosted
+revision matches the browser export, and all source periods match a separately
+retrieved NOAA hourly forecast. The remaining four alert/air results were displayed
+but are not independently validated by this arithmetic. No watch was enrolled,
+notification sent, personal location used or paid service enabled in this check.

@@ -1,0 +1,153 @@
+{
+  "ruleset_version": "2026-10-29.2",
+  "evaluated_at": "2026-10-30T23:06:43.863Z",
+  "horizon_end": "2026-11-01T23:06:43.863Z",
+  "place": {
+    "name": "TEST South Lake Tahoe",
+    "lat": 38.9399,
+    "lon": -119.9772
+  },
+  "sources": {
+    "alerts": {
+      "fresh": true,
+      "collected_at": "2026-10-30T23:06:37.000Z",
+      "revision": "61d4e6551ede0d38e90de763ef69f7dccad237f7975f4321c1107d5f1cf4e4fd",
+      "unresolved_local_coverage": 0,
+      "unresolved_local_alerts": []
+    },
+    "forecast": {
+      "fresh": true,
+      "checked_at": "2026-10-30T23:06:38.000Z",
+      "revision": "b69c0767b809ed3dc791f7a2767cf7059a1d6080c4104cc07c3a6e8fd8b1cc2c",
+      "covered_hours": 48
+    },
+    "air": {
+      "fresh": true,
+      "checked_at": "2026-10-30T23:06:37.000Z",
+      "revision": "46f57bf11606db8c6660eb62bc2cf1c4fb530271d7fac79c68b1d994bb47193d",
+      "monitor_id": "84032005TRP1"
+    }
+  },
+  "rules": [
+    {
+      "id": "heat-air-alerts",
+      "title": "Heat and air-quality alerts overlap",
+      "kind": "official-alert overlap",
+      "threshold": "Two distinct, locally applicable heat and Air Quality Alert messages with overlapping validity windows.",
+      "mechanism": "Plans to reduce heat exposure also need to account for outdoor air quality. An air-quality alert can concern pollutants other than smoke.",
+      "action": "Read both official instructions and plan for cooling and cleaner air together. Check which pollutant the air-quality alert identifies.",
+      "guidance": [
+        [
+          "AirNow: smoke and extreme heat",
+          "https://document.airnow.gov/protect-yourself-from-smoke-and-extreme-heat.pdf"
+        ]
+      ],
+      "status": "not_detected",
+      "coverage_complete": true,
+      "coverage_note": "Checked currently issued alerts for this place; future alerts can still be issued.",
+      "unresolved_alerts": [],
+      "windows": []
+    },
+    {
+      "id": "heat-pm25",
+      "title": "Recent unhealthy particle reading during a heat alert",
+      "kind": "observed context",
+      "threshold": "An active local heat alert and the closest recent measured PM2.5 monitor within 50 km reporting AQI above 100. Reading must be no older than 3 hours and fall within the heat-alert window.",
+      "mechanism": "The nearby monitor reports particle pollution while a heat alert applies here. It does not establish pollution at this exact place or predict future exposure.",
+      "action": "Check current local air quality and identify a cool location with cleaner air. Do not make an indoor space dangerously hot in an attempt to keep smoke out.",
+      "guidance": [
+        [
+          "EPA: cooling and cleaner indoor air",
+          "https://www.epa.gov/wildfire-smoke-course/strategies-reduce-exposure-indoors"
+        ]
+      ],
+      "status": "not_detected",
+      "coverage_complete": true,
+      "coverage_note": "0 active heat alert(s) with known times. Closest recent monitor 5.0 km away reports AQI 34; only its observation time is assessed, with no projection into future hours.",
+      "unresolved_alerts": [],
+      "windows": []
+    },
+    {
+      "id": "winter-wind",
+      "title": "Winter and wind alerts overlap",
+      "kind": "official-alert overlap",
+      "threshold": "Two distinct, locally applicable winter-weather and standalone wind alerts with overlapping validity windows.",
+      "mechanism": "Winter conditions and strong wind can combine to disrupt travel and power. These alerts may describe the same storm; their probabilities are not independent.",
+      "action": "Review both alerts before travel and prepare for possible power disruption. This rule does not establish blizzard conditions or road closures.",
+      "guidance": [
+        [
+          "NWS: winter storms and wind",
+          "https://www.weather.gov/fgz/WinterStorms"
+        ]
+      ],
+      "status": "not_detected",
+      "coverage_complete": true,
+      "coverage_note": "Checked currently issued alerts for this place; future alerts can still be issued.",
+      "unresolved_alerts": [],
+      "windows": []
+    },
+    {
+      "id": "inland-coastal-flood",
+      "title": "Inland and coastal flood alerts overlap",
+      "kind": "official-alert overlap",
+      "threshold": "Distinct local inland/flash-flood and coastal-flood/storm-surge alerts with overlapping validity windows.",
+      "mechanism": "Coastal water levels can impede drainage when inland flooding also occurs. An alert overlap does not establish watershed connectivity, flood depth or inundation at an address.",
+      "action": "Review both flood messages and local road/emergency guidance. Do not infer a safe route from a gap in mapped alerts.",
+      "guidance": [
+        [
+          "NOAA: combined coastal and stormwater flooding",
+          "https://coast.noaa.gov/stormwater-floods/understand"
+        ]
+      ],
+      "status": "not_detected",
+      "coverage_complete": true,
+      "coverage_note": "Checked currently issued alerts for this place; future alerts can still be issued.",
+      "unresolved_alerts": [],
+      "windows": []
+    },
+    {
+      "id": "precip-wind",
+      "title": "Precipitation chances and stronger winds coincide",
+      "kind": "forecast combination",
+      "threshold": "In the same hourly forecast: precipitation chance at least 60% and forecast sustained wind or range maximum at least 25 mph. These are VentusIQ planning thresholds, not NWS warning criteria.",
+      "mechanism": "The hourly outlook contains both precipitation chances and stronger wind. It does not quantify their joint probability, precipitation intensity or wind gusts.",
+      "action": "Inspect nearby hours in the activity planner and check official warnings before outdoor activities or driving.",
+      "guidance": [
+        [
+          "NWS: wind precautions",
+          "https://www.weather.gov/safety/wind-during"
+        ],
+        [
+          "NHTSA: driving in severe weather",
+          "https://www.nhtsa.gov/road-safety/driving-in-severe-weather"
+        ]
+      ],
+      "status": "not_detected",
+      "coverage_complete": true,
+      "coverage_note": "48.0 of 48 upcoming hours contain the fields needed for this rule. Missing hours are not favorable conditions.",
+      "unresolved_alerts": [],
+      "windows": []
+    },
+    {
+      "id": "freezing-precip",
+      "title": "Precipitation chances near or below freezing",
+      "kind": "forecast combination",
+      "threshold": "In the same hourly forecast: temperature at or below 32\u00c2\u00b0F and precipitation chance at least 40%. The probability threshold is a VentusIQ planning choice.",
+      "mechanism": "Freezing air temperatures and precipitation chances coincide. Air temperature and precipitation probability alone do not establish freezing rain, road temperature or ice accumulation.",
+      "action": "Review the forecast precipitation type and official winter alerts, and check local road conditions before travel.",
+      "guidance": [
+        [
+          "Pennsylvania DMV: cold and wet road conditions",
+          "https://www.pa.gov/agencies/dmv/driver-services/pennsylvania-drivers-manual/online-drivers-manual/everyday-driving-skills/managing-speed"
+        ]
+      ],
+      "status": "not_detected",
+      "coverage_complete": true,
+      "coverage_note": "48.0 of 48 upcoming hours contain the fields needed for this rule. Missing hours are not favorable conditions.",
+      "unresolved_alerts": [],
+      "windows": []
+    }
+  ],
+  "evidence": [],
+  "limitations": "Rules identify source overlaps and planning thresholds, not joint probabilities, observed impacts, all-clear conditions or a replacement for official instructions."
+}

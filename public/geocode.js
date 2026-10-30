@@ -20,6 +20,10 @@ export function mountGeocode({document,window,fetcher=fetch,clock=Date.now}){
       const marker=L.circleMarker([c.selected.lat,c.selected.lon],{radius:key==='personal'?8:10,color:'#101018',weight:2,fillColor:key==='to'?'#e7c579':'#88baff',fillOpacity:1});
       marker.bindTooltip(el('span',label),{permanent:key!=='personal',direction:key==='personal'?'top':'center',className:'location-point-label'}).addTo(map);markers.set(key,marker);
     }
+    if(mode==='personal'){
+      const p=controls.personal.selected;
+      window.WeatherMap.overlayStatus?.(p?`${p.name||'Selected place'} · ${pointText(p)}`:'Choose a place on the map or enter its coordinates.');
+    }
   }
   function fitPoints(keys){const points=keys.map(k=>controls[k].selected).filter(Boolean);if(!points.length)return;if(points.length===1)map.setView([points[0].lat,points[0].lon],11);else map.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lon])),{padding:[45,45],maxZoom:11});}
   function clearJourney(){window.WeatherJourney?.clear?.();if(tripBusy)get('journey-submit').disabled=true;}
@@ -80,9 +84,14 @@ export function mountGeocode({document,window,fetcher=fetch,clock=Date.now}){
     setWorkspace(value){mode=value;renderMarkers();},
     syncPlace(p){
       get('place-form').querySelector('button[type="submit"]').disabled=!p;
-      if((p?.id||null)===placeId)return;placeId=p?.id||null;const c=controls.personal;c.selected=p?{...p,query:p.input_query||pointText(p)}:null;
+      if((p?.id||null)===placeId)return;placeId=p?.id||null;const c=controls.personal;
+      const changedPoint=p&&(c.selected?.lat!==p.lat||c.selected?.lon!==p.lon);
+      c.selected=p?{...p,query:p.input_query||pointText(p)}:null;
       if(p){get('address-input').value=c.selected.query;get('place-lat').value=p.lat;get('place-lon').value=p.lon;get('place-name').value=p.name;window.WeatherMap.setOverlayFit?.('personal',()=>fitPoints(['personal']));}
       else window.WeatherMap.setOverlayFit?.('personal',null);renderMarkers();
+      // Shared links and saved-place choices arrive through syncPlace, without
+      // accept(). Map clicks already set the point and should preserve the view.
+      if(changedPoint&&mode==='personal')fitPoints(['personal']);
     },
     journeyFilled(){const points=['from','to'].map(key=>({key,lat:Number(get(controls[key].lat).value),lon:Number(get(controls[key].lon).value),valid:get(controls[key].lat).value!==''&&get(controls[key].lon).value!==''}));for(const {key,lat,lon,valid} of points)if(valid){invalidate(key);accept(key,{lat,lon,kind:'coordinates'},{query:pointText({lat,lon}),focus:false});}},
     mapPoint(view,lat,lon){const point={lat,lon,kind:'coordinates'};

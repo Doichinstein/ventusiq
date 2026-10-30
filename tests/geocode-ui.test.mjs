@@ -10,13 +10,38 @@ const raw=JSON.parse(readFileSync(new URL('./fixtures/geocode.json',import.meta.
 const tick=()=>new Promise(r=>setImmediate(r));
 function setup(mode='hosted',mount=true){
   const {document}=parseHTML(html),get=id=>document.getElementById(id),layers=new Set(),calls=[],previews=[],runs=[],clears=[];let center,hold=false,release,broken=false,exported,now=10000;
-  const originalMap=get('map'),map={setView:p=>center=p,fitBounds:p=>center=p,removeLayer:l=>layers.delete(l)};
+  const views=[],originalMap=get('map'),map={setView:p=>{center=p;views.push(p);},fitBounds:p=>{center=p;views.push(p);},removeLayer:l=>layers.delete(l)};
   const window={WEATHER_CONFIG:{mode},navigator:{},WeatherMap:{instance:map,setOverlayFit(){}},WeatherPersonal:{current:()=>null,preview(...args){previews.push(args);},clearPreview(){clears.push('personal');}},WeatherJourney:{clear(){clears.push('journey');},async run(){runs.push([get('journey-from-lat').value,get('journey-to-lat').value]);}},WeatherRivers:{search:p=>runs.push(p)},L:{latLngBounds:p=>p,circleMarker(){const layer={addTo(){layers.add(layer);return layer;},bindTooltip(){return layer;}};return layer;}},URL:{createObjectURL:b=>{exported=b;return 'blob:match';},revokeObjectURL(){}},setTimeout:f=>{now+=2100;f();}};
   const fetcher=async(url,options)=>{calls.push({url,options});const query=JSON.parse(options.body).address,r=structuredClone(raw);r.result.input.address.address=query;if(hold){hold=false;await new Promise(res=>release=res);}if(broken)throw Error('offline');return {ok:true,json:async()=>({...geocodeResult(r,query),checked_at:'2026-10-29T06:00:00Z'})};};
+  window.WeatherMap.overlayStatus=text=>get('workspace-map-status').textContent=text;
   // Layout uses the same controller as production; inject transport/clock only.
   const mounted=mount?mountWorkspaceExplorer({document,window,fetcher,clock:()=>now}):null;
-  return {document,get,window,mounted,originalMap,calls,previews,runs,clears,layers,center:()=>center,exported:()=>exported,hold:()=>hold=true,release:()=>release(),break:()=>broken=true};
+  return {document,get,window,mounted,originalMap,calls,previews,runs,clears,layers,views,center:()=>center,exported:()=>exported,hold:()=>hold=true,release:()=>release(),break:()=>broken=true};
 }
+
+test('a shared place present at startup centers the persistent map and identifies its marker',()=>{
+  const s=setup('hosted',false),p={id:'shared',name:'TEST Tahoe',lat:38.9399,lon:-119.9772};
+  s.get('workspace').dataset.view='personal';s.window.WeatherPersonal.current=()=>p;
+  mountWorkspaceExplorer({document:s.document,window:s.window});
+  assert.deepEqual(s.center(),[p.lat,p.lon]);assert.equal(s.layers.size,1);
+  assert.equal(s.get('workspace-map-status').textContent,'TEST Tahoe · 38.9399, -119.9772');
+  assert.equal(s.get('address-input').value,'38.9399, -119.9772');assert.equal(s.get('map'),s.originalMap);
+  s.window.WeatherLocations.syncPlace(p);assert.equal(s.views.length,1,'background updates must not reset a panned map');
+  s.window.WeatherLocations.syncPlace({...p,id:'saved',name:'Second place',lat:39,lon:-120});
+  assert.deepEqual(s.center(),[39,-120]);assert.equal(s.views.length,2);
+  s.window.WeatherLocations.setWorkspace('journey');s.get('workspace-map-status').textContent='Journey status';
+  s.window.WeatherLocations.syncPlace({...p,id:'hidden'});assert.equal(s.layers.size,0);assert.equal(s.views.length,2);
+  assert.equal(s.get('workspace-map-status').textContent,'Journey status');
+  s.window.WeatherLocations.setWorkspace('personal');assert.equal(s.layers.size,1);assert.match(s.get('workspace-map-status').textContent,/TEST Tahoe/);
+  s.window.WeatherLocations.syncPlace(null);assert.equal(s.layers.size,0);assert.match(s.get('workspace-map-status').textContent,/Choose a place/);
+});
+
+test('a map-selected place updates the briefing marker without recentering the map',()=>{
+  const s=setup();s.window.WeatherLocations.setWorkspace('personal');
+  s.window.WeatherPersonal.preview=(name,lat,lon)=>s.window.WeatherLocations.syncPlace({id:'map-point',name,lat,lon});
+  s.window.WeatherLocations.mapPoint('personal',39,-120);
+  assert.equal(s.views.length,0);assert.equal(s.layers.size,1);assert.match(s.get('workspace-map-status').textContent,/39.0000, -120.0000/);
+});
 test('entry forms move above the persistent map; result categories stay closed and retain controls',()=>{
   const s=setup();for(const id of ['address-input','journey-from-query','journey-to-query','river-place-query','event-search-form'])assert.ok(s.get('map-entry').contains(s.get(id)),id);
   assert.equal(s.get('map'),s.originalMap);assert.equal(s.document.querySelectorAll('#map').length,1);

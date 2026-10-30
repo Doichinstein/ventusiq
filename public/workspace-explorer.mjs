@@ -19,10 +19,15 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
     const matchGroup=matches?.closest('details[data-result-group]');if(matchGroup)matchGroup.open=false;
   }
   const personal=entryPanel('personal','Choose a weather location');personal.append(get('address-card'));
+  personal.classList.add('compact-entry');get('address-card').querySelector('h2').classList.add('sr-only');
+  get('address-form').querySelector('label').textContent='Location';
+  get('address-input').placeholder='US address or lat, lon';
   const personalPanel=get('personal-workspace'),place=get('place-content'),aside=personalPanel.querySelector('.places-panel');
   get('personal-entry-actions').append(get('pick-on-map'),get('use-location'));
-  const saved=el('details',null,'entry-saved'),savedBody=el('div');saved.append(el('summary','Saved places & save this location'),savedBody);
-  savedBody.append(get('place-storage-note'),get('place-list'),get('place-form'));personal.append(saved,get('place-message'));
+  const saved=el('details',null,'entry-saved entry-more'),savedBody=el('div');saved.append(el('summary','Saved places & options'),savedBody);
+  savedBody.append(get('place-storage-note'),get('place-list'),get('place-form'),get('address-clear'),get('address-card').querySelector('.entry-help'));
+  get('personal-entry-actions').append(saved);personal.append(get('place-message'));
+  get('pick-on-map').className='text-button';get('use-location').className='text-button';
   for(const id of ['place-lat','place-lon']){get(id).type='hidden';get(id).required=false;}
   get('place-form').querySelector('.coordinate-fields').hidden=true;
   const notificationNodes=[get('updates-card'),get('watches-card'),get('push-card'),get('webhooks-card'),get('notify-enable'),get('notify-status')];
@@ -40,9 +45,18 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
   group(place,'Changes, watches & notifications',notificationNodes,'Optional tracking and delivery');
   group(place,'More weather tools',directCards(place));
 
-  const journey=entryPanel('journey','Choose journey endpoints');journey.append(el('h2','Plan a journey'),get('journey-form'));
-  get('journey-entry-actions').append(get('journey-submit'),get('journey-example'));
-  const reset=el('button','Clear points','text-button');reset.id='journey-clear-points';reset.type='button';get('journey-entry-actions').append(reset);
+  const journey=entryPanel('journey','Choose journey endpoints');journey.classList.add('compact-entry');journey.append(el('h2','Plan a journey','sr-only'),get('journey-form'));
+  const options=get('journey-options'),extraActions=el('div',null,'entry-actions');
+  options.classList.add('entry-more');options.querySelector('summary').textContent='Route options';
+  options.querySelector('summary').title='Departure, saved places, stops and route settings';
+  for(const [side,number] of [['from',1],['to',2]]){
+    const input=get(`journey-${side}-query`),point=input.parentElement,row=el('div',null,'entry-point-row'),mapButton=get(`journey-${side}-map`);
+    point.querySelector('label').textContent=`Point ${number}`;input.placeholder='US address or lat, lon';
+    point.insertBefore(row,input);row.append(input,mapButton);mapButton.textContent='Map';mapButton.setAttribute('aria-label',`Pick point ${number} on map`);mapButton.title=`Pick point ${number} on map`;
+    extraActions.append(get(`journey-${side}-search`));point.querySelector('.entry-actions').remove();
+  }
+  get('journey-entry-actions').append(get('journey-submit'),options);
+  const reset=el('button','Clear points','text-button');reset.id='journey-clear-points';reset.type='button';extraActions.append(get('journey-example'),reset);options.append(extraActions);
   get('journey-example').textContent='Try Washington → Baltimore';
   get('journey-from-place').parentElement.firstChild.textContent='Point 1 from saved places';
   get('journey-to-place').parentElement.firstChild.textContent='Point 2 from saved places';

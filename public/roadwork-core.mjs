@@ -1,6 +1,6 @@
 /* Agency work-zone context, not network-level closure matching. Apache-2.0. */
 import {nearbyRoadLabels} from './journey-roads.mjs';
-export const ROADWORK_METHOD='2026-10-29.2';
+export const ROADWORK_METHOD='2026-10-30.1';
 export const ROADWORK_FEEDS=Object.freeze({
   md:{name:'Maryland DOT SHA',region:'Maryland',url:'https://filter.ritis.org/wzdx_v4.1/mdot.geojson'},
   ia:{name:'Iowa DOT',region:'Iowa',url:'https://iowa-atms.cloud-q-free.com/api/rest/dataprism/wzdx/wzdxfeed'},
@@ -28,6 +28,15 @@ export function roadActivity(event,issuedAt){
   if(event.start_verified===true&&event.start_ms!==null&&reference!==null&&event.start_ms>reference+60000)return result('conflicting_start_confirmation','The source confirms work started but gives a start date later than the feed generation time.',false);
   if(['start_date','end_date'].some(k=>event.verification?.[k]?.status==='invalid'))return result('invalid_confirmation','A supplied start/end confirmation field is invalid; current applicability is unknown.',false);
   return result('not_confirmed_active','Reported dates describe a window; they do not confirm continuous work or current driving access.',true);
+}
+export function roadEventFreshness(event,issuedAt,now=Date.now()){
+  const updated=stamp(event.updated_at),issued=stamp(issuedAt),age=updated===null||!Number.isFinite(now)?null:(now-updated)/1000;
+  const result=(status,reason,fresh=false)=>({status,reason,fresh,updated_at:event.updated_at||null,age_seconds:age,max_age_seconds:900});
+  if(age===null)return result('unknown','Event update time is unavailable; a fresh feed does not confirm this record is current.');
+  if(age < -60)return result('future','Event update time is in the future; current applicability is unknown.');
+  if(issued===null||updated>issued+60000)return result('inconsistent','Event update and feed generation times are missing or inconsistent.');
+  if(age>900)return result('older','Event was last updated more than 15 minutes ago. A fresh feed does not confirm this record is current.');
+  return result('recent','Event updated within 15 minutes; this does not verify continuous work or route access.',true);
 }
 export function normalizeRoadwork(raw,feed){
   if(!Object.hasOwn(ROADWORK_FEEDS,feed)||raw?.type!=='FeatureCollection'||!Array.isArray(raw.features)||raw.features.length>5000)throw Error('Invalid or oversized work-zone feed');
@@ -68,6 +77,6 @@ export function prepareRoadwork(route,products,{maxChecks=2000000}={}){
 export function evaluateRoadwork(prepared,departure,now=Date.now()){
   const {road_context,...base}=prepared;
   return {...base,feeds:prepared.feeds.map(feed=>{const issued=stamp(feed.issued_at),checked=stamp(feed.checked_at),fresh=!feed.error&&!feed.stale&&issued!==null&&checked!==null&&now-issued<=1800000&&now-issued>=-60000&&now-checked<=900000&&now-checked>=-60000;
-    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length)candidates.push({...event,activity:roadActivity(event,feed.issued_at),road_labels:nearbyRoadLabels(road_context,event,spans.map(s=>s.map(t=>(t-departure)/1000))),time_known:timeKnown,usable_timing:fresh&&timeKnown&&roadActivity(event,feed.issued_at).usable,passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}
+    const candidates=[];for(const event of feed.candidates){const timeKnown=event.start_ms!==null&&event.end_ms!==null,spans=event.spans.map(([a,b])=>[departure+a*1000,departure+b*1000]).map(([a,b])=>timeKnown?[Math.max(a,event.start_ms),Math.min(b,event.end_ms)]:[a,b]).filter(([a,b])=>a<=b&&(!timeKnown||a<event.end_ms));if(spans.length){const activity=roadActivity(event,feed.issued_at),eventFreshness=roadEventFreshness(event,feed.issued_at,now);candidates.push({...event,activity,event_freshness:eventFreshness,road_labels:nearbyRoadLabels(road_context,event,spans.map(s=>s.map(t=>(t-departure)/1000))),time_known:timeKnown,usable_timing:fresh&&eventFreshness.fresh&&event.source_id_listed&&timeKnown&&activity.usable,passages:spans.map(s=>s.map(t=>new Date(t).toISOString()))});}}
     return {...feed,fresh,candidates};})};
 }

@@ -94,6 +94,26 @@ neither is more than one minute in the future, and no refresh failure/delay is
 present. Feed generation, event update, agency date verification and actual
 passage time are distinct. Old records remain visible as evidence with unknown
 current applicability; a new collection does not make an old generated feed fresh.
+Each event is checked separately against its own update timestamp. A recent
+record must be updated within 15 minutes, at most one minute ahead of the current
+clock, and no more than one minute after feed generation. Missing, older, future
+or inconsistent timestamps withhold current-applicability highlighting even when
+the feed itself is fresh. This is a conservative display policy, not a claim
+that an older record has ended or that providers promise 15-minute updates.
+An unlisted event source ID also withholds highlighting. The source geometry,
+reported window and proximity intervals remain available for inspection.
+Cards and popups explain event freshness; the summary counts recently updated
+records separately from fresh feeds. JSON exports include `event_freshness`
+with the original timestamp, age in seconds, status and the 900-second policy.
+Recent timestamps do not authenticate a report or establish current road access.
+
+The October 30 20:16 UTC Iowa collection contained 949 records. The retained
+[two-feature source subset](evidence/iowa-event-freshness-2026-10-30.json) has
+feed generation at 20:16:22 UTC but event updates from August 10. Its regression
+check preserves the estimated dates and partial-lane impact while withholding
+current-applicability highlighting. The fixture's test path is synthetic and
+does not approve a road mapping.
+
 Orange dashed lines/dots represent supplied agency geometry with usable overlap
 timing; gray marks delayed data or ended, conflicting or unknown applicability.
 These colors do not designate driving safety.

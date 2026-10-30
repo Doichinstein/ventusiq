@@ -1,6 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {ROADWORK_METHOD,normalizeRoadwork,prepareRoadwork,evaluateRoadwork,roadActivity,roadVerification} from '../public/roadwork-core.mjs';
+import {ROADWORK_METHOD,normalizeRoadwork,prepareRoadwork,evaluateRoadwork,roadActivity,roadVerification,roadEventFreshness} from '../public/roadwork-core.mjs';
+import {readFileSync} from 'node:fs';
 import {renderRoadwork,drawRoadwork} from '../public/journey-roadwork.mjs';
 import {RoadworkService} from '../lib/roadwork-service.mjs';
 import {WeatherService} from '../lib/weather-service.mjs';
@@ -53,6 +54,39 @@ test('invalid confirmations withhold applicability while ordinary windows never 
   assert.match(e.activity.reason,/do not confirm continuous work/);
 });
 
+test('event freshness is independent of feed freshness, with exact age and skew boundaries',()=>{
+  for(const [offset,status,fresh] of [[-900000,'recent',true],[-900001,'older',false],[60000,'recent',true],[60001,'future',false]]){
+    const result=roadEventFreshness({updated_at:iso(roadNow+offset)},iso(roadNow),roadNow);
+    assert.equal(result.status,status);assert.equal(result.fresh,fresh);assert.equal(result.age_seconds,-offset/1000);
+  }
+  for(const updated_at of [null,'bad','2026-10-29T06:00:00'])assert.equal(roadEventFreshness({updated_at},iso(roadNow),roadNow).status,'unknown');
+  assert.equal(roadEventFreshness({updated_at:iso(roadNow)},null,roadNow).status,'inconsistent');
+  assert.equal(roadEventFreshness({updated_at:iso(roadNow)},iso(roadNow-60001),roadNow).status,'inconsistent');
+});
+
+test('fresh feeds retain old event windows and geometry without current-applicability highlighting',()=>{
+  const raw=source();raw.features[0].properties.core_details.update_date=iso(roadNow-86400000);
+  const v=view(raw),e=v.feeds[0].candidates[0];
+  assert.equal(v.feeds[0].fresh,true);assert.equal(e.event_freshness.status,'older');
+  assert.equal(e.time_known,true);assert.ok(e.passages.length);assert.equal(e.usable_timing,false);
+  assert.deepEqual(e.geometry,raw.features[0].geometry);
+  assert.equal(JSON.parse(JSON.stringify(v)).feeds[0].candidates[0].event_freshness.age_seconds,86400);
+  raw.features[0].properties.core_details.update_date=iso(roadNow);
+  raw.features[0].properties.core_details.data_source_id='not-listed';
+  assert.equal(view(raw).feeds[0].candidates[0].usable_timing,false);
+});
+
+test('captured Iowa records stay old despite a freshly generated feed and a future planned end',()=>{
+  const evidence=JSON.parse(readFileSync(new URL('../docs/evidence/iowa-event-freshness-2026-10-30.json',import.meta.url)));
+  const now=Date.parse(evidence.collected_at),p={...normalizeRoadwork(evidence.subset,'ia'),checked_at:evidence.collected_at};
+  // A synthetic straight test path at the supplied endpoints tests proximity only.
+  const coords=p.events[0].geometry.coordinates,route={vertices:coords.map((coordinate,i)=>({coordinate,elapsed:i*120}))};
+  const v=evaluateRoadwork(prepareRoadwork(route,[p]),now,now);
+  assert.equal(v.feeds[0].fresh,true);assert.equal(v.feeds[0].candidates.length,2);
+  for(const e of v.feeds[0].candidates){assert.equal(e.event_freshness.status,'older');assert.ok(e.event_freshness.age_seconds>80*86400);assert.equal(e.usable_timing,false);assert.equal(e.vehicle_impact,'some-lanes-closed');assert.equal(e.start_verified,false);assert.ok(e.passages.length);}
+  assert.deepEqual(p.raw,evidence.subset);
+});
+
 test('older cached editions are reinterpreted without mutating their revision or bypassing outage backoff',async()=>{
   const db=database();let now=roadNow/1000,calls=0;
   const w=new WeatherService(db,{clock:()=>now,fetcher:async()=>{calls++;return new Response(null,{status:503});}});
@@ -87,4 +121,9 @@ test('cards and map disclose conflicting evidence, preserve zero mileposts and r
   const drawn=[],L={polyline(coords,style){const row={coords,style};drawn.push(row);return {addTo(){return this;},bindPopup(p){row.popup=p;return this;}};}};
   drawRoadwork(L,{},v,document);assert.equal(drawn[0].style.color,'#9cabbc');assert.match(drawn[0].popup.textContent,/end date later/);
   drawRoadwork(L,{},view(source()),document);assert.equal(drawn[1].style.color,'#e7c579');
+  const old=source();old.features[0].properties.core_details.update_date=iso(roadNow-86400000);
+  const oldView=view(old);renderRoadwork(document,oldView,String);
+  assert.match(document.getElementById('journey-roadwork-list').textContent,/fresh feed does not confirm this record is current/);
+  drawRoadwork(L,{},oldView,document);assert.equal(drawn[2].style.color,'#9cabbc');
+  assert.match(drawn[2].popup.textContent,/more than 15 minutes ago/);
 });

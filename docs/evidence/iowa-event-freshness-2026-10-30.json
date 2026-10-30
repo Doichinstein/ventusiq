@@ -1,0 +1,154 @@
+{
+  "source_url": "https://iowa-atms.cloud-q-free.com/api/rest/dataprism/wzdx/wzdxfeed",
+  "collected_at": "2026-10-30T20:16:37.595992+00:00",
+  "full_response_sha256": "06e71b497021ce63cdd598dbe88305022e9881d776d44bc807d8a01d7401e1d3",
+  "full_response_feature_count": 949,
+  "scope": "Two unchanged source features and original feed header selected from the retained response. No road mapping or closure approval.",
+  "subset": {
+    "road_event_feed_info": {
+      "publisher": "Iowa DOT",
+      "version": "4.0",
+      "data_sources": [
+        {
+          "data_source_id": "IowaDOT-WZDx",
+          "organization_name": "Iowa DOT"
+        }
+      ],
+      "update_date": "2026-10-30T20:16:22Z"
+    },
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "id": "OpenTMS-Event22873686329-NB",
+        "type": "Feature",
+        "properties": {
+          "core_details": {
+            "event_type": "work-zone",
+            "data_source_id": "IowaDOT-WZDx",
+            "road_names": [
+              "US-75"
+            ],
+            "direction": "northbound",
+            "description": "Between County Road B46 and County Road B30 (Sioux Center). The road is closed due to road construction work. A detour is in operation. Follow the Iowa DOT-recommended detour around the closure. See map for detour(s). Until November 30, 2026 at about 4:00PM CDT. Full schedule below: • May 26, 8:30AM - November 30, 4:00PM Comment: Sioux City RCE (800-579-2713) - Sioux County",
+            "update_date": "2026-08-10T20:39:34Z"
+          },
+          "start_date": "2026-05-26T13:30:00Z",
+          "end_date": "2026-11-30T22:00:00Z",
+          "start_date_accuracy": "estimated",
+          "end_date_accuracy": "estimated",
+          "beginning_accuracy": "estimated",
+          "ending_accuracy": "estimated",
+          "beginning_cross_street": "75N-138.7",
+          "ending_cross_street": "75N-139.3",
+          "beginning_milepost": 138.7,
+          "ending_milepost": 139.3,
+          "vehicle_impact": "some-lanes-closed",
+          "types_of_work": [
+            {
+              "type_name": "surface-work"
+            }
+          ],
+          "lanes": [
+            {
+              "order": 1,
+              "type": "shoulder",
+              "status": "closed"
+            },
+            {
+              "order": 2,
+              "type": "general",
+              "status": "closed"
+            },
+            {
+              "order": 3,
+              "type": "general",
+              "status": "closed"
+            },
+            {
+              "order": 4,
+              "type": "shoulder",
+              "status": "open"
+            }
+          ],
+          "location_method": "unknown"
+        },
+        "geometry": {
+          "type": "MultiPoint",
+          "coordinates": [
+            [
+              -96.175614,
+              43.081209
+            ],
+            [
+              -96.175737,
+              43.089911
+            ]
+          ]
+        }
+      },
+      {
+        "id": "OpenTMS-Event22873686329-SB",
+        "type": "Feature",
+        "properties": {
+          "core_details": {
+            "event_type": "work-zone",
+            "data_source_id": "IowaDOT-WZDx",
+            "road_names": [
+              "US-75"
+            ],
+            "direction": "southbound",
+            "description": "Between County Road B46 and County Road B30 (Sioux Center). The road is closed due to road construction work. A detour is in operation. Follow the Iowa DOT-recommended detour around the closure. See map for detour(s). Until November 30, 2026 at about 4:00PM CDT. Full schedule below: • May 26, 8:30AM - November 30, 4:00PM Comment: Sioux City RCE (800-579-2713) - Sioux County",
+            "update_date": "2026-08-10T20:39:34Z"
+          },
+          "start_date": "2026-05-26T13:30:00Z",
+          "end_date": "2026-11-30T22:00:00Z",
+          "start_date_accuracy": "estimated",
+          "end_date_accuracy": "estimated",
+          "beginning_accuracy": "estimated",
+          "ending_accuracy": "estimated",
+          "beginning_cross_street": "75N-138.7",
+          "ending_cross_street": "75N-139.3",
+          "beginning_milepost": 138.7,
+          "ending_milepost": 139.3,
+          "vehicle_impact": "some-lanes-closed",
+          "types_of_work": [
+            {
+              "type_name": "surface-work"
+            }
+          ],
+          "lanes": [
+            {
+              "order": 1,
+              "type": "shoulder",
+              "status": "closed"
+            },
+            {
+              "order": 2,
+              "type": "general",
+              "status": "closed"
+            },
+            {
+              "order": 3,
+              "type": "shoulder",
+              "status": "open"
+            }
+          ],
+          "location_method": "unknown"
+        },
+        "geometry": {
+          "type": "MultiPoint",
+          "coordinates": [
+            [
+              -96.175614,
+              43.081209
+            ],
+            [
+              -96.175737,
+              43.089911
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

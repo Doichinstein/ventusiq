@@ -39,7 +39,7 @@ def check_event_trip(route, pin):
     feed = {'type': 'FeatureCollection', 'road_event_feed_info': {'version': '4.1', 'update_date': '2026-10-30T00:00:00Z',
             'data_sources': [{'data_source_id': 'synthetic'}]}, 'features': [{'type': 'Feature', 'id': 'synthetic', 'properties': {
         'core_details': {'event_type': 'work-zone', 'data_source_id': 'synthetic', 'direction': 'northbound', 'update_date': '2026-10-30T00:00:00Z'},
-        'vehicle_impact': 'all-lanes-closed', 'work_zone_type': 'static', 'is_start_date_verified': True, 'is_end_date_verified': False,
+        'vehicle_impact': 'all-lanes-closed', 'is_start_date_verified': True, 'is_end_date_verified': False,
         'start_date': '2026-10-29T23:00:00Z', 'end_date': '2026-10-30T00:10:00Z'}}]}
     manifest = {'graph_sha256': pin, 'engine': {'version': '3.9.1'}, 'dataset_id': last['trace_attributes']['osm_changeset']}
     now = datetime(2026, 10, 30, tzinfo=timezone.utc)

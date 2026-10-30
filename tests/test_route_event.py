@@ -36,7 +36,7 @@ def fixture():
             'features': [{'id': 'synthetic', 'type': 'Feature', 'properties': {
                 'core_details': {'event_type': 'work-zone', 'data_source_id': 'synthetic', 'direction': 'northbound',
                                  'update_date': '2026-10-30T00:00:00Z', 'road_names': ['Synthetic'], 'description': 'Road closed'},
-                'work_zone_type': 'static', 'vehicle_impact': 'all-lanes-closed',
+                'vehicle_impact': 'all-lanes-closed',
                 'start_date': '2026-10-29T23:00:00Z', 'end_date': '2026-10-30T01:00:00Z',
                 'is_start_date_verified': True, 'is_end_date_verified': False,
                 'lanes': [{'order': 1, 'type': 'general', 'status': 'closed'}]}}]}
@@ -67,6 +67,85 @@ class EventTests(unittest.TestCase):
         self.assertEqual(row['event_overlap'], row['estimated_passage'])
         self.assertFalse(result['field_closure_verified'])
         self.assertFalse(result['driving_access_established'])
+
+    def use_legacy_dates(self, version):
+        self.feed['road_event_feed_info']['version'] = version
+        self.p['start_date_accuracy'] = 'verified' if self.p.pop('is_start_date_verified') else 'estimated'
+        self.p['end_date_accuracy'] = 'verified' if self.p.pop('is_end_date_verified') else 'estimated'
+
+    def test_legacy_dates_preserve_time_and_source_in_both_editions(self):
+        expected = self.evaluate()['passages']
+        self.use_legacy_dates('4.0')
+        for version in ('4.0', '4.1'):
+            with self.subTest(version=version):
+                self.feed['road_event_feed_info']['version'] = version
+                raw = copy.deepcopy(self.feed)
+                result = self.evaluate()
+                self.assertEqual(result['status'], 'reviewed_reported_closure_overlap')
+                self.assertEqual(result['passages'], expected)
+                self.assertEqual(result['date_confirmations']['start'],
+                                 {'confirmed': True, 'field': 'start_date_accuracy', 'value': 'verified'})
+                self.assertEqual(result['date_confirmations']['wzdx_version'], version)
+                self.assertEqual(self.feed, raw)
+                self.assertEqual(result['source_event'], raw['features'][0])
+
+    def test_legacy_estimates_are_scheduled_and_verified_end_blocks(self):
+        self.use_legacy_dates('4.0')
+        self.p['start_date_accuracy'] = 'estimated'
+        self.assertEqual(self.evaluate()['status'], 'scheduled_impact_overlap')
+        self.p['end_date_accuracy'] = 'verified'
+        result = self.evaluate()
+        self.assertEqual(result['status'], 'blocked')
+        self.assertIn('Source reports work ended or cancelled', result['blocks'])
+
+    def test_date_formats_must_match_declared_version_and_each_other(self):
+        self.feed['road_event_feed_info']['version'] = '4.0'
+        with self.assertRaisesRegex(ValueError, 'Missing'):
+            self.evaluate()
+        self.feed['road_event_feed_info']['version'] = '4.2'
+        with self.assertRaisesRegex(ValueError, 'requires WZDx'):
+            self.evaluate()
+        self.feed['road_event_feed_info']['version'] = '4.1'
+        self.p['start_date_accuracy'] = 'verified'
+        self.assertEqual(self.evaluate()['status'], 'reviewed_reported_closure_overlap')
+        self.p['start_date_accuracy'] = 'estimated'
+        with self.assertRaisesRegex(ValueError, 'Conflicting'):
+            self.evaluate()
+        self.p['start_date_accuracy'] = 'high'
+        with self.assertRaisesRegex(ValueError, 'Unsupported'):
+            self.evaluate()
+
+    def test_missing_or_invalid_legacy_fields_are_not_assumed(self):
+        self.use_legacy_dates('4.0')
+        for value in (None, True, 1, 'VERIFIED', '', {}, []):
+            with self.subTest(value=value):
+                self.p['end_date_accuracy'] = value
+                with self.assertRaisesRegex(ValueError, 'Unsupported'):
+                    self.evaluate()
+        del self.p['end_date_accuracy']
+        with self.assertRaisesRegex(ValueError, 'Missing'):
+            self.evaluate()
+
+    def test_legacy_future_confirmation_stale_event_and_partial_impact_gates(self):
+        self.use_legacy_dates('4.0')
+        self.p['vehicle_impact'] = self.association['vehicle_impact'] = 'some-lanes-closed'
+        self.assertEqual(self.evaluate()['status'], 'reviewed_reported_impact_overlap')
+        self.p['start_date'] = '2026-10-30T00:10:00Z'
+        self.assertEqual(self.evaluate()['status'], 'blocked')
+        self.p['start_date'] = '2026-10-29T23:00:00Z'
+        self.p['core_details']['update_date'] = '2026-08-10T20:39:34Z'
+        self.assertIn('event confirmation is stale or future-dated', self.evaluate()['blocks'])
+
+    def test_stationarity_requires_separate_review_not_a_producer_extension(self):
+        del self.association['review']['checks']['stationary_footprint']
+        for extension in (None, 'static'):
+            with self.subTest(extension=extension):
+                if extension:
+                    self.p['work_zone_type'] = extension
+                result = self.evaluate()
+                self.assertEqual(result['status'], 'blocked')
+                self.assertIn('Event review incomplete: stationary_footprint', result['blocks'])
+                self.assertEqual(result['passages'], [])
 
     def test_event_end_is_exclusive_and_departure_shifts_passage(self):
         original = self.evaluate()['passages'][0]['estimated_passage']

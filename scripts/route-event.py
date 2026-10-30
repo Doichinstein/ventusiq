@@ -18,10 +18,33 @@ review_spec = importlib.util.spec_from_file_location('route_review', Path(__file
 geometry = importlib.util.module_from_spec(review_spec)
 review_spec.loader.exec_module(geometry)
 SCHEMA = 'ventusiq-route-event-association/1'
-CHECKS = ('event_to_lrs', 'direction_scope', 'lane_scope', 'continuous_schedule')
+CHECKS = ('event_to_lrs', 'direction_scope', 'lane_scope', 'continuous_schedule', 'stationary_footprint')
 IMPACTS = {'all-lanes-closed', 'some-lanes-closed', 'all-lanes-open', 'alternating-one-way',
            'some-lanes-closed-merge-left', 'some-lanes-closed-merge-right',
            'all-lanes-open-shift-left', 'all-lanes-open-shift-right'}
+
+
+def date_confirmations(properties, version):
+    """Interpret the declared WZDx edition without rewriting source evidence."""
+    if version not in ('4.0', '4.1'):
+        raise ValueError('This event adapter requires WZDx 4.0 or 4.1')
+    result = {'wzdx_version': version}
+    for boundary in ('start', 'end'):
+        modern, legacy = f'is_{boundary}_date_verified', f'{boundary}_date_accuracy'
+        has_modern, has_legacy = modern in properties, legacy in properties
+        if has_modern and type(properties[modern]) is not bool:
+            raise ValueError('WZDx date confirmation booleans must be explicit booleans')
+        if has_legacy and properties[legacy] not in ('estimated', 'verified'):
+            raise ValueError('Unsupported WZDx date accuracy')
+        if (version == '4.0' and not has_legacy) or not (has_modern or has_legacy):
+            raise ValueError('Missing WZDx date confirmation for the declared version')
+        if has_modern and has_legacy and properties[modern] != (properties[legacy] == 'verified'):
+            raise ValueError('Conflicting WZDx date confirmation fields')
+        # 4.0 requires TimeVerification; 4.1 accepts either representation.
+        field = modern if version == '4.1' and has_modern else legacy
+        result[boundary] = {'confirmed': properties[field] is True or properties[field] == 'verified',
+                            'field': field, 'value': properties[field]}
+    return result
 
 
 def review_blocks(association, at):
@@ -52,8 +75,8 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
     if feed.get('type') != 'FeatureCollection' or not isinstance(feed.get('features'), list) or len(feed['features']) > 5000:
         raise ValueError('Unsupported WZDx collection')
     meta = feed.get('road_event_feed_info', feed.get('feed_info'))
-    if not isinstance(meta, dict) or meta.get('version') != '4.1':
-        raise ValueError('This event adapter requires WZDx 4.1')
+    if not isinstance(meta, dict) or meta.get('version') not in ('4.0', '4.1'):
+        raise ValueError('This event adapter requires WZDx 4.0 or 4.1')
     if 'road_event_feed_info' in feed and 'feed_info' in feed and feed['road_event_feed_info'] != feed['feed_info']:
         raise ValueError('Conflicting WZDx headers')
     events = [e for e in feed['features'] if isinstance(e, dict) and e.get('id') == association['event_id']]
@@ -73,9 +96,7 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
     start, end = cross.timestamp(p.get('start_date')), cross.timestamp(p.get('end_date'))
     if start >= end:
         raise ValueError('A valid event window is required')
-    for name in ('is_start_date_verified', 'is_end_date_verified'):
-        if type(p.get(name)) is not bool:
-            raise ValueError('Explicit current WZDx date confirmation booleans are required')
+    confirmations = date_confirmations(p, meta['version'])
     match = cross.match(crosswalk, probe, manifest, association['route_id'], association['direction'],
                         association['from_measure'], association['to_measure'], now)
     blocks = match['blocks'] + review_blocks(association, now)
@@ -86,12 +107,14 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
             blocks.append(label + ' is stale or future-dated')
     if updated > issued + timedelta(seconds=60) or issued > checked_at + timedelta(seconds=60):
         blocks.append('Source timestamp ordering is inconsistent')
-    if p['is_end_date_verified'] or p.get('event_status') in ('cancelled', 'completed'):
+    if confirmations['end']['confirmed'] or p.get('event_status') in ('cancelled', 'completed'):
         blocks.append('Source reports work ended or cancelled')
-    if p['is_start_date_verified'] and start > issued + timedelta(seconds=60):
+    if confirmations['start']['confirmed'] and start > issued + timedelta(seconds=60):
         blocks.append('Source confirms a start later than feed generation')
-    if p.get('work_zone_type') != 'static':
-        blocks.append('Moving or unspecified work-zone footprint is unsupported')
+    # WZDx 4.0/4.1 do not define work_zone_type. Stationarity needs its own
+    # evidence-backed review; an optional producer extension cannot grant it.
+    if 'work_zone_type' in p and p['work_zone_type'] != 'static':
+        blocks.append('Producer extension contradicts a stationary work-zone footprint')
     lanes = p.get('lanes', [])
     if not isinstance(lanes, list) or any(not isinstance(l, dict) for l in lanes):
         raise ValueError('Invalid lane records')
@@ -133,7 +156,7 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
         status = 'no_reviewed_time_overlap'
     elif not interior:
         status = 'boundary_uncertain'
-    elif not p['is_start_date_verified']:
+    elif not confirmations['start']['confirmed']:
         status = 'scheduled_impact_overlap'
     elif impact == 'all-lanes-closed':
         status = 'reviewed_reported_closure_overlap'
@@ -142,7 +165,8 @@ def evaluate_leg(association, feed, crosswalk, probe, manifest, checked_at, depa
     return {'schema': 'ventusiq-route-event-result/1', 'evaluated_at': now.isoformat(), 'status': status,
             'blocks': blocks, 'event_id': event['id'], 'vehicle_impact': impact,
             'source_checked_at': checked_at.isoformat(), 'source_issued_at': issued.isoformat(),
-            'event_updated_at': updated.isoformat(), 'departure': departure.isoformat(), 'arrival': arrival.isoformat(),
+            'event_updated_at': updated.isoformat(), 'date_confirmations': confirmations,
+            'departure': departure.isoformat(), 'arrival': arrival.isoformat(),
             'passages': passages if not blocks else [], 'network_match': match, 'source_event': event,
             'field_closure_verified': False, 'driving_access_established': False,
             'limits': ['Reviews and collection time are supplied operator assertions, not authenticated agency approval.',

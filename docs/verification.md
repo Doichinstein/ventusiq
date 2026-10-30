@@ -2743,3 +2743,30 @@ at 20:03:33 UTC reports 144 pending cases, zero matched cases, null errors and z
 source pages. A separate offline CLI reproduction also matched it. This closes
 the operator implementation gap; real regional outcomes and broader validation
 remain pending. See [operator instructions](ensemble-regional-cohort.md#collect-score-and-reproduce-outcomes).
+
+
+### WZDx edition and stationary-footprint correction — October 30
+
+The offline event adapter now supports declared WZDx 4.0 TimeVerification
+fields and both documented 4.1 date representations. Fifteen event tests
+include equivalent passage timing across editions, unchanged raw source,
+estimated-start classification, verified-end exclusion, incompatible/unknown
+fields, conflicting representations, future confirmations, stale events and
+partial-lane impacts. The route-family suite passed 43 tests and the pinned
+router suite passed seven (50 total). These use synthetic reviews, including
+when their driving edges came from a captured native graph.
+
+Both published WZDx editions omit work_zone_type, so requiring that property
+incorrectly excluded standard events. The required stationary_footprint review
+now supplies this distinct assertion; a producer extension cannot grant it.
+Tests remove the nonstandard property from normal fixtures and confirm that
+missing reviews still block even if an extension says static. Existing review
+files need the additional evidence-backed check and new pins. No real review
+was created or approved.
+
+A read-only interpretation of the retained Iowa US-75 candidate
+OpenTMS-Event22873686329-NB returned version 4.0, estimated start and end
+(both unconfirmed), some-lanes-closed, and event update
+2026-08-10T20:39:34Z. This is an inspection of the earlier retained feed, not a
+fresh collection or an approved event-to-road association. Public OSRM routing
+and road-event activation are unchanged.

@@ -82,7 +82,7 @@ with tempfile.TemporaryDirectory(prefix="ventusiq-route-network-") as temp:
         "features": [{"type": "Feature", "id": "synthetic", "properties": {
             "core_details": {"event_type": "work-zone", "data_source_id": "synthetic", "direction": "northbound",
                 "road_names": ["Synthetic"], "update_date": "2026-10-30T00:00:00Z"},
-            "work_zone_type": "static", "vehicle_impact": "all-lanes-closed",
+            "vehicle_impact": "all-lanes-closed",
             "start_date": "2026-10-29T23:00:00Z", "end_date": "2026-10-30T01:00:00Z",
             "is_start_date_verified": True, "is_end_date_verified": False}}]}
     feed_path = work / "synthetic-event-feed.json"

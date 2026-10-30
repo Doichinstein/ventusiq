@@ -175,7 +175,7 @@ pipeline, but no real crosswalk has been approved or activated.
 ## Associate a reviewed event with estimated passage time
 
 `scripts/route-event.py` composes the existing graph/crosswalk verifier with one
-explicitly reviewed WZDx 4.1 event edition. It checks the complete input chain,
+explicitly reviewed WZDx 4.0 or 4.1 event edition. It checks the complete input chain,
 then intersects the event's reported time window with estimated passage through
 each matched directed-edge fraction. It is an offline operator tool, included
 in the open-source download. It does not activate a public closure layer or
@@ -194,6 +194,9 @@ crosswalk, with these **distinct** required boolean checks:
 - `lane_scope`: the impact applies to these mapped road/carriageway portions.
 - `continuous_schedule`: the reported window applies continuously; unresolved
   intermittent, recurring or time-of-day restrictions cannot be marked reviewed.
+- `stationary_footprint`: evidence establishes that the mapped footprint stays
+  fixed for the reviewed interval. Moving work cannot use this adapter. Existing
+  reviews without this check must be revisited and repinned; it is not assumed.
 
 Both review files require separately supplied trusted SHA-256 pins. The event
 review also pins the crosswalk and entire feed edition; a changed feed requires
@@ -208,13 +211,31 @@ python scripts/route-event.py work/route-graph --expected-graph-sha256 GRAPH_HAS
 
 The adapter requires a unique work-zone event, a listed source ID, a static
 footprint and exact agreement with the reviewed direction and structured vehicle
-impact. It supports current boolean start/end confirmation fields. Under the
-[WZDx definition](https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/objects/WorkZoneRoadEvent.md),
+impact. WZDx does not define a `work_zone_type` property in either supported
+edition, and its [work-zone event type](https://github.com/usdot-jpo-ode/wzdx/blob/v4.1/spec-content/enumerated-types/EventType.md)
+includes moving activities. Stationarity is therefore a distinct review check,
+not inferred from a missing field or from construction prose. An optional producer
+extension declaring a nonstatic footprint still blocks a contradictory review.
+
+The adapter uses the declared edition's date fields. Version 4.0 requires
+`start_date_accuracy` and `end_date_accuracy`; version 4.1 accepts those legacy
+fields or explicit boolean confirmations. [TimeVerification](https://github.com/usdot-jpo-ode/wzdx/blob/v4.0/spec-content/enumerated-types/TimeVerification.md)
+distinguishes estimated activity times from actual reported times. Unknown values,
+missing required representations, nonboolean confirmations, unsupported editions,
+and conflicting old/new fields are rejected. Both representations are retained
+unchanged in the source event; `date_confirmations` records the selected field,
+raw value, declared edition and interpreted boolean for each boundary.
+Under the [4.1 definition](https://github.com/usdot-jpo-ode/wzdx/blob/v4.1/spec-content/objects/WorkZoneRoadEvent.md),
 start confirmation means work has started; end confirmation means work has ended.
 It is not a confidence flag for a future planned end. Ended/cancelled work and
 contradictory confirmation times block the result. An unconfirmed start remains
 a scheduled impact. A full-closure field with a nonclosed or unknown general-lane
 status blocks; an open shoulder alone does not contradict closed travel lanes.
+
+Supporting 4.0 removes a format barrier for the retained Iowa candidate, not its
+evidence barriers. That candidate has estimated dates, a structured partial-lane
+impact and an old event update. No real crosswalk, stationary-footprint review or
+current event association has been approved by this change.
 
 The [structured vehicle-impact enum](https://github.com/usdot-jpo-ode/wzdx/blob/main/spec-content/enumerated-types/VehicleImpact.md)
 determines whether the source reports all lanes closed, a partial restriction or

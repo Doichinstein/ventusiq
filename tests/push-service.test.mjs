@@ -5,6 +5,12 @@ import {PushService} from '../lib/push-service.mjs';
 import {pushGet,pushPost} from '../lib/push-http.mjs';
 async function fixture(){const s=setup();let code=201,calls=0,request=null;const push=new PushService(s.weather,{jwk:await pushKeys(),fetcher:async(url,options)=>{calls++;request={url,...options};return new Response(null,{status:code,headers:code===429?{'Retry-After':'7200'}:{}});}});return {...s,push,calls:()=>calls,last:()=>request,code:v=>code=v};}
 async function enroll(s){return (await s.push.subscribe('alice',{subscription,label:'Laptop'})).id;}
+test('enrollment errors distinguish unsupported services and malformed keys without leaking endpoint secrets',async()=>{
+ const s=await fixture();
+ await assert.rejects(s.push.subscribe('alice',{subscription:{...subscription,endpoint:'https://unlisted.example/private-token?secret=yes'}}),e=>/provider: unlisted.example/.test(e.message)&&!e.message.includes('private-token')&&!e.message.includes('secret'));
+ await assert.rejects(s.push.subscribe('alice',{subscription:{...subscription,keys:{p256dh:'bad-secret',auth:'bad-secret'}}}),e=>/invalid push encryption keys/.test(e.message)&&!e.message.includes('bad-secret'));
+ assert.equal((await s.push.list('alice')).devices.length,0);assert.equal(s.calls(),0);s.db.close();
+});
 async function change(s){await s.service.create('alice',s.input);await s.service.evaluate(s.input.id,s.alerts());s.advance();s.wind(30);await s.service.evaluate(s.input.id,s.alerts());}
 const post=(input,origin='https://example.test')=>new Request('https://example.test/api/push',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(input)});
 test('push enrollment is explicit, idempotent, private and bounded by owner',async()=>{const s=await fixture();assert.equal((await s.push.list('alice')).devices.length,0);const id=await enroll(s);await enroll(s);assert.equal((await s.push.list('alice')).devices.length,1);assert.equal((await s.push.list('bob')).devices.length,0);await assert.rejects(s.push.remove('bob',id),e=>e.status===404);await assert.rejects(s.push.subscribe('bob',{subscription}),e=>e.status===409);const data=await s.push.list('alice');assert.equal(data.public_key.length,87);assert.ok(!JSON.stringify(data).includes(subscription.endpoint));await s.push.subscribe('alice',{subscription:{...subscription,endpoint:subscription.endpoint+'2'}});await assert.rejects(s.push.subscribe('alice',{subscription:{...subscription,endpoint:subscription.endpoint+'3'}}),e=>e.status===429);s.db.close();});

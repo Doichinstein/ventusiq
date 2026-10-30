@@ -1,5 +1,29 @@
 # Ten-feature acceptance audit
 
+## Live CAMS recovery and startup status (v95)
+
+The public CAMS request recovered after its earlier rate-limit pause. Actual browser
+QA loaded all six pollutants, opened the hourly table and downloaded the source
+and planner evidence. All 72 exported rows match the raw provider arrays. The
+49 displayed samples per pollutant reproduce the shown ranges; all 98 PM2.5/ozone
+checks across 49 planning windows reproduce from the retained raw samples.
+Collection freshness does not establish model-run age: initialization remains
+unknown and the UI/export preserve that limitation. This closes the observed
+CAMS availability/UI gate for this test, not future uptime or forecast accuracy.
+See [retained audit](evidence/cams-public-browser-audit-2026-10-30.json).
+
+Public map QA also verified combined alert/fire/AQI layers, official alert details,
+automatic count updates, and a mobile layer menu without document overflow.
+Older AQI contours were gray with their source time. A warm cached alert-list
+reload took about 0.7 seconds through the first browser snapshot; this is not a
+cold-load or full-layer completion benchmark. Account testing remains deferred.
+
+The startup header now distinguishes a pending first network check from an actual
+delay. Recent browser-cached alerts remain visible with “Checking for updates…”.
+Old collections, saved provider errors and failed requests retain the delayed
+warning; a successful response returns “Connected to NWS”. Collection timestamps
+are never advanced by reading the browser cache.
+
 ## Activity source-outage browser checks (v94)
 
 The unchanged v93 application passed controlled local HTTP failure/recovery checks:
@@ -224,7 +248,7 @@ results below supply new evidence; they do not certify untested flows.
 | 1. My Places | My weather; persistence/source-matching tests plus v62 browser save, reload, live forecast and removal at public Washington coordinates; mobile planner checked | Real signed-in synchronization on two devices; account testing deferred by owner |
 | 2. Meaningful updates | My weather → Watch alerts; watch, push and webhook tests cover ownership, baseline suppression, changes, quiet periods, retry and deduplication | Real closed-page notification display; real external webhook delivery/retry; signed-in controls |
 | 3. Activity windows | Planning tests plus rendered v62 duration/limit changes, rejection by gust ceiling, unknown unloaded PM2.5 coverage, local EDT times, persistence and evidence download | Broader real-device usability and source-outage scenarios; no calibrated probability is established |
-| 4. Fire and smoke | Provider/core tests and live feeds; browser checks cover all seven map layers, fire perimeter/details, age/containment styles, smoke playback, replay hiding and the HRRR/RAP comparison chart and export; v65 rendered measured PM2.5/ozone trends, monitor switching, mobile ozone and exports | CAMS particle/gas chart flow remains blocked by observed provider rate limiting; nonempty archived forecast/monitor pairs remain unproven; modeled or nearby measurements do not verify personal exposure |
+| 4. Fire and smoke | Provider/core tests and live feeds; browser checks cover all seven map layers, fire perimeter/details, age/containment styles, smoke playback, replay hiding and the HRRR/RAP comparison chart and export; v65 rendered measured PM2.5/ozone trends, monitor switching, mobile ozone and exports | v95 live CAMS ranges/table, planner ceilings and exports passed with raw-data reproduction; nonempty archived forecast/monitor pairs remain unproven; modeled or nearby measurements do not verify personal exposure |
 | 5. Flood timing | River/network/gauge tests and live checks cover IDs, units, datum and revisions; browser opened LOLT2 observations and IOLK1 observed/forecast hydrograph, threshold timing, official impact text, connected gauges and missing-prior-revision exports | AKFM7 now has a browser-verified nonempty comparison with unchanged matched levels; nonzero level and crossing-time shifts remain unproven in live QA; the DLAF1 official NOAA link was followed and verified in v65. Address-level inundation and hydraulic travel times remain outside the current evidence |
 | 6. Journey weather | Tests and live routes cover geometry/time alignment, stops, DST, gaps, agency proximity and source road labels; browser compared three Washington–Baltimore departures, a 30-minute via stop, shifted stop arrival/departure times and a Maryland agency work-zone panel | **Verified route closure attribution is still missing.** Shared labels do not resolve network identity, carriageway, signed direction or grade-separated crossings |
 | 7. Forecast confidence | Temperature outcomes, lead groups, persistence and revision comparisons have automated coverage; browser checked observed-temperature chart, GEFS charts/counts/exports and v68 Sacramento diagnostics with 11 matched hours, independently recalculated errors and a matching JSON download | v71 verified 48 same-hour forecast-revision pairs and independently recalculated differences; broader seasonal skill remains incomplete. v77/v78 verified an explicitly identified daily 00 UTC GEFS run in the live UI and exports, with 744 values per metric independently reproduced; all six-hour runs and calibrated skill remain outside that evidence. v79 adds prospective captured-run temperature comparisons with station QC, lead groups and evidence export; a nonempty live GEFS outcome sample has not yet matured. HRRR temperature has an explicit-run adapter; v83 verified its live chart, missing tail and export consistency, plus the updated desktop/mobile time axis. The one-day outcome sample and model spread do not justify calibrated confidence claims |

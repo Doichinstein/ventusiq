@@ -45,8 +45,11 @@ async function setup(mode='direct',options={}) {
   const stored=[],requests=[],intervals=[];
   let releaseAuxiliary;
   const auxiliaryGate=new Promise(resolve=>releaseAuxiliary=resolve);
+  let releaseAlerts;
+  const alertsGate=new Promise(resolve=>releaseAlerts=resolve);
   const fetch=async(url)=>{
     requests.push(url);
+    if(options.holdAlerts&&url==='/api/alerts?view=map')await alertsGate;
     if(options.holdAuxiliary&&['/api/health','/api/history','/api/changes'].includes(url))await auxiliaryGate;
     if(error)throw new Error('Simulated outage');
     if(url.includes('/zones/'))return {ok:true,json:async()=>({geometry:fixture('zone').geometry})};
@@ -65,14 +68,56 @@ async function setup(mode='direct',options={}) {
   els.detail.append(els['detail-close'],els['detail-body']);
   const ctx=vm.createContext({document:doc,window:{WEATHER_CONFIG:{mode},innerWidth:1400,addEventListener(){}},L,fetch,URL,AbortSignal,Date,performance:{now:()=>0},console,setInterval(fn,ms){intervals.push({fn,ms});},setTimeout(){return 1;}});
   const run=code=>vm.runInContext(code,ctx);
+  if(options.cache)ctx.window.WeatherMapCache={read:async key=>key==='alerts'?options.cache:null,write(){}};
   run(fs.readFileSync(path.join(__dirname,'../public/zone-loader.js'),'utf8'));
   run(fs.readFileSync(path.join(__dirname,'../public/map-geometry.js'),'utf8'));
   run(fs.readFileSync(path.join(__dirname,'../public/alert-renderer.js'),'utf8'));
   run(fs.readFileSync(path.join(__dirname,'../public/app.js'),'utf8'));
   const settle=async()=>{for(let i=0;i<10;i++)await new Promise(r=>setImmediate(r));};
   await settle();
-  return {els,run,settle,stored,doc,requests,intervals,releaseAuxiliary,visibility:()=>documentListeners.visibilitychange(),key:event=>documentListeners.keydown(event),setData(data){current=data;},fail(){error=true;}};
+  return {els,run,settle,stored,doc,requests,intervals,releaseAuxiliary,releaseAlerts,visibility:()=>documentListeners.visibilitychange(),key:event=>documentListeners.keydown(event),setData(data){current=data;},fail(){error=true;}};
 }
+
+test('first network check labels fresh cached alerts as checking, then confirms the live collection',async()=>{
+  const cache=payload([fixture('cached')]);
+  const s=await setup('hosted',{holdAlerts:true,cache});
+  assert.equal(s.els.total.textContent,'1');
+  assert.equal(s.els['status-label'].textContent,'Checking for updates…');
+  assert.match(s.els['status-dot'].className,/loading/);
+  assert.match(s.els['map-notice'].textContent,/previous visit/);
+  assert.equal(s.run('lastSuccess'),cache.collected_at);
+  s.releaseAlerts();await s.settle();
+  assert.equal(s.els['status-label'].textContent,'Connected to NWS');
+  assert.equal(s.els.total.textContent,'2');
+});
+
+test('startup checking never conceals old cache, retained provider failures, or a failed first request',async()=>{
+  for(const cache of [
+    {...payload([fixture('old')]),collected_at:new Date(Date.now()-180000).toISOString()},
+    {...payload([fixture('stale')]),stale:true},
+    {...payload([fixture('failed')]),error:'Provider unavailable'},
+  ]){
+    const s=await setup('hosted',{holdAlerts:true,cache});
+    assert.equal(s.els['status-label'].textContent,'Updates delayed');
+    assert.match(s.els['map-notice'].textContent,/last successful collection/);
+    s.releaseAlerts();await s.settle();
+    assert.equal(s.els['status-label'].textContent,'Connected to NWS');
+  }
+  const s=await setup('hosted',{holdAlerts:true,cache:payload([fixture('cached')])});
+  s.fail();s.releaseAlerts();await s.settle();
+  assert.equal(s.els.total.textContent,'1');
+  assert.equal(s.els['status-label'].textContent,'Updates delayed');
+  assert.match(s.els['map-notice'].textContent,/last successful collection/);
+});
+
+test('first visit without a cache shows checking until a real result arrives',async()=>{
+  const s=await setup('hosted',{holdAlerts:true});
+  assert.equal(s.els['status-label'].textContent,'Checking for updates…');
+  assert.equal(s.els['status-time'].textContent,'First collection in progress');
+  s.fail();s.releaseAlerts();await s.settle();
+  assert.equal(s.els['status-label'].textContent,'Waiting for NWS');
+  assert.equal(s.els['status-time'].textContent,'Retrying automatically');
+});
 
 test('hosted map paints alerts before slow history and status, without redrawing unchanged geometry',async()=>{
   const s=await setup('hosted',{holdAuxiliary:true});

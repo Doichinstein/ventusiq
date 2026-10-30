@@ -2145,3 +2145,47 @@ The public AKFM7 revision comparison was also rechecked: 71 matching future
 timestamps still had zero level change. A coverage extension under the same
 issue time was labeled correctly. This does not close the nonzero level or
 threshold-timing revision evidence gap.
+
+## October 30, 2026 — live CAMS evidence and truthful startup status (v95)
+
+At 01:06:45 UTC, the public CAMS endpoint returned fresh collection data after the
+earlier rate-limit pause. Browser QA used explicit public coordinates 39, -77,
+without signing in. The six displayed ranges and 49 samples per pollutant matched
+the exported arrays. An independent Python audit reproduced every one of the 72
+normalized export rows and all 98 PM2.5/ozone checks across 49 planner windows,
+including samples bracketing partial hours. Limits 15 µg/m³ PM2.5 and 80 µg/m³ ozone
+were test preferences, not health standards. The source run time was unavailable
+and remained unknown in both display and export.
+
+Retained evidence: [forecast download](evidence/cams-live-forecast-2026-10-30.json),
+[planner download](evidence/cams-live-plan-2026-10-30.json),
+[independent audit](evidence/cams-public-browser-audit-2026-10-30.json) and
+[public browser checks](evidence/public-browser-checks-2026-10-30.json).
+The audit source hashes refer to the original browser download filenames; the
+retained copies above have identical bytes. These checks establish consistency
+and actual provider/UI integration at this time, not continuous availability,
+model skill, personal exposure, or a nonempty forecast/monitor outcome sample.
+
+Public QA opened official alert details, combined Alerts/Fires/AQI layers, and
+observed automatic alert counts changing 406 → 407 → 408. Fire symbols and older
+gray AQI contours rendered. At a 390 × 844 viewport the document client and scroll
+widths were both 375 pixels. A warm reload showed the cached 408-alert list within
+727 ms through the first automated snapshot. That timing includes browser-tool
+overhead and excludes a cold cache or complete map-layer timing claim. The
+temporary device place was removed, optional test limits and layers restored,
+and viewport reset. Captured console errors were empty.
+
+That pass revealed a false startup delay label. The header now says “Checking for
+updates…” during a pending first collection or recent-cache refresh. Cache reads
+preserve original timestamps and any retained provider error/stale flag. Actual
+request failure and collections over 90 seconds old remain delayed; recent cached
+data alone does not assert a live connection. Three new behavioral regressions
+cover first visits, cache-to-live success, old/failed cache and request failure.
+
+The complete local run passed 893 JavaScript tests, all 30 Python daemon tests,
+and TypeScript checking. Controlled local HTTP browser QA served the actual
+application with synthetic responses: a 12-second first alert request kept a
+recent cached collection under “Checking for updates…” and then connected;
+a subsequent HTTP 503 retained the collection under “Updates delayed” with the
+last-successful-collection notice. These tests do not establish real-provider
+uptime. The isolated preview and its tab were stopped after verification.

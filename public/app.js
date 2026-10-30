@@ -129,6 +129,7 @@ async function refresh() {
   refreshing = true;
   const generation = snapshotGeneration;
   $('refresh').disabled = true;
+  updateHealth();
   try {
     let data;
     if (direct) {
@@ -198,6 +199,7 @@ async function restoreMapCache() {
   const data = await window.WeatherMapCache?.read('alerts', 15 * 60000);
   if (liveData || replayAt || replayLoading || !data || data.type !== 'FeatureCollection' || !Array.isArray(data.features) || !data.features.every(validFeature)) return;
   liveData = data; features = data.features; lastSuccess = data.collected_at; lastSourceUpdated = data.updated;
+  lastError ||= data.error || (data.stale ? 'Source collection delayed' : null);
   restoredCache = true; render(); queueGeometry(); updateHealth();
 }
 function updateHealth() {
@@ -213,13 +215,14 @@ function updateHealth() {
     upkeep.textContent = (stale ? 'Upkeep status unavailable; last known: ' : '') + (labels[state] || 'Upkeep status unavailable') + stamp;
   }
   const age = lastSuccess ? (Date.now() - Date.parse(lastSuccess)) / 1000 : Infinity;
-  const delayed = restoredCache || !!lastError || age > 90;
-  $('status-dot').className = `status-dot ${!lastSuccess ? 'loading' : delayed ? 'stale' : ''}`;
-  $('status-label').textContent = !lastSuccess ? 'Waiting for NWS' : delayed ? 'Updates delayed' : 'Connected to NWS';
-  $('status-time').textContent = lastSuccess ? `Collected ${dateText(lastSuccess)} · ${age < 60 ? 'less than a minute ago' : `${Math.floor(age/60)}m ago`}` : 'Retrying automatically';
+  const delayed = !!lastError || !Number.isFinite(age) || age > 90;
+  const checking = refreshing && !lastError && (!lastSuccess || (restoredCache && !delayed));
+  $('status-dot').className = `status-dot ${checking || !lastSuccess ? 'loading' : delayed ? 'stale' : restoredCache ? 'loading' : ''}`;
+  $('status-label').textContent = checking ? 'Checking for updates…' : !lastSuccess ? 'Waiting for NWS' : delayed ? 'Updates delayed' : restoredCache ? 'Previous collection' : 'Connected to NWS';
+  $('status-time').textContent = lastSuccess ? `Collected ${dateText(lastSuccess)} · ${age < 60 ? 'less than a minute ago' : `${Math.floor(age/60)}m ago`}` : refreshing ? 'First collection in progress' : 'Retrying automatically';
   if (replayAt) {
     notice(`Replay · collected ${dateText(replayAt, true)}. This is a historical view.`);
-  } else if (restoredCache) {
+  } else if (restoredCache && !delayed) {
     notice('Showing the previous visit’s collection while checking for updates. Source times remain unchanged.');
   } else if (delayed) {
     notice(lastSuccess ? 'Updates are delayed. Showing the last successful collection; check official sources for current conditions.' : 'Connecting to the official alert feed. No live data is available yet.');

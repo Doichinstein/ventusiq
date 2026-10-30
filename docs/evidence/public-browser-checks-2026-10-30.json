@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-10-30T01:13:43.307Z",
+  "site": "https://ventusiq.com/",
+  "account_testing": "skipped per user request",
+  "passed": [
+    "CAMS six pollutant ranges and hourly table",
+    "CAMS evidence download",
+    "planner optional pollutant controls and download",
+    "combined alerts/fire/AQI layers",
+    "official alert details",
+    "automatic refresh count 406 to 407 to 408",
+    "mobile layers menu with no document horizontal overflow",
+    "desktop map visible after warm reload"
+  ],
+  "mobile": {
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375
+  },
+  "warm_reload": {
+    "elapsedThroughSnapshotMs": 727,
+    "status": [
+      "- strong: Updates delayed",
+      "- generic: Collected 6:12 PM · less than a minute ago",
+      "      - heading \"Weather alerts 408\" [level=2]",
+      "      - generic: ALERTS MAPPED"
+    ]
+  },
+  "limitations": [
+    "Warm cached alert-list timing, not cold network or full map-layer completion timing",
+    "AQI contour source was older than 3 hours and shown gray",
+    "CAMS initialization time unavailable; collection freshness is distinct"
+  ],
+  "findings": [
+    "Initial cached display briefly says Updates delayed before successful background refresh"
+  ],
+  "cleanup": [
+    "Removed only CAMS QA 2026-10-30 device place",
+    "Restored empty PM2.5 and ozone planner limits",
+    "Restored Alerts-only layer selection",
+    "Reset viewport"
+  ],
+  "console_errors": []
+}

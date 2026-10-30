@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-10-30T01:12:00.501694+00:00",
+  "passed": true,
+  "display_ranges": {
+    "pm2_5": {
+      "min": 3.3,
+      "max": 28.2,
+      "samples": 49
+    },
+    "pm10": {
+      "min": 3.5,
+      "max": 28.9,
+      "samples": 49
+    },
+    "ozone": {
+      "min": 0,
+      "max": 94,
+      "samples": 49
+    },
+    "nitrogen_dioxide": {
+      "min": 2.8,
+      "max": 63.8,
+      "samples": 49
+    },
+    "sulphur_dioxide": {
+      "min": 0.7,
+      "max": 3,
+      "samples": 49
+    },
+    "carbon_monoxide": {
+      "min": 147,
+      "max": 491,
+      "samples": 49
+    }
+  },
+  "raw_rows_verified": 72,
+  "planner_windows": 49,
+  "pollutant_checks": 98,
+  "revision": "c427e19c76ab8b94fe220d7aa6eb222f7058bc2795120fe93db7dbbab59c9f65",
+  "model_initialization_unknown": true,
+  "sources": {
+    "ventusiq-air-quality-forecast.json": "96b666bc51ac31601cca4364e3b8b4c81c3eed5424ddc11fccafb126d5d5caf0",
+    "ventusiq-activity-plan (4).json": "3ce1f368a1b02e220aab34928f527fc01992c600368757461ff9e3874760f6db"
+  }
+}

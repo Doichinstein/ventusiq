@@ -118,7 +118,8 @@ def build(args):
     with (root / "build.log").open("wb") as log:
         result = subprocess.run(command, cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT, check=False)
     if result.returncode:
-        raise RuntimeError("Graph build failed; retained build.log at " + str(root))
+        tail = (root / "build.log").read_text(encoding="utf8", errors="replace")[-12000:]
+        raise RuntimeError(f"Graph build failed (exit {result.returncode}); retained build.log at {root}\n{tail}")
     files = [root / "source.osm.pbf", root / "valhalla.json", *sorted((root / "tiles").rglob("*.gph"))]
     manifest = {"schema": SCHEMA, "created_at": datetime.now(timezone.utc).isoformat(),
         "engine": identity, "dataset_id": dataset_id,

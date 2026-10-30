@@ -2221,7 +2221,7 @@ One preliminary hour does not establish model skill, general accuracy, personal
 exposure, or CAMS PM2.5 outcomes.
 
 The complete local Python suite passed all 34 tests. JavaScript/runtime sources are unchanged; cross-platform CI runs the complete suite and hosted build for this publication.
-# Pinned routing graph checks — October 30 (v98)
+# Pinned routing graph checks — October 30
 
 The optional Valhalla 3.9.1 tool built a real Sioux Center graph from the retained
 82,502-byte OSM PBF. Its local Windows build pinned all input/config/tile and native

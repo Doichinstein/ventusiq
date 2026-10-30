@@ -40,6 +40,9 @@ jobs:
         run: 'python -m pip install --only-binary=:all: pyvalhalla==3.9.1'
       - name: Build and relocate a real routing graph
         run: python scripts/check-route-network.py
+      - name: Build and exercise the pinned router container
+        if: runner.os == 'Linux'
+        run: python scripts/check-router-container.py
       - name: Build the source download
         run: python scripts/package_source.py
       - name: Build the hosted application

@@ -12,6 +12,7 @@ import math
 import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
 import tempfile
@@ -70,7 +71,11 @@ def make_server(graph, pin, token, bounds, host="127.0.0.1", port=8766, route_fn
     if len(bounds) != 4 or any(type(v) not in (int, float) or not math.isfinite(v) for v in bounds) or not -180 <= bounds[0] < bounds[2] <= 180 or not -90 <= bounds[1] < bounds[3] <= 90:
         raise ValueError("Explicit west south east north graph coverage is required")
     graph = Path(graph).resolve(strict=True)
-    network.verify(graph, pin)
+    if not isinstance(pin, str) or not re.fullmatch(r"[0-9a-f]{64}", pin):
+        raise ValueError("An independently retained graph SHA-256 is required")
+    manifest = network.verify(graph, pin)
+    if network.engine()[2] != manifest["engine"]:
+        raise ValueError("Installed routing engine differs from graph builder; rebuild explicitly")
     gate = threading.BoundedSemaphore(1)
 
     class Handler(BaseHTTPRequestHandler):
@@ -88,7 +93,11 @@ def make_server(graph, pin, token, bounds, host="127.0.0.1", port=8766, route_fn
             self.wfile.write(raw)
 
         def do_GET(self):
-            self.send(404, {"error": "POST /route is required"})
+            if self.path == "/health":
+                # Liveness only: a successful route must be probed separately.
+                self.send(200, {"status": "running", "routing_probe": False})
+            else:
+                self.send(404, {"error": "Unknown endpoint"})
 
         def do_POST(self):
             self.close_connection = True
@@ -133,19 +142,43 @@ def make_server(graph, pin, token, bounds, host="127.0.0.1", port=8766, route_fn
     return server
 
 
+def environment_config(env):
+    """Container configuration; never include secret values in validation errors."""
+    try:
+        bounds = [float(v) for v in env.get("VENTUSIQ_PINNED_ROUTER_BOUNDS", "").split()]
+        port = int(env.get("PORT", "8766"))
+    except ValueError:
+        raise ValueError("Router bounds must be four numbers and PORT an integer") from None
+    if len(bounds) != 4 or not 1 <= port <= 65535:
+        raise ValueError("Four coverage bounds and a PORT between 1 and 65535 are required")
+    return dict(graph=env.get("VENTUSIQ_PINNED_GRAPH_PATH", "/data/graph"),
+                pin=env.get("VENTUSIQ_PINNED_GRAPH_SHA256"),
+                token=env.get("VENTUSIQ_PINNED_ROUTER_TOKEN"), bounds=bounds,
+                host="0.0.0.0", port=port)
+
+
 def main():
     if len(sys.argv) == 4 and sys.argv[1] == "_batch":
         batch(sys.argv[2], sys.argv[3])
         return
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("graph")
-    parser.add_argument("--expected-graph-sha256", required=True)
-    parser.add_argument("--bounds", nargs=4, required=True, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
-    parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=8766)
-    args = parser.parse_args()
-    server = make_server(args.graph, args.expected_graph_sha256, os.environ.get("VENTUSIQ_PINNED_ROUTER_TOKEN"), args.bounds, args.host, args.port)
-    print(f"Pinned router listening on {args.host}:{server.server_port}", flush=True)
+    if sys.argv[1:] == ["--from-env"]:
+        config = environment_config(os.environ)
+    else:
+        parser = argparse.ArgumentParser(description=__doc__)
+        parser.add_argument("graph")
+        parser.add_argument("--expected-graph-sha256", required=True)
+        parser.add_argument("--bounds", nargs=4, required=True, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"))
+        parser.add_argument("--host", default="127.0.0.1")
+        parser.add_argument("--port", type=int, default=8766)
+        args = parser.parse_args()
+        config = dict(graph=args.graph, pin=args.expected_graph_sha256,
+                      token=os.environ.get("VENTUSIQ_PINNED_ROUTER_TOKEN"),
+                      bounds=args.bounds, host=args.host, port=args.port)
+    server = make_server(**config)
+    print(f"Pinned router listening on {config['host']}:{server.server_port}", flush=True)
+    def stop(*_):
+        raise KeyboardInterrupt
+    signal.signal(signal.SIGTERM, stop)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

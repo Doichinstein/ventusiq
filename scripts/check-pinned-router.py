@@ -15,45 +15,52 @@ router = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(router)
 
 
+def check_endpoint(host, port, token, pin):
+    reports = []
+    for points in [[[-96.1757, 43.075], [-96.1757, 43.096]],
+                   [[-96.1757, 43.075], [-96.1757, 43.0855], [-96.1757, 43.096]]]:
+        conn = http.client.HTTPConnection(host, port, timeout=55)
+        try:
+            conn.request("POST", "/route", json.dumps({"points": points}), {"Content-Type": "application/json", "Authorization": "Bearer " + token})
+            response = conn.getresponse()
+            payload = response.read()
+            if response.status != 200:
+                raise ValueError("Native HTTP route failed: " + payload.decode())
+        finally:
+            conn.close()
+        code = """import {readFileSync} from 'node:fs';
+import {normalizePinnedRoute} from './lib/pinned-route.mjs';
+import {applyJourneyStops} from './public/journey-stops.mjs';
+const data=JSON.parse(readFileSync(0,'utf8'));
+const route=normalizePinnedRoute(data.response,data.pin,data.points);
+const via=data.points.slice(1,-1).map(([lon,lat])=>({lat,lon,minutes:30}));
+const stopped=applyJourneyStops(route,via);
+if(stopped.stop_duration!==via.length*1800)throw Error('Stops were not integrated');
+console.log(JSON.stringify({legs:route.legs.length,vertices:route.vertices.length,edges:route.road_context.segments.length,driving_seconds:route.duration,stopped_seconds:stopped.stop_duration,graph:route.network_references.graph_sha256}));"""
+        node = shutil.which("node")
+        if not node:
+            raise ValueError("Node is required to check the hosted adapter")
+        inputs = json.dumps({"response": json.loads(payload), "points": points, "pin": pin}).encode()
+        result = subprocess.run([node, "--input-type=module", "-e", code], input=inputs, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=ROOT, timeout=15, check=False)
+        if result.returncode:
+            raise ValueError("Hosted adapter rejected native response: " + result.stderr.decode())
+        reports.append({"summary": json.loads(result.stdout), "source": json.loads(payload)})
+        if reports[-1]["summary"]["graph"] != pin or reports[-1]["summary"]["edges"] != 40 or reports[-1]["summary"]["vertices"] != 44:
+            raise ValueError("Research route graph or geometry did not reproduce")
+    return {"status": "passed", "graph_sha256": pin, "real_native_http_and_adapter": True, "cases": reports, "closure_attribution_verified": False}
+
+
 def check(graph, pin):
     token = secrets.token_urlsafe(32)
     server = router.make_server(graph, pin, token, [-96.20, 43.04, -96.15, 43.11], port=0)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
-    reports = []
     try:
-        for points in [[[-96.1757, 43.075], [-96.1757, 43.096]],
-                       [[-96.1757, 43.075], [-96.1757, 43.0855], [-96.1757, 43.096]]]:
-            conn = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=55)
-            try:
-                conn.request("POST", "/route", json.dumps({"points": points}), {"Content-Type": "application/json", "Authorization": "Bearer " + token})
-                response = conn.getresponse()
-                payload = response.read()
-                if response.status != 200:
-                    raise ValueError("Native HTTP route failed: " + payload.decode())
-            finally:
-                conn.close()
-            code = """import {readFileSync} from 'node:fs';
-import {normalizePinnedRoute} from './lib/pinned-route.mjs';
-import {applyJourneyStops} from './public/journey-stops.mjs';
-const data=JSON.parse(readFileSync(0,'utf8'));
-const route=normalizePinnedRoute(data,data.graph_sha256,data.requested_waypoints);
-const via=data.requested_waypoints.slice(1,-1).map(([lon,lat])=>({lat,lon,minutes:30}));
-const stopped=applyJourneyStops(route,via);
-if(stopped.stop_duration!==via.length*1800)throw Error('Stops were not integrated');
-console.log(JSON.stringify({legs:route.legs.length,vertices:route.vertices.length,edges:route.road_context.segments.length,driving_seconds:route.duration,stopped_seconds:stopped.stop_duration,graph:route.network_references.graph_sha256}));"""
-            node = shutil.which("node")
-            if not node:
-                raise ValueError("Node is required to check the hosted adapter")
-            result = subprocess.run([node, "--input-type=module", "-e", code], input=payload, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=ROOT, timeout=15, check=False)
-            if result.returncode:
-                raise ValueError("Hosted adapter rejected native response: " + result.stderr.decode())
-            reports.append({"summary": json.loads(result.stdout), "source": json.loads(payload)})
+        return check_endpoint("127.0.0.1", server.server_port, token, pin)
     finally:
         server.shutdown()
         server.server_close()
         thread.join()
-    return {"status": "passed", "graph_sha256": pin, "real_native_http_and_adapter": True, "cases": reports, "closure_attribution_verified": False}
 
 
 if __name__ == "__main__":

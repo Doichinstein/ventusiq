@@ -1,5 +1,15 @@
 # Ten-feature acceptance audit
 
+## Native-router deployment package
+
+The optional backend now has a pinned Linux amd64 container and documented
+same-image graph build/serve workflow. Linux CI exercises real native routes
+through the hosted adapter with read-only graph storage and nonroot execution.
+Startup rejects an incompatible engine before listening; health is liveness-only.
+No external Docker host, HTTPS ingress or public native routing coverage has
+been provisioned. Real agency approval and incident applicability remain open.
+See [container setup and reproduction](pinned-router.md#container-build-and-launch).
+
 ## First live GEFS outcome
 
 The first eligible forecast-observation pair has now passed public browser and

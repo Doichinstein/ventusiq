@@ -25,7 +25,7 @@ class PinnedRouterTests(unittest.TestCase):
         def route(*args):
             self.calls.append(args)
             return self.behavior(*args)
-        with patch.object(router.network, "verify", return_value={}):
+        with patch.object(router.network, "verify", return_value={"engine": {}}), patch.object(router.network, "engine", return_value=(None, None, {})):
             self.server = router.make_server(self.temp.name, "a" * 64, TOKEN, [-97, 42, -95, 44], port=0, route_fn=route)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -53,6 +53,31 @@ class PinnedRouterTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
         self.assertEqual(self.request()[0], 200)
         self.assertEqual(len(self.calls), 1)
+
+    def test_health_is_liveness_without_native_work_or_secret_material(self):
+        status, body = self.request(method="GET", path="/health", token="")
+        self.assertEqual((status, body), (200, {"status": "running", "routing_probe": False}))
+        self.assertEqual(self.calls, [])
+        self.assertEqual(self.request(method="GET", path="/health?token=wrong")[0], 404)
+
+    def test_startup_rejects_changed_native_engine_and_missing_pin(self):
+        with patch.object(router.network, "verify", return_value={"engine": {"version": "old"}}), patch.object(router.network, "engine", return_value=(None, None, {"version": "new"})):
+            with self.assertRaisesRegex(ValueError, "differs from graph builder"):
+                router.make_server(self.temp.name, "a" * 64, TOKEN, [-97, 42, -95, 44], port=0)
+        with self.assertRaisesRegex(ValueError, "graph SHA-256"):
+            router.make_server(self.temp.name, None, TOKEN, [-97, 42, -95, 44], port=0)
+
+    def test_environment_configuration_rejects_bad_bounds_and_port_without_echoing_values(self):
+        env = {"VENTUSIQ_PINNED_ROUTER_BOUNDS": "-96.20 43.04 -96.15 43.11", "PORT": "9080",
+               "VENTUSIQ_PINNED_ROUTER_TOKEN": TOKEN, "VENTUSIQ_PINNED_GRAPH_SHA256": "a" * 64}
+        self.assertEqual(router.environment_config(env), dict(graph="/data/graph", pin="a" * 64,
+            token=TOKEN, bounds=[-96.20, 43.04, -96.15, 43.11], host="0.0.0.0", port=9080))
+        for field, value in [("PORT", "0"), ("PORT", "65536"), ("PORT", "not-an-int"),
+                             ("VENTUSIQ_PINNED_ROUTER_BOUNDS", "-96 43"),
+                             ("VENTUSIQ_PINNED_ROUTER_BOUNDS", TOKEN)]:
+            with self.subTest(field=field, value=value), self.assertRaises(ValueError) as error:
+                router.environment_config({**env, field: value})
+            self.assertNotIn(TOKEN, str(error.exception))
 
     def test_invalid_oversized_unknown_and_outside_requests_do_not_route(self):
         for body in [{"points": []}, {"points": [[-96, 43], [-96, 43]]}, {"points": [[-96, 43], [-90, 43]]},

@@ -31,7 +31,7 @@ the operator's intended coverage; they are an admission limit, not proof of comp
 road connectivity. The retained Sioux Center research extract uses `-96.20 43.04
 -96.15 43.11` and is not a national routing deployment.
 
-The only operation is authenticated `POST /route` with JSON
+Routing uses authenticated `POST /route` with JSON
 `{"points":[[longitude,latitude],[longitude,latitude]]}`. It accepts 2–5 ordered
 waypoints, with distinct consecutive points, inside the configured bounds. Names,
 departure times and stop durations are not transmitted. Bodies are capped at
@@ -40,6 +40,82 @@ subprocess imposes a 45-second deadline on the complete request, and native outp
 is limited to 8 MiB. Authentication precedes body processing and native execution.
 Logs omit request coordinates and bearer tokens; generic errors do not reveal
 native paths. Production ingress rate limits and capacity still need operator review.
+
+Startup verifies the complete graph pin and the installed native-engine identity
+before opening the listening socket. Unauthenticated `GET /health` returns only
+`{"status":"running","routing_probe":false}`. It is a process-liveness check,
+not proof of a successful route, full coverage or valid incident attribution.
+
+## Container build and launch
+
+`deploy/pinned-router/Dockerfile` provides an optional Linux amd64 image. Its
+official Python 3.12 base is pinned by manifest digest; the pyvalhalla 3.9.1 wheel
+is pinned by [PyPI's SHA-256](https://pypi.org/project/pyvalhalla/3.9.1/#files).
+The dedicated Docker build context admits only two service scripts, the dependency
+lock and license notices. Graphs and runtime secrets are never image inputs.
+Other architectures are not supported by this wheel lock or tested by this check.
+Updating either pin is an explicit rebuild and native validation task.
+
+On a Docker host, from the repository root:
+
+```sh
+docker build --platform linux/amd64 -f deploy/pinned-router/Dockerfile -t ventusiq-router:local .
+docker volume create ventusiq-router-data
+```
+
+Build the graph in that same image. This example deliberately uses the small
+retained research fixture, not a national extract. Start with a new volume; the
+builder refuses to overwrite an existing graph. The named volume inherits the
+image's `/data` ownership (UID/GID 10001). For bind-mounted storage, the operator
+must prepare ownership explicitly.
+
+```sh
+docker run --rm --network none \
+  --mount type=volume,source=ventusiq-router-data,target=/data \
+  --mount "type=bind,source=$PWD/tests/fixtures/route-network,target=/input,readonly" \
+  ventusiq-router:local scripts/route-network.py build /input/sioux-center-roads.osm.pbf \
+  --output /data/graph --source-url https://overpass-api.de/api/interpreter \
+  --source-license 'ODbL-1.0 / OpenStreetMap contributors'
+```
+
+Retain the returned `graph_sha256` outside the graph volume. Set the following
+environment values in the launching shell or hosting secret/configuration manager:
+
+| Container key | Required value |
+| --- | --- |
+| `VENTUSIQ_PINNED_ROUTER_TOKEN` | Private random bearer secret, 32–256 URL-safe characters |
+| `VENTUSIQ_PINNED_GRAPH_SHA256` | Graph pin returned by the build and retained independently |
+| `VENTUSIQ_PINNED_ROUTER_BOUNDS` | `-96.20 43.04 -96.15 43.11` for this fixture only; space-separated west south east north |
+| `VENTUSIQ_PINNED_GRAPH_PATH` | Optional, default `/data/graph` |
+| `PORT` | Optional, default `8766`; healthcheck follows this value |
+
+The command passes the token by environment-variable name, keeping its value out
+of command arguments. Docker administrators can inspect process environments;
+restrict host access and use the host's secret manager. Do not commit a real token.
+
+```sh
+docker run --detach --name ventusiq-router --restart unless-stopped \
+  --read-only --cap-drop ALL --security-opt no-new-privileges \
+  --pids-limit 128 --memory 1g --cpus 2 \
+  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+  --mount type=volume,source=ventusiq-router-data,target=/data,readonly \
+  --publish 127.0.0.1:8766:8766 \
+  --env VENTUSIQ_PINNED_ROUTER_TOKEN --env VENTUSIQ_PINNED_GRAPH_SHA256 \
+  --env VENTUSIQ_PINNED_ROUTER_BOUNDS \
+  ventusiq-router:local
+```
+
+This binds to the host's loopback interface. Put the host's HTTPS ingress in front
+of it before connecting the public Site. The memory/CPU settings are tested with
+the small fixture only: larger graphs need measured capacity planning, and every
+leg currently hashes the whole graph. Choose an appropriate extract and review
+its coverage before exposing it as a public routing backend. Graph replacement
+requires a new explicitly built bundle, pin update and service restart. No graph
+refresh or national-data download occurs automatically.
+
+The root `Dockerfile` still serves the separate weather daemon. This container
+cannot execute inside the Sites Worker; it requires a compatible Docker host,
+persistent volume and HTTPS ingress. None is provisioned by building this image.
 
 Each leg calls the existing strict native `edge_walk` pipeline and preserves its
 original requests and responses. The graph and installed native engine are checked
@@ -111,3 +187,17 @@ concurrency, timeout recovery, cache isolation, malformed evidence and UI export
 These checks establish local integration, not a deployed native service, national
 coverage, an approved agency mapping or verified closure avoidance. Browser QA on
 the public site exercises the default OSRM path until a native host is configured.
+
+With Docker and Node on Linux amd64, the complete image check is:
+
+```sh
+python scripts/check-router-container.py --output router-container-evidence.json
+```
+
+It builds the image and graph, serves from a read-only volume/filesystem as UID
+10001, uses a nondefault port, waits for Docker's actual healthcheck, rejects bad
+authentication and outside-coverage points, and verifies real direct/via responses
+through Journey's JavaScript adapter. The graph pin must still verify afterward;
+SIGTERM must stop cleanly. It creates unique temporary container/volume/image
+names and removes only those resources. Linux CI runs this check in addition to
+the native Linux/Windows graph tests. No production token or host is used.

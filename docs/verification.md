@@ -1,5 +1,23 @@
 # Verification record
 
+## Native-router container packaging — October 30
+
+The optional native service now has a separate Linux amd64 Docker image, pinned
+base/wheel inputs, a minimal build context, nonroot execution and an environment
+launch mode. Startup checks native-engine identity before listening. Its public
+health response is explicitly liveness-only; routing remains authenticated.
+Seven focused HTTP/configuration tests pass locally. The real Windows native
+direct/via check still reproduces 40 edges and 44 vertices, including the explicit
+1,800-second stop. Docker is unavailable on the local Windows machine, so image
+execution is verified separately by the new Linux CI step before publication.
+
+`check-router-container.py` builds the retained fixture inside the image and
+requires real HTTP/JavaScript-adapter routes from a read-only runtime, a Docker
+healthcheck on a custom port, authentication/coverage rejection, unchanged graph
+pin and clean termination. The source download now includes `deploy/` so operators
+can reproduce the image. This prepares deployment; it does not provision hosting,
+change the public OSRM configuration or approve closure attribution.
+
 ## All-tool keyboard and shared-replay navigation — October 30 (v106)
 
 Public v105 source passed the outstanding ten-shortcut navigation check. At

@@ -1,0 +1,2 @@
+# CPython 3.12+ ABI3, manylinux_2_28 x86_64; wheel hash from PyPI 3.9.1 metadata.
+pyvalhalla==3.9.1 --hash=sha256:7b49c5e5f86cefd555b473aaaf34df3305889d30aa889b8abd3b4c2acc622271

@@ -22,7 +22,8 @@ export function mountGeocode({document,window,fetcher=fetch,clock=Date.now}){
     }
   }
   function fitPoints(keys){const points=keys.map(k=>controls[k].selected).filter(Boolean);if(!points.length)return;if(points.length===1)map.setView([points[0].lat,points[0].lon],11);else map.fitBounds(L.latLngBounds(points.map(p=>[p.lat,p.lon])),{padding:[45,45],maxZoom:11});}
-  function invalidate(key,userEdit=true){const c=controls[key];c.generation++;c.controller?.abort();c.controller=null;c.selected=null;get(c.results).replaceChildren();get(c.lat).value='';get(c.lon).value='';removeMarker(key);if(key==='from'||key==='to'){if(userEdit)editGeneration++;window.WeatherJourney?.clear?.();}}
+  function clearJourney(){window.WeatherJourney?.clear?.();if(tripBusy)get('journey-submit').disabled=true;}
+  function invalidate(key,userEdit=true){const c=controls[key];c.generation++;c.controller?.abort();c.controller=null;c.selected=null;get(c.results).replaceChildren();get(c.lat).value='';get(c.lon).value='';removeMarker(key);if(key==='from'||key==='to'){if(userEdit)editGeneration++;clearJourney();}}
   function pointText(p){return `${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}`;}
   function accept(key,p,{focus=true,query=get(controls[key].input).value}={}){
     const c=controls[key];c.selected={...p,query};get(c.input).value=query;get(c.lat).value=String(p.lat);get(c.lon).value=String(p.lon);get(c.results).replaceChildren();
@@ -31,7 +32,7 @@ export function mountGeocode({document,window,fetcher=fetch,clock=Date.now}){
       report=p.evidence||null;get('address-export').disabled=!report;
       window.WeatherPersonal.preview(p.kind==='address'?p.address:'Selected place',p.lat,p.lon,{query});
     }else if(key==='from'||key==='to'){
-      window.WeatherJourney?.clear?.();pickSide=controls.from.selected?(controls.to.selected?null:'to'):'from';
+      clearJourney();pickSide=controls.from.selected?(controls.to.selected?null:'to'):'from';
       get('journey-pick-status').textContent=pickSide?`Click point ${pickSide==='from'?'1':'2'} on the map, or enter its address.`:'Both points selected. Compare the journey or choose a point to change.';
       window.WeatherMap.setOverlayFit?.('journey',()=>fitPoints(['from','to']));
     }else window.WeatherRivers.search({lat:p.lat,lon:p.lon});

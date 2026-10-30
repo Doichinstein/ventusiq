@@ -82,7 +82,7 @@ export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
 
   }
 
-  function clear(){generation++;abort?.abort();report=null;if(layers)map.removeLayer(layers);layers=null;window.WeatherMap.setOverlayFit?.("journey",null);get("journey-results").hidden=true;get("journey-export").disabled=true;get("journey-submit").disabled=false;get("journey-status").textContent="Choose two points above the map to compare your journey.";}
+  function clear(){if(visible)window.WeatherMap.overlayStatus?.("Choose point 1 and point 2 on the map, or enter their addresses above.");generation++;abort?.abort();report=null;if(layers)map.removeLayer(layers);layers=null;window.WeatherMap.setOverlayFit?.("journey",null);get("journey-results").hidden=true;get("journey-export").disabled=true;get("journey-submit").disabled=false;get("journey-status").textContent="Choose two points above the map to compare your journey.";}
   async function run(){
     window.WeatherExplorer?.collapse(get("journey-results"));
 

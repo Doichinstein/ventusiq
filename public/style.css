@@ -127,7 +127,11 @@
 @media(max-width:700px){.header nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));height:auto;gap:3px 10px;overflow:visible}.header nav button,.header nav .nav-active{justify-content:center;text-align:center;padding:9px 3px;width:100%;height:auto}.header nav button{border-bottom:2px solid transparent}.header nav .nav-active{border-bottom-color:var(--accent)}#workspace>#shared-map{height:360px}}
 #workspace{grid-template-columns:minmax(330px,40%) minmax(0,1fr)}
 #workspace>#shared-map{height:auto;min-height:0;max-height:none;overflow:visible;top:12px}
-#map-canvas{position:relative;height:clamp(360px,55dvh,650px);min-width:0;overflow:hidden;border-radius:0 0 10px 10px}
+body:has(#workspace:not([data-view="live"])) .intro{padding:10px 24px;justify-content:flex-end}
+body:has(#workspace:not([data-view="live"])) .intro>div:first-child{display:none}
+#map-entry #address-card{margin:0;border:0;padding:0}
+#map-entry #address-input{margin:0;padding:10px}
+#map-canvas{position:relative;height:clamp(320px,calc(100dvh - 420px),620px);min-width:0;overflow:hidden;border-radius:0 0 10px 10px}
 #workspace[data-view="live"] #map-canvas{height:clamp(500px,75dvh,800px);border-radius:10px}
 .map-entry-panel{display:none;padding:20px;background:var(--panel);border-bottom:1px solid var(--line);border-radius:10px 10px 0 0}
 #workspace[data-view="personal"] [data-entry="personal"],#workspace[data-view="journey"] [data-entry="journey"],#workspace[data-view="rivers"] [data-entry="rivers"],#workspace[data-view="events"] [data-entry="events"]{display:block}

@@ -405,10 +405,12 @@ Account testing is deferred at the owner's request. Opening downloaded `file:`
 HTML is specifically blocked by the browser URL policy; its rendering is not
 verified by successful download, static inspection or JSON verification.
 
-1. Use only the keyboard to reach Skip, switch through all five main views and
-   follow My weather shortcuts. Focus must remain visible and reach visible
-   content. From a shared event URL, use Skip without leaving Events and confirm
-   that the event/cutoff survive.
+1. Keyboard navigation: v76 verified Skip and all five main views. The October 30
+   v106 audit verifies sequential Tab reachability of all ten My weather shortcuts
+   at phone width, correct visible heading focus at phone and desktop widths,
+   and Skip from a reloaded shared event while preserving its event/cutoff.
+   [Live trace](evidence/workspace-keyboard-public-2026-10-30.json) records the scope.
+   Physical-device, touch and screen-reader behavior remain separate checks.
 2. Save, reload, select and remove a place. Check no-place, unavailable-source and
    stale-source views. With two signed-in devices, verify explicit account import,
    synchronization, edits and deletion without bringing back old places.

@@ -1,5 +1,32 @@
 # Verification record
 
+## All-tool keyboard and shared-replay navigation — October 30 (v106)
+
+Public v105 source passed the outstanding ten-shortcut navigation check. At
+390×844 requested viewport (375 px document content after browser scrollbar),
+Tab moved from Save place through the existing controls to Briefing, then through
+all ten tool links in order. Enter on each link focused its correct visible H2/H3.
+The target rectangles were within the viewport and the document had no horizontal
+overflow. A screenshot confirmed the blue focus outline on the Watch alerts
+heading. All ten targets also passed at the default 1265 px desktop width. The
+first desktop sample was repeated after the viewport reset finished, rather than
+counting the still-mobile measurement as desktop evidence.
+
+A shared Atka High Wind Warning at the October 29 21:36 UTC cutoff was reloaded.
+Keyboard Skip focused the visible Events workspace heading while preserving the
+exact event/cutoff URL, historical view, three transitions and two messages. The
+focus outline and cutoff were visible together. No browser console errors were
+captured. An automatic alert collection advanced from 20:46 to 20:47 PDT while
+keyboard focus and the typed Atka filter stayed in the search field. The temporary
+device place was removed, map search cleared and viewport override reset.
+
+[DOM trace and scope](evidence/workspace-keyboard-public-2026-10-30.json) preserve
+all twenty target checks and the shared URL before/after. External screenshots
+are `tools-mobile-watch-focus-v105.png` and `shared-event-skip-v105.png` in the
+browser QA folder. No application change was needed. These checks do not prove
+screen-reader announcements, touch or physical-device behavior, account controls,
+notification delivery, or every provider/error state.
+
 ## First prospective GEFS outcome — October 30 (v105)
 
 At 03:30:20 UTC the live browser returned one matched time out of 56 targets

@@ -1,0 +1,405 @@
+{
+  "tested_source_commit": "a7c9e054dd2b669217757d71b43cac2b15933a03",
+  "tested_live_version": 105,
+  "tested_at_utc": "2026-10-30T03:42:00Z/2026-10-30T03:46:00Z",
+  "url": "https://ventusiq.com/",
+  "phone_requested_viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "phone_dom_content_width": 375,
+  "mobile": {
+    "tab_path": [
+      {
+        "href": null,
+        "id": "use-location",
+        "tag": "BUTTON",
+        "text": "Use my location"
+      },
+      {
+        "href": null,
+        "id": "notify-enable",
+        "tag": "BUTTON",
+        "text": "Enable desktop updates"
+      },
+      {
+        "href": "/signin-with-chatgpt?return_to=%2F%23watches",
+        "id": "watch-signin",
+        "tag": "A",
+        "text": "Sign in to manage watches"
+      },
+      {
+        "href": null,
+        "id": "watch-refresh",
+        "tag": "BUTTON",
+        "text": "Refresh watch status"
+      },
+      {
+        "href": null,
+        "id": "push-label",
+        "tag": "INPUT",
+        "text": ""
+      },
+      {
+        "href": null,
+        "id": "push-refresh",
+        "tag": "BUTTON",
+        "text": "Refresh delivery status"
+      },
+      {
+        "href": null,
+        "id": "",
+        "tag": "SUMMARY",
+        "text": "Recent delivery attempts"
+      },
+      {
+        "href": "#place-title",
+        "id": "",
+        "tag": "A",
+        "text": "Briefing"
+      }
+    ],
+    "shortcuts": [
+      {
+        "text": "Briefing",
+        "href": "#place-title"
+      },
+      {
+        "href": "#activity-card",
+        "text": "Activity windows"
+      },
+      {
+        "href": "#place-hazards-card",
+        "text": "Fire and air"
+      },
+      {
+        "href": "#place-rivers-card",
+        "text": "Nearby rivers"
+      },
+      {
+        "href": "#observation-card",
+        "text": "Forecast checks"
+      },
+      {
+        "href": "#station-history-card",
+        "text": "Historical dates"
+      },
+      {
+        "href": "#analog-card",
+        "text": "Comparable days"
+      },
+      {
+        "href": "#compound-card",
+        "text": "Compound hazards"
+      },
+      {
+        "href": "#updates-card",
+        "text": "Changes"
+      },
+      {
+        "href": "#watches-card",
+        "text": "Watch alerts"
+      }
+    ],
+    "targets": [
+      {
+        "shortcut": "Briefing",
+        "documentWidth": 375,
+        "heading": "Tool navigation QA",
+        "height": 36,
+        "hidden": false,
+        "id": "place-title",
+        "tag": "H2",
+        "viewportWidth": 375,
+        "width": 317.6000061035156,
+        "x": 28.80000114440918,
+        "y": 618.5250244140625
+      },
+      {
+        "shortcut": "Activity windows",
+        "documentWidth": 375,
+        "heading": "Find a window that works.",
+        "height": 20.80000114440918,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 411.6750183105469
+      },
+      {
+        "shortcut": "Fire and air",
+        "documentWidth": 375,
+        "heading": "Conditions around this place.",
+        "height": 20.80000114440918,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 411.2250061035156
+      },
+      {
+        "shortcut": "Nearby rivers",
+        "documentWidth": 375,
+        "heading": "Read the river, upstream of your plans.",
+        "height": 41.60000228881836,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 401.2250061035156
+      },
+      {
+        "shortcut": "Forecast checks",
+        "documentWidth": 375,
+        "heading": "What actually happened nearby.",
+        "height": 20.80000114440918,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 411.4250183105469
+      },
+      {
+        "shortcut": "Historical dates",
+        "documentWidth": 375,
+        "heading": "What did a nearby station record?",
+        "height": 20.80000114440918,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 411.875
+      },
+      {
+        "shortcut": "Comparable days",
+        "documentWidth": 375,
+        "heading": "What happened after weather like this?",
+        "height": 41.60000228881836,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 400.875
+      },
+      {
+        "shortcut": "Compound hazards",
+        "documentWidth": 375,
+        "heading": "See what overlaps.",
+        "height": 20.80000114440918,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 411.2250061035156
+      },
+      {
+        "shortcut": "Changes",
+        "documentWidth": 375,
+        "heading": "What changed?",
+        "height": 20.80000114440918,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 118.0999984741211,
+        "x": 46.60000228881836,
+        "y": 411.2749938964844
+      },
+      {
+        "shortcut": "Watch alerts",
+        "documentWidth": 375,
+        "heading": "Keep a record while you\u00e2\u20ac\u2122re away.",
+        "height": 20.80000114440918,
+        "hidden": false,
+        "id": "",
+        "tag": "H3",
+        "viewportWidth": 375,
+        "width": 282,
+        "x": 46.60000228881836,
+        "y": 411.9250183105469
+      }
+    ]
+  },
+  "desktop": [
+    {
+      "shortcut": "Briefing",
+      "documentWidth": 1265,
+      "heading": "Tool navigation QA",
+      "height": 36,
+      "hidden": false,
+      "tag": "H2",
+      "viewportWidth": 1265,
+      "width": 236.71250915527344,
+      "x": 327.8000183105469,
+      "y": 451.75
+    },
+    {
+      "shortcut": "Activity windows",
+      "documentWidth": 1265,
+      "heading": "Find a window that works.",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.8374938964844
+    },
+    {
+      "shortcut": "Fire and air",
+      "documentWidth": 1265,
+      "heading": "Conditions around this place.",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.25
+    },
+    {
+      "shortcut": "Nearby rivers",
+      "documentWidth": 1265,
+      "heading": "Read the river, upstream of your plans.",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.2749938964844
+    },
+    {
+      "shortcut": "Forecast checks",
+      "documentWidth": 1265,
+      "heading": "What actually happened nearby.",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.4750061035156
+    },
+    {
+      "shortcut": "Historical dates",
+      "documentWidth": 1265,
+      "heading": "What did a nearby station record?",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.63751220703125
+    },
+    {
+      "shortcut": "Comparable days",
+      "documentWidth": 1265,
+      "heading": "What happened after weather like this?",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.4375
+    },
+    {
+      "shortcut": "Compound hazards",
+      "documentWidth": 1265,
+      "heading": "See what overlaps.",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.25
+    },
+    {
+      "shortcut": "Changes",
+      "documentWidth": 1265,
+      "heading": "What changed?",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 118.0999984741211,
+      "x": 350.6000061035156,
+      "y": 349.63751220703125
+    },
+    {
+      "shortcut": "Watch alerts",
+      "documentWidth": 1265,
+      "heading": "Keep a record while you\u00e2\u20ac\u2122re away.",
+      "height": 20.80000114440918,
+      "hidden": false,
+      "tag": "H3",
+      "viewportWidth": 1265,
+      "width": 838.6000366210938,
+      "x": 350.6000061035156,
+      "y": 349.95001220703125
+    }
+  ],
+  "shared_event_skip": {
+    "before": "https://ventusiq.com/#event=cfb8092c672889b09ebaed5d41c5087d75016d8ef4a4b3a8d5940ab30612ea66&at=2026-10-29T21%3A36%3A00.000Z",
+    "after": "https://ventusiq.com/#event=cfb8092c672889b09ebaed5d41c5087d75016d8ef4a4b3a8d5940ab30612ea66&at=2026-10-29T21%3A36%3A00.000Z",
+    "focused": "Follow the alert beyond the map.",
+    "hidden": false,
+    "tag": "H2"
+  },
+  "console_errors": [],
+  "cleanup": {
+    "temporary_device_place_removed": true,
+    "viewport_override_reset": true,
+    "map_search_restored_empty": true,
+    "owned_browser_tab_closed": true
+  },
+  "limits": [
+    "A browser viewport emulation, not a physical phone",
+    "No screen-reader speech or touch interaction tested",
+    "Watch shortcut focus only; no sign-in, enrollment or delivery tested",
+    "Target activation used keyboard Enter after sequential Tab reachability was checked on phone"
+  ],
+  "automatic_alert_refresh": {
+    "before": {
+      "at": "2026-10-30T03:46:39.795Z",
+      "focus": {
+        "id": "search",
+        "value": "Atka"
+      },
+      "header": [
+        "- strong: Connected to NWS",
+        "- generic: Collected 8:46 PM \u00c2\u00b7 less than a minute ago",
+        "    - generic: Auto \u00c2\u00b7 next check in 28s"
+      ]
+    },
+    "after": {
+      "at": "2026-10-30T03:47:18.664Z",
+      "focus": {
+        "id": "search",
+        "value": "Atka"
+      },
+      "header": [
+        "- strong: Connected to NWS",
+        "- generic: Collected 8:47 PM \u00c2\u00b7 less than a minute ago",
+        "    - generic: Auto \u00c2\u00b7 next check in 28s"
+      ]
+    }
+  }
+}

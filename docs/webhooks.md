@@ -20,7 +20,8 @@ and [Cloudflare's workers.dev routing](https://developers.cloudflare.com/workers
    [Cloudflare Worker example](examples/webhook-receiver.mjs) verifies signatures
    and stores each delivery in a durable inbox. It does not execute any external
    action. Deploy it in your own account, with a D1 binding named `INBOX` and the
-   table shown below.
+   table shown below. A complete [Wrangler deployment template and walkthrough](../deploy/cloudflare-webhook/README.md)
+   is included; it requires no account details or secrets in the public source.
 2. Add its URL and a label in VentusIQ. Save the returned signing secret securely
    and set the receiver's `SIGNING_SECRET` secret to that exact string. Enrollment
    enables future changes immediately; it does not send an automatic test. Pause
@@ -102,8 +103,16 @@ received elsewhere remains subject to that receiver's retention policy.
 
 ## Verification boundary
 
-Automated tests use fake transports and an in-memory receiver database. They cover
-signed delivery, duplicate handling, ownership, queue transitions, retries and
-controls. No real external endpoint was enrolled or contacted during development.
-Real browser ownership, external delivery and the rendered controls still need user-session
-verification; browser automation is blocked by the saved permission setting.
+Automated tests cover signed delivery, duplicate handling, ownership, queue
+transitions, retries and controls. The October 30 [live receiver audit](evidence/webhook-live-2026-10-30.json)
+also sent a real hosted test to a separately deployed Cloudflare Worker and
+confirmed its body in D1. Live probes accepted an identical delivery with one
+row, rejected a conflicting signed body with 409, and rejected invalid signatures,
+stale timestamps and unsigned requests with 401.
+
+A second signed test was stored before a deliberate one-time 503. The normal
+receiver was restored; a real scheduled retry is pending in that audit, eligible
+October 30 at 22:48:01 UTC. A successful direct duplicate probe does not prove
+queue retry execution. These tests used an isolated capability with no saved
+watches and did not enroll the owner's browser or forward private watch changes.
+Rendered webhook enrollment and downstream consumer actions remain unverified.

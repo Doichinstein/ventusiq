@@ -1,0 +1,57 @@
+var __defProp = Object.defineProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+
+// ../../docs/examples/webhook-receiver.mjs
+async function verifyWebhook(request, secret, now = Math.floor(Date.now() / 1e3)) {
+  const timestamp = request.headers.get("X-VentusIQ-Timestamp"), id = request.headers.get("X-VentusIQ-Delivery"), signature = request.headers.get("X-VentusIQ-Signature");
+  if (request.method !== "POST" || !/^application\/json(?:;|$)/i.test(request.headers.get("content-type") || "") || !/^\d{10}$/.test(timestamp || "") || Math.abs(now - Number(timestamp)) > 300 || !/^[-a-zA-Z0-9:]{1,200}$/.test(id || "") || !/^v1=[a-f0-9]{64}$/.test(signature || "") || !/^[a-f0-9]{64}$/.test(secret || "")) throw Error("Invalid webhook authentication");
+  const reader = request.body?.getReader();
+  if (!reader) throw Error("Missing body");
+  const chunks = [];
+  let length = 0;
+  for (; ; ) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    length += value.length;
+    if (length > 16384) {
+      await reader.cancel();
+      throw Error("Body too large");
+    }
+    chunks.push(value);
+  }
+  const bytes = new Uint8Array(length);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+  const encoder = new TextEncoder(), prefix = encoder.encode(timestamp + "." + id + "."), signed = new Uint8Array(prefix.length + bytes.length);
+  signed.set(prefix);
+  signed.set(bytes, prefix.length);
+  const key = await crypto.subtle.importKey("raw", encoder.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]), sig = Uint8Array.from(signature.slice(3).match(/../g), (hex) => parseInt(hex, 16));
+  if (!await crypto.subtle.verify("HMAC", key, sig, signed)) throw Error("Invalid webhook signature");
+  const body = new TextDecoder("utf-8", { fatal: true }).decode(bytes), event = JSON.parse(body);
+  if (event.schema_version !== "1" || !["watch.change", "webhook.test"].includes(event.type)) throw Error("Unknown event schema");
+  return { id, body, event };
+}
+__name(verifyWebhook, "verifyWebhook");
+var webhook_receiver_default = { async fetch(request, env) {
+  let verified;
+  try {
+    verified = await verifyWebhook(request, env.SIGNING_SECRET);
+  } catch {
+    return new Response("Invalid webhook", { status: 401 });
+  }
+  try {
+    const stored = await env.INBOX.prepare("INSERT INTO webhook_inbox(id,received_at,body) VALUES (?,?,?) ON CONFLICT(id) DO UPDATE SET id=excluded.id WHERE webhook_inbox.body=excluded.body RETURNING id").bind(verified.id, Math.floor(Date.now() / 1e3), verified.body).first();
+    if (!stored) return new Response("Delivery ID conflict", { status: 409 });
+    return new Response("Stored", { status: 202 });
+  } catch {
+    return new Response("Inbox unavailable", { status: 503 });
+  }
+} };
+export {
+  webhook_receiver_default as default,
+  verifyWebhook
+};
+//# sourceMappingURL=webhook-receiver.js.map

@@ -1,0 +1,877 @@
+{
+  "watch": {
+    "id": "ef2d6ba9-56fa-4a81-9533-7a3d7b906491",
+    "label": "Selected place",
+    "point": "52.1960,-174.2000",
+    "settings": {
+      "alerts": false,
+      "windMph": null,
+      "rainPercent": null,
+      "hotF": null,
+      "coldF": null,
+      "compound": [
+        "precip-wind"
+      ]
+    },
+    "enabled": true,
+    "created_at": "2026-10-30T21:53:24.000Z",
+    "checked_at": "2026-10-30T21:53:56.000Z",
+    "next_check": "2026-10-30T22:53:56.000Z",
+    "error": null,
+    "snapshot": {
+      "method_version": "2026-10-29.1",
+      "evaluated_at": "2026-10-30T21:53:56.000Z",
+      "alerts_known": true,
+      "alerts_initialized": true,
+      "alerts": [],
+      "conditions": {},
+      "sources": {
+        "alerts": {
+          "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+          "checked_at": "2026-10-30T21:53:55.000Z"
+        },
+        "forecast": {
+          "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+          "checked_at": "2026-10-30T21:53:16.000Z",
+          "issued_at": "2026-10-30T21:11:06+00:00",
+          "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly"
+        },
+        "compound": {
+          "alerts": {
+            "fresh": true,
+            "collected_at": "2026-10-30T21:53:55.000Z",
+            "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+            "unresolved_local_coverage": 0,
+            "unresolved_local_alerts": []
+          },
+          "forecast": {
+            "fresh": true,
+            "checked_at": "2026-10-30T21:53:16.000Z",
+            "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+            "covered_hours": 48
+          },
+          "air": {
+            "fresh": false,
+            "checked_at": null,
+            "revision": null,
+            "monitor_id": null
+          }
+        }
+      },
+      "coverage": {
+        "alerts": true,
+        "forecast": true,
+        "compound": true
+      },
+      "compound": {
+        "method_version": "2026-10-29.1",
+        "ruleset_version": "2026-10-29.2",
+        "evaluated_at": "2026-10-30T21:53:56.000Z",
+        "horizon_end": "2026-11-01T21:53:56.000Z",
+        "rules": [
+          {
+            "id": "precip-wind",
+            "title": "Precipitation chances and stronger winds coincide",
+            "kind": "forecast combination",
+            "threshold": "In the same hourly forecast: precipitation chance at least 60% and forecast sustained wind or range maximum at least 25 mph. These are VentusIQ planning thresholds, not NWS warning criteria.",
+            "mechanism": "The hourly outlook contains both precipitation chances and stronger wind. It does not quantify their joint probability, precipitation intensity or wind gusts.",
+            "action": "Inspect nearby hours in the activity planner and check official warnings before outdoor activities or driving.",
+            "guidance": [
+              [
+                "NWS: wind precautions",
+                "https://www.weather.gov/safety/wind-during"
+              ],
+              [
+                "NHTSA: driving in severe weather",
+                "https://www.nhtsa.gov/road-safety/driving-in-severe-weather"
+              ]
+            ],
+            "status": "matched",
+            "coverage_complete": true,
+            "coverage_note": "48.0 of 48 upcoming hours contain the fields needed for this rule. Missing hours are not favorable conditions.",
+            "unresolved_alerts": [],
+            "windows": [
+              {
+                "start": "2026-10-30T21:00:00.000Z",
+                "end": "2026-10-31T06:00:00.000Z",
+                "segments": [
+                  {
+                    "start": "2026-10-30T21:00:00.000Z",
+                    "end": "2026-10-30T22:00:00.000Z",
+                    "premises": [
+                      "forecast:1793394000000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-30T22:00:00.000Z",
+                    "end": "2026-10-30T23:00:00.000Z",
+                    "premises": [
+                      "forecast:1793397600000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-30T23:00:00.000Z",
+                    "end": "2026-10-31T00:00:00.000Z",
+                    "premises": [
+                      "forecast:1793401200000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-31T00:00:00.000Z",
+                    "end": "2026-10-31T01:00:00.000Z",
+                    "premises": [
+                      "forecast:1793404800000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-31T01:00:00.000Z",
+                    "end": "2026-10-31T02:00:00.000Z",
+                    "premises": [
+                      "forecast:1793408400000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-31T02:00:00.000Z",
+                    "end": "2026-10-31T03:00:00.000Z",
+                    "premises": [
+                      "forecast:1793412000000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-31T03:00:00.000Z",
+                    "end": "2026-10-31T04:00:00.000Z",
+                    "premises": [
+                      "forecast:1793415600000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-31T04:00:00.000Z",
+                    "end": "2026-10-31T05:00:00.000Z",
+                    "premises": [
+                      "forecast:1793419200000"
+                    ]
+                  },
+                  {
+                    "start": "2026-10-31T05:00:00.000Z",
+                    "end": "2026-10-31T06:00:00.000Z",
+                    "premises": [
+                      "forecast:1793422800000"
+                    ]
+                  }
+                ]
+              },
+              {
+                "start": "2026-11-01T12:00:00.000Z",
+                "end": "2026-11-01T15:00:00.000Z",
+                "segments": [
+                  {
+                    "start": "2026-11-01T12:00:00.000Z",
+                    "end": "2026-11-01T13:00:00.000Z",
+                    "premises": [
+                      "forecast:1793534400000"
+                    ]
+                  },
+                  {
+                    "start": "2026-11-01T13:00:00.000Z",
+                    "end": "2026-11-01T14:00:00.000Z",
+                    "premises": [
+                      "forecast:1793538000000"
+                    ]
+                  },
+                  {
+                    "start": "2026-11-01T14:00:00.000Z",
+                    "end": "2026-11-01T15:00:00.000Z",
+                    "premises": [
+                      "forecast:1793541600000"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "evidence": [
+              {
+                "id": "forecast:1793394000000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-30T21:00:00.000Z",
+                "valid_to": "2026-10-30T22:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 40,
+                  "sustained_wind_max_mph": 45,
+                  "precipitation_probability_percent": 91,
+                  "summary": "Widespread Rain Showers"
+                }
+              },
+              {
+                "id": "forecast:1793397600000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-30T22:00:00.000Z",
+                "valid_to": "2026-10-30T23:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 40,
+                  "sustained_wind_max_mph": 45,
+                  "precipitation_probability_percent": 91,
+                  "summary": "Widespread Rain Showers"
+                }
+              },
+              {
+                "id": "forecast:1793401200000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-30T23:00:00.000Z",
+                "valid_to": "2026-10-31T00:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 40,
+                  "sustained_wind_max_mph": 45,
+                  "precipitation_probability_percent": 91,
+                  "summary": "Widespread Rain Showers"
+                }
+              },
+              {
+                "id": "forecast:1793404800000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-31T00:00:00.000Z",
+                "valid_to": "2026-10-31T01:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 41,
+                  "sustained_wind_max_mph": 40,
+                  "precipitation_probability_percent": 74,
+                  "summary": "Chance Rain Showers"
+                }
+              },
+              {
+                "id": "forecast:1793408400000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-31T01:00:00.000Z",
+                "valid_to": "2026-10-31T02:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 40,
+                  "sustained_wind_max_mph": 40,
+                  "precipitation_probability_percent": 74,
+                  "summary": "Chance Rain Showers"
+                }
+              },
+              {
+                "id": "forecast:1793412000000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-31T02:00:00.000Z",
+                "valid_to": "2026-10-31T03:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 39,
+                  "sustained_wind_max_mph": 40,
+                  "precipitation_probability_percent": 74,
+                  "summary": "Chance Rain Showers"
+                }
+              },
+              {
+                "id": "forecast:1793415600000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-31T03:00:00.000Z",
+                "valid_to": "2026-10-31T04:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 39,
+                  "sustained_wind_max_mph": 40,
+                  "precipitation_probability_percent": 78,
+                  "summary": "Rain And Snow"
+                }
+              },
+              {
+                "id": "forecast:1793419200000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-31T04:00:00.000Z",
+                "valid_to": "2026-10-31T05:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 38,
+                  "sustained_wind_max_mph": 40,
+                  "precipitation_probability_percent": 78,
+                  "summary": "Rain And Snow"
+                }
+              },
+              {
+                "id": "forecast:1793422800000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-10-31T05:00:00.000Z",
+                "valid_to": "2026-10-31T06:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 38,
+                  "sustained_wind_max_mph": 40,
+                  "precipitation_probability_percent": 78,
+                  "summary": "Rain And Snow"
+                }
+              },
+              {
+                "id": "forecast:1793534400000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-11-01T12:00:00.000Z",
+                "valid_to": "2026-11-01T13:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 39,
+                  "sustained_wind_max_mph": 35,
+                  "precipitation_probability_percent": 98,
+                  "summary": "Heavy Rain"
+                }
+              },
+              {
+                "id": "forecast:1793538000000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-11-01T13:00:00.000Z",
+                "valid_to": "2026-11-01T14:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 40,
+                  "sustained_wind_max_mph": 35,
+                  "precipitation_probability_percent": 98,
+                  "summary": "Heavy Rain"
+                }
+              },
+              {
+                "id": "forecast:1793541600000",
+                "kind": "forecast",
+                "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "issued_at": "2026-10-30T21:11:06+00:00",
+                "collected_at": "2026-10-30T21:53:16.000Z",
+                "valid_from": "2026-11-01T14:00:00.000Z",
+                "valid_to": "2026-11-01T15:00:00.000Z",
+                "coverage": "NWS point forecast",
+                "values": {
+                  "temperature_f": 42,
+                  "sustained_wind_max_mph": 35,
+                  "precipitation_probability_percent": 98,
+                  "summary": "Heavy Rain"
+                }
+              }
+            ],
+            "last_known": "matched"
+          }
+        ],
+        "sources": {
+          "alerts": {
+            "fresh": true,
+            "collected_at": "2026-10-30T21:53:55.000Z",
+            "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+            "unresolved_local_coverage": 0,
+            "unresolved_local_alerts": []
+          },
+          "forecast": {
+            "fresh": true,
+            "checked_at": "2026-10-30T21:53:16.000Z",
+            "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+            "covered_hours": 48
+          },
+          "air": {
+            "fresh": false,
+            "checked_at": null,
+            "revision": null,
+            "monitor_id": null
+          }
+        },
+        "limitations": "Changes in selected source-overlap rules, not observed impacts, joint probabilities or all-clear conditions. Forecast rules use 48 hours; measured air is an observation instant. Normalized premise evidence is retained; raw products follow their own archive retention."
+      }
+    },
+    "has_feed": false
+  },
+  "events": [
+    {
+      "id": "ef2d6ba9-56fa-4a81-9533-7a3d7b906491:1:0",
+      "at": "2026-10-30T21:53:56.000Z",
+      "kind": "baseline",
+      "title": "Watch started: initial conditions recorded",
+      "evidence": {
+        "kind": "baseline",
+        "title": "Watch started: initial conditions recorded",
+        "after": {
+          "method_version": "2026-10-29.1",
+          "evaluated_at": "2026-10-30T21:53:56.000Z",
+          "alerts_known": true,
+          "alerts_initialized": true,
+          "alerts": [],
+          "conditions": {},
+          "sources": {
+            "alerts": {
+              "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+              "checked_at": "2026-10-30T21:53:55.000Z"
+            },
+            "forecast": {
+              "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+              "checked_at": "2026-10-30T21:53:16.000Z",
+              "issued_at": "2026-10-30T21:11:06+00:00",
+              "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly"
+            },
+            "compound": {
+              "alerts": {
+                "fresh": true,
+                "collected_at": "2026-10-30T21:53:55.000Z",
+                "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+                "unresolved_local_coverage": 0,
+                "unresolved_local_alerts": []
+              },
+              "forecast": {
+                "fresh": true,
+                "checked_at": "2026-10-30T21:53:16.000Z",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "covered_hours": 48
+              },
+              "air": {
+                "fresh": false,
+                "checked_at": null,
+                "revision": null,
+                "monitor_id": null
+              }
+            }
+          },
+          "coverage": {
+            "alerts": true,
+            "forecast": true,
+            "compound": true
+          },
+          "compound": {
+            "method_version": "2026-10-29.1",
+            "ruleset_version": "2026-10-29.2",
+            "evaluated_at": "2026-10-30T21:53:56.000Z",
+            "horizon_end": "2026-11-01T21:53:56.000Z",
+            "rules": [
+              {
+                "id": "precip-wind",
+                "title": "Precipitation chances and stronger winds coincide",
+                "kind": "forecast combination",
+                "threshold": "In the same hourly forecast: precipitation chance at least 60% and forecast sustained wind or range maximum at least 25 mph. These are VentusIQ planning thresholds, not NWS warning criteria.",
+                "mechanism": "The hourly outlook contains both precipitation chances and stronger wind. It does not quantify their joint probability, precipitation intensity or wind gusts.",
+                "action": "Inspect nearby hours in the activity planner and check official warnings before outdoor activities or driving.",
+                "guidance": [
+                  [
+                    "NWS: wind precautions",
+                    "https://www.weather.gov/safety/wind-during"
+                  ],
+                  [
+                    "NHTSA: driving in severe weather",
+                    "https://www.nhtsa.gov/road-safety/driving-in-severe-weather"
+                  ]
+                ],
+                "status": "matched",
+                "coverage_complete": true,
+                "coverage_note": "48.0 of 48 upcoming hours contain the fields needed for this rule. Missing hours are not favorable conditions.",
+                "unresolved_alerts": [],
+                "windows": [
+                  {
+                    "start": "2026-10-30T21:00:00.000Z",
+                    "end": "2026-10-31T06:00:00.000Z",
+                    "segments": [
+                      {
+                        "start": "2026-10-30T21:00:00.000Z",
+                        "end": "2026-10-30T22:00:00.000Z",
+                        "premises": [
+                          "forecast:1793394000000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-30T22:00:00.000Z",
+                        "end": "2026-10-30T23:00:00.000Z",
+                        "premises": [
+                          "forecast:1793397600000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-30T23:00:00.000Z",
+                        "end": "2026-10-31T00:00:00.000Z",
+                        "premises": [
+                          "forecast:1793401200000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-31T00:00:00.000Z",
+                        "end": "2026-10-31T01:00:00.000Z",
+                        "premises": [
+                          "forecast:1793404800000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-31T01:00:00.000Z",
+                        "end": "2026-10-31T02:00:00.000Z",
+                        "premises": [
+                          "forecast:1793408400000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-31T02:00:00.000Z",
+                        "end": "2026-10-31T03:00:00.000Z",
+                        "premises": [
+                          "forecast:1793412000000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-31T03:00:00.000Z",
+                        "end": "2026-10-31T04:00:00.000Z",
+                        "premises": [
+                          "forecast:1793415600000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-31T04:00:00.000Z",
+                        "end": "2026-10-31T05:00:00.000Z",
+                        "premises": [
+                          "forecast:1793419200000"
+                        ]
+                      },
+                      {
+                        "start": "2026-10-31T05:00:00.000Z",
+                        "end": "2026-10-31T06:00:00.000Z",
+                        "premises": [
+                          "forecast:1793422800000"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "start": "2026-11-01T12:00:00.000Z",
+                    "end": "2026-11-01T15:00:00.000Z",
+                    "segments": [
+                      {
+                        "start": "2026-11-01T12:00:00.000Z",
+                        "end": "2026-11-01T13:00:00.000Z",
+                        "premises": [
+                          "forecast:1793534400000"
+                        ]
+                      },
+                      {
+                        "start": "2026-11-01T13:00:00.000Z",
+                        "end": "2026-11-01T14:00:00.000Z",
+                        "premises": [
+                          "forecast:1793538000000"
+                        ]
+                      },
+                      {
+                        "start": "2026-11-01T14:00:00.000Z",
+                        "end": "2026-11-01T15:00:00.000Z",
+                        "premises": [
+                          "forecast:1793541600000"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "evidence": [
+                  {
+                    "id": "forecast:1793394000000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-30T21:00:00.000Z",
+                    "valid_to": "2026-10-30T22:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 40,
+                      "sustained_wind_max_mph": 45,
+                      "precipitation_probability_percent": 91,
+                      "summary": "Widespread Rain Showers"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793397600000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-30T22:00:00.000Z",
+                    "valid_to": "2026-10-30T23:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 40,
+                      "sustained_wind_max_mph": 45,
+                      "precipitation_probability_percent": 91,
+                      "summary": "Widespread Rain Showers"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793401200000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-30T23:00:00.000Z",
+                    "valid_to": "2026-10-31T00:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 40,
+                      "sustained_wind_max_mph": 45,
+                      "precipitation_probability_percent": 91,
+                      "summary": "Widespread Rain Showers"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793404800000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-31T00:00:00.000Z",
+                    "valid_to": "2026-10-31T01:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 41,
+                      "sustained_wind_max_mph": 40,
+                      "precipitation_probability_percent": 74,
+                      "summary": "Chance Rain Showers"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793408400000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-31T01:00:00.000Z",
+                    "valid_to": "2026-10-31T02:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 40,
+                      "sustained_wind_max_mph": 40,
+                      "precipitation_probability_percent": 74,
+                      "summary": "Chance Rain Showers"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793412000000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-31T02:00:00.000Z",
+                    "valid_to": "2026-10-31T03:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 39,
+                      "sustained_wind_max_mph": 40,
+                      "precipitation_probability_percent": 74,
+                      "summary": "Chance Rain Showers"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793415600000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-31T03:00:00.000Z",
+                    "valid_to": "2026-10-31T04:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 39,
+                      "sustained_wind_max_mph": 40,
+                      "precipitation_probability_percent": 78,
+                      "summary": "Rain And Snow"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793419200000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-31T04:00:00.000Z",
+                    "valid_to": "2026-10-31T05:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 38,
+                      "sustained_wind_max_mph": 40,
+                      "precipitation_probability_percent": 78,
+                      "summary": "Rain And Snow"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793422800000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-10-31T05:00:00.000Z",
+                    "valid_to": "2026-10-31T06:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 38,
+                      "sustained_wind_max_mph": 40,
+                      "precipitation_probability_percent": 78,
+                      "summary": "Rain And Snow"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793534400000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-11-01T12:00:00.000Z",
+                    "valid_to": "2026-11-01T13:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 39,
+                      "sustained_wind_max_mph": 35,
+                      "precipitation_probability_percent": 98,
+                      "summary": "Heavy Rain"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793538000000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-11-01T13:00:00.000Z",
+                    "valid_to": "2026-11-01T14:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 40,
+                      "sustained_wind_max_mph": 35,
+                      "precipitation_probability_percent": 98,
+                      "summary": "Heavy Rain"
+                    }
+                  },
+                  {
+                    "id": "forecast:1793541600000",
+                    "kind": "forecast",
+                    "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+                    "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                    "issued_at": "2026-10-30T21:11:06+00:00",
+                    "collected_at": "2026-10-30T21:53:16.000Z",
+                    "valid_from": "2026-11-01T14:00:00.000Z",
+                    "valid_to": "2026-11-01T15:00:00.000Z",
+                    "coverage": "NWS point forecast",
+                    "values": {
+                      "temperature_f": 42,
+                      "sustained_wind_max_mph": 35,
+                      "precipitation_probability_percent": 98,
+                      "summary": "Heavy Rain"
+                    }
+                  }
+                ],
+                "last_known": "matched"
+              }
+            ],
+            "sources": {
+              "alerts": {
+                "fresh": true,
+                "collected_at": "2026-10-30T21:53:55.000Z",
+                "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+                "unresolved_local_coverage": 0,
+                "unresolved_local_alerts": []
+              },
+              "forecast": {
+                "fresh": true,
+                "checked_at": "2026-10-30T21:53:16.000Z",
+                "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+                "covered_hours": 48
+              },
+              "air": {
+                "fresh": false,
+                "checked_at": null,
+                "revision": null,
+                "monitor_id": null
+              }
+            },
+            "limitations": "Changes in selected source-overlap rules, not observed impacts, joint probabilities or all-clear conditions. Forecast rules use 48 hours; measured air is an observation instant. Normalized premise evidence is retained; raw products follow their own archive retention."
+          }
+        },
+        "method_version": "2026-10-29.1",
+        "evaluated_at": "2026-10-30T21:53:56.000Z",
+        "sources": {
+          "alerts": {
+            "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+            "checked_at": "2026-10-30T21:53:55.000Z"
+          },
+          "forecast": {
+            "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+            "checked_at": "2026-10-30T21:53:16.000Z",
+            "issued_at": "2026-10-30T21:11:06+00:00",
+            "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly"
+          },
+          "compound": {
+            "alerts": {
+              "fresh": true,
+              "collected_at": "2026-10-30T21:53:55.000Z",
+              "revision": "e85664f819c5f579c7c90b9686f930e0aac9d602696663c98e2be0810145c9a6",
+              "unresolved_local_coverage": 0,
+              "unresolved_local_alerts": []
+            },
+            "forecast": {
+              "fresh": true,
+              "checked_at": "2026-10-30T21:53:16.000Z",
+              "revision": "e90f7db7c52dbeeaa7864aec0e1bc8d7842db2bc36c4defa662b4db58747074e",
+              "covered_hours": 48
+            },
+            "air": {
+              "fresh": false,
+              "checked_at": null,
+              "revision": null,
+              "monitor_id": null
+            }
+          }
+        }
+      }
+    }
+  ],
+  "retention": "Up to 200 records and 30 days per watch"
+}

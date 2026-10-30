@@ -1,0 +1,82 @@
+{
+  "checked_at": "2026-10-30T21:52:19.466Z",
+  "test_identity": "isolated; no saved watches",
+  "delivery": {
+    "id": "4835a6c0-f305-4a81-b036-e6a82a07410a",
+    "endpoint_id": "6254a51b-533f-46ab-8424-190728902814",
+    "created_at": "2026-10-30T21:45:33.000Z",
+    "status": "accepted",
+    "attempts": 1,
+    "next_attempt": "2026-10-30T22:45:33.000Z",
+    "accepted_at": "2026-10-30T21:45:34.000Z",
+    "http_status": 202,
+    "error": null,
+    "payload": {
+      "schema_version": "1",
+      "id": "4835a6c0-f305-4a81-b036-e6a82a07410a",
+      "type": "webhook.test",
+      "created_at": "2026-10-30T21:45:33.000Z",
+      "message": "VentusIQ webhook test",
+      "dashboard_path": "/#watches"
+    }
+  },
+  "attempts": [
+    {
+      "delivery_id": "4835a6c0-f305-4a81-b036-e6a82a07410a",
+      "attempt": 1,
+      "at": "2026-10-30T21:45:33.000Z",
+      "http_status": 202,
+      "outcome": "accepted",
+      "error": null
+    }
+  ],
+  "receiver_storage_confirmed": true,
+  "retry_verification": "pending",
+  "retry": {
+    "delivery": {
+      "id": "919a6d27-d47d-4903-9b09-03ada0a90969",
+      "endpoint_id": "66fc2bbf-9d41-4d48-a4cd-efc08a5e80b7",
+      "created_at": "2026-10-30T21:48:01.000Z",
+      "status": "pending",
+      "attempts": 1,
+      "next_attempt": "2026-10-30T22:48:01.000Z",
+      "accepted_at": null,
+      "http_status": 503,
+      "error": "Receiver temporarily unavailable (HTTP 503)",
+      "payload": {
+        "schema_version": "1",
+        "id": "919a6d27-d47d-4903-9b09-03ada0a90969",
+        "type": "webhook.test",
+        "created_at": "2026-10-30T21:48:01.000Z",
+        "message": "VentusIQ webhook test",
+        "dashboard_path": "/#watches"
+      }
+    },
+    "attempts": [
+      {
+        "delivery_id": "919a6d27-d47d-4903-9b09-03ada0a90969",
+        "attempt": 1,
+        "at": "2026-10-30T21:48:01.000Z",
+        "http_status": 503,
+        "outcome": "pending",
+        "error": "Receiver temporarily unavailable (HTTP 503)"
+      }
+    ],
+    "receiver_rows": {
+      "id": "919a6d27-d47d-4903-9b09-03ada0a90969",
+      "rows": 1
+    },
+    "status": "awaiting successful scheduled retry"
+  },
+  "receiver_checks": {
+    "duplicate": 202,
+    "conflictingBody": 409,
+    "invalidSignature": 401,
+    "staleTimestamp": 401,
+    "unsignedGet": 401
+  },
+  "duplicate_probe_rows": 1,
+  "direct_https_verified_at": "2026-10-30T21:50:28.483Z",
+  "probe_note": "Initial helper used superseded enrollment secret; explicit current secret passed all checks.",
+  "receiver_provider": "Cloudflare Workers with D1; destination URL and account/database identifiers omitted"
+}

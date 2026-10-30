@@ -1,0 +1,90 @@
+{
+  "checked_at": "2026-10-30T21:57:56.786208+00:00",
+  "test_location": "Public Atka, Alaska coordinates; not a private user place",
+  "point": "52.1960,-174.2000",
+  "watch_id": "ef2d6ba9-56fa-4a81-9533-7a3d7b906491",
+  "created_at": "2026-10-30T21:53:24.000Z",
+  "baseline_at": "2026-10-30T21:53:56.000Z",
+  "rules": [
+    "precip-wind"
+  ],
+  "ui_enrollment_verified": true,
+  "ui_baseline_event_verified": true,
+  "ui_source_disclosure_verified": true,
+  "ui_pause_verified": true,
+  "final_watch_state": "paused",
+  "event_kinds": [
+    "baseline"
+  ],
+  "rule_status": "matched",
+  "window_count": 2,
+  "source_url": "https://api.weather.gov/gridpoints/ALU/300,74/forecast/hourly",
+  "source_issued_at": "2026-10-30T21:11:06+00:00",
+  "independently_matched_premises": [
+    {
+      "valid_from": "2026-10-30T21:00:00.000Z",
+      "wind_mph": 45,
+      "rain_percent": 91
+    },
+    {
+      "valid_from": "2026-10-30T22:00:00.000Z",
+      "wind_mph": 45,
+      "rain_percent": 91
+    },
+    {
+      "valid_from": "2026-10-30T23:00:00.000Z",
+      "wind_mph": 45,
+      "rain_percent": 91
+    },
+    {
+      "valid_from": "2026-10-31T00:00:00.000Z",
+      "wind_mph": 40,
+      "rain_percent": 74
+    },
+    {
+      "valid_from": "2026-10-31T01:00:00.000Z",
+      "wind_mph": 40,
+      "rain_percent": 74
+    },
+    {
+      "valid_from": "2026-10-31T02:00:00.000Z",
+      "wind_mph": 40,
+      "rain_percent": 74
+    },
+    {
+      "valid_from": "2026-10-31T03:00:00.000Z",
+      "wind_mph": 40,
+      "rain_percent": 78
+    },
+    {
+      "valid_from": "2026-10-31T04:00:00.000Z",
+      "wind_mph": 40,
+      "rain_percent": 78
+    },
+    {
+      "valid_from": "2026-10-31T05:00:00.000Z",
+      "wind_mph": 40,
+      "rain_percent": 78
+    },
+    {
+      "valid_from": "2026-11-01T12:00:00.000Z",
+      "wind_mph": 35,
+      "rain_percent": 98
+    },
+    {
+      "valid_from": "2026-11-01T13:00:00.000Z",
+      "wind_mph": 35,
+      "rain_percent": 98
+    },
+    {
+      "valid_from": "2026-11-01T14:00:00.000Z",
+      "wind_mph": 35,
+      "rain_percent": 98
+    }
+  ],
+  "live_transition_verified": false,
+  "notification_delivery_verified": false,
+  "raw_export": "compound-watch-rendered-2026-10-30-export.json",
+  "raw_source": "compound-watch-rendered-2026-10-30-source.json",
+  "screenshot": "compound-watch-rendered-2026-10-30.jpg"
+}

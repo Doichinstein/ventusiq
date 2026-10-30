@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v137, the October 30 live browser-capability and source-backed watch-baseline audits, one owner-confirmed Brave push display, and the full-stop weather checks described below.
+Current evidence: public releases through v138, the October 30 live browser-capability and rendered compound-watch audits, real Cloudflare webhook receipt, one owner-confirmed Brave push display, and the full-stop weather checks described below.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
@@ -18,14 +18,14 @@ browser settings; those paths have not been retried or bypassed in this audit.
 | Feature | Verified evidence | Remaining acceptance or broader validation |
 |---|---|---|
 | 1. My Places | Public save, reload, live hourly forecast, select and remove flows passed. Geography matching has automated coverage; desktop and phone-width views were inspected. Public places are device-local with no account gate. | Viewport emulation does not establish physical-device behavior. Cross-device account synchronization is deferred and not mounted publicly. |
-| 2. Meaningful updates | Tests cover ownership, baseline/revision/expiry, threshold crossings, quiet preferences, queue retries and deduplication. The live browser-capability API passed 31 lifecycle checks. A separate live audit independently reproduced six weather/compound/river baseline and repeat snapshots, populated Atom identities and baseline deduplication; all temporary records were removed. On-page refresh preserves reader focus. | Live threshold transitions, rendered enrollment, closed-page push display and real external webhook receipt/retry remain unverified. Visitor-triggered upkeep does not prove unattended execution or delivery. See [watches](watches.md), [baseline evidence](browser-workspaces.md#live-baseline-and-populated-feed-verification) and [webhooks](webhooks.md). |
+| 2. Meaningful updates | Tests cover ownership, baseline/revision/expiry, threshold crossings, quiet preferences, queue retries and deduplication. The live browser-capability API passed 31 lifecycle checks. A separate live audit independently reproduced six weather/compound/river baseline and repeat snapshots, populated Atom identities and baseline deduplication; all temporary records were removed. On-page refresh preserves reader focus. | Live threshold transitions, closed-page push display and automatic external webhook retry remain unverified. The rendered precipitation/wind enrollment and real external receipt now pass; see the October 30 follow-up below. Visitor-triggered upkeep does not prove unattended execution or delivery. See [watches](watches.md), [baseline evidence](browser-workspaces.md#live-baseline-and-populated-feed-verification) and [webhooks](webhooks.md). |
 | 3. Activity windows | Public duration/limit changes, gust rejection, local time, missing air coverage, alternatives and evidence export passed. v89 checks draft/export consistency; v94 controlled source-outage QA covers stale, missing and recovered inputs. | Physical-device usability and broader observation-based evaluation remain open. Synthetic outage tests do not establish provider uptime; no calibrated probability or continuous exposure is established. See [planning](activity-planning.md). |
 | 4. Fire and smoke | Live checks cover all seven map layers, fire size/perimeter details, age/containment, smoke playback, replay hiding, measured trends and modeled-source comparisons. v95 CAMS recovery/export, v96 first NASA ozone pair and v108 first CAMS PM2.5 pair were independently reproduced. | Broader model/monitor performance, CAMS run identification and personal exposure remain unvalidated. A first pair is not calibrated skill. See [PM2.5 comparison](particulate-comparison.md) and [ozone observations](ozone-observations.md). |
 | 5. Rivers and flood impacts | IDs, units/datum, observed/forecast hydrographs, official impact links, connected gauges and missing-prior states were checked. v101 DLAF1 yielded 18 matched future readings, seven nonzero revisions and a largest increase of 0.1 ft. Live watch baseline/recheck evidence independently distinguishes a 3.96 ft observation below the official 4 ft minor threshold from future forecast samples reaching it, with 72-hour sampled coverage. A later live DLAF1 comparison independently reproduced 17 matched samples, 12 nonzero changes and a change from below to reaching the minor threshold; browser/export checks agreed. | A changed live crossing-time window remains unverified. Address-level inundation, hydraulic travel time and owned gauge push display require separate evidence. See [rivers](rivers.md). |
 | 6. Journey exposure | Route/time, stops, DST and sparse-coverage tests pass. Public QA compared three departures and a 30-minute via stop with agency proximity kept distinct from closure. Native graph/crosswalk/event tooling has reproducible tests. | Real approved road identity, direction/carriageway/grade, partial-edge applicability and current event association are missing. The v113 offline event evaluator handles ordered legs and planned stops; its integration event/reviews are synthetic. Full-stop hourly forecast coverage and stationary RAP interpolation are implemented; measured stop exposure, road-event applicability while stopped and hosted event activation remain open. Public routing remains OSRM; the optional native host is unprovisioned. See [route network](route-network.md). |
 | 7. Forecast confidence | NWS outcomes/revisions, HRRR prospective outcomes with a same-case persistence baseline, and five 31-member GEFS prospective matches plus one missing nearest reading have retained source arithmetic. The GEFS follow-up independently checks all six eligible targets against the earlier capture and a separate NWS response. Leads, missing denominators and uncertainty labels remain explicit. | Broader prospective, regional, seasonal and lead-time grading remains open. Five correlated GEFS times from one station/run/day do not establish calibrated confidence. See [ensemble](ensemble.md) and [verification](verification.md). |
 | 8. Historical analogs | Public historical-date/station selection, diagnostics and exports passed. Six-station chronological holdout results were reconstructed independently from retained raw inputs. | Forecast-to-history transfer, wider regional/seasonal coverage, climate drift and validated impact associations remain open. A frozen prospective cohort is waiting for eligible completed outcomes. See [station analogs](station-analogs.md) and [historical analogs](historical-analogs.md). |
-| 9. Compound hazards | Six source-reviewed rules have premise, overlap and missing-data tests. Atka dashboard QA reproduced 41 precipitation/wind premises in two windows. A later live compound-watch baseline/recheck independently reproduced 20 premises in three windows and its populated private feed. Unrelated missing geography no longer contaminates other rules. | Live compound transitions, rendered compound-watch enrollment and real notification display remain unverified. Source review does not substitute for independent domain endorsement or outcome validation. See [compound hazards](compound-hazards.md). |
+| 9. Compound hazards | Six source-reviewed rules have premise, overlap and missing-data tests. Atka dashboard QA reproduced 41 precipitation/wind premises in two windows. A later live compound-watch baseline/recheck independently reproduced 20 premises in three windows and its populated private feed. Unrelated missing geography no longer contaminates other rules. | Live compound transitions and real notification display remain unverified. Rendered precipitation/wind watch enrollment now passes; other rule paths remain open. Source review does not substitute for independent domain endorsement or outcome validation. See [compound hazards](compound-hazards.md). |
 | 10. Event story | CAP chains, stable links, historical cutoff, source/observation times, matched station/gauge records, JSON/HTML downloads and JSON verification passed within their documented scope. | Offline HTML rendering is blocked by the file-URL policy. Download success is not rendering evidence. Matched readings do not establish verified physical impacts; broader outcome retention and hosted recovery remain open. |
 
 ## Shared UI, refresh and startup
@@ -74,8 +74,10 @@ checks and the production build. Detailed records are in [verification](verifica
 1. **Delivery: device/receiver evidence.** Browser-capability management is public
    and its live HTTP lifecycle now passes. Brave enrollment and one real test
    display are confirmed: v137's provider response was HTTP 201 and the owner
-   confirmed display. Closed-page delivery and external-receiver checks remain
-   unverified. Legacy account tests remain deferred; notification testing is authorized.
+   confirmed display. The closed-page test was accepted after the dashboard tab
+   closed, but display confirmation is pending. Real external receiver storage,
+   signature rejection and direct duplicate handling now pass; automatic retry
+   remains pending. Legacy account tests remain deferred; notification testing is authorized.
 2. **Road attribution: source and engineering work.** Establish a real reviewed
    agency crosswalk and current incident association before activating closure
    claims. Multi-leg event evaluation is implemented and tested; hosted activation remains additional work;
@@ -106,3 +108,23 @@ passing tests. The [historical acceptance notes](acceptance-history-through-v111
 preserve earlier release statements, including now-superseded pending statuses.
 Use this audit for current status and the [verification record](verification.md)
 and retained source evidence for the scope of each result.
+
+## October 30 receiver and rendered-watch follow-up
+
+The [live receiver evidence](evidence/webhook-live-2026-10-30.json) confirms a
+real signed VentusIQ test stored in a separately deployed Cloudflare D1 inbox.
+Direct duplicate delivery returned 202 with one row, a conflicting signed body
+returned 409, and invalid/stale/unsigned requests returned 401. A second stored
+test deliberately returned 503 once; the normal receiver was restored and its
+automatic retry is eligible at 22:48:01 UTC. Direct replay does not close that
+queue-retry gate. The [Apache-2.0 deployment template](../deploy/cloudflare-webhook/README.md)
+contains no deployed account IDs, destination URLs or secrets.
+
+The [rendered compound-watch evidence](evidence/compound-watch-rendered-2026-10-30.json)
+closes the rendered enrollment item for the precipitation/wind rule at the public
+Atka test point. The browser displayed one initial baseline event, a detected
+rule, expandable source evidence, exported history and a successful pause.
+An independent NOAA response matched all 12 retained forecast premises in two
+windows. The temporary watch remains paused in the test browser, without an
+enrolled push device or webhook. This verifies that UI path and source arithmetic;
+it does not prove a live threshold transition, notification display or every rule.

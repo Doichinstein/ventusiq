@@ -111,6 +111,44 @@ The UI clears reports/exports on a source switch, rejects replies from the wrong
 source and late replies after selection changes, and provides keyboard-scrollable
 chart and evidence regions. Recorded v84 browser QA verifies real monitor discovery,
 NASA selection, empty prospective history, capture timing, export and mobile
-overflow handling. A live nonempty matched-hour result remains unverified until
-eligible observations arrive. Other observed gases and validated exposure remain
+overflow handling. The first live nonempty matched-hour result was verified in v96 below. Other observed gases and validated exposure remain
 outside this adapter.
+
+
+## First real prospective pair (v96)
+
+The [initial capture](evidence/ozone-initial-capture-2026-10-29.json) retained NASA
+revision `919463f0b4f59c800cdd9190ce0a66aabe4689ee6cd20eb540fd2b118499cd5f`
+at October 29, 2026 21:22:23 UTC. It had zero eligible outcome pairs then. The
+[public browser download](evidence/ozone-first-pair-2026-10-30.json) later contains
+one paired hour, October 30 00:00–01:00 UTC, at TakomaRec (EPA ID 110010050).
+
+Raw EPA record 850260104 reports 34 PPB, measured flag 1, at that station. The NASA
+09 UTC October 28 run, first retained index 36, supplies offset 3 as
+`4.2258762E-8 mol/mol`; multiplying by 1e9 gives 42.258762 ppb. That is the mean for
+the identical hour, with model lead 39–40 hours and collection lead 2.62694 hours.
+The signed difference is +8.258762 ppb. Both headline differences round to 8.26 ppb
+because this sample contains only one pair. The 1–6-hour lead group has one pair;
+6–12 and 12–24-hour groups have null metrics.
+
+The prior 23–00 UTC EPA record has a null concentration/unit even though an AQI
+was supplied; it is excluded. The later 01–02 UTC record is not yet a completed
+hour at evaluation and is also excluded. The NASA collection made at 01:04:27 UTC
+cannot be used retrospectively for the 00–01 UTC target. The actual UI/export
+preserve these distinctions, dates, locations and source revisions.
+
+Reproduce without network or provider credentials:
+
+```sh
+python scripts/verify-ozone-pair.py
+python -m unittest discover -s tests -p test_ozone_pair_evidence.py -v
+```
+
+The independent Python audit reads the retained raw NASA ASCII and EPA records;
+it does not import the production JavaScript evaluator. Four artifact-based
+checks verify the real arithmetic and reject a later forecast capture, a missing
+measured concentration and a changed raw model value. This is a frozen experiment
+audit, not a generic provider validator or a general accuracy claim. Preliminary
+monitor corrections can change future analyses. The model grid is 3.62 km from
+the instrument; surface-layer dry-air model means and instrument sampling still
+differ. This single pair does not establish calibrated confidence or exposure.

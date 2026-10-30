@@ -2189,3 +2189,35 @@ recent cached collection under “Checking for updates…” and then connected;
 a subsequent HTTP 503 retained the collection under “Updates delayed” with the
 last-successful-collection notice. These tests do not establish real-provider
 uptime. The isolated preview and its tab were stopped after verification.
+
+
+## October 30, 2026 — first live prospective NASA ozone pair (v96)
+
+The 01:21 UTC API recheck returned one eligible NASA/monitor pair after the earlier
+check had no usable measurement. TakomaRec reported 34 ppb for 00–01 UTC; the
+previously retained NASA hourly mean was 42.258762 ppb, difference +8.258762 ppb.
+The forecast had been collected 2.62694 hours before the observation hour began.
+The later 01:04 UTC capture was not substituted into that earlier slot. The
+23–00 UTC source concentration/unit remained null and was excluded despite a
+reported AQI. A still-incomplete later observation hour was excluded as well.
+
+Public browser QA saved a temporary public-coordinate place (39, -77), discovered
+TakomaRec, selected NASA, ran the comparison and downloaded its JSON. The UI showed
+1/24 pairs, 8.26 ppb absolute/signed difference, 3.62 km grid/monitor separation,
+2.63-hour collection lead and 39–40-hour run lead. The downloaded comparison
+exactly matched the API comparison; the trend evaluation timestamp advanced while
+its source observations stayed identical. Empty lead-group metrics remained
+Unknown. Desktop and 390 × 844 views rendered; mobile client/scroll widths were
+both 375 pixels, and captured console errors were empty. The temporary device
+place was removed and viewport restored. Account testing remained deferred.
+
+The source records are retained in [ozone evidence](ozone-observations.md#first-real-prospective-pair-v96).
+The independent offline Python audit reconstructs the result without calling the
+production evaluator. Four focused checks pass, including three counterfactual
+changes that must fail: an after-the-hour capture, missing concentration and a
+changed raw model value. The existing application behavior is unchanged by v96;
+this release adds reproducible evidence and corrects the acceptance status only.
+One preliminary hour does not establish model skill, general accuracy, personal
+exposure, or CAMS PM2.5 outcomes.
+
+The complete local Python suite passed all 34 tests. JavaScript/runtime sources are unchanged; cross-platform CI runs the complete suite and hosted build for this publication.

@@ -1,0 +1,1628 @@
+{
+  "place": {
+    "lat": 39,
+    "lon": -77
+  },
+  "discovery": {
+    "revision": "3deddf1a94bafa478bd4d82d0c86424fda8a203624e3ad1067d0efa58159f925",
+    "checked_at": "2026-10-29T22:01:55.000Z",
+    "stale": false,
+    "error": null,
+    "source_url": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/Air_Now_Current_Monitors_Ozone/FeatureServer/0",
+    "updated": "2026-10-29T21:46:51.865Z"
+  },
+  "trend": {
+    "method": "2026-10-29.1",
+    "evaluated_at": "2026-10-29T22:01:56.000Z",
+    "window": {
+      "start": "2026-10-28T22:00:00.000Z",
+      "end": "2026-10-29T22:00:00.000Z"
+    },
+    "monitor": {
+      "id": "110010050",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.016715,
+          38.970101
+        ]
+      },
+      "source_feature": {
+        "type": "Feature",
+        "id": 637318812,
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -77.016715,
+            38.970101
+          ]
+        },
+        "properties": {
+          "ObjectId": 637318812,
+          "AQSID": "110010050",
+          "SiteName": "TakomaRec",
+          "DataSource": "District of Columbia - Department of Energy and Environment",
+          "OZONE": 51,
+          "OZONE_AQI": 39,
+          "OZONE_Measured": 1,
+          "OZONE_Unit": "PPB",
+          "ValidTime": 1793307600000,
+          "MonitorType": "Permanent",
+          "Status": "Active"
+        }
+      },
+      "properties": {
+        "name": "TakomaRec",
+        "agency": "District of Columbia - Department of Energy and Environment",
+        "status": "Active"
+      },
+      "distance_km": 3.6249570881604023
+    },
+    "rows": [
+      {
+        "at": "2026-10-28T22:00:00.000Z",
+        "end": "2026-10-28T23:00:00.000Z",
+        "ozone_ppb": 31,
+        "nowcast_aqi": 29,
+        "flags": [],
+        "source_ids": [
+          849914559
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-28T23:00:00.000Z",
+        "end": "2026-10-29T00:00:00.000Z",
+        "ozone_ppb": 21,
+        "nowcast_aqi": 22,
+        "flags": [],
+        "source_ids": [
+          849928254
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T00:00:00.000Z",
+        "end": "2026-10-29T01:00:00.000Z",
+        "ozone_ppb": 16,
+        "nowcast_aqi": 18,
+        "flags": [],
+        "source_ids": [
+          849941567
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T01:00:00.000Z",
+        "end": "2026-10-29T02:00:00.000Z",
+        "ozone_ppb": 8,
+        "nowcast_aqi": 12,
+        "flags": [],
+        "source_ids": [
+          849955034
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T02:00:00.000Z",
+        "end": "2026-10-29T03:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 9,
+        "flags": [],
+        "source_ids": [
+          849968151
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T03:00:00.000Z",
+        "end": "2026-10-29T04:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 8,
+        "flags": [],
+        "source_ids": [
+          849981151
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T04:00:00.000Z",
+        "end": "2026-10-29T05:00:00.000Z",
+        "ozone_ppb": 4,
+        "nowcast_aqi": 9,
+        "flags": [],
+        "source_ids": [
+          849994947
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T05:00:00.000Z",
+        "end": "2026-10-29T06:00:00.000Z",
+        "ozone_ppb": 7,
+        "nowcast_aqi": 9,
+        "flags": [],
+        "source_ids": [
+          850007945
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T06:00:00.000Z",
+        "end": "2026-10-29T07:00:00.000Z",
+        "ozone_ppb": 5,
+        "nowcast_aqi": 8,
+        "flags": [],
+        "source_ids": [
+          850022143
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T07:00:00.000Z",
+        "end": "2026-10-29T08:00:00.000Z",
+        "ozone_ppb": 4,
+        "nowcast_aqi": 6,
+        "flags": [],
+        "source_ids": [
+          850035539
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T08:00:00.000Z",
+        "end": "2026-10-29T09:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 5,
+        "flags": [],
+        "source_ids": [
+          850048534
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T09:00:00.000Z",
+        "end": "2026-10-29T10:00:00.000Z",
+        "ozone_ppb": 12,
+        "nowcast_aqi": 7,
+        "flags": [],
+        "source_ids": [
+          850060729
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T10:00:00.000Z",
+        "end": "2026-10-29T11:00:00.000Z",
+        "ozone_ppb": 13,
+        "nowcast_aqi": 7,
+        "flags": [],
+        "source_ids": [
+          850075327
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T11:00:00.000Z",
+        "end": "2026-10-29T12:00:00.000Z",
+        "ozone_ppb": null,
+        "nowcast_aqi": null,
+        "flags": [
+          "Unrecognized concentration unit"
+        ],
+        "source_ids": [
+          850089119
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T12:00:00.000Z",
+        "end": "2026-10-29T13:00:00.000Z",
+        "ozone_ppb": 11,
+        "nowcast_aqi": 13,
+        "flags": [],
+        "source_ids": [
+          850101314
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T13:00:00.000Z",
+        "end": "2026-10-29T14:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 12,
+        "flags": [],
+        "source_ids": [
+          850115107
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T14:00:00.000Z",
+        "end": "2026-10-29T15:00:00.000Z",
+        "ozone_ppb": 13,
+        "nowcast_aqi": 15,
+        "flags": [],
+        "source_ids": [
+          850128899
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T15:00:00.000Z",
+        "end": "2026-10-29T16:00:00.000Z",
+        "ozone_ppb": 26,
+        "nowcast_aqi": 19,
+        "flags": [],
+        "source_ids": [
+          850141491
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T16:00:00.000Z",
+        "end": "2026-10-29T17:00:00.000Z",
+        "ozone_ppb": 35,
+        "nowcast_aqi": 24,
+        "flags": [],
+        "source_ids": [
+          850155283
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T17:00:00.000Z",
+        "end": "2026-10-29T18:00:00.000Z",
+        "ozone_ppb": 43,
+        "nowcast_aqi": 31,
+        "flags": [],
+        "source_ids": [
+          850169077
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T18:00:00.000Z",
+        "end": "2026-10-29T19:00:00.000Z",
+        "ozone_ppb": 42,
+        "nowcast_aqi": 36,
+        "flags": [],
+        "source_ids": [
+          850181669
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T19:00:00.000Z",
+        "end": "2026-10-29T20:00:00.000Z",
+        "ozone_ppb": 46,
+        "nowcast_aqi": 38,
+        "flags": [],
+        "source_ids": [
+          850196261
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T20:00:00.000Z",
+        "end": "2026-10-29T21:00:00.000Z",
+        "ozone_ppb": 50,
+        "nowcast_aqi": 40,
+        "flags": [],
+        "source_ids": [
+          850209651
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      },
+      {
+        "at": "2026-10-29T21:00:00.000Z",
+        "end": "2026-10-29T22:00:00.000Z",
+        "ozone_ppb": 51,
+        "nowcast_aqi": 39,
+        "flags": [],
+        "source_ids": [
+          850221841
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent"
+      }
+    ],
+    "latest": {
+      "at": "2026-10-29T21:00:00.000Z",
+      "end": "2026-10-29T22:00:00.000Z",
+      "ozone_ppb": 51,
+      "nowcast_aqi": 39,
+      "flags": [],
+      "source_ids": [
+        850221841
+      ],
+      "status": "Active",
+      "monitor_type": "Permanent"
+    },
+    "change_6h": {
+      "from": "2026-10-29T15:00:00.000Z",
+      "to": "2026-10-29T21:00:00.000Z",
+      "delta_ppb": 25
+    },
+    "coverage": {
+      "hours": 24,
+      "usable": 23,
+      "negative": 0,
+      "excluded": {
+        "invalid_time": 0,
+        "outside_window": 3,
+        "incomplete_period": 0,
+        "wrong_monitor": 0,
+        "conflicting": 0,
+        "location": 0,
+        "units": 1,
+        "not_measured": 0
+      }
+    },
+    "fresh": true,
+    "range": {
+      "min": 3,
+      "max": 51
+    },
+    "evidence": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": 849873969,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849873969,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 38,
+            "OZONE_AQI": 34,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793214000000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849888163,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849888163,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 39,
+            "OZONE_AQI": 33,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793217600000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849900761,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849900761,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 34,
+            "OZONE_AQI": 31,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793221200000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849914559,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849914559,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 31,
+            "OZONE_AQI": 29,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793224800000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849928254,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849928254,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 21,
+            "OZONE_AQI": 22,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793228400000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849941567,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849941567,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 16,
+            "OZONE_AQI": 18,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793232000000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849955034,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849955034,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 8,
+            "OZONE_AQI": 12,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793235600000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849968151,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849968151,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 3,
+            "OZONE_AQI": 9,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793239200000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849981151,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849981151,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 3,
+            "OZONE_AQI": 8,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793242800000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 849994947,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 849994947,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 4,
+            "OZONE_AQI": 9,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793246400000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850007945,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850007945,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 7,
+            "OZONE_AQI": 9,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793250000000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850022143,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850022143,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 5,
+            "OZONE_AQI": 8,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793253600000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850035539,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850035539,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 4,
+            "OZONE_AQI": 6,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793257200000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850048534,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850048534,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 3,
+            "OZONE_AQI": 5,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793260800000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850060729,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850060729,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 12,
+            "OZONE_AQI": 7,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793264400000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850075327,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850075327,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 13,
+            "OZONE_AQI": 7,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793268000000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850089119,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850089119,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": null,
+            "OZONE_AQI": 7,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": null,
+            "ValidTime": 1793271600000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850101314,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850101314,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 11,
+            "OZONE_AQI": 13,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793275200000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850115107,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850115107,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 3,
+            "OZONE_AQI": 12,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793278800000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850128899,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850128899,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 13,
+            "OZONE_AQI": 15,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793282400000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850141491,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850141491,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 26,
+            "OZONE_AQI": 19,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793286000000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850155283,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850155283,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 35,
+            "OZONE_AQI": 24,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793289600000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850169077,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850169077,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 43,
+            "OZONE_AQI": 31,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793293200000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850181669,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850181669,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 42,
+            "OZONE_AQI": 36,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793296800000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850196261,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850196261,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 46,
+            "OZONE_AQI": 38,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793300400000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850209651,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850209651,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 50,
+            "OZONE_AQI": 40,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793304000000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": 850221841,
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -77.016715,
+              38.970101
+            ]
+          },
+          "properties": {
+            "ObjectId": 850221841,
+            "AQSID": "110010050",
+            "SiteName": "TakomaRec",
+            "DataSource": "District of Columbia - Department of Energy and Environment",
+            "OZONE": 51,
+            "OZONE_AQI": 39,
+            "OZONE_Measured": 1,
+            "OZONE_Unit": "PPB",
+            "ValidTime": 1793307600000,
+            "MonitorType": "Permanent",
+            "Status": "Active"
+          }
+        }
+      ],
+      "monitor_id": "110010050",
+      "source": "US EPA / AirNow",
+      "source_url": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/Air_Now_Monitors_Ozone/FeatureServer/0/query?f=geojson&where=AQSID+%3D+%27110010050%27&outFields=ObjectId%2CAQSID%2CSiteName%2CDataSource%2COZONE%2COZONE_AQI%2COZONE_Measured%2COZONE_Unit%2CValidTime%2CMonitorType%2CStatus&outSR=4326&returnGeometry=true&orderByFields=ValidTime%2CObjectId&resultRecordCount=200&resultOffset=0",
+      "source_metadata": {
+        "updated": "2026-10-29T21:46:27.650Z",
+        "time_extent": [
+          1793214000000,
+          1793307600000
+        ]
+      },
+      "updated": "2026-10-29T21:46:27.650Z",
+      "issued_at": null,
+      "data_kind": "observation",
+      "revision": "5b24eca668130573941a4d5256ff045a91c64a6c50ac5b57eff72dcdf994870e",
+      "checked_at": "2026-10-29T22:01:56.000Z",
+      "collected_at": "2026-10-29T22:01:56.000Z",
+      "stale": false,
+      "error": null
+    }
+  },
+  "comparison": {
+    "method": "2026-10-29.1",
+    "source": "geos",
+    "unit": "ppb",
+    "rows": [
+      {
+        "at": "2026-10-28T22:00:00.000Z",
+        "end": "2026-10-28T23:00:00.000Z",
+        "ozone_ppb": 31,
+        "nowcast_aqi": 29,
+        "flags": [],
+        "source_ids": [
+          849914559
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-28T23:00:00.000Z",
+        "end": "2026-10-29T00:00:00.000Z",
+        "ozone_ppb": 21,
+        "nowcast_aqi": 22,
+        "flags": [],
+        "source_ids": [
+          849928254
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T00:00:00.000Z",
+        "end": "2026-10-29T01:00:00.000Z",
+        "ozone_ppb": 16,
+        "nowcast_aqi": 18,
+        "flags": [],
+        "source_ids": [
+          849941567
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T01:00:00.000Z",
+        "end": "2026-10-29T02:00:00.000Z",
+        "ozone_ppb": 8,
+        "nowcast_aqi": 12,
+        "flags": [],
+        "source_ids": [
+          849955034
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T02:00:00.000Z",
+        "end": "2026-10-29T03:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 9,
+        "flags": [],
+        "source_ids": [
+          849968151
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T03:00:00.000Z",
+        "end": "2026-10-29T04:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 8,
+        "flags": [],
+        "source_ids": [
+          849981151
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T04:00:00.000Z",
+        "end": "2026-10-29T05:00:00.000Z",
+        "ozone_ppb": 4,
+        "nowcast_aqi": 9,
+        "flags": [],
+        "source_ids": [
+          849994947
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T05:00:00.000Z",
+        "end": "2026-10-29T06:00:00.000Z",
+        "ozone_ppb": 7,
+        "nowcast_aqi": 9,
+        "flags": [],
+        "source_ids": [
+          850007945
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T06:00:00.000Z",
+        "end": "2026-10-29T07:00:00.000Z",
+        "ozone_ppb": 5,
+        "nowcast_aqi": 8,
+        "flags": [],
+        "source_ids": [
+          850022143
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T07:00:00.000Z",
+        "end": "2026-10-29T08:00:00.000Z",
+        "ozone_ppb": 4,
+        "nowcast_aqi": 6,
+        "flags": [],
+        "source_ids": [
+          850035539
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T08:00:00.000Z",
+        "end": "2026-10-29T09:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 5,
+        "flags": [],
+        "source_ids": [
+          850048534
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T09:00:00.000Z",
+        "end": "2026-10-29T10:00:00.000Z",
+        "ozone_ppb": 12,
+        "nowcast_aqi": 7,
+        "flags": [],
+        "source_ids": [
+          850060729
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T10:00:00.000Z",
+        "end": "2026-10-29T11:00:00.000Z",
+        "ozone_ppb": 13,
+        "nowcast_aqi": 7,
+        "flags": [],
+        "source_ids": [
+          850075327
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T11:00:00.000Z",
+        "end": "2026-10-29T12:00:00.000Z",
+        "ozone_ppb": null,
+        "nowcast_aqi": null,
+        "flags": [
+          "Unrecognized concentration unit"
+        ],
+        "source_ids": [
+          850089119
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T12:00:00.000Z",
+        "end": "2026-10-29T13:00:00.000Z",
+        "ozone_ppb": 11,
+        "nowcast_aqi": 13,
+        "flags": [],
+        "source_ids": [
+          850101314
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T13:00:00.000Z",
+        "end": "2026-10-29T14:00:00.000Z",
+        "ozone_ppb": 3,
+        "nowcast_aqi": 12,
+        "flags": [],
+        "source_ids": [
+          850115107
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T14:00:00.000Z",
+        "end": "2026-10-29T15:00:00.000Z",
+        "ozone_ppb": 13,
+        "nowcast_aqi": 15,
+        "flags": [],
+        "source_ids": [
+          850128899
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T15:00:00.000Z",
+        "end": "2026-10-29T16:00:00.000Z",
+        "ozone_ppb": 26,
+        "nowcast_aqi": 19,
+        "flags": [],
+        "source_ids": [
+          850141491
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T16:00:00.000Z",
+        "end": "2026-10-29T17:00:00.000Z",
+        "ozone_ppb": 35,
+        "nowcast_aqi": 24,
+        "flags": [],
+        "source_ids": [
+          850155283
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T17:00:00.000Z",
+        "end": "2026-10-29T18:00:00.000Z",
+        "ozone_ppb": 43,
+        "nowcast_aqi": 31,
+        "flags": [],
+        "source_ids": [
+          850169077
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T18:00:00.000Z",
+        "end": "2026-10-29T19:00:00.000Z",
+        "ozone_ppb": 42,
+        "nowcast_aqi": 36,
+        "flags": [],
+        "source_ids": [
+          850181669
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T19:00:00.000Z",
+        "end": "2026-10-29T20:00:00.000Z",
+        "ozone_ppb": 46,
+        "nowcast_aqi": 38,
+        "flags": [],
+        "source_ids": [
+          850196261
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T20:00:00.000Z",
+        "end": "2026-10-29T21:00:00.000Z",
+        "ozone_ppb": 50,
+        "nowcast_aqi": 40,
+        "flags": [],
+        "source_ids": [
+          850209651
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      },
+      {
+        "at": "2026-10-29T21:00:00.000Z",
+        "end": "2026-10-29T22:00:00.000Z",
+        "ozone_ppb": 51,
+        "nowcast_aqi": 39,
+        "flags": [],
+        "source_ids": [
+          850221841
+        ],
+        "status": "Active",
+        "monitor_type": "Permanent",
+        "forecast_check": null,
+        "model_mean_ppb": null,
+        "difference_ppb": null,
+        "initialized_at": null,
+        "model_lead_start_hours": null,
+        "model_lead_end_hours": null,
+        "paired": false,
+        "reason": "No NASA forecast archived 1–24 hours before this observation hour"
+      }
+    ],
+    "paired_hours": 0,
+    "metrics": {
+      "count": 0,
+      "mean_absolute_difference_ppb": null,
+      "mean_signed_difference_ppb": null
+    },
+    "coverage": {
+      "target_hours": 24,
+      "measured_hours": 23,
+      "forecast_checks": 0,
+      "paired_hours": 0,
+      "negative_measured_pairs": 0
+    },
+    "model_location": {
+      "point": {
+        "lat": 39,
+        "lon": -77,
+        "key": "39.0,-77.0"
+      },
+      "grid": {
+        "lat": 39,
+        "lon": -77
+      },
+      "y": 516,
+      "x": 412,
+      "monitor": {
+        "lat": 38.970101,
+        "lon": -77.016715
+      },
+      "grid_to_monitor_km": 3.6249570881604023
+    },
+    "lead_groups": [
+      {
+        "from_hours": 1,
+        "to_hours": 6,
+        "upper_inclusive": false,
+        "count": 0,
+        "mean_absolute_difference_ppb": null,
+        "mean_signed_difference_ppb": null
+      },
+      {
+        "from_hours": 6,
+        "to_hours": 12,
+        "upper_inclusive": false,
+        "count": 0,
+        "mean_absolute_difference_ppb": null,
+        "mean_signed_difference_ppb": null
+      },
+      {
+        "from_hours": 12,
+        "to_hours": 24,
+        "upper_inclusive": true,
+        "count": 0,
+        "mean_absolute_difference_ppb": null,
+        "mean_signed_difference_ppb": null
+      }
+    ],
+    "forecast_checks": [],
+    "forecast_sources": [],
+    "run_age_known": true,
+    "max_run_age_at_collection_hours": 48,
+    "limitations": "Diagnostic differences between matching hourly NASA ozone means and preliminary AirNow concentrations, both in ppb. NASA is a regional surface-layer dry-air mixing ratio; monitor sampling and moisture basis may differ. Grid and instrument locations differ. Negative monitor values are retained with their source flags. Collection lead and model-run lead are separate. This small, on-demand sample is not calibrated accuracy, a regulatory evaluation, personal exposure or evidence that one model is generally better. Revised observations can change these differences.",
+    "collection": {
+      "revision": "919463f0b4f59c800cdd9190ce0a66aabe4689ee6cd20eb540fd2b118499cd5f",
+      "checked_at": "2026-10-29T21:22:23.000Z",
+      "error": null,
+      "point": {
+        "lat": 39,
+        "lon": -77,
+        "key": "39.0,-77.0"
+      },
+      "initialized_at": "2026-10-28T09:00:00.000Z",
+      "source_url": "https://opendap.nccs.nasa.gov/dods/gmao/geos-cf/v2/fcst/aqc_tavg_1hr_glo_L1440x721_slv/aqc_tavg_1hr_glo_L1440x721_slv.20261028_09z",
+      "earliest_eligible_hour": "2026-10-29T23:00:00.000Z"
+    },
+    "scanned_checks": 0,
+    "retention_days": 7
+  }
+}

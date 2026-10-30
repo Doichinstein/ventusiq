@@ -1,5 +1,26 @@
 # Ten-feature acceptance audit
 
+## First prospective ozone outcome (v96)
+
+A real completed monitor hour now matches a forecast retained before it began.
+For TakomaRec (110010050), October 30 00:00–01:00 UTC measured 34 ppb. The NASA
+forecast collected October 29 at 21:22:23 UTC predicted an hourly mean of
+42.258762 ppb, a +8.258762 ppb difference. Collection lead was 2.62694 hours;
+model-run lead was 39–40 hours. The nearest model cell is 3.62 km from the monitor.
+
+The actual public browser displayed 1/24 paired hours, 8.26 ppb absolute/signed
+difference and null metrics for empty lead groups. Its downloaded comparison
+matched the API capture. An independent offline Python audit reconstructs the
+forecast from raw NASA ASCII and the measurement from its raw EPA record, checks
+prior capture identity/time, excludes the missing earlier concentration, and
+rejects after-the-hour captures or changed source values. Raw initial and later
+records and [reproduction instructions](ozone-observations.md#first-real-prospective-pair-v96)
+are retained. Mobile results fit without document overflow.
+
+This closes the first nonempty NASA ozone comparison gate. It is one preliminary
+hour at one monitor, not calibrated skill, regional performance, personal exposure,
+or a nonempty CAMS PM2.5 comparison. All other acceptance gaps remain explicit.
+
 ## Live CAMS recovery and startup status (v95)
 
 The public CAMS request recovered after its earlier rate-limit pause. Actual browser
@@ -248,7 +269,7 @@ results below supply new evidence; they do not certify untested flows.
 | 1. My Places | My weather; persistence/source-matching tests plus v62 browser save, reload, live forecast and removal at public Washington coordinates; mobile planner checked | Real signed-in synchronization on two devices; account testing deferred by owner |
 | 2. Meaningful updates | My weather → Watch alerts; watch, push and webhook tests cover ownership, baseline suppression, changes, quiet periods, retry and deduplication | Real closed-page notification display; real external webhook delivery/retry; signed-in controls |
 | 3. Activity windows | Planning tests plus rendered v62 duration/limit changes, rejection by gust ceiling, unknown unloaded PM2.5 coverage, local EDT times, persistence and evidence download | Broader real-device usability and source-outage scenarios; no calibrated probability is established |
-| 4. Fire and smoke | Provider/core tests and live feeds; browser checks cover all seven map layers, fire perimeter/details, age/containment styles, smoke playback, replay hiding and the HRRR/RAP comparison chart and export; v65 rendered measured PM2.5/ozone trends, monitor switching, mobile ozone and exports | v95 live CAMS ranges/table, planner ceilings and exports passed with raw-data reproduction; nonempty archived forecast/monitor pairs remain unproven; modeled or nearby measurements do not verify personal exposure |
+| 4. Fire and smoke | Provider/core tests and live feeds; browser checks cover all seven map layers, fire perimeter/details, age/containment styles, smoke playback, replay hiding and the HRRR/RAP comparison chart and export; v65 rendered measured PM2.5/ozone trends, monitor switching, mobile ozone and exports | v95 live CAMS ranges/table, planner ceilings and exports passed with raw-data reproduction; v96 independently verified the first nonempty NASA ozone pair; nonempty CAMS PM2.5 pairs and broader forecast/monitor performance remain unproven; modeled or nearby measurements do not verify personal exposure |
 | 5. Flood timing | River/network/gauge tests and live checks cover IDs, units, datum and revisions; browser opened LOLT2 observations and IOLK1 observed/forecast hydrograph, threshold timing, official impact text, connected gauges and missing-prior-revision exports | AKFM7 now has a browser-verified nonempty comparison with unchanged matched levels; nonzero level and crossing-time shifts remain unproven in live QA; the DLAF1 official NOAA link was followed and verified in v65. Address-level inundation and hydraulic travel times remain outside the current evidence |
 | 6. Journey weather | Tests and live routes cover geometry/time alignment, stops, DST, gaps, agency proximity and source road labels; browser compared three Washington–Baltimore departures, a 30-minute via stop, shifted stop arrival/departure times and a Maryland agency work-zone panel | **Verified route closure attribution is still missing.** Shared labels do not resolve network identity, carriageway, signed direction or grade-separated crossings |
 | 7. Forecast confidence | Temperature outcomes, lead groups, persistence and revision comparisons have automated coverage; browser checked observed-temperature chart, GEFS charts/counts/exports and v68 Sacramento diagnostics with 11 matched hours, independently recalculated errors and a matching JSON download | v71 verified 48 same-hour forecast-revision pairs and independently recalculated differences; broader seasonal skill remains incomplete. v77/v78 verified an explicitly identified daily 00 UTC GEFS run in the live UI and exports, with 744 values per metric independently reproduced; all six-hour runs and calibrated skill remain outside that evidence. v79 adds prospective captured-run temperature comparisons with station QC, lead groups and evidence export; a nonempty live GEFS outcome sample has not yet matured. HRRR temperature has an explicit-run adapter; v83 verified its live chart, missing tail and export consistency, plus the updated desktop/mobile time axis. The one-day outcome sample and model spread do not justify calibrated confidence claims |

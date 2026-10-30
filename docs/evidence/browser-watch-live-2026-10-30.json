@@ -1,0 +1,198 @@
+{
+  "verified": true,
+  "checked_at": "2026-10-30T19:04:31.538986+00:00",
+  "origin": "https://weather-commons-live.doichinstein.chatgpt.site",
+  "checks": [
+    {
+      "check": "no browser key",
+      "http_status": 401,
+      "expected_status": 401,
+      "no_store": true
+    },
+    {
+      "check": "malformed browser key",
+      "http_status": 401,
+      "expected_status": 401,
+      "no_store": true
+    },
+    {
+      "check": "new owner list",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "independent owner list",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "empty devices",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "empty endpoints",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "create without account",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "pause disposable watch",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "idempotent create",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "conflicting retry",
+      "http_status": 409,
+      "expected_status": 409,
+      "no_store": true
+    },
+    {
+      "check": "owner read after create",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "other owner list stays empty",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "other owner cannot read",
+      "http_status": 404,
+      "expected_status": 404,
+      "no_store": true
+    },
+    {
+      "check": "other owner cannot pause",
+      "http_status": 404,
+      "expected_status": 404,
+      "no_store": true
+    },
+    {
+      "check": "cross-origin mutation rejected",
+      "http_status": 403,
+      "expected_status": 403,
+      "no_store": true
+    },
+    {
+      "check": "rejected request leaves paused state",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "issue private feed",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "read Atom without management key",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "rotate private feed",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "rotated old feed rejected",
+      "http_status": 404,
+      "expected_status": 404,
+      "no_store": true
+    },
+    {
+      "check": "rotated new feed works",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "revoke private feed",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "revoked feed rejected",
+      "http_status": 404,
+      "expected_status": 404,
+      "no_store": true
+    },
+    {
+      "check": "resume watch",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "pause resumed watch",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "still no devices",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "still no endpoints",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "cleanup owner list",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "delete disposable watch",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    },
+    {
+      "check": "deleted detail rejected",
+      "http_status": 404,
+      "expected_status": 404,
+      "no_store": true
+    },
+    {
+      "check": "final owner list empty",
+      "http_status": 200,
+      "expected_status": 200,
+      "no_store": true
+    }
+  ],
+  "cleanup_verified": true,
+  "failure": null,
+  "account_sign_in_used": false,
+  "delivery_destinations_enrolled": 0,
+  "scope": "Live HTTP ownership, idempotency, origin enforcement, feed reading/rotation/revocation and cleanup. No rendered enrollment, scheduled execution, threshold change, external webhook or device-display claim."
+}

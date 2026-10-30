@@ -73,3 +73,43 @@ browser-key persistence/storage errors, same-origin credential scoping, hashed
 ownership, cross-browser record isolation, and mutation origin enforcement.
 Rendered desktop/mobile checks and live-provider availability are verified
 separately from unit tests.
+
+### Live HTTP ownership verification
+
+On October 30, the public v121 backend passed 31 checks with two freshly generated
+browser capabilities and no account session. One temporary watch at the public
+39,-77 sample point was created, paused, read and retried idempotently. A changed
+retry returned 409; the other owner saw an empty list and received 404 for direct
+read/mutation attempts. Missing/malformed capabilities returned 401. A cross-origin
+resume returned 403 and left the watch paused. Every response carried no-store.
+
+The issued feed returned valid Atom without the management capability. Rotation
+invalidated the old feed, the new feed worked, and revocation invalidated it.
+Pause/resume states were read back. Push/webhook lists were empty before and
+afterward; no device, receiver or test message was enrolled. Cleanup deleted the
+temporary watch, confirmed its detail returned 404 and confirmed an empty owner
+list. Existing user records were not accessed or modified.
+
+The [sanitized check record](evidence/browser-watch-live-2026-10-30.json) contains
+status outcomes and scope, without browser keys, feed tokens or service credentials.
+The repeatable `scripts/check-browser-watch-live.py` is an explicit live mutation
+check, not part of CI. Run it only against a deployment you operate, using
+`--run-live-check`, `--origin` and `--output`. Authorization is read through hidden
+stdin. Redirects are rejected; credentials are never logged. It deletes its own
+watch in `finally` and retains the process for a cleanup retry if the network
+prevents verification. Do not terminate that process before cleanup succeeds.
+
+The first run stopped at an incorrectly formatted point expectation in the check
+script (it expected `39,-77`; the API correctly returns `39.0000,-77.0000`). Cleanup
+succeeded, the expectation was corrected, and the full check then passed. This
+was a checker failure, not a production fix.
+
+This verifies HTTP ownership and feed access, not a rendered enrollment journey,
+two physical devices, scheduled execution, threshold transitions, external webhook
+receipt or closed-browser notification display. Those claims remain separate.
+
+The public desktop controls were also inspected without entering account
+credentials: watch creation, optional push enablement and webhook enrollment were
+available, with zero watches/devices/destinations. Refresh retained the empty list
+and produced no captured browser warnings or errors. No enrollment button was
+clicked in that browser check; it verifies the initial controls only.

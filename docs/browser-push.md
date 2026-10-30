@@ -1,15 +1,17 @@
 # Optional browser push
 
-Current public behavior: no sign-in is required. A private browser key controls watches and push devices. See [browser ownership](browser-workspaces.md); clearing site storage loses management access but does not unsubscribe push. Disable push first. Older account-specific verification notes below describe the prior architecture.
+No sign-in is required. A private browser key controls watches and push devices.
+See [browser ownership](browser-workspaces.md); clearing site storage loses
+management access but does not unsubscribe push. Disable push first.
 
-Hosted My weather includes **Browser push** below persistent watches. Sign in,
-name the device and click **Enable push on this device**. Only this action asks
-for browser notification permission and creates a subscription. Browsing, signing
-in, saving a place and creating a watch do not enroll a device. The browser must
+Hosted My weather includes **Browser push** below persistent watches. Name the
+device and click **Enable push on this device**. Only this action asks
+for browser notification permission and creates a subscription. Browsing,
+saving a place and creating a watch do not enroll a device. The browser must
 support secure Web Push; some mobile browsers require installation as a home-screen
 web app. Browser and operating-system policies may suppress or delay delivery.
 
-An enrolled device receives future changes from all the account's current and
+An enrolled device receives future changes from all this browser owner's current and
 future saved watches, including gauge watches. Initial baselines stay quiet.
 The existing hourly upkeep evaluates watches and drains the delivery queue.
 No extra scheduler or faster unattended collection is introduced. A source change
@@ -18,19 +20,19 @@ delivery or a substitute for official warnings.
 
 ## Controls and privacy
 
-Two devices per account and 128 across the public service are allowed. Device
+Two devices per browser owner and 128 across the public service are allowed. Device
 names, browser subscription endpoints and encryption keys are stored in D1 with
-their owner. Management uses the same trusted Sites identity as watches and
+their owner. Management uses the same private browser capability as watches and
 requires same-origin JSON writes. Endpoints and keys are not returned in device
-lists, feed links or delivery history. Anonymous callers, including callers with
-only Sites service authorization, cannot manage devices.
+lists, feed links or delivery history. Callers without a valid browser capability,
+including callers with only Sites service authorization, cannot manage devices.
 
 Notifications contain the watch label, a bounded change summary and the collection
-time. They may appear on a lock screen. Signing out does not remove an enrolled
+time. They may appear on a lock screen. Clearing storage does not remove an enrolled
 device; disable push before leaving a shared computer. **Remove device** stops
 queued delivery for that device and removes its server records. On the current
 browser it also unsubscribes locally. **Disable push in this browser** can remove
-the browser subscription even when the account session has ended. Accepted or
+the local browser subscription even when its saved ownership key is unavailable. Accepted or
 in-flight messages may still arrive after removal or pause.
 
 **Send test notification** is an explicit action, limited to once per device per
@@ -38,7 +40,7 @@ five minutes. Its response confirms queueing only. Recent delivery records show
 pending, accepted, muted, failed, expired or cancelled states. **Accepted** means the
 push service accepted the request; it does not prove display, receipt or reading.
 There is no device-display acknowledgement. Up to 200 records per device and seven
-days are retained; the UI lists the latest 50 account records.
+days are retained; the UI lists the latest 50 records for this browser owner.
 
 ## Per-device quiet hours
 
@@ -95,7 +97,7 @@ separate. The provider can still observe delivery timing, endpoint and message s
 
 The notification-only service worker uses `/ventusiq-push/` scope. It does not
 intercept fetches, control the dashboard, cache private API responses or fetch
-account data while showing a notification. Notification clicks open the fixed
+private owner data while showing a notification. Notification clicks open the fixed
 same-origin `/#watches` destination. No URL from a push message is navigated.
 
 ## Hosting and verification
@@ -112,14 +114,16 @@ Self-hosters should generate their own ECDSA P-256 key with Web Crypto, export t
 private key as JWK and configure that environment secret through their hosting
 provider. The standard transport uses a project contact URL as the VAPID subject;
 adapt it for an independently operated fork. The Python/static editions do not
-provide account ownership or this persistent delivery queue and hide its UI.
+provide browser-owned server records or this persistent delivery queue and hide its UI.
 
 Automated tests verify encryption, signatures, ownership, quotas, quiet baselines,
 deduplication, retries, expiry, pause/removal, explicit permission actions and the
-service worker's notification/navigation behavior. Local Worker checks use
-development identities only on loopback. Real browser permission, production
-sign-in, operating-system display and closed-browser delivery remain unverified
-because the saved browser access setting blocks automated inspection. A user can
+service worker's notification/navigation behavior. Live HTTP checks verify the
+browser ownership boundary and empty device lists without enrolling a device.
+Public browser access works; real browser permission, operating-system display
+and closed-browser delivery remain unverified because device enrollment/testing
+has been deferred. A user can
 verify actual display with the explicit test control; API acceptance alone is not
-reported as successful display. Email, SMS, webhooks and device-display
-acknowledgements remain separate work.
+reported as successful display. Email, SMS and device-display acknowledgements
+are not implemented. Signed webhooks have their own implementation and separate
+[external-receiver verification gate](webhooks.md).

@@ -1,13 +1,15 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v120, plus the October 30 18:51 UTC GEFS follow-up audit below.
+Current evidence: public releases through v121, plus the October 30 live browser-capability API audit below.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
 and broader work remains in [roadmap](roadmap.md).
 
-Public browser access to https://ventusiq.com/ works. Account testing is deferred
-at the owner's request. Prior permission failures do not establish a blanket
+Public browser access to https://ventusiq.com/ works. Public tools no longer offer
+sign-in: device-local places and private browser capabilities are the current
+architecture. Legacy account testing remains deferred at the owner's request and
+is not a prerequisite for those public flows. Prior permission failures do not establish a blanket
 browser block. Localhost and downloaded file-URL HTML remain blocked by the saved
 browser settings; those paths have not been retried or bypassed in this audit.
 
@@ -15,15 +17,15 @@ browser settings; those paths have not been retried or bypassed in this audit.
 
 | Feature | Verified evidence | Remaining acceptance or broader validation |
 |---|---|---|
-| 1. My Places | Public save, reload, live hourly forecast, select and remove flows passed. Geography matching has automated coverage; desktop and phone-width views were inspected. | Real signed-in synchronization, edits and removal on two devices are deferred. Viewport emulation does not establish physical-device behavior. |
-| 2. Meaningful updates | Tests cover ownership, baseline/revision/expiry, threshold crossings, quiet preferences, queue retries and deduplication. On-page refresh preserves reader focus. | Closed-page push display, real external webhook receipt/retry and signed-in controls are unverified. A configured hourly task and completed upkeep pass do not independently prove unattended execution or delivery. See [watches](watches.md) and [webhooks](webhooks.md). |
+| 1. My Places | Public save, reload, live hourly forecast, select and remove flows passed. Geography matching has automated coverage; desktop and phone-width views were inspected. Public places are device-local with no account gate. | Viewport emulation does not establish physical-device behavior. Cross-device account synchronization is deferred and not mounted publicly. |
+| 2. Meaningful updates | Tests cover ownership, baseline/revision/expiry, threshold crossings, quiet preferences, queue retries and deduplication. The live browser-capability API passed 31 checks for creation/read, isolation, idempotency, pause/resume, feed reading/rotation/revocation and cleanup without an account. On-page refresh preserves reader focus. | Rendered enrollment, closed-page push display and real external webhook receipt/retry remain unverified. A configured hourly task and completed upkeep pass do not independently prove unattended execution or delivery. See [watches](watches.md), [browser ownership](browser-workspaces.md#live-http-ownership-verification) and [webhooks](webhooks.md). |
 | 3. Activity windows | Public duration/limit changes, gust rejection, local time, missing air coverage, alternatives and evidence export passed. v89 checks draft/export consistency; v94 controlled source-outage QA covers stale, missing and recovered inputs. | Physical-device usability and broader observation-based evaluation remain open. Synthetic outage tests do not establish provider uptime; no calibrated probability or continuous exposure is established. See [planning](activity-planning.md). |
 | 4. Fire and smoke | Live checks cover all seven map layers, fire size/perimeter details, age/containment, smoke playback, replay hiding, measured trends and modeled-source comparisons. v95 CAMS recovery/export, v96 first NASA ozone pair and v108 first CAMS PM2.5 pair were independently reproduced. | Broader model/monitor performance, CAMS run identification and personal exposure remain unvalidated. A first pair is not calibrated skill. See [PM2.5 comparison](particulate-comparison.md) and [ozone observations](ozone-observations.md). |
 | 5. Rivers and flood impacts | IDs, units/datum, observed/forecast hydrographs, official impact links, connected gauges and missing-prior states were checked. v101 DLAF1 yielded 18 matched future readings, seven nonzero revisions and a largest increase of 0.1 ft. | A changed live crossing-time window remains unverified. Address-level inundation, hydraulic travel time and owned gauge push display require separate evidence. See [rivers](rivers.md). |
 | 6. Journey exposure | Route/time, stops, DST and sparse-coverage tests pass. Public QA compared three departures and a 30-minute via stop with agency proximity kept distinct from closure. Native graph/crosswalk/event tooling has reproducible tests. | Real approved road identity, direction/carriageway/grade, partial-edge applicability and current event association are missing. The v113 offline event evaluator handles ordered legs and planned stops; its integration event/reviews are synthetic. Stationary stop exposure and hosted event activation remain open. Public routing remains OSRM; the optional native host is unprovisioned. See [route network](route-network.md). |
 | 7. Forecast confidence | NWS outcomes/revisions, HRRR prospective outcomes with a same-case persistence baseline, and five 31-member GEFS prospective matches plus one missing nearest reading have retained source arithmetic. The GEFS follow-up independently checks all six eligible targets against the earlier capture and a separate NWS response. Leads, missing denominators and uncertainty labels remain explicit. | Broader prospective, regional, seasonal and lead-time grading remains open. Five correlated GEFS times from one station/run/day do not establish calibrated confidence. See [ensemble](ensemble.md) and [verification](verification.md). |
 | 8. Historical analogs | Public historical-date/station selection, diagnostics and exports passed. Six-station chronological holdout results were reconstructed independently from retained raw inputs. | Forecast-to-history transfer, wider regional/seasonal coverage, climate drift and validated impact associations remain open. A frozen prospective cohort is waiting for eligible completed outcomes. See [station analogs](station-analogs.md) and [historical analogs](historical-analogs.md). |
-| 9. Compound hazards | Six source-reviewed rules have premise, overlap and missing-data tests. Atka live QA reproduced 41 precipitation/wind premises in two windows; unrelated missing geography no longer contaminates other rules. | Owned watch controls and real notification display are deferred. Source review does not substitute for independent domain endorsement or outcome validation. See [compound hazards](compound-hazards.md). |
+| 9. Compound hazards | Six source-reviewed rules have premise, overlap and missing-data tests. Atka live QA reproduced 41 precipitation/wind premises in two windows; unrelated missing geography no longer contaminates other rules. | Rendered compound-watch enrollment and real notification display remain unverified; the live plain-alert watch API check does not establish compound transitions. Source review does not substitute for independent domain endorsement or outcome validation. See [compound hazards](compound-hazards.md). |
 | 10. Event story | CAP chains, stable links, historical cutoff, source/observation times, matched station/gauge records, JSON/HTML downloads and JSON verification passed within their documented scope. | Offline HTML rendering is blocked by the file-URL policy. Download success is not rendering evidence. Matched readings do not establish verified physical impacts; broader outcome retention and hosted recovery remain open. |
 
 ## Shared UI, refresh and startup
@@ -61,8 +63,10 @@ checks and the production build. Detailed records are in [verification](verifica
 
 ## Open gates and next work
 
-1. **Delivery: owner-deferred.** Keep account/device and external-receiver checks
-   explicitly unverified. Do not repeatedly ask for enrollment while deferred.
+1. **Delivery: device/receiver evidence.** Browser-capability management is public
+   and its live HTTP lifecycle now passes. Rendered enrollment, actual push display
+   and external-receiver checks remain unverified. Keep legacy account tests and
+   notification enrollment deferred; do not repeatedly ask while deferred.
 2. **Road attribution: source and engineering work.** Establish a real reviewed
    agency crosswalk and current incident association before activating closure
    claims. Multi-leg event evaluation is implemented and tested; hosted activation remains additional work;

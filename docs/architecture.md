@@ -13,8 +13,9 @@ it preserves existing view ownership, explicit loading and share URLs.
 ## Execution and ownership
 
 The map remains a standalone view. `personal.js` owns the My weather workspace,
-device-local places, preferences, and notification consent; `places-sync.js` adds
-explicit account-mode synchronization and scope changes. `weather-core.js`
+device-local places, preferences, and notification consent. The legacy
+`places-sync.js` account adapter remains in source but is not mounted by the
+public dashboard. `weather-core.js`
 contains deterministic geographic matching, normalization, comparisons, and
 planning rules, without browser or network dependencies. `app.js` exposes a small
 `WeatherMap` bridge; personal briefings always consume the live collection, never
@@ -29,9 +30,9 @@ The Sites runtime now has shared API collection and a durable D1 archive. It
 refreshes on demand with database leases across isolates. The frontend retains
 device-local preferences. The public deployment has an hourly Sites upkeep task;
 its execution is separate from on-demand refresh and must be verified using
-collection timestamps. Explicit hosted watches have signed-in ownership; the
-saved-place workspace supports separate optional account lists; preferences remain
-device-local. Closed-browser push
+collection timestamps. Explicit hosted watches, push and webhooks use a private
+browser capability and hashed ownership, with no account sign-in. Places and
+preferences remain device-local; cross-device account sync is deferred. Closed-browser push
 remains a delivery requirement.
 The Python edition archives point forecasts and can watch configured points while
 no browser is open. Minute-by-minute hosted unattended collection is deferred by
@@ -387,13 +388,14 @@ accessible tables, a spread chart and raw-evidence exports in My weather.
 Model initialization is unknown and member counts are not calibrated probabilities.
 See [ensemble method, terms and limits](ensemble.md).
 
-## Account place libraries
+## Legacy account place libraries (not mounted publicly)
 
 `PlacesService` owns bounded private place snapshots and atomic revision checks.
 `places-http.mjs` enforces the signed-in boundary, same-origin JSON mutations and
-private response caching. `places-sync.js` exposes opt-in account mode, explicit
-imports, minute polling and conflict recovery. `personal.js` keeps the local list
-separate and invalidates in-flight forecasts across scope changes. See
+private response caching. `places-sync.js` retains account-mode imports, minute
+polling and conflict recovery for compatibility tests; the current dashboard
+does not mount it or offer sign-in. Existing account records are not migrated
+to a browser key. `personal.js` uses the local list. See
 [account places](places-sync.md) for retention, capacity and verification limits.
 
 ## Journey gust context
@@ -583,7 +585,8 @@ JSON uses stable delivery IDs and bounded retry leases. `webhook_endpoints`,
 HTTP routes require same-origin JSON for mutations and keep secrets out of reads.
 Push and webhook drains run concurrently after watch evaluation. See the
 [protocol, receiver example and limits](webhooks.md). Real external delivery and
-rendered/sign-in verification remain outstanding.
+rendered enrollment verification remain outstanding. Sign-in is not a dependency
+of the public browser-owned flow.
 
 ### Recorded NOAA impact context
 

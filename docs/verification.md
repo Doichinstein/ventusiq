@@ -2569,3 +2569,33 @@ forecast, and one has no usable nearest measurement. This is one station, cell,
 run and day: broader regional/seasonal/lead-time validation remains open. The
 follow-up does not close the separate frozen historical-analog cohort, whose
 first outcome day has not finished yet.
+
+## October 30, 2026 — live account-free watch ownership
+
+The v121 Linux/Windows CI run 41111064660 completed successfully. Reassessment of
+the remaining gates found that older acceptance notes still required sign-in for
+public watches, although the deployed `browserOwner` route already uses private
+browser capabilities. Those notes and the watch/push/operator instructions are
+now reconciled with the current architecture; legacy account libraries remain
+unmounted and account testing remains deferred.
+
+`check-browser-watch-live.py` passed 31 live HTTP checks using two disposable
+capabilities, one temporary public sample-point watch and no account cookies.
+Checks cover malformed/missing keys, same-owner idempotency/conflict, other-owner
+list/read/mutation isolation, cross-origin rejection with unchanged state,
+private Atom reading/rotation/revocation, pause/resume, empty push/webhook lists
+and deletion verified through both detail and list reads. The first attempt
+failed because the checker expected an unformatted point string; it removed the
+watch before exit. The API correctly uses four decimal places. The corrected
+checker then passed, with its own temporary watch also removed.
+
+No notification device, external receiver or delivery test was enrolled. The
+sanitized [evidence](evidence/browser-watch-live-2026-10-30.json) contains no
+credentials or feed tokens. This closes the public HTTP ownership/feed-management
+gap only; it does not establish rendered enrollment, scheduled execution, live
+threshold transitions, external receipt or closed-browser display.
+
+Public desktop inspection confirmed enabled watch/push/webhook controls and empty
+lists without entering account credentials. Refresh preserved that state with no
+captured warnings/errors. Browser enrollment was not submitted; the live HTTP
+mutation check above is separate from this rendered initial-state check.

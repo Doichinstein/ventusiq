@@ -41,10 +41,13 @@ require deleting and recreating the watch.
 
 ## Ownership and read-only feeds
 
-`GET /api/watches` and all `POST /api/watches` actions require the authenticated
-Sites visitor identity. Object access is constrained by both owner and watch ID.
-Writes additionally require same-origin JSON. Site service authorization alone does
-not supply a visitor identity or permit watch management. Anonymous reads receive 401.
+`GET /api/watches` and all `POST /api/watches` actions require the private browser
+capability as `Authorization: Bearer viq1_<64 hexadecimal characters>`. The client
+generates 32 random bytes; the server derives the owner from their SHA-256 digest,
+never from a client-supplied owner ID. Object access is constrained by owner and
+watch ID. Writes additionally require same-origin JSON. Site service authorization
+alone cannot manage watches. Missing or malformed browser capabilities receive
+401; another browser's watch ID receives 404. No account sign-in is required.
 
 An owner can issue, replace or revoke an Atom feed link. Its random 256-bit token
 grants only read access to the latest 50 retained records for that watch. The server
@@ -58,20 +61,21 @@ the feed itself is not push delivery. A separate [browser push](browser-push.md)
 control explicitly enrolls devices for future watch changes. Email and SMS are
 not implemented. Signed webhooks require separate explicit enrollment below.
 
-Self-hosters using the Worker edition must replace the Sites identity integration
-with a trusted identity gateway that strips incoming identity headers and injects
-verified values. Never expose raw trusted-header authentication directly to the
-internet. The Python/static editions hide this hosted-only feature and retain their
-existing local places and operator-configured daemon watches.
+Self-hosters using the Worker edition retain the browser-capability boundary and
+must preserve HTTPS, same-origin mutation checks, private/no-store responses and
+credential redaction. Account identity is relevant only to the unmounted legacy
+places API. The Python/static editions hide persistent hosted watches and retain
+their existing local places and operator-configured daemon watches.
 
-Core method version: `2026-10-29.1`. Real browser ownership/rendering verification is
-still outstanding; local Worker tests use explicit development identity fixtures.
+Core method version: `2026-10-29.1`. The live HTTP ownership lifecycle is checked
+separately from rendered enrollment and actual delivery; see
+[browser ownership verification](browser-workspaces.md#live-http-ownership-verification).
 
 
 ## River gauge watches
 
 In Rivers, open a gauge, choose one of its supplied action/minor/moderate/major
-thresholds, then explicitly create a watch. Gauge watches use the same account
+thresholds, then explicitly create a watch. Gauge watches use the same browser
 quota, owner-only controls, history and private feeds. They store the gauge's
 coordinates, not a nearby saved place; the server verifies that match. They do
 not also subscribe to point weather alerts. A gauge without a fresh product or

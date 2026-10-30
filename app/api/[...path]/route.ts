@@ -1,3 +1,4 @@
+import {browserOwner} from '../../../lib/browser-owner.mjs';
 import {ForecastStabilityService} from '../../../lib/forecast-stability-service.mjs';
 import {mapAlerts} from '../../../lib/map-alerts.mjs';
 import {mapZones} from '../../../lib/map-zones.mjs';
@@ -57,9 +58,9 @@ export async function GET(request:Request){
   const url=new URL(request.url),path=url.pathname,service=new WeatherService(env.DB);
   try{
     if(path==='/api/places')return placesGet(new PlacesService(service),(await getChatGPTUser())?.userId||null);
-    if(path==='/api/webhooks')return webhookGet(new WebhookService(service),(await getChatGPTUser())?.userId||null);
-    if(path==='/api/push')return pushGet(pushService(service),(await getChatGPTUser())?.userId||null);
-    if(path==='/api/watches')return watchGet(request,new WatchService(service),(await getChatGPTUser())?.userId||null);
+    if(path==='/api/webhooks')return webhookGet(new WebhookService(service),await browserOwner(request));
+    if(path==='/api/push')return pushGet(pushService(service),await browserOwner(request));
+    if(path==='/api/watches')return watchGet(request,new WatchService(service),await browserOwner(request));
     if(path.startsWith('/api/watch-feed/'))return watchGet(request,new WatchService(service),null);
     if(path==='/api/event-gauges'){
       const result=await new EventGaugesService(service).forEvent(url.searchParams.get('id'),url.searchParams.get('gauge'),url.searchParams.has('at')?atTime(url.searchParams.get('at'))*1000:null,url.searchParams.has('alertAt')?atTime(url.searchParams.get('alertAt'))*1000:null);
@@ -154,11 +155,11 @@ export async function POST(request:Request){
   if(!env.DB)return json({error:'Shared database unavailable'},503);
   if(new URL(request.url).pathname==='/api/geocode')return geocodePost(request,new GeocodeService(new WeatherService(env.DB)));
   if(new URL(request.url).pathname==='/api/places')return placesPost(request,new PlacesService(new WeatherService(env.DB)),(await getChatGPTUser())?.userId||null);
-  if(new URL(request.url).pathname==='/api/webhooks'){const service=new WebhookService(new WeatherService(env.DB)),response=await webhookPost(request,service,(await getChatGPTUser())?.userId||null);if(response.ok)after(()=>service.dispatch());return response;}
-  if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,(await getChatGPTUser())?.userId||null);if(response.ok)after(()=>service.dispatch());return response;}
+  if(new URL(request.url).pathname==='/api/webhooks'){const service=new WebhookService(new WeatherService(env.DB)),response=await webhookPost(request,service,await browserOwner(request));if(response.ok)after(()=>service.dispatch());return response;}
+  if(new URL(request.url).pathname==='/api/push'){const service=pushService(new WeatherService(env.DB)),response=await pushPost(request,service,await browserOwner(request));if(response.ok)after(()=>service.dispatch());return response;}
   if(new URL(request.url).pathname!=='/api/watches')return json({error:'Unknown API route'},404);
-  const service=new WeatherService(env.DB),watches=new WatchService(service),user=await getChatGPTUser();
-  const response=await watchPost(request,watches,user?.userId||null);
+  const service=new WeatherService(env.DB),watches=new WatchService(service);
+  const response=await watchPost(request,watches,await browserOwner(request));
   if(response.ok)after(async()=>{
     // Enrollment must not spend the background execution window waiting for an unrelated national source.
     const cached=await service.read('alerts/us').catch(()=>null);

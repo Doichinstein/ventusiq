@@ -1,11 +1,12 @@
 import {watershedPoint,loadWatershed,watershedResult,watershedGeoJSON} from './watershed-core.mjs';
 export function mountWatershed({document,window,L,fetcher=fetch,clock=Date.now}){
   const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;},map=window.WeatherMap.instance;
+  let mapVisible=true;
   let point=null,report=null,generation=0,busy=false,controller=null,layer=null,shown=false,replay=window.WeatherMap.isReplay();
   const time=v=>Number.isFinite(Date.parse(v))?new Date(v).toLocaleString():'unavailable';
   const delayed=()=>!report||report.stale||report.error||!Number.isFinite(Date.parse(report.checked_at))||clock()-Date.parse(report.checked_at)>129600000||Date.parse(report.checked_at)>clock()+60000;
   function clearLayer(){if(layer){map.removeLayer(layer);layer=null;}get('watershed-map-key').hidden=true;}
-  function sync(){clearLayer();if(!report||!shown||replay)return;
+  function sync(){clearLayer();if(!report||!shown||replay||!mapVisible)return;
     if(!map.getPane('watershedPane')){const pane=map.createPane('watershedPane');pane.style.zIndex='340';pane.style.pointerEvents='none';}
     layer=L.geoJSON(watershedGeoJSON(report),{pane:'watershedPane',interactive:false,style:f=>({color:f.properties.role==='catchment'?'#e7c579':f.properties.role==='associated_flowline'?'#69c9f0':'#c88ce4',weight:f.properties.role==='associated_flowline'?3:2,fillOpacity:f.properties.role==='catchment'?0.03:0.09,dashArray:f.properties.role==='catchment'?'5 4':null}),pointToLayer:(f,latlng)=>L.circleMarker(latlng,{pane:'watershedPane',interactive:false,radius:f.properties.role==='selected_point'?6:4,color:f.properties.role==='selected_point'?'#ffffff':'#69c9f0',weight:2,fillOpacity:1})}).addTo(map);
     get('watershed-map-label').textContent=`${delayed()?'Retained ':''}${report.scope==='upstream_basin'?'Upstream basin':'Local split area'} · COMID ${report.index.comid}. Purple: contributing area; gold: catchment; blue: flowline / indexed point; white: selected point. Not an inundation map.`;get('watershed-map-key').hidden=false;
@@ -31,7 +32,7 @@ export function mountWatershed({document,window,L,fetcher=fetch,clock=Date.now})
   function download(data,name){const url=window.URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download=name;a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);}
   get('watershed-run').onclick=run;get('watershed-export').onclick=()=>{if(report)download({...report,exported_at:new Date(clock()).toISOString()},'ventusiq-watershed-'+report.index.comid+'.json');};get('watershed-geojson').onclick=()=>{if(report)download(watershedGeoJSON(report),'ventusiq-watershed-'+report.index.comid+'.geojson');};
   get('watershed-map').onclick=()=>{if(!report)return;shown=true;window.WeatherMap.goLive();replay=false;window.WeatherPersonal.show(false);sync();const bounds=layer?.getBounds();if(bounds?.isValid())map.fitBounds(bounds,{padding:[35,80],maxZoom:12});};get('watershed-map-hide').onclick=()=>{shown=false;clearLayer();};
-  window.WeatherWatershed={updatePlace,setReplay(value){replay=value;sync();}};updatePlace(window.WeatherPersonal?.current());get('watershed-card').hidden=false;
+  window.WeatherWatershed={setVisible(value){mapVisible=value;sync();},updatePlace,setReplay(value){replay=value;sync();}};updatePlace(window.WeatherPersonal?.current());get('watershed-card').hidden=false;
   window.setInterval(()=>{if(report&&!busy){render();if(shown&&!replay)get('watershed-map-label').textContent=get('watershed-map-label').textContent.replace(/^Retained /,'').replace(/^/,delayed()?'Retained ':'');}},60000);
   return {updatePlace,run};
 }

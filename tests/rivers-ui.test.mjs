@@ -44,3 +44,10 @@ test('visible map gauges refresh while the river workspace is closed and label a
 });
 
 test('entering this workspace suspends the main smoke animation',async()=>{const s=setup(),visibility=[];s.window.WeatherSmokeMap={setVisible:v=>visibility.push(v)};s.nodes['nav-rivers'].onclick();assert.deepEqual(visibility,[false]);});
+
+
+test('Rivers automatically maps selected gauges and removes its overlays on workspace exit',async()=>{
+ const s=setup();await s.mounted.openGauge('TEST1');assert.equal(s.attached.size,1);
+ s.window.WeatherRivers.hide();assert.equal(s.attached.size,0);
+ s.advance(901000);s.hold('TEST2');const pending=s.mounted.openGauge('TEST2');s.window.WeatherRivers.hide();s.release('TEST2');await pending;assert.equal(s.attached.size,0);
+});

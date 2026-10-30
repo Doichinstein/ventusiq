@@ -6,14 +6,15 @@ import {mountEvents} from '../public/events.js';
 const id='a'.repeat(64),other='b'.repeat(64),at='2026-10-28T20:00:00Z';
 class Element{constructor(tag='div'){this.tagName=tag;this.children=[];this.value='';this.hidden=false;this.disabled=false;this.text='';this.attrs={};this.classList={toggle(){}};}set textContent(v){this.text=String(v??'');this.children=[];}get textContent(){return this.text+this.children.map(c=>c.textContent).join('');}append(...children){this.children.push(...children);}replaceChildren(...children){this.text='';this.children=children;}setAttribute(k,v){this.attrs[k]=v;}click(){this.clicked=true;}}
 function makeStory(key=id){return {id:key,as_of:at,last_collection:at,missing_references:[{id:other,cap_id:'old'}],transitions:[{id:key,at,revision:'r',present:1,origin:'active-feed',issued_at:at,first_collected:at,feature:{type:'Feature',id:'https://api.weather.gov/alerts/'+key,geometry:null,properties:{id:key,event:'<script>Flood</script>',areaDesc:'Test County',messageType:'Alert',severity:'Severe',sent:at,expires:'2026-10-29T00:00:00Z',description:'Official description',instruction:'Official guidance'}}}]};}
-function setup({mode='hosted',hash=''}={}){
+function setup({mode='hosted',hash='',geometry=null}={}){
   const nodes=Object.fromEntries([...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element()])),requests=[],held=new Map(),waiting=new Set(),timers=[];let copied='',exported=null,broken=false;
-  const location=new URL('https://example.test/'+hash),window={WEATHER_CONFIG:{mode},location,history:{replaceState(_,__,url){location.href=new URL(url,location).href;}},WeatherPersonal:{show(){window.WeatherEvents?.hide();}},navigator:{clipboard:{writeText:async text=>{copied=text;}}},URL:{createObjectURL(blob){exported=blob;return 'blob:test';},revokeObjectURL(){}},setTimeout(){},setInterval:fn=>timers.push(fn)};
-  const fetcher=async url=>{requests.push(url);const parsed=new URL(url,location),key=parsed.pathname.split('/').at(-1);if(waiting.has(key))await new Promise(r=>held.set(key,r));if(broken)return {ok:false,json:async()=>({error:'Archive unavailable'})};return {ok:true,json:async()=>parsed.pathname==='/api/events'?{messages:[{id,name:'Flood Warning',area:'Test County',message_type:'Alert',first_seen:at,last_seen:at,present:1}],next_cursor:null,last_collection:at}:{...makeStory(key),as_of:parsed.searchParams.get('at')||at}};};
+  const attached=new Set();let fitted=0;const map={removeLayer:l=>attached.delete(l),fitBounds(){fitted++;}};
+  const location=new URL('https://example.test/'+hash),window={WeatherMap:{instance:map,setWorkspace(){},overlayStatus(text){nodes['workspace-map-status'].textContent=text;}},L:{geoJSON(feature){return {feature,addTo(){attached.add(this);return this;},getBounds:()=>({isValid:()=>true})};}},WEATHER_CONFIG:{mode},location,history:{replaceState(_,__,url){location.href=new URL(url,location).href;}},WeatherPersonal:{show(){window.WeatherEvents?.hide();}},navigator:{clipboard:{writeText:async text=>{copied=text;}}},URL:{createObjectURL(blob){exported=blob;return 'blob:test';},revokeObjectURL(){}},setTimeout(){},setInterval:fn=>timers.push(fn)};
+  const fetcher=async url=>{requests.push(url);const parsed=new URL(url,location),key=parsed.pathname.split('/').at(-1);if(waiting.has(key))await new Promise(r=>held.set(key,r));if(broken)return {ok:false,json:async()=>({error:'Archive unavailable'})};return {ok:true,json:async()=>parsed.pathname==='/api/events'?{messages:[{id,name:'Flood Warning',area:'Test County',message_type:'Alert',first_seen:at,last_seen:at,present:1}],next_cursor:null,last_collection:at}:{...makeStory(key),transitions:makeStory(key).transitions.map(t=>({...t,feature:{...t.feature,geometry}})),as_of:parsed.searchParams.get('at')||at}};};
   const document={activeElement:null,getElementById:key=>nodes[key],createElement:tag=>new Element(tag)};
   for(const node of Object.values(nodes))node.focus=()=>{document.activeElement=node;};
   const mounted=mountEvents({document,window,fetcher});
-  return {document,nodes,window,mounted,requests,timers,copied:()=>copied,exported:()=>exported,hold:key=>waiting.add(key),release:key=>{waiting.delete(key);held.get(key)();},break:()=>{broken=true;}};
+  return {document,nodes,window,mounted,requests,timers,attached,fitted:()=>fitted,copied:()=>copied,exported:()=>exported,hold:key=>waiting.add(key),release:key=>{waiting.delete(key);held.get(key)();},break:()=>{broken=true;}};
 }
 test('archive renders official text safely, shows collection gaps and preserves source links',async()=>{
   const s=setup();await s.mounted.loadList();await s.mounted.openStory(id);assert.equal(s.nodes['event-detail'].hidden,false);assert.equal(s.nodes['event-title'].textContent,'<script>Flood</script>');assert.equal(s.nodes['event-title'].children.length,0);assert.match(s.nodes['event-coverage'].textContent,/not been collected/);assert.match(s.nodes['event-timeline'].textContent,/Alert collected/);assert.match(s.window.location.hash,/event=/);
@@ -59,4 +60,15 @@ test('leaving during a selection invalidates its response and focus handoff',asy
 test('failed selections retain the focused error; passive loads do not move focus',async()=>{
   const s=setup();s.nodes['event-search'].focus();await s.mounted.openStory(id);assert.equal(s.document.activeElement,s.nodes['event-search']);
   s.break();await s.mounted.openStory(other,null,{focus:true});assert.equal(s.document.activeElement,s.nodes['event-status']);assert.match(s.nodes['event-status'].textContent,/Archive unavailable/);
+});
+
+
+test('Events maps only selected archive geometry, preserves map extent on tab return, and detaches on exit',async()=>{
+ const geometry={type:'Polygon',coordinates:[[[-78,38],[-77,38],[-77,39],[-78,38]]]},s=setup({geometry});
+ await s.mounted.openStory(id,at);assert.equal(s.attached.size,1);assert.deepEqual([...s.attached][0].feature.geometry,geometry);const fits=s.fitted();
+ s.window.WeatherEvents.hide();assert.equal(s.attached.size,0);s.nodes['nav-events'].onclick();assert.equal(s.attached.size,1);assert.equal(s.fitted(),fits);
+ s.hold(other);const pending=s.mounted.openStory(other);s.window.WeatherEvents.hide();s.release(other);await pending;assert.equal(s.attached.size,0);
+});
+test('missing archive geometry is explicit and never substituted from live alerts',async()=>{
+ const s=setup();await s.mounted.openStory(id);assert.equal(s.attached.size,0);assert.match(s.nodes['workspace-map-status'].textContent,/No geometry was stored/);
 });

@@ -1,5 +1,6 @@
 export function mountPlaceSync({document,window,fetcher=fetch,randomUUID=()=>crypto.randomUUID()}){
   const get=id=>document.getElementById(id),personal=()=>window.WeatherPersonal;
+  if(!get('place-sync-card'))return null;
   if(window.WEATHER_CONFIG?.mode!=='hosted'){get('place-sync-card').hidden=true;return null;}
   let enabled=false,ready=false,busy=false,generation=0,snapshot=null;
   const status=text=>get('place-sync-status').textContent=text;

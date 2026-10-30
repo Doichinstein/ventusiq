@@ -9,22 +9,22 @@ import {departureTime,prepareRouteAlerts,evaluateJourney} from './journey-core.m
 export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
   const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
   if(window.WEATHER_CONFIG?.mode!=='hosted'){get('nav-journey').hidden=true;return null;}
-  let generation=0,report=null,selected=0,map=null,layers=null,abort=null;const zoneCache=new Map();
+  let generation=0,report=null,selected=0,map=window.WeatherMap.instance,layers=null,abort=null,visible=false;const zoneCache=new Map();
   const format=(stamp,zone)=>{try{return new Date(stamp).toLocaleString(undefined,{timeZone:zone||'UTC',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'});}catch{return new Date(stamp).toISOString();}};
   const value=(n,suffix)=>n===null?'Unknown':Math.round(n)+suffix;
-  function hide(){get('journey-workspace').hidden=true;get('nav-journey').classList.toggle('nav-active',false);get('nav-journey').setAttribute('aria-pressed','false');}
-  function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);get('journey-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;get('nav-map').classList.toggle('nav-active',false);get('nav-map').setAttribute('aria-pressed','false');get('nav-journey').classList.toggle('nav-active',true);get('nav-journey').setAttribute('aria-pressed','true');
+  function hide(){visible=false;if(layers)map.removeLayer(layers);get('journey-workspace').hidden=true;get('nav-journey').classList.toggle('nav-active',false);get('nav-journey').setAttribute('aria-pressed','false');}
+  function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);visible=true;window.WeatherMap.setWorkspace?.('journey');if(layers)layers.addTo(map);get('journey-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;get('nav-map').classList.toggle('nav-active',false);get('nav-map').setAttribute('aria-pressed','false');get('nav-journey').classList.toggle('nav-active',true);get('nav-journey').setAttribute('aria-pressed','true');
     for(const side of ['from','to','via1','via2','via3']){const select=get('journey-'+side+'-place'),old=select.value,empty=el('option','Choose a saved place…');empty.value='';select.replaceChildren(empty,...(window.WeatherPersonal.places?.()||[]).map(p=>{const o=el('option',p.name);o.value=p.id;return o;}));select.value=old||'';}if(map)window.setTimeout(()=>map.invalidateSize(),0);
   }
   async function request(path,signal){const response=await fetcher(path,{signal:signal?AbortSignal.any([signal,AbortSignal.timeout(60000)]):AbortSignal.timeout(60000)}),data=await response.json();if(!response.ok)throw Error(data.error||'Source returned HTTP '+response.status);return data;}
   function draw(){
     if(!report)return;const route=report.route,journey=report.departures[selected];
-    if(!map){map=L.map('journey-map',{preferCanvas:true,worldCopyJump:true,minZoom:2,maxZoom:14});L.tileLayer(window.WEATHER_CONFIG.tileUrl||'https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:window.WEATHER_CONFIG.tileAttribution||'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);}
-    if(layers)map.removeLayer(layers);layers=L.layerGroup().addTo(map);
+
+    if(layers)map.removeLayer(layers);layers=L.layerGroup();if(visible)layers.addTo(map);
     let previous=route.vertices[0].coordinate[0];const coords=route.vertices.map(v=>{const lon=previous+((v.coordinate[0]-previous+540)%360)-180;previous=lon;return [v.coordinate[1],lon];});
     const line=L.polyline(coords,{color:'#88baff',weight:4}).addTo(layers),origin=coords[0][1];
     journey.rows.forEach((r,i)=>{const popup=el('div');popup.append(el('strong',`${journeySampleLabel(r,i,journey.rows.length)} · ${format(r.at,r.time_zone)}`),el('p',`${value(r.temperature,'°F')} · wind ${value(r.wind,' mph')} · gust ${value(r.gust,' mph')} · rain chance ${value(r.rain,'%')}`),el('p',r.summary),el('p',r.gust_evidence.reason||'Gust interval: '+format(r.gust_evidence.interval.start)+' – '+format(r.gust_evidence.interval.end)));if(r.smoke)popup.append(el('p','Smoke bracket: '+smokeValue(r.smoke.maximum_ug_m3)+' · '+(r.smoke.reason||'Complete samples')));const lon=origin+((r.lon-origin+540)%360)-180;L.circleMarker([r.lat,lon],{radius:5,color:r.missing?'#e7c579':(r.gust_exceeds||r.smoke?.exceeds)?'#ff8fa3':'#88baff',fillOpacity:1}).addTo(layers).bindPopup(popup);});
-    drawRoadwork(L,layers,journey.roadwork,document);map.invalidateSize();map.fitBounds(line.getBounds(),{padding:[25,25],maxZoom:11});
+    drawRoadwork(L,layers,journey.roadwork,document);if(visible){map.invalidateSize();map.fitBounds(line.getBounds(),{padding:[25,25],maxZoom:11});window.WeatherMap.overlayStatus?.(`${journey.rows.length} arrival-time weather samples · selected departure ${format(journey.departure)}.`);}
   }
   function render(){
     if(!report)return;const route=report.route,current=report.departures[selected];get('journey-results').hidden=false;get('journey-export').disabled=false;
@@ -41,7 +41,7 @@ export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
     get('journey-alerts').replaceChildren(...(alerts.length?alerts:[el('p','No time-overlapping alerts found in the evaluated boundaries. Review the coverage notes above.')]));get('journey-evaluated').textContent=`Evaluated ${format(report.evaluated_at)} · alert collection ${current.alert_checked_at?format(current.alert_checked_at):'unavailable'}. Comparisons are snapshots; use Compare journey again to refresh.`;draw();
   }
   async function run(){
-    const gen=++generation;if(abort)abort.abort();abort=new AbortController();const signal=abort.signal;report=null;get('journey-results').hidden=true;get('journey-export').disabled=true;get('journey-submit').disabled=true;
+    const gen=++generation;if(abort)abort.abort();abort=new AbortController();const signal=abort.signal;report=null;if(layers)map.removeLayer(layers);layers=null;get('journey-results').hidden=true;get('journey-export').disabled=true;get('journey-submit').disabled=true;
     try{
       const roadworkIds=['md','ia','wa'].filter(id=>get('journey-roadwork-'+id).checked),smokeRequested=!!get('journey-smoke-enabled').checked,smokeCeiling=smokeRequested?journeySmokeLimit(get('journey-smoke-limit').value):null,ceiling=gustLimit(get('journey-gust-limit').value),departure=departureTime(get('journey-departure').value,clock()),params=new URLSearchParams();for(const [param,id] of [['fromLat','from-lat'],['fromLon','from-lon'],['toLat','to-lat'],['toLon','to-lon']])params.set(param,get('journey-'+id).value);
       const via=journeyStops(['via1','via2','via3'].map(side=>({lat:get('journey-'+side+'-lat').value,lon:get('journey-'+side+'-lon').value,minutes:get('journey-'+side+'-minutes').value})).filter(p=>String(p.lat).trim()!==''||String(p.lon).trim()!==''||Number(p.minutes)!==0));
@@ -63,7 +63,7 @@ export function mountJourney({document,window,L,fetcher=fetch,clock=Date.now}){
   get('nav-journey').onclick=show;get('journey-form').onsubmit=e=>{e.preventDefault();run();};get('journey-departure').value=new Date(Math.ceil((clock()+3600000)/60000)*60000).toISOString().slice(0,16)+'Z';
   for(const side of ['from','to','via1','via2','via3']){
     get('journey-'+side+'-place').onchange=()=>{const p=window.WeatherPersonal.places?.().find(p=>p.id===get('journey-'+side+'-place').value);if(p){get('journey-'+side+'-lat').value=p.lat;get('journey-'+side+'-lon').value=p.lon;}};
-    get('journey-'+side+'-map').onclick=()=>{window.WeatherPersonal.show(false);get('map-notice').hidden=false;get('map-notice').textContent='Click a road location for your journey '+(side==='from'?'start':side==='to'?'destination':side.replace('via','via '))+'.';window.WeatherMap.pick((lat,lon)=>{get('journey-'+side+'-lat').value=lat.toFixed(4);get('journey-'+side+'-lon').value=lon.toFixed(4);show();});};
+    get('journey-'+side+'-map').onclick=()=>{show();get('map-notice').hidden=false;get('map-notice').textContent='Click a road location for your journey '+(side==='from'?'start':side==='to'?'destination':side.replace('via','via '))+'.';window.WeatherMap.pick((lat,lon)=>{get('journey-'+side+'-lat').value=lat.toFixed(4);get('journey-'+side+'-lon').value=lon.toFixed(4);show();});};
   }
   for(const side of ['via1','via2','via3'])get('journey-'+side+'-clear').onclick=()=>{get('journey-'+side+'-lat').value='';get('journey-'+side+'-lon').value='';get('journey-'+side+'-minutes').value='0';get('journey-'+side+'-place').value='';};
   get('journey-example').onclick=()=>{for(const [id,v] of [['via1-lat',''],['via1-lon',''],['via1-minutes',0],['via2-lat',''],['via2-lon',''],['via2-minutes',0],['via3-lat',''],['via3-lon',''],['via3-minutes',0],['from-lat',38.8977],['from-lon',-77.0365],['to-lat',39.2904],['to-lon',-76.6122]])get('journey-'+id).value=v;};

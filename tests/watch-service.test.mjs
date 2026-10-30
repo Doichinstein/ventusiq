@@ -1,3 +1,4 @@
+import {browserOwner} from '../lib/browser-owner.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
@@ -23,4 +24,18 @@ test('owned gauge watches use NWPS independently of NWS point forecasts and pers
  await assert.rejects(service.create('alice',{...input,lat:40}),/coordinates must match/);await service.create('alice',input);await service.upkeep(null);let detail=await service.detail('alice',input.id);assert.equal(detail.events.length,1);assert.equal(detail.watch.snapshot.river.forecast.state,false);assert.equal(detail.watch.snapshot.river.observed.state,false);assert.ok(Object.values(detail.watch.snapshot.coverage).every(Boolean));
  now+=3601;level=8;await service.upkeep(null);detail=await service.detail('alice',input.id);assert.equal(detail.events.filter(e=>e.kind==='river_forecast').length,1);assert.equal(detail.events.filter(e=>e.kind==='river_observed').length,1);assert.equal(detail.events[0].evidence.sources.river.provider,'NOAA / NWPS');
  const link=await service.change('alice',input.id,'feed'),response=await watchGet(new Request('https://example.test/api/watch-feed/'+input.id+'?token='+link.token),service,null),xml=await response.text();assert.match(xml,/official minor threshold 7 ft/);assert.match(xml,/Observed: at or above/);assert.doesNotMatch(xml,/0 relevant alerts/);assert.equal(requested.length,4);db.close();
+});
+
+
+test('anonymous browser capabilities isolate real watch rows from another browser and legacy accounts',async()=>{
+ const s=setup(),request=key=>new Request('https://example.test/api/watches',{headers:{authorization:'Bearer viq1_'+key.repeat(64)}});
+ const a=await browserOwner(request('a')),b=await browserOwner(request('b'));
+ await s.service.create(a,s.input);
+ assert.equal((await s.service.list(a)).watches.length,1);
+ assert.equal((await s.service.list(b)).watches.length,0);
+ assert.equal((await s.service.list('legacy-account')).watches.length,0);
+ await assert.rejects(s.service.change(b,s.input.id,'delete'),e=>e.status===404);
+ await assert.rejects(s.service.detail('legacy-account',s.input.id),e=>e.status===404);
+ assert.equal((await watchPost(post({action:'delete',id:s.input.id},'https://evil.test'),s.service,a)).status,403);
+ await s.service.change(a,s.input.id,'delete');s.db.close();
 });

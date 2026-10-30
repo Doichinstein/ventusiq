@@ -10,6 +10,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   const aqiPane=map.getPane?.('aqiContours')||map.createPane?.('aqiContours');if(aqiPane)aqiPane.style.zIndex='330';
   const state=Object.fromEntries(Object.keys(sources).map(key=>[key,{data:null,pending:null,error:null,next:0}]));
   const layers={},perimeter=L.layerGroup(),perimeterCache=new Map();
+  let mapVisible=true;
   let place=null,replay=window.WeatherMap.isReplay(),perimeterRequest=0,satelliteErrors=0,satelliteDate=null;
   const isDelayed=kind=>{const s=state[kind];return !!(s.error||s.data?.stale||!s.data?.checked_at||clock()-Date.parse(s.data.checked_at)>(kind==='satellite'?5400000:1350000));};
   async function request(kind,id){
@@ -53,7 +54,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
         if(requestId!==perimeterRequest)return;
         message.textContent=data.features.length?`${data.stale?'Updates delayed. ':''}Reported boundary; not an evacuation zone. Checked ${time(data.checked_at)}.`:'No reported perimeter is available for this incident.';
         const geometry=L.geoJSON(data,{style:{color:'#ff9c58',weight:2.5,dashArray:'7 4',fillColor:'#ff713d',fillOpacity:0.16},onEachFeature:(feature,layer)=>{const content=el('div',undefined,'hazard-popup');content.append(el('h3',feature.properties.name),el('p','Reported boundary as of '+time(feature.properties.updated_at)),el('p',quantity(feature.properties.acres,' mapped acres')),el('p','Not an evacuation zone or a prediction of spread.'));layer.bindPopup(content);}});
-        perimeter.addLayer(geometry);if(!replay&&get('layer-fires').checked){perimeter.addTo(map);const bounds=geometry.getBounds();if(bounds.isValid())map.fitBounds(bounds,{padding:[45,70],maxZoom:11});}
+        perimeter.addLayer(geometry);if(mapVisible&&!replay&&get('layer-fires').checked){perimeter.addTo(map);const bounds=geometry.getBounds();if(bounds.isValid())map.fitBounds(bounds,{padding:[45,70],maxZoom:11});}
       }catch(error){if(requestId===perimeterRequest)message.textContent='Perimeter unavailable. '+error.message;}
       finally{button.disabled=false;}
     };box.append(button,message);}
@@ -103,8 +104,8 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     }
     sync();
   }
-  function sync(){for(const kind of Object.keys(sources)){const enabled=get('layer-'+kind).checked&&!replay;if(layers[kind]){if(enabled)layers[kind].addTo(map);else map.removeLayer(layers[kind]);}}
-    if(replay||!get('layer-fires').checked)map.removeLayer(perimeter);else if(perimeter.getLayers().length)perimeter.addTo(map);
+  function sync(){for(const kind of Object.keys(sources)){const enabled=mapVisible&&get('layer-'+kind).checked&&!replay;if(layers[kind]){if(enabled)layers[kind].addTo(map);else map.removeLayer(layers[kind]);}}
+    if(!mapVisible||replay||!get('layer-fires').checked)map.removeLayer(perimeter);else if(perimeter.getLayers().length)perimeter.addTo(map);
     get('hazard-replay').hidden=!replay;get('fire-browser').hidden=!get('layer-fires').checked||replay;
     get('aqi-map-key').hidden=!get('layer-aqi').checked||replay;
     get('fire-map-key').hidden=!get('layer-fires').checked||replay;
@@ -139,7 +140,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     snapshot(kind){const s=state[kind];return s?.data?{...s.data,stale:isDelayed(kind),error:s.error||s.data.error||null}:null;},
     updatePlace(value){place=value;window.WeatherFirms?.updatePlace(value);renderPlace();window.WeatherAirTrends?.refresh();if(place){load('fires');load('air');}},
     setReplay(value){window.WeatherSmokeMap?.setReplay(value);window.WeatherFirms?.setReplay(value);replay=value;perimeterRequest++;map.closePopup();sync();},
-    showMap(value){window.WeatherSmokeMap?.setVisible(value);get('hazard-workspace').hidden=!value;},
+    showMap(value){mapVisible=value;window.WeatherSmokeMap?.setVisible(value);window.WeatherFirms?.setVisible?.(value);get('hazard-workspace').hidden=!value;sync();},
   };
   window.setInterval(()=>{if(document.hidden||replay)return;for(const kind of Object.keys(sources)){if(get('layer-'+kind).checked||(place&&['fires','air'].includes(kind)))load(kind);status(kind);}if(state.air.data)draw('air');if(state.aqi.data)draw('aqi');updateFireIcons();renderPlace();},60000);
   for(const band of AQI_BANDS){const item=el('span',`${band.range} ${band.label}`),swatch=el('i');swatch.style.background=band.color;item.append(swatch);get('aqi-map-bands').append(item);}

@@ -47,6 +47,7 @@ L.tileLayer(config.tileUrl || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
   maxZoom: 19, attribution: config.tileAttribution || '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
 }).addTo(map).on('tileerror', () => { $('map-subtitle').textContent = 'Basemap unavailable · alert areas still shown'; });
 L.control.zoom({position: 'bottomright'}).addTo(map);
+let workspaceMode = 'live', pendingMapPick = null;
 let alertLayer = L.geoJSON([], {style: styleFeature, onEachFeature: bindFeature}).addTo(map);
 let geometryAvailable = 0;
 const alertRenderer = window.createAlertRenderer({
@@ -458,7 +459,7 @@ $('categories').addEventListener('click', (event) => {
 $('clear').onclick = () => { $('search').value = ''; $('severity').value = 'all'; $('categories').querySelector('button').click(); };
 $('refresh').onclick = () => { if (replayAt) returnLive(); else { render(); updateHealth(); refresh(); } };
 $('auto-refresh').onchange = () => { autoRefresh = $('auto-refresh').checked; updateHealth(); if (autoRefresh && !document.hidden) refresh(); };
-$('layer-alerts').onchange = () => { if ($('layer-alerts').checked) alertLayer.addTo(map); else map.removeLayer(alertLayer); };
+$('layer-alerts').onchange = () => { if (workspaceMode === 'live' && $('layer-alerts').checked) alertLayer.addTo(map); else map.removeLayer(alertLayer); };
 $('detail-close').onclick = closeDetail;
 $('region').onchange = () => { const region = regions[$('region').value]; $('region-name').textContent = region.name; map.fitBounds(region.bounds,{animate:false}); closeDetail(); };
 $('fit').onclick = () => { const bounds = alertLayer.getBounds(); if (bounds.isValid()) map.fitBounds(bounds, {padding:[45,70],maxZoom:9}); };
@@ -490,9 +491,30 @@ window.WeatherMap = {
   live: () => liveData,
   zoneGeometry: url => zoneCache.get(url)||null,
   show: () => map.invalidateSize(),
+  setWorkspace: mode => {
+    if (workspaceMode !== mode) {
+      if (pendingMapPick) map.off('click', pendingMapPick);
+      pendingMapPick = null; $('map-notice').hidden = true; closeDetail(); map.closePopup();
+    }
+    workspaceMode = mode; $('workspace').dataset.view = mode;
+    const live = mode === 'live';
+    if (live && $('layer-alerts').checked) alertLayer.addTo(map); else map.removeLayer(alertLayer);
+    $('workspace-map-heading').hidden = live;
+    $('workspace-map-title').textContent = {journey:'JOURNEY',rivers:'RIVERS',events:'EVENT ARCHIVE',personal:'MY WEATHER'}[mode] || '';
+    $('workspace-map-status').textContent = {journey:'Choose endpoints on the map, then compare a journey.',rivers:'Search this map area or select a gauge to see its observations.',events:'Select an event to map its recorded geometry. Current alerts are hidden.',personal:'Choose a place on the map or enter its coordinates.'}[mode] || '';
+    window.WeatherHazards?.showMap(live);
+    window.WeatherWatershed?.setVisible?.(live);
+    requestAnimationFrame(() => map.invalidateSize());
+  },
+  overlayStatus: text => { $('workspace-map-status').textContent = text; },
   refresh,
   focus: (lat,lon) => map.setView([lat,lon],9),
-  pick: callback => map.once('click', e => callback(e.latlng.lat,((e.latlng.lng+180)%360+360)%360-180)),
+  pick: callback => {
+    if (pendingMapPick) map.off('click', pendingMapPick);
+    pendingMapPick = e => { pendingMapPick = null; $('map-notice').hidden = true; callback(e.latlng.lat,((e.latlng.lng+180)%360+360)%360-180); };
+    map.once('click', pendingMapPick);
+    $('shared-map').scrollIntoView({behavior:'smooth',block:'nearest'});
+  },
   selectAlert: id => { const f=features.find(f=>f.id===id); if(f)selectAlert(f); },
 };
 setInterval(() => { updateHealth(); if (!replayAt && lastSuccess && !document.hidden && filtered.some(f=>!activeAt(f,Date.now()))) render(); }, 5000);

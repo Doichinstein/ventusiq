@@ -1,5 +1,6 @@
 import {loadFirms,selectFirms} from './firms-core.mjs';
 export function mountFirms({document,window,L,fetcher=fetch,clock=Date.now}){
+  let mapVisible=true;
   const get=id=>document.getElementById(id),map=window.WeatherMap.instance;
   const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
   const time=value=>new Date(value).toLocaleString(undefined,{timeZoneName:'short'}),quantity=(n,unit)=>n==null?'unknown':n+' '+unit;
@@ -15,7 +16,7 @@ export function mountFirms({document,window,L,fetcher=fetch,clock=Date.now}){
     get('firms-export').disabled=!data;get('firms-near').disabled=!place;
     get('firms-place').textContent=place?`Selected place: ${place.name||place.label||'map location'} (${place.lat.toFixed(3)}, ${place.lon.toFixed(3)}).`:'Select a place in My weather to filter within 100 km.';
     get('firms-replay').hidden=!replay;get('firms-results').hidden=replay||!get('layer-firms').checked;
-    if(data&&!replay&&get('layer-firms').checked){layer=L.geoJSON({type:'FeatureCollection',features:rows},{pointToLayer:(f,latlng)=>L.circleMarker(latlng,{radius:4,color:'#19191e',weight:1,fillColor:f.properties.confidence==='low'?'#b2a2a0':'#ff704f',fillOpacity:0.85}),onEachFeature:(f,marker)=>marker.bindPopup(()=>popup(f))});layer.addTo(map);}
+    if(data&&!replay&&mapVisible&&get('layer-firms').checked){layer=L.geoJSON({type:'FeatureCollection',features:rows},{pointToLayer:(f,latlng)=>L.circleMarker(latlng,{radius:4,color:'#19191e',weight:1,fillColor:f.properties.confidence==='low'?'#b2a2a0':'#ff704f',fillOpacity:0.85}),onEachFeature:(f,marker)=>marker.bindPopup(()=>popup(f))});layer.addTo(map);}
     get('firms-list').replaceChildren(...rows.slice(0,50).map(f=>{const p=f.properties,b=el('button',`${time(p.observed_at)} · ${p.confidence} · ${quantity(p.frp_mw,'MW')}${f.distance_km==null?'':' · '+f.distance_km.toFixed(1)+' km from place'}`);b.className='fire-choice';b.onclick=()=>{if(replay||!get('layer-firms').checked)return;const [lon,lat]=f.geometry.coordinates;window.WeatherMap.focus(lat,lon);L.popup().setLatLng([lat,lon]).setContent(popup(f)).openOn(map);};return b;}));
     get('firms-count').textContent=rows.length?`Showing ${Math.min(50,rows.length)} ${get('firms-near').checked?'nearest':'most recent'} matching detections; all matches are mapped and exported.`:'No detections match this file and filter. This does not rule out fire; overpass, clouds, file region and delivery gaps limit coverage.';
     status();
@@ -32,7 +33,7 @@ export function mountFirms({document,window,L,fetcher=fetch,clock=Date.now}){
   for(const id of ['firms-hours','firms-confidence','firms-near'])get(id).onchange=()=>{map.closePopup();render();};
   get('firms-refresh').onclick=()=>{if(!pending){next=0;load();}};
   get('firms-export').onclick=()=>{if(!data)return;render();const report={exported_at:new Date(selection.now).toISOString(),source:data,filters:selection,matching_ids:rows.map(f=>f.id),interpretation:'NOAA-20 thermal detection pixels; not unique fires, confirmed wildfires, burned area, evacuation zones or predicted spread. Raw regional CSV included. A missing detection does not establish absence of fire.'},url=window.URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=el('a');a.href=url;a.download='ventusiq-firms-'+data.region+'.json';a.click();window.setTimeout(()=>window.URL.revokeObjectURL(url),1000);};
-  window.WeatherFirms={updatePlace(value){place=value;if(!place)get('firms-near').checked=false;render();},setReplay(value){replay=value;map.closePopup();render();if(!replay&&get('layer-firms').checked)load();}};
+  window.WeatherFirms={setVisible(value){mapVisible=value;render();},updatePlace(value){place=value;if(!place)get('firms-near').checked=false;render();},setReplay(value){replay=value;map.closePopup();render();if(!replay&&get('layer-firms').checked)load();}};
   window.setInterval(()=>{if(get('layer-firms').checked&&!replay&&!get('map-workspace').hidden)load();render();},60000);
   render();return {load,render,snapshot:()=>data};
 }

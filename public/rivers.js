@@ -24,12 +24,12 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
       catch(error){const entry={data:previous?.data?{...previous.data,stale:true}:null,retry:clock()+120000,error:error.message};cache.set(key,entry);return entry;}
       finally{pending.delete(key);if(cache.size>48){for(const candidate of cache.keys()){if(candidate!=='gauge/'+selected&&candidate!==region&&candidate!==(place?keyNear(place):null)){cache.delete(candidate);break;}}}}})();pending.set(key,work);return work;
   }
-  function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);visible=true;get('river-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;for(const [id,on] of [['nav-rivers',true],['nav-map',false],['nav-personal',false]]){get(id).classList.toggle('nav-active',on);get(id).setAttribute('aria-pressed',String(on));}}
-  function hide(){visible=false;get('river-workspace').hidden=true;get('nav-rivers').classList.toggle('nav-active',false);get('nav-rivers').setAttribute('aria-pressed','false');}
+  function show(){window.WeatherPersonal.show(false);window.WeatherSmokeMap?.setVisible(false);visible=true;window.WeatherMap.setWorkspace?.('rivers');window.WeatherMap.goLive();syncMarkers();get('river-workspace').hidden=false;for(const id of ['map-workspace','map-timeline','hazard-workspace'])get(id).hidden=true;for(const [id,on] of [['nav-rivers',true],['nav-map',false],['nav-personal',false]]){get(id).classList.toggle('nav-active',on);get(id).setAttribute('aria-pressed',String(on));}}
+  function hide(){visible=false;if(markers)map.removeLayer(markers);get('river-workspace').hidden=true;get('nav-rivers').classList.toggle('nav-active',false);get('nav-rivers').setAttribute('aria-pressed','false');}
   async function search(point){
     let key;try{key=keyNear(point);}catch(error){get('river-list-status').textContent=error.message;return;}
     const generation=++regionGeneration;region=key;regionOrigin=point;get('river-lat').value=point.lat;get('river-lon').value=point.lon;get('river-list-status').textContent='Loading regional gauges…';get('river-list').replaceChildren();
-    const entry=await load(key);if(generation!==regionGeneration)return;renderList(entry);if(markerData?.key===key&&entry.data)drawMarkers(entry.data,key);
+    const entry=await load(key);if(generation!==regionGeneration)return;renderList(entry);if(entry.data)drawMarkers(entry.data,key);
   }
   function reading(g){const p=g.properties.observed,stale=!p.at||clock()-Date.parse(p.at)>21600000||Date.parse(p.at)>clock()+600000;const category=p.value===null?{label:'Reading unavailable',color:'#8b8b93'}:stale?{label:'Observation delayed',color:'#8b8b93'}:riverCategory(p.category);return {...category,text:`${value(p.value,p.unit)} · ${category.label} · ${time(p.at)}`};}
   function renderList(entry=cache.get(region)){
@@ -42,7 +42,7 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
   async function openGauge(id){
     try{id=gaugeId(id);}catch(error){get('river-status').textContent=error.message;return;}
     show();const generation=++gaugeGeneration;selected=id;window.WeatherWatches?.refreshGauge(null);window.WeatherRiverChanges?.updateGauge(null);window.WeatherRiverNetwork?.updateGauge(null);get('river-id').value=id;get('river-status').textContent='Loading '+id+' observations and forecast…';get('river-detail').hidden=true;renderList();
-    const entry=await load('gauge/'+id);if(generation!==gaugeGeneration)return;renderGauge(entry);
+    const entry=await load('gauge/'+id);if(generation!==gaugeGeneration)return;renderGauge(entry);if(entry.data){drawMarkers(pointCollection(entry.data),'gauge/'+id);const m=entry.data.metadata;if(visible&&Number.isFinite(m.latitude)&&Number.isFinite(m.longitude))window.WeatherMap.focus(m.latitude,m.longitude);}
   }
   function renderGauge(entry){
     if(!entry?.data){get('river-detail').hidden=true;get('river-status').textContent=entry?.error||'Gauge data unavailable.';return;}
@@ -86,11 +86,12 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
     get('river-chart').replaceChildren(svg);
   }
   function drawMarkers(data,key){
+    if(visible)window.WeatherMap.overlayStatus?.(`${data.features.length} gauges · observation status · checked ${time(data.checked_at)}. Points are not flood inundation areas.`);
     if(markers)map.removeLayer(markers);markerData={data,key};
     markers=L.geoJSON(data,{pointToLayer:(f,latlng)=>L.circleMarker(latlng,{radius:6,color:'#12121a',weight:1,fillColor:old(data)?'#8b8b93':reading(f).color,fillOpacity:.95}),onEachFeature:(f,layer)=>{const box=el('div',undefined,'hazard-popup');box.append(el('h3',f.properties.name),el('p',reading(f).text),el('p','Point measurement, not a flood inundation area.'));const button=el('button','View forecast and impacts','action secondary');button.onclick=()=>openGauge(f.id);box.append(button);layer.bindPopup(box);}});syncMarkers();
   }
   function pointCollection(data){const m=data.metadata;return {type:'FeatureCollection',features:[{type:'Feature',id:m.lid,geometry:{type:'Point',coordinates:[m.longitude,m.latitude]},properties:{name:m.name,observed:{value:waterValue(m.status?.observed?.primary),unit:m.status?.observed?.primaryUnit,category:m.status?.observed?.floodCategory,at:waterTime(m.status?.observed?.validTime)}}}],checked_at:data.checked_at,stale:data.stale};}
-  function syncMarkers(){if(markers){if(replay)map.removeLayer(markers);else markers.addTo(map);}get('river-map-tools').hidden=!markerData;get('river-map-status').textContent=markerData?(replay?'Current river markers are hidden during alert replay.':`${markerData.data.features.length} river gauges · observed status · ${old(markerData.data)?'updates delayed · ':''}checked ${time(markerData.data.checked_at)}`):'';}
+  function syncMarkers(){if(markers){if(replay||!visible)map.removeLayer(markers);else markers.addTo(map);}get('river-map-tools').hidden=!markerData;get('river-map-status').textContent=markerData?(replay?'Current river markers are hidden during alert replay.':`${markerData.data.features.length} river gauges · observed status · ${old(markerData.data)?'updates delayed · ':''}checked ${time(markerData.data.checked_at)}`):'';}
   async function renderPlace(){
     if(!place)return;const point=place,key=keyNear(point);let entry=cache.get(key);get('place-rivers').replaceChildren(el('p','Loading nearby gauges…'));entry=await load(key);
     if(!place||keyNear(place)!==key)return;
@@ -105,8 +106,8 @@ export function mountRivers({document,window,L,fetcher=fetch,clock=Date.now}){
   get('river-map-center').onclick=()=>{const center=map.getCenter();search({lat:center.lat,lon:((center.lng+180)%360+360)%360-180});};
   get('river-region-form').onsubmit=e=>{e.preventDefault();search({lat:Number(get('river-lat').value),lon:Number(get('river-lon').value)});};
   get('river-id-form').onsubmit=e=>{e.preventDefault();openGauge(get('river-id').value);};get('river-search').oninput=()=>renderList();
-  get('river-region-map').onclick=()=>{const data=cache.get(region)?.data;if(!data){get('river-list-status').textContent='Load a region first.';return;}window.WeatherMap.goLive();window.WeatherPersonal.show(false);drawMarkers(data,region);const bounds=markers.getBounds();if(bounds.isValid())map.fitBounds(bounds,{padding:[40,60],maxZoom:9});};
-  get('river-on-map').onclick=()=>{const data=cache.get('gauge/'+selected)?.data,m=data?.metadata;if(!m||!Number.isFinite(m.latitude)||!Number.isFinite(m.longitude)){get('river-status').textContent='Gauge coordinates are unavailable.';return;}window.WeatherMap.goLive();window.WeatherPersonal.show(false);drawMarkers(pointCollection(data),'gauge/'+selected);window.WeatherMap.focus(m.latitude,m.longitude);};
+  get('river-region-map').onclick=()=>{const data=cache.get(region)?.data;if(!data){get('river-list-status').textContent='Load a region first.';return;}window.WeatherMap.goLive();show();drawMarkers(data,region);const bounds=markers.getBounds();if(bounds.isValid())map.fitBounds(bounds,{padding:[40,60],maxZoom:9});};
+  get('river-on-map').onclick=()=>{const data=cache.get('gauge/'+selected)?.data,m=data?.metadata;if(!m||!Number.isFinite(m.latitude)||!Number.isFinite(m.longitude)){get('river-status').textContent='Gauge coordinates are unavailable.';return;}window.WeatherMap.goLive();show();drawMarkers(pointCollection(data),'gauge/'+selected);window.WeatherMap.focus(m.latitude,m.longitude);};
   get('river-map-clear').onclick=()=>{if(markers)map.removeLayer(markers);markers=null;markerData=null;syncMarkers();};
   window.WeatherRivers={hide,openGauge,currentProduct:()=>cache.get('gauge/'+selected)?.data||null,acceptProduct(data){if(data?.metadata?.lid!==selected)return;const entry={data,retry:clock()+900000,error:data.error||null};cache.set('gauge/'+selected,entry);renderGauge(entry);},setReplay(value){replay=value;syncMarkers();},updatePlace(value){place=value;renderPlace();}};
   window.setInterval(()=>{if(visible){if(region&&regionOrigin)search(regionOrigin);if(selected){const id=selected;load('gauge/'+id).then(entry=>{if(selected===id)renderGauge(entry);});}}if(place)renderPlace();if(markerData){const key=markerData.key;load(key).then(entry=>{if(markerData?.key!==key)return;drawMarkers(entry.data?(key.startsWith('gauge/')?pointCollection(entry.data):entry.data):{...markerData.data,stale:true},key);});}},60000);

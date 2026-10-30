@@ -7,7 +7,7 @@ export function mountWorkspaceNavigation({document,schedule=queueMicrotask,Obser
   const get=id=>document.getElementById(id),main=get('workspace');if(!main)return null;
   const listeners=[],jumps=[...document.querySelectorAll('[data-workspace-jump]')];
   const visible=node=>!!node&&!node.closest('[hidden]');
-  const focus=node=>{if(!visible(node))return false;const heading=node===main?node:node.querySelector('h2,h3')||node;if(!visible(heading))return false;heading.setAttribute('tabindex','-1');heading.focus();return true;};
+  const focus=node=>{if(!visible(node))return false;const heading=node===main?node:node.querySelector('h2,h3')||node;if(!visible(heading))return false;heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});return true;};
   const listen=(node,fn)=>{if(node){node.addEventListener('click',fn);listeners.push([node,fn]);}};
   const target=link=>get(link.getAttribute('data-workspace-jump'));
   const sync=()=>{for(const link of jumps){const hidden=!visible(target(link));if(link.hidden!==hidden)link.hidden=hidden;}};

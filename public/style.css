@@ -98,3 +98,27 @@
 .planner-air-limits:not([hidden]){display:contents}#plan-air-source-label{grid-column:1/-1;max-width:420px}
 
 #ozone-results>p{overflow-wrap:anywhere}#ozone-results th{min-width:80px}
+/* One map survives every workspace change. Tools scroll beside it. */
+#workspace{display:grid;grid-template-columns:minmax(360px,46%) minmax(0,1fr);gap:18px;margin:0 24px 28px;align-items:start}
+#workspace>section{grid-column:1;min-width:0;margin:0}
+#workspace>#shared-map{grid-column:2;grid-row:1 / span 5;position:sticky;top:18px;height:calc(100dvh - 36px);max-height:850px;min-height:500px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+#workspace>#map-workspace{display:block;height:620px;min-height:0}
+#workspace>#map-workspace[hidden]{display:none}
+#workspace .sidebar{height:100%;border-right:0}
+#workspace .journey-layout,#workspace .personal-layout,#workspace .river-layout{display:block}
+#workspace .places-panel{border-right:0;border-bottom:1px solid var(--line)}
+#workspace .personal-content{min-width:0;padding:20px}
+#workspace .timeline{height:auto;min-height:70px;flex-wrap:wrap;padding:12px}
+.workspace-map-heading{position:absolute;z-index:500;left:18px;right:18px;top:18px;background:#111115ed;border:1px solid var(--line);border-radius:8px;padding:13px 16px;pointer-events:none}
+.workspace-map-heading p{font-size:12px;line-height:1.5;margin:6px 0 0;color:var(--muted)}
+#workspace:not([data-view="live"]) #shared-map .map-heading,#workspace:not([data-view="live"]) #shared-map .map-summary,#workspace:not([data-view="live"]) #shared-map .legend,#workspace:not([data-view="live"]) #shared-map .map-tools{display:none}
+#workspace:not([data-view="live"]) #shared-map .leaflet-top{top:125px}
+#workspace #shared-map .map-notice{top:135px}
+@media(max-width:900px){
+  #workspace{display:flex;flex-direction:column;gap:14px;margin:0 12px 20px}
+  #workspace>section{width:100%}
+  #workspace>#shared-map{order:-1;position:relative;top:auto;flex:none;height:420px;min-height:320px;max-height:60dvh}
+  #workspace>#map-workspace{height:520px}
+  #workspace .timeline{position:relative;bottom:auto}
+  #workspace .personal-content{padding:16px}
+}

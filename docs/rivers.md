@@ -134,7 +134,7 @@ Forecast revision selection uses one evaluation time for both products and ignor
 
 ## Persistent threshold watches
 
-The hosted gauge detail now offers an explicit signed-in watch for one official
+The hosted gauge detail offers an explicit browser-owned watch for one official
 threshold. It records separate observed and 72-hour forecast state changes,
 comparable forecast crossing-window changes and coverage interruptions. Manage,
 pause, delete, export or issue a private Atom feed in My weather. See the complete

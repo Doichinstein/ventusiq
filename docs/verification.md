@@ -2770,3 +2770,31 @@ OpenTMS-Event22873686329-NB returned version 4.0, estimated start and end
 2026-08-10T20:39:34Z. This is an inspection of the earlier retained feed, not a
 fresh collection or an approved event-to-road association. Public OSRM routing
 and road-event activation are unchanged.
+
+
+## Live river threshold-status revision — DeLand, October 30 afternoon
+
+At 20:23 UTC, the archived DLAF1 comparison paired the October 30 00:46 and
+12:37 UTC forecasts. Independent Python arithmetic, without importing app code,
+reproduced 17 matching future samples and 12 nonzero changes; the largest change
+was +0.1 ft. The highest shared sample changed from 3.9 to 4 ft. Both source
+products reported the same 4 ft minor-flood threshold. The earlier forecast did
+not reach it in the shared future horizon; the current forecast did.
+
+The current forecast's first shared sample, October 31 00:00 UTC, is already at
+4 ft. There is no preceding below-threshold future sample, so the comparison
+correctly withholds a crossing bracket and timing shift. This verifies a live
+changed threshold status, not a changed crossing-time window, notification
+delivery, measured flood impact or forecast accuracy. Missing vertical-reference
+metadata remains disclosed.
+
+Public browser QA showed “Now reaches this threshold,” “Previous: Not reached
+in sampled horizon,” and “Current: At/above ...; crossing unknown.” The browser
+JSON export matched all 12 inspected source/result fields in the API report.
+A separate NOAA stageflow response exactly matched the current raw forecast.
+The [retained source products and verification](evidence/river-threshold-DLAF1-2026-10-30.json)
+include input hashes and the independently reproduced counts. Screenshots, the
+browser export and direct NOAA response are retained in the external verification
+folder. The frozen regression reproduces this real transition; evaluating the
+old collection later returns stale instead of continuing to assert applicability.
+Thirteen focused revision tests passed.

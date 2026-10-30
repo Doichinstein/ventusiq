@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-## Reproducible route graph foundation (v97)
+## Reproducible route graph foundation (v98)
 
 A new optional local tool builds a version-pinned Valhalla graph, verifies source,
 configuration, native engine and tile hashes, and exports strict route-edge identity.

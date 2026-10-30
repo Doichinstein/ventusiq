@@ -37,7 +37,7 @@ jobs:
       - name: Test all feature modules and the daemon
         run: npm test
       - name: Install optional pinned routing engine
-        run: python -m pip install --only-binary=:all: pyvalhalla==3.9.1
+        run: 'python -m pip install --only-binary=:all: pyvalhalla==3.9.1'
       - name: Build and relocate a real routing graph
         run: python scripts/check-route-network.py
       - name: Build the source download

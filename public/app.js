@@ -231,7 +231,7 @@ function updateHealth() {
     notice(null);
   }
 }
-function notice(message) { $('map-notice').hidden = !message; $('map-notice').textContent = message || ''; }
+function notice(message) { if(workspaceMode!=='live'||pendingMapPick)return; $('map-notice').hidden = !message; $('map-notice').textContent = message || ''; }
 function emptyFeed(title, text) {
   const div = node('div', null, 'empty');
   div.append(node('h3', title), node('p', text));

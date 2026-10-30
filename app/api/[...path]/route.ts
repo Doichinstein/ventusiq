@@ -1,3 +1,4 @@
+import {archivedEventMap} from '../../../lib/event-map.mjs';
 import {browserOwner} from '../../../lib/browser-owner.mjs';
 import {ForecastStabilityService} from '../../../lib/forecast-stability-service.mjs';
 import {mapAlerts} from '../../../lib/map-alerts.mjs';
@@ -107,6 +108,7 @@ export async function GET(request:Request){
     if(path==='/api/forecast/stability')return json(await new ForecastStabilityService(service).compare(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('hours')||24));
     if(path==='/api/ensemble/verification')return json(await new EnsembleVerificationService(service).compare(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('station')));
     if(path==='/api/verification')return json(await new ObservationsService(service).verification(url.searchParams.get('lat'),url.searchParams.get('lon'),url.searchParams.get('station'),url.searchParams.get('at')));
+    if(path==='/api/event-map'){const story=await new EventsService(service).story(url.searchParams.get('id'),url.searchParams.has('at')?atTime(url.searchParams.get('at')):service.eventClock()/1000);return story?json(await archivedEventMap(service,story)):json({error:'No collected event at this time'},404);}
     if(path==='/api/events')return json(await new EventsService(service).list(url.searchParams.get('q')||'',url.searchParams.get('cursor')||''));
     if(path.startsWith('/api/events/')){
       if(url.searchParams.get('resolve')==='1'&&url.searchParams.has('at'))return json({error:'Invalid request: retrieve references from the latest view'},400);

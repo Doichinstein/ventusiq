@@ -8,7 +8,7 @@ above the selected tools. Journey map picking stays within Journey.
 
 Journey owns its route and sample layers. Rivers automatically displays searched
 gauges and the selected gauge. Events displays only geometry stored in the
-selected archive response; a missing historical polygon is stated explicitly,
+selected archive response or zone versions retained before its cutoff; missing historical geometry is stated explicitly,
 without substituting current boundaries. Live alerts, fires, air, satellite,
 smoke, detections and watershed context detach when entering unrelated tools.
 Late requests may update cached results but cannot attach an inactive overlay.

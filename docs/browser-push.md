@@ -15,6 +15,14 @@ saving a place and creating a watch do not enroll a device. The browser must
 support secure Web Push; some mobile browsers require installation as a home-screen
 web app. Browser and operating-system policies may suppress or delay delivery.
 
+In Brave, granting site notification permission is separate from enabling its push
+service. If enrollment reports “Registration failed – push service error”, open
+`brave://settings/?search=push`, enable **Use Google services for push messaging**,
+reload VentusIQ and enroll again. This uses Google's delivery service.
+[Brave's maintainer guidance](https://github.com/brave/brave-browser/issues/41930)
+documents this distinction. Successful enrollment shows the device and a **Send test
+notification** button; permission alone does not prove enrollment or delivery.
+
 An enrolled device receives future changes from all this browser owner's current and
 future saved watches, including gauge watches. Initial baselines stay quiet.
 The existing hourly upkeep evaluates watches and drains the delivery queue.

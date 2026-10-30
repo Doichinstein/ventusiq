@@ -13,6 +13,11 @@ async function setup(){const nodes=Object.fromEntries([...readFileSync(new URL('
  const mounted=mountPush({document:{getElementById:id=>nodes[id],createElement:()=>new Element()},window,fetcher});const settle=async()=>{for(let i=0;i<5;i++)await new Promise(r=>setImmediate(r));};await settle();return {nodes,mounted,window,posts,permission:v=>permission=v,permissionCalls:()=>permissionCalls,registered:()=>registered,authenticated:v=>authenticated=v,id,settle};
 }
 test('push initialization never requests permission, registers a worker or enrolls a device',async()=>{const s=await setup();assert.equal(s.permissionCalls(),0);assert.equal(s.registered(),0);assert.equal(s.posts.length,0);assert.equal(s.nodes['push-enable'].disabled,false);});
+test('browser push-service failure gives recovery guidance and does not enroll or send a test',async()=>{
+ const s=await setup(),register=s.window.navigator.serviceWorker.register;
+ s.window.navigator.serviceWorker.register=async(...args)=>{const reg=await register(...args);reg.pushManager.subscribe=async()=>{throw new DOMException('Registration failed - push service error','AbortError');};return reg;};
+ await s.mounted.enable();assert.match(s.nodes['push-status'].textContent,/brave:\/\/settings/);assert.equal(s.posts.length,0);assert.equal(s.nodes['push-enable'].disabled,false);
+});
 test('pending permission and push-service enrollment report their stage without claiming enrollment',async()=>{
  const s=await setup();let allow,connect;
  s.window.Notification.requestPermission=()=>new Promise(resolve=>allow=resolve);

@@ -72,7 +72,7 @@ export function mountWorkspaceExplorer({document,window,fetcher,clock}){
   journeyAside?.remove();journeyPanel.querySelector('.personal-title')?.remove();
   const result=get('journey-results'),children=[...result.children],hourlyBox=get('journey-weather-body').closest('.hourly-scroll');
   group(result,'Departure comparisons',[get('journey-comparisons')],'Compare the chosen time and two later departures');
-  group(result,'Weather along the route',[hourlyBox.previousElementSibling?.previousElementSibling,hourlyBox.previousElementSibling,hourlyBox]);
+  group(result,'Weather along the route',[get('journey-stop-weather'),hourlyBox.previousElementSibling?.previousElementSibling,hourlyBox.previousElementSibling,hourlyBox]);
   group(result,'Current alert overlaps',[get('journey-alerts').previousElementSibling?.previousElementSibling,get('journey-alerts').previousElementSibling,get('journey-alerts')]);
   group(result,'Roads, stops & work zones',[get('journey-stop-summary'),children.find(n=>n.tagName==='DETAILS'),get('journey-roadwork-results')]);
   group(result,'Smoke forecast',[get('journey-smoke-results')]);

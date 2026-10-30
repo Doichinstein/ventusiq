@@ -237,3 +237,34 @@ source editions, with date-window intersections, source age, reported lane statu
 geometry display and raw evidence export. Endpoint-only records remain separate
 locations. Missing, stale, cancelled and unknown coverage cannot establish an open
 road. See [proximity methods, attribution and limits](journey-roadwork.md).
+
+
+### Full-stop hourly forecast coverage
+
+Journey method `2026-10-30.2` adds `weather_stops` for each departure. Positive-duration
+stops reuse their existing hourly forecast and gust grid; no extra provider requests
+are made. The Weather along the route section displays temperature range, maximum
+sustained wind, maximum forecast gust and maximum rain probability across the whole
+stop, together with per-field covered minutes. Departure comparison cards count stops
+with complete forecast-period coverage for all four fields.
+
+`journey-stop-weather.mjs` splits the interval at every hourly/gust boundary, clips
+it to the exact stop times and requires exactly one matching hourly period. A gap
+or overlap cannot be hidden between half-hour route samples. Each metric retains
+its own missing denominator; a missing metric withholds that metric's whole-stop
+range rather than displaying a favorable partial maximum. Valid other metrics
+remain available. Zero-minute via points are omitted.
+
+Hourly collections must be at most 15 minutes old and editions at most 24 hours old,
+with explicit timezones and no timestamps more than a minute in the future. The
+returned point and hourly URL must match the snapped point and NWS metadata. Gusts
+reuse the existing independent source/grid/time validation. Unsupported units,
+invalid fields and malformed intervals stay unknown. Absolute timestamps preserve
+repeated daylight-saving hours. Forecast-period values do not establish continuous
+extremes, actual gust duration, rain duration, exposure or safe travel conditions.
+
+Exports retain the snapped coordinate, source revision/check/issue/URL, per-field
+coverage, clipped segments, hourly source indices and original gust interval evidence.
+The existing source collection in the same export retains the raw hourly periods.
+These summaries concern the snapped road point; access to an off-road stop remains
+unassessed. They do not establish road-event attribution or physical conditions.

@@ -2599,3 +2599,29 @@ Public desktop inspection confirmed enabled watch/push/webhook controls and empt
 lists without entering account credentials. Refresh preserved that state with no
 captured warnings/errors. Browser enrollment was not submitted; the live HTTP
 mutation check above is separate from this rendered initial-state check.
+
+
+## Compact entry follow-up and full-stop weather (October 30)
+
+v124 (`64ca1d8`) reduced empty desktop My weather entry height from about 142 to
+97 pixels, and Journey from 164 to 107 pixels at 1280 × 720. At an emulated
+390 × 844 viewport the corresponding heights changed from 150 to 105 and
+240 to 177 pixels. Desktop map height increased from 380 to 430 pixels. Expandable
+Journey settings and coordinate validation remained usable; no horizontal overflow
+or captured console warnings/errors appeared. These are viewport measurements,
+not physical-device evidence. Ten location-entry checks and production packaging passed.
+
+The subsequent full-stop weather implementation adds ten analytical/DOM tests for
+clipped periods, mixed units and zero values, repeated DST hours, a short gap between
+route samples, overlapping periods, per-field invalidity, stale/future/wrong-source
+inputs, independent gust gaps, exclusive ends, changed departures, absent stop samples,
+zero-duration vias, export and safe text rendering. The Journey interaction fixture
+now supplies point/issue/hourly-source identity, and verifies full-stop results update
+on departure changes and survive export without extra forecast requests.
+
+The first expanded interaction assertion expected a 50–52°F range but the fixture's
+default departure is one hour after its evaluation time; independent timing gives
+51–53°F. The assertion was corrected, not the calculation. All 34 new/related
+calculation and Journey UI tests then passed. These synthetic checks do not establish
+observed forecast accuracy, measured exposure, real closure attribution or unattended
+delivery. Rendered public verification follows publication.

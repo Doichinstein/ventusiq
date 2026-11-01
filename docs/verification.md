@@ -2993,3 +2993,10 @@ returned `insufficient_overlap`: fewer than two future timestamps remained in
 both the new forecast and the preceding October 30 edition. It did not fabricate
 a crossing-window shift from non-overlapping horizons. The real changed-window
 gate remains open.
+
+The v148 public browser check at 1280 pixels measured webhook inputs increasing
+from 75 to 415.5 pixels and watch numeric controls from 75 to 201.8 pixels. At a
+390-pixel viewport the webhook fields used the full 288-pixel available width,
+with no page overflow and a 44-pixel submit button. An inherited column direction
+on checkbox labels was then overridden explicitly so consent text sits beside
+its control. These are desktop/viewport-emulation checks, not physical-device QA.

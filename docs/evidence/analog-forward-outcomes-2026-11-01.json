@@ -1,0 +1,1752 @@
+{
+  "document": {
+    "report": {
+      "schema": "ventusiq-analog-forward-score/1",
+      "method": "2026-10-29.1",
+      "evaluated_at": "2026-11-01T20:14:46.280Z",
+      "cohort_sha256": "d8d68bd4a6dfcb9690f237701b6b4819c91bf1d84a5ac3e65f9ba948b681848f",
+      "plan_sha256": "7d46c8ce7fdfc058e0818d9b7af8e43653d7edde422d582a1e8fde44c9e18072",
+      "scheduled_points": 27,
+      "scheduled_grid_days": 4,
+      "unique_grids": 1,
+      "aggregation": "Report all point predictions, plus an equal-weight mean over grid/outcome-day groups: first average paired absolute errors across eligible points within each group, then average groups. Compare analog and seasonal predictions on the identical point/variable subset. Report group and point counts separately, including missing outcomes and insufficient predictions. Shared outcomes are not independent replications; adjacent outcome days may also be correlated. No accuracy conclusion before outcomes arrive.",
+      "metrics": {
+        "high_c": {
+          "paired_points": 0,
+          "paired_groups": 0,
+          "analog_mae": null,
+          "seasonal_mae": null,
+          "difference_seasonal": null,
+          "pending_points": 16,
+          "missing_outcome_points": 11,
+          "insufficient_prediction_points": 0,
+          "groups": [
+            {
+              "group": "39.000,-76.875/2026-10-30",
+              "scheduled_points": 2,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-10-31",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-01",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-02",
+              "scheduled_points": 7,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            }
+          ]
+        },
+        "low_c": {
+          "paired_points": 0,
+          "paired_groups": 0,
+          "analog_mae": null,
+          "seasonal_mae": null,
+          "difference_seasonal": null,
+          "pending_points": 16,
+          "missing_outcome_points": 11,
+          "insufficient_prediction_points": 0,
+          "groups": [
+            {
+              "group": "39.000,-76.875/2026-10-30",
+              "scheduled_points": 2,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-10-31",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-01",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-02",
+              "scheduled_points": 7,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            }
+          ]
+        },
+        "wind_ms": {
+          "paired_points": 0,
+          "paired_groups": 0,
+          "analog_mae": null,
+          "seasonal_mae": null,
+          "difference_seasonal": null,
+          "pending_points": 16,
+          "missing_outcome_points": 11,
+          "insufficient_prediction_points": 0,
+          "groups": [
+            {
+              "group": "39.000,-76.875/2026-10-30",
+              "scheduled_points": 2,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-10-31",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-01",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-02",
+              "scheduled_points": 7,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            }
+          ]
+        },
+        "rain_mm": {
+          "paired_points": 0,
+          "paired_groups": 0,
+          "analog_mae": null,
+          "seasonal_mae": null,
+          "difference_seasonal": null,
+          "pending_points": 16,
+          "missing_outcome_points": 11,
+          "insufficient_prediction_points": 0,
+          "groups": [
+            {
+              "group": "39.000,-76.875/2026-10-30",
+              "scheduled_points": 2,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-10-31",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-01",
+              "scheduled_points": 9,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            },
+            {
+              "group": "39.000,-76.875/2026-11-02",
+              "scheduled_points": 7,
+              "paired_points": 0,
+              "analog_mae": null,
+              "seasonal_mae": null
+            }
+          ]
+        }
+      },
+      "cases": [
+        {
+          "id": "efbf6c4c919071d7014c074f358bf986394b38dbae855f2cfb56eff62bcc1907",
+          "point": {
+            "lat": 38.8988,
+            "lon": -77.0365
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/38.8988,-77.0365:6e24368adb1ad91d562c1d45526dcca30e5a534080d29242e1e57d4cc9eb4909",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.369999999999997,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.14,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.255,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.04,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "d0e9d8fc1b7e51393c05bb50aa93f5f3d37eab0e52a373b15b269f16fccf2a99",
+          "point": {
+            "lat": 38.8988,
+            "lon": -77.0365
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/38.8988,-77.0365:6e24368adb1ad91d562c1d45526dcca30e5a534080d29242e1e57d4cc9eb4909",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 19.265,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.83,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.6849999999999996,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.03,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "f59bc846ed9ee2691fba577613e3ddcc41730074f42576c7d8cab48b90610d52",
+          "point": {
+            "lat": 38.8988,
+            "lon": -77.0365
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-11-01",
+          "outcome_date": "2026-11-02",
+          "group": "39.000,-76.875/2026-11-02",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/38.8988,-77.0365:6e24368adb1ad91d562c1d45526dcca30e5a534080d29242e1e57d4cc9eb4909",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.2,
+              "seasonal": 17.604999999999997,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 9.195,
+              "seasonal": 6.640000000000001,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.435,
+              "seasonal": 3.685,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.019999999999999997,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "4e8b839a6119608abfce8023472725bd13796306b61af3cf68b2bae921a0f959",
+          "point": {
+            "lat": 38.9,
+            "lon": -77
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-29",
+          "outcome_date": "2026-10-30",
+          "group": "39.000,-76.875/2026-10-30",
+          "decision_time": "2026-10-28T21:32:00.000Z",
+          "forecast_source": "forecast/38.9000,-77.0000:0c6098c8398b19e5487394a63c1c0d88dbf126fe1b07cff1586606d614fcaf87",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.295,
+              "seasonal": 18.32,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 11.575,
+              "seasonal": 7.24,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.08,
+              "seasonal": 3.645,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.065,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "121303b2769961b7ff329a4c409fa3f0f812e230f8f2836882cb46efa005bb04",
+          "point": {
+            "lat": 38.9,
+            "lon": -77
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-28T21:32:00.000Z",
+          "forecast_source": "forecast/38.9000,-77.0000:0c6098c8398b19e5487394a63c1c0d88dbf126fe1b07cff1586606d614fcaf87",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 22.39,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.14,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.55,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.045,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "bae33796f06a0411dda633953ea9e0643a90e6856f8d2c0bca7127662e410fab",
+          "point": {
+            "lat": 38.9,
+            "lon": -77
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-28T21:32:00.000Z",
+          "forecast_source": "forecast/38.9000,-77.0000:0c6098c8398b19e5487394a63c1c0d88dbf126fe1b07cff1586606d614fcaf87",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 19.265,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.83,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.6849999999999996,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.03,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "a7636ae94c526c16bff0d894e6c8a25164d4aca1df9a96d9f736cb47d25470d8",
+          "point": {
+            "lat": 38.9,
+            "lon": -77.04
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-29",
+          "outcome_date": "2026-10-30",
+          "group": "39.000,-76.875/2026-10-30",
+          "decision_time": "2026-10-28T22:57:16.000Z",
+          "forecast_source": "forecast/38.9000,-77.0400:08b5a4e99c83d48568265b53b7e2124979ae5b728c70a2f9131a091bbd222fad",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.295,
+              "seasonal": 18.32,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 11.575,
+              "seasonal": 7.24,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.08,
+              "seasonal": 3.645,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.065,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "4ad9388c922d32b8ed3f6007be01a55f3b59782b5e4de42094e030702df8a19e",
+          "point": {
+            "lat": 38.9,
+            "lon": -77.04
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-28T22:57:16.000Z",
+          "forecast_source": "forecast/38.9000,-77.0400:08b5a4e99c83d48568265b53b7e2124979ae5b728c70a2f9131a091bbd222fad",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 22.39,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.14,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.55,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.045,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "0344121a4f42af96cc8a6caafc96d944a6decd04b7ddf8f607901aceb41926ca",
+          "point": {
+            "lat": 38.9,
+            "lon": -77.04
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-28T22:57:16.000Z",
+          "forecast_source": "forecast/38.9000,-77.0400:08b5a4e99c83d48568265b53b7e2124979ae5b728c70a2f9131a091bbd222fad",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.085,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 9.195,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.575,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.03,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "dac3607cc12429bc9765bbd92c0e51de516345c8a8224627b74022e1f8a3172a",
+          "point": {
+            "lat": 38.9795,
+            "lon": -76.8932
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/38.9795,-76.8932:6a3d32fa2c165e6727d08d5aea0652d4035ec85008f52826387a8df83f89f537",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.715,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.925,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.55,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.065,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "44057eb190875637706380d2dfe8ee04b1f5427ee2ff9cde5f341636560821ac",
+          "point": {
+            "lat": 38.9795,
+            "lon": -76.8932
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/38.9795,-76.8932:6a3d32fa2c165e6727d08d5aea0652d4035ec85008f52826387a8df83f89f537",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.085,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.81,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.365,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.025,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "880f04912759810a4ea8fcfa5606ad9550b065df03e76176bf55bf215fca4823",
+          "point": {
+            "lat": 38.9795,
+            "lon": -76.8932
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-11-01",
+          "outcome_date": "2026-11-02",
+          "group": "39.000,-76.875/2026-11-02",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/38.9795,-76.8932:6a3d32fa2c165e6727d08d5aea0652d4035ec85008f52826387a8df83f89f537",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.2,
+              "seasonal": 17.604999999999997,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.620000000000001,
+              "seasonal": 6.640000000000001,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.3150000000000004,
+              "seasonal": 3.685,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "4594ce542d6868ca889cbb90c5636887a28f9949f02af44b7ef02d3d80636960",
+          "point": {
+            "lat": 39,
+            "lon": -77
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-29T04:11:59.000Z",
+          "forecast_source": "forecast/39.0000,-77.0000:94f5eeb1d524acbd8a74b6032fac0a26d1ec1121719e989646c367a7ff0bc347",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.295,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.925,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.52,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.09,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "a7cc7dc978b8669f66c6cfa8b2c3a3d965ad1e402f87c4a991fff9e75cec7af4",
+          "point": {
+            "lat": 39,
+            "lon": -77
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-29T04:11:59.000Z",
+          "forecast_source": "forecast/39.0000,-77.0000:94f5eeb1d524acbd8a74b6032fac0a26d1ec1121719e989646c367a7ff0bc347",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 19.265,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.55,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.52,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "4f1f83346fe50d9e3c477bcc3d37a447a985a3c75b82d8e3ef569e4607877db9",
+          "point": {
+            "lat": 39,
+            "lon": -77
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-11-01",
+          "outcome_date": "2026-11-02",
+          "group": "39.000,-76.875/2026-11-02",
+          "decision_time": "2026-10-29T04:11:59.000Z",
+          "forecast_source": "forecast/39.0000,-77.0000:94f5eeb1d524acbd8a74b6032fac0a26d1ec1121719e989646c367a7ff0bc347",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.2,
+              "seasonal": 17.604999999999997,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.620000000000001,
+              "seasonal": 6.640000000000001,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.3150000000000004,
+              "seasonal": 3.685,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "e32ed808389970cd14638f2bce9c024a3a1d6e0fd58fbcedc98535b533918ce8",
+          "point": {
+            "lat": 39.007,
+            "lon": -76.8922
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-29T03:22:08.000Z",
+          "forecast_source": "forecast/39.0070,-76.8922:0a48d516d616d71beea6f91207309ada19c4f86f5a9a544b8e6b11fc97e287f4",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.715,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.925,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.55,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.065,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "bd3694ad758ef9ee66d971cd633c92ad07bf957a23991713c66178897b999419",
+          "point": {
+            "lat": 39.007,
+            "lon": -76.8922
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-29T03:22:08.000Z",
+          "forecast_source": "forecast/39.0070,-76.8922:0a48d516d616d71beea6f91207309ada19c4f86f5a9a544b8e6b11fc97e287f4",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.085,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.59,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.33,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "16fbafd3ca82babaaac2a3c30f4e8ae5d09a0b1deae7d800e9cfcdbdd5563ecf",
+          "point": {
+            "lat": 39.007,
+            "lon": -76.8922
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-11-01",
+          "outcome_date": "2026-11-02",
+          "group": "39.000,-76.875/2026-11-02",
+          "decision_time": "2026-10-29T03:22:08.000Z",
+          "forecast_source": "forecast/39.0070,-76.8922:0a48d516d616d71beea6f91207309ada19c4f86f5a9a544b8e6b11fc97e287f4",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.2,
+              "seasonal": 17.604999999999997,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 7.484999999999999,
+              "seasonal": 6.640000000000001,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.27,
+              "seasonal": 3.685,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "8fcbcdddc8c474ce03b09d27f7ff388bef04a166acc1223f8a696bcc1b6a272e",
+          "point": {
+            "lat": 39.0319,
+            "lon": -76.8803
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-29T03:22:10.000Z",
+          "forecast_source": "forecast/39.0319,-76.8803:ef00b98b2d327d26df94244e58722bdff3ef4b8111df34605a249a4c714fc639",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.715,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.805,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.42,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.065,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "26e5795603b0312dc8b641bfe36744fba6686d5b5b1c374d9f2250d8a412e2a7",
+          "point": {
+            "lat": 39.0319,
+            "lon": -76.8803
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-29T03:22:10.000Z",
+          "forecast_source": "forecast/39.0319,-76.8803:ef00b98b2d327d26df94244e58722bdff3ef4b8111df34605a249a4c714fc639",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 19.465000000000003,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.365,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.52,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.035,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "0c89d181fe722739104246c4c5e87488976a8ca6c910443c1e08a38a58bc0752",
+          "point": {
+            "lat": 39.0319,
+            "lon": -76.8803
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-11-01",
+          "outcome_date": "2026-11-02",
+          "group": "39.000,-76.875/2026-11-02",
+          "decision_time": "2026-10-29T03:22:10.000Z",
+          "forecast_source": "forecast/39.0319,-76.8803:ef00b98b2d327d26df94244e58722bdff3ef4b8111df34605a249a4c714fc639",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.2,
+              "seasonal": 17.604999999999997,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 7.484999999999999,
+              "seasonal": 6.640000000000001,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.27,
+              "seasonal": 3.685,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "fea05ac658b7d5e0dc33fbdd6741b918b7d34c416bcb94024a55d3e583a96cd4",
+          "point": {
+            "lat": 39.1072,
+            "lon": -76.787
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-29T03:22:11.000Z",
+          "forecast_source": "forecast/39.1072,-76.7870:6d3269b662669ae3e6b517fa3b4372f6766e01aca7e3c94eac5a2cd0bb8df0bb",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.715,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.805,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.52,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.09,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "b6044ab7b49596cd19c283795346aa33a894ab1db2613ac76834d21ee2690426",
+          "point": {
+            "lat": 39.1072,
+            "lon": -76.787
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-29T03:22:11.000Z",
+          "forecast_source": "forecast/39.1072,-76.7870:6d3269b662669ae3e6b517fa3b4372f6766e01aca7e3c94eac5a2cd0bb8df0bb",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.085,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.59,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.33,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "114d4aed0117e90cced4814e474df5420a175cfa5b55ec3dcb5dd08ed1e201e8",
+          "point": {
+            "lat": 39.1072,
+            "lon": -76.787
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-11-01",
+          "outcome_date": "2026-11-02",
+          "group": "39.000,-76.875/2026-11-02",
+          "decision_time": "2026-10-29T03:22:11.000Z",
+          "forecast_source": "forecast/39.1072,-76.7870:6d3269b662669ae3e6b517fa3b4372f6766e01aca7e3c94eac5a2cd0bb8df0bb",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.2,
+              "seasonal": 17.604999999999997,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.02,
+              "seasonal": 6.640000000000001,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.3449999999999998,
+              "seasonal": 3.685,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.03,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "33bd7daa7c9c04ad79fab4b7bdbd90e151222156e0b872fb2232c27ebe899fac",
+          "point": {
+            "lat": 39.1506,
+            "lon": -76.7504
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-30",
+          "outcome_date": "2026-10-31",
+          "group": "39.000,-76.875/2026-10-31",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/39.1506,-76.7504:80c87aa25cbe31e2353d14b674ab1b89d4112fab776a0f6ddbb2e8052fc13863",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 23.295,
+              "seasonal": 18.134999999999998,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 12.344999999999999,
+              "seasonal": 7.075,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 3.495,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "missing_outcome",
+              "actual": null,
+              "analog": 0.07,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "a398f1b4466cb410ebe807535ed0f59ec604a5146b63dc55a6a1b767eef4f124",
+          "point": {
+            "lat": 39.1506,
+            "lon": -76.7504
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-10-31",
+          "outcome_date": "2026-11-01",
+          "group": "39.000,-76.875/2026-11-01",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/39.1506,-76.7504:80c87aa25cbe31e2353d14b674ab1b89d4112fab776a0f6ddbb2e8052fc13863",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 20.085,
+              "seasonal": 17.865000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.59,
+              "seasonal": 6.949999999999999,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.33,
+              "seasonal": 3.6550000000000002,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.015,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        },
+        {
+          "id": "0e6582b4a6edb4bc13f8a52c38805b46243e8f7daac31ba515885dc1dadc3252",
+          "point": {
+            "lat": 39.1506,
+            "lon": -76.7504
+          },
+          "grid": "39.000,-76.875",
+          "target_date": "2026-11-01",
+          "outcome_date": "2026-11-02",
+          "group": "39.000,-76.875/2026-11-02",
+          "decision_time": "2026-10-29T02:50:56.000Z",
+          "forecast_source": "forecast/39.1506,-76.7504:80c87aa25cbe31e2353d14b674ab1b89d4112fab776a0f6ddbb2e8052fc13863",
+          "history_source": "history/power/39.000,-76.875/2016-01-01/2025-12-31:5707bd2ddd9169c29fc8a4ad45332dc40befa0f639f2550326c51080cd79fdd2",
+          "outcome_sha256": null,
+          "variables": {
+            "high_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 19.38,
+              "seasonal": 17.604999999999997,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "low_c": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 8.620000000000001,
+              "seasonal": 6.640000000000001,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "wind_ms": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 3.52,
+              "seasonal": 3.685,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            },
+            "rain_mm": {
+              "status": "pending_day",
+              "actual": null,
+              "analog": 0.03,
+              "seasonal": 0.02,
+              "analog_n": 20,
+              "seasonal_n": 610,
+              "analog_absolute_error": null,
+              "seasonal_absolute_error": null
+            }
+          }
+        }
+      ],
+      "outcome_sources": [],
+      "collection_errors": [
+        {
+          "grid": "39.000,-76.875",
+          "window": {
+            "start": "2026-10-30",
+            "end": "2026-10-31"
+          },
+          "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M_MAX%2CT2M_MIN%2CWS10M%2CPRECTOTCORR&community=RE&latitude=39&longitude=-76.875&start=20261030&end=20261031&time-standard=UTC&format=JSON",
+          "error": "Invalid outcome provider or time standard"
+        }
+      ],
+      "scope": "Frozen forecast-input analogs evaluated against later NASA POWER/MERRA-2 regional reanalysis, not station measurements or address-level impacts. Equal weighting of grid/outcome-day groups avoids counting a shared outcome as independent repetitions. Adjacent days remain correlated. A small convenience cohort cannot establish general operational skill or calibrated probabilities."
+    },
+    "outcomes": {
+      "schema": "ventusiq-analog-outcomes/1",
+      "cohort_sha256": "d8d68bd4a6dfcb9690f237701b6b4819c91bf1d84a5ac3e65f9ba948b681848f",
+      "requested_at": "2026-11-01T20:14:45.638Z",
+      "editions": [],
+      "errors": [
+        {
+          "grid": "39.000,-76.875",
+          "window": {
+            "start": "2026-10-30",
+            "end": "2026-10-31"
+          },
+          "source_url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M_MAX%2CT2M_MIN%2CWS10M%2CPRECTOTCORR&community=RE&latitude=39&longitude=-76.875&start=20261030&end=20261031&time-standard=UTC&format=JSON",
+          "error": "Invalid outcome provider or time standard"
+        }
+      ]
+    }
+  },
+  "integrity": {
+    "algorithm": "SHA-256 of JSON.stringify(document)",
+    "sha256": "4a30b23cd6d524073d34cfc533b4359137f7f186e77dcc00c71e99dff2a9231b"
+  }
+}

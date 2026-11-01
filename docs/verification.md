@@ -2941,3 +2941,39 @@ page confirmed a ten-second delayed test was queued. Browser automation stopped
 while attempting to close the dashboard because it could not verify the current
 URL; closure and notification display are therefore unconfirmed. This attempt
 does not close the closed-page delivery gate.
+
+## November 1: resume, observed forecasts and real webhook changes
+
+The owner confirmed that the October 30 23:22 UTC test notification appeared.
+Its display is confirmed, while dashboard closure remains unknown after the
+automation interruption. Version 146 was published November 1 at 20:13:42 UTC
+after Linux/Windows CI run 41144188904 passed.
+
+The frozen regional GEFS cohort now has 76 observed pairs, two missing cases and
+66 pending targets. The retained [evaluation and independent reconstruction](ensemble-regional-cohort.md#first-observed-outcomes-november-1)
+agree on nearest readings and station-weighted arithmetic. Mean absolute error
+is 2.33°F versus 8.37°F for persistence; the central member range includes only
+22 of 76 readings. No calibrated coverage or general model ranking is asserted.
+
+The [live watch receiver evidence](evidence/live-watch-receipts-2026-11-01.json)
+retains five real changes from the isolated public-coordinate watch: advisory
+departure, new watch, updated watch, lost coverage and recovered coverage. Each
+sender payload exactly matches one stored Cloudflare D1 row and a successful
+HTTP 202 attempt. The advisory departure was recorded October 31 at 00:36:30 UTC,
+after its retained official end at October 30 23:45 UTC; this is delayed absence
+from the collection, not an all-clear or physical flood verification. These
+records do not identify whether a visitor or scheduler triggered upkeep. No
+personal watch or push endpoint was used in this webhook experiment.
+
+The local inspection helper initially filtered an absent top-level `watch_id`
+field, hiding the deliveries from its output. It now uses the documented
+`payload.watch.id`; the production delivery code was unchanged. Receipt checks
+read the receiver independently rather than inferring storage from HTTP 202.
+
+After retaining that evidence, the isolated test watch and its two temporary
+webhook destinations were removed and their private test capability discarded.
+The Cloudflare receiver and its stored evidence remain available. No personal
+watch, browser subscription, paid plan or hourly schedule was changed.
+
+The historical-analog outcome attempt rejected NASA's current GEOS-IT edition
+under the frozen MERRA-2 contract. See the retained [source diagnostic](analog-forward-validation.md#november-1-source-check).

@@ -152,3 +152,43 @@ was created at 20:03:33 UTC without requesting any observations. It contains zer
 matched cases, 144 pending cases, null model/persistence errors and no new source
 pages. Outcome collection remains an explicit operator command, not a newly
 scheduled task or a claim of unattended reliability.
+
+## First observed outcomes: November 1
+
+The [retained evaluation](evidence/gefs-regional-outcomes-2026-11-01.json.gz)
+was collected at 20:13 UTC on November 1, using the original forecast edition and
+the fixed station choices. Of 144 planned cases, 76 matched, two lacked a usable
+nearest observation, and 66 were not yet eligible. Chicago and Houston each had
+one missing case; neither was replaced with a farther reading.
+
+Equal-station mean absolute temperature error was **2.33°F**, compared with
+**8.37°F** for the unchanged-temperature baseline on the same cases. Mean bias
+was +1.18°F. Only **22 of 76** matched readings fell inside the member 10th–90th
+range (29.3% when weighting station inclusion rates equally); mean range width
+was 2.68°F. This sample therefore does not support interpreting that range as an
+80% calibrated prediction interval. It also does not establish a national model
+ranking: this is one run, six convenience locations and correlated target times.
+
+| Station | Matches | Missing | Model MAE °F | Baseline MAE °F | Inside member range |
+|---|---:|---:|---:|---:|---:|
+| KDEN | 13 | 0 | 5.01 | 9.19 | 1/13 |
+| KMIA | 13 | 0 | 1.52 | 7.85 | 5/13 |
+| KBOS | 13 | 0 | 1.31 | 21.20 | 5/13 |
+| KORD | 12 | 1 | 1.93 | 2.24 | 5/12 |
+| KIAH | 12 | 1 | 1.40 | 5.66 | 5/12 |
+| PANC | 13 | 0 | 2.83 | 4.06 | 1/13 |
+
+The independent verifier imports no application scorer. It reconstructs nearest
+observation selection, member values, same-case baseline errors and equal-station
+aggregates from the retained raw inputs. Counterfactual tests reject omitted
+cases, altered observations and a falsely asserted 80% inclusion fraction:
+
+```text
+python scripts/verify-gefs-regional-evaluation.py --plan docs/evidence/gefs-regional-plan-2026-10-30.json --capture docs/evidence/gefs-regional-capture-2026-10-30.json --evaluation docs/evidence/gefs-regional-outcomes-2026-11-01.json.gz
+python -m unittest discover -s tests -p test_gefs_regional_audit.py
+```
+
+For a later collection, decompress this artifact to a new local JSON file and
+pass it as `--previous`, preserving observation corrections. The original scorer
+accepts JSON, while the independent verifier also reads this gzip archive. The
+remaining targets mature through November 3 at 03:30 UTC, subject to publication.

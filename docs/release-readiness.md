@@ -1,6 +1,6 @@
 # Ten-feature acceptance audit
 
-Current evidence: public releases through v144, the October 30 live browser-capability and rendered compound-watch audits, real Cloudflare webhook receipt and queued retry, one owner-confirmed Brave push display, and the full-stop weather checks described below.
+Current evidence: public releases through v146, the October 30 live browser-capability and rendered compound-watch audits, five real watch-change receiver records, two owner-confirmed Brave test displays, and the November 1 regional forecast evaluation. Closed-page display remains unverified.
 All ten features have executable modules and dashboard entry points. This is not
 a declaration that all acceptance criteria have passed. The original requirements
 remain in [architecture](architecture.md#ten-feature-modules-and-acceptance-evidence),
@@ -18,13 +18,13 @@ browser settings; those paths have not been retried or bypassed in this audit.
 | Feature | Verified evidence | Remaining acceptance or broader validation |
 |---|---|---|
 | 1. My Places | Public save, reload, live hourly forecast, select and remove flows passed. Geography matching has automated coverage; desktop and phone-width views were inspected. Public places are device-local with no account gate. | Viewport emulation does not establish physical-device behavior. Cross-device account synchronization is deferred and not mounted publicly. |
-| 2. Meaningful updates | Tests cover ownership, baseline/revision/expiry, threshold crossings, quiet preferences, queue retries and deduplication. The live browser-capability API passed 31 lifecycle checks. A separate live audit independently reproduced six weather/compound/river baseline and repeat snapshots, populated Atom identities and baseline deduplication; all temporary records were removed. On-page refresh preserves reader focus. | Live threshold transitions and closed-page push display remain unverified. The rendered precipitation/wind enrollment, real external receipt and actual queued retry now pass; see the October 30 follow-up below. Visitor-triggered upkeep does not prove unattended execution or delivery. See [watches](watches.md), [baseline evidence](browser-workspaces.md#live-baseline-and-populated-feed-verification) and [webhooks](webhooks.md). |
+| 2. Meaningful updates | Tests cover ownership, baseline/revision/expiry, threshold crossings, quiet preferences, queue retries and deduplication. The live browser-capability API passed 31 lifecycle checks. A separate live audit independently reproduced six weather/compound/river baseline and repeat snapshots, populated Atom identities and baseline deduplication; all temporary records were removed. On-page refresh preserves reader focus. | Five real alert/coverage changes now have independently matched receiver records. Weather-threshold, river and compound transitions and closed-page push display remain unverified. The rendered precipitation/wind enrollment, real external receipt and actual queued retry now pass; see the October 30 follow-up below. Visitor-triggered upkeep does not prove unattended execution or delivery. See [watches](watches.md), [baseline evidence](browser-workspaces.md#live-baseline-and-populated-feed-verification) and [webhooks](webhooks.md). |
 | 3. Activity windows | Public duration/limit changes, gust rejection, local time, missing air coverage, alternatives and evidence export passed. v89 checks draft/export consistency; v94 controlled source-outage QA covers stale, missing and recovered inputs. | Physical-device usability and broader observation-based evaluation remain open. Synthetic outage tests do not establish provider uptime; no calibrated probability or continuous exposure is established. See [planning](activity-planning.md). |
 | 4. Fire and smoke | Live checks cover all seven map layers, fire size/perimeter details, age/containment, smoke playback, replay hiding, measured trends and modeled-source comparisons. v95 CAMS recovery/export, v96 first NASA ozone pair and v108 first CAMS PM2.5 pair were independently reproduced. | Broader model/monitor performance, CAMS run identification and personal exposure remain unvalidated. A first pair is not calibrated skill. See [PM2.5 comparison](particulate-comparison.md) and [ozone observations](ozone-observations.md). |
 | 5. Rivers and flood impacts | IDs, units/datum, observed/forecast hydrographs, official impact links, connected gauges and missing-prior states were checked. v101 DLAF1 yielded 18 matched future readings, seven nonzero revisions and a largest increase of 0.1 ft. Live watch baseline/recheck evidence independently distinguishes a 3.96 ft observation below the official 4 ft minor threshold from future forecast samples reaching it, with 72-hour sampled coverage. A later live DLAF1 comparison independently reproduced 17 matched samples, 12 nonzero changes and a change from below to reaching the minor threshold; browser/export checks agreed. | A changed live crossing-time window remains unverified. Address-level inundation, hydraulic travel time and owned gauge push display require separate evidence. See [rivers](rivers.md). |
 | 6. Journey exposure | Route/time, stops, DST and sparse-coverage tests pass. Public QA compared three departures and a 30-minute via stop with agency proximity kept distinct from closure. Native graph/crosswalk/event tooling has reproducible tests. | Real approved road identity, direction/carriageway/grade, partial-edge applicability and current event association are missing. The v113 offline event evaluator handles ordered legs and planned stops; its integration event/reviews are synthetic. Full-stop hourly forecast coverage and stationary RAP interpolation are implemented; measured stop exposure, road-event applicability while stopped and hosted event activation remain open. Public routing remains OSRM; the optional native host is unprovisioned. See [route network](route-network.md). |
-| 7. Forecast confidence | NWS outcomes/revisions, HRRR prospective outcomes with a same-case persistence baseline, and five 31-member GEFS prospective matches plus one missing nearest reading have retained source arithmetic. The GEFS follow-up independently checks all six eligible targets against the earlier capture and a separate NWS response. Leads, missing denominators and uncertainty labels remain explicit. | Broader prospective, regional, seasonal and lead-time grading remains open. Five correlated GEFS times from one station/run/day do not establish calibrated confidence. See [ensemble](ensemble.md) and [verification](verification.md). |
-| 8. Historical analogs | Public historical-date/station selection, diagnostics and exports passed. Six-station chronological holdout results were reconstructed independently from retained raw inputs. | Forecast-to-history transfer, wider regional/seasonal coverage, climate drift and validated impact associations remain open. A frozen prospective cohort is waiting for eligible completed outcomes. See [station analogs](station-analogs.md) and [historical analogs](historical-analogs.md). |
+| 7. Forecast confidence | NWS outcomes/revisions, HRRR prospective outcomes with a same-case persistence baseline, and five 31-member GEFS prospective matches plus one missing nearest reading have retained source arithmetic. The GEFS follow-up independently checks all six eligible targets against the earlier capture and a separate NWS response. The first six-station frozen cohort now has 76 observed pairs, two missing and 66 pending, independently reconstructed from raw inputs. Leads, missing denominators and uncertainty labels remain explicit. | Broader prospective, regional, seasonal and lead-time grading remains open. The first regional cohort is still one run and convenience sample; only 22/76 observations fall inside its central member range, so calibrated confidence is not established. See [ensemble](ensemble.md) and [verification](verification.md). |
+| 8. Historical analogs | Public historical-date/station selection, diagnostics and exports passed. Six-station chronological holdout results were reconstructed independently from retained raw inputs. | Forecast-to-history transfer, wider regional/seasonal coverage, climate drift and validated impact associations remain open. A frozen prospective cohort has eleven completed cases without compatible MERRA-2 outcomes and sixteen pending; the available GEOS-IT edition was not substituted. See [station analogs](station-analogs.md) and [historical analogs](historical-analogs.md). |
 | 9. Compound hazards | Six source-reviewed rules have premise, overlap and missing-data tests. Atka dashboard QA reproduced 41 precipitation/wind premises in two windows. A later live compound-watch baseline/recheck independently reproduced 20 premises in three windows and its populated private feed. Unrelated missing geography no longer contaminates other rules. | Live compound transitions and real notification display remain unverified. Rendered precipitation/wind watch enrollment now passes; other rule paths remain open. Source review does not substitute for independent domain endorsement or outcome validation. See [compound hazards](compound-hazards.md). |
 | 10. Event story | CAP chains, stable links, historical cutoff, source/observation times, matched station/gauge records, JSON/HTML downloads and JSON verification passed within their documented scope. | Offline HTML rendering is blocked by the file-URL policy. Download success is not rendering evidence. Matched readings do not establish verified physical impacts; broader outcome retention and hosted recovery remain open. |
 
@@ -81,10 +81,13 @@ checks and the production build. Detailed records are in [verification](verifica
 1. **Delivery: device/receiver evidence.** Browser-capability management is public
    and its live HTTP lifecycle now passes. Brave enrollment and one real test
    display are confirmed: v137's provider response was HTTP 201 and the owner
-   confirmed display. The closed-page test was accepted after the dashboard tab
-   closed, but the owner was unsure whether it appeared; display remains unverified. Real external receiver storage,
+   confirmed display. The renewed persistent subscription's October 30 23:22 UTC
+   test also appeared according to the owner, but closure of the dashboard could
+   not be verified. Closed-page display remains open. Real external receiver storage,
    signature rejection, direct duplicate handling and the real queued retry now
-   pass. Unattended scheduler attribution remains open. Legacy account tests
+   pass. Five real alert/coverage changes also match one stored receiver row each.
+   Real weather-threshold, river and compound transition delivery remain open.
+   Unattended scheduler attribution remains open. Legacy account tests
    remain deferred; notification testing is authorized.
 2. **Road attribution: source and engineering work.** Establish a real reviewed
    agency crosswalk and current incident association before activating closure
@@ -92,14 +95,17 @@ checks and the production build. Detailed records are in [verification](verifica
    native deployment needs an appropriate host and coverage plan.
 3. **Scientific evaluation: outcome availability and broader samples.** Continue
    chronological, baseline-matched evaluation without substituting later forecasts.
-   The frozen cohort's first outcome day completes October 31 at 00:00 UTC, with
-   additional source publication lag. Do not fetch or score an incomplete day.
+   The analog cohort's first two outcome days are complete, but the November 1
+   NASA response identifies GEOS-IT rather than the registered MERRA-2 source.
+   Eleven cases lack compatible outcomes and sixteen remain pending; none is scored.
    A separate [six-location GEFS cohort](ensemble-regional-cohort.md) now retains
    all 144 planned forecasts plus six pre-forecast persistence readings. Its first
-   station outcomes become eligible October 31 at 06:30 UTC, with source lag;
-   fixed-edition outcome collection/scoring is implemented with 30 capture/outcome
-   tests. Its retained readiness report has 144 pending cases and null errors;
-   real outcome collection and evaluation still await eligible observations.
+   station outcomes now produce 76 matched cases, two missing and 66 pending.
+   Independent reconstruction verifies the first evaluation's selection and
+   aggregate arithmetic. Only 22/76 readings fall inside the central member range;
+   this is not calibrated confidence. Later targets mature through November 3
+   at 03:30 UTC, with source publication lag. Regional/seasonal generalization
+   and the remaining fixed-cohort outcomes remain open.
 4. **Operational evidence: scheduling and recovery.** Hourly upkeep is enabled,
    but the available tools provide no cloud run history/editor and the separate
    browser session is signed out. The bounded recent log sample contains visitor

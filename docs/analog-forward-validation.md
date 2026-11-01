@@ -94,3 +94,20 @@ The first full outcome day ends at **2026-10-31 00:00 UTC**. This is an earliest
 completion bound, not a promise that NASA has published compatible data. The
 cohort and its raw development captures remain outside the public source tree.
 No forecast-accuracy claim is established before actual outcomes can be scored.
+
+## November 1 source check
+
+The [first outcome attempt](evidence/analog-forward-outcomes-2026-11-01.json)
+has zero scored pairs: 11 point/date cases have completed their outcome days,
+and 16 remain pending. The source response was rejected because it identifies
+**GEOSIT and POWER**, rather than the registered MERRA2 source. A separately
+retrieved [raw diagnostic response](evidence/analog-forward-source-2026-11-01.json)
+uses UTC and the expected units; October 30 has values, while October 31 has
+fill values. The failure is source identity, not a timezone mismatch.
+
+NASA documents that recent quick-look meteorology can later be replaced by
+MERRA-2 in its [data services documentation](https://power.larc.nasa.gov/docs/services/).
+The completed-day bound was therefore necessary but insufficient for this
+registered source. The scoring contract remains unchanged. A future compatible
+MERRA-2 edition must be retained explicitly; GEOS-IT is not silently scored as
+MERRA-2, and this attempt establishes no analog forecast skill.

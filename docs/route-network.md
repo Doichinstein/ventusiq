@@ -359,3 +359,18 @@ complete connectivity or optimal real-world routing. It is not a production HTTP
 service by itself. The optional [HTTP adapter](pinned-router.md) can serve its
 native routes to Journey; activating that backend requires a suitable native host.
 The existing public deployment and hourly upkeep continue without one.
+
+## November 1 candidate recheck
+
+A new Iowa feed received November 1 with feed time 20:27:21 UTC still includes
+both `OpenTMS-Event22873686329` directions. Their event update remains August 10,
+their impact code remains `some-lanes-closed`, and the scheduled end remains
+November 30. A fresh feed timestamp does not establish a new event confirmation.
+The source therefore still fails the reviewed evaluator's event-age gate.
+
+The city's [March 11 construction-stage plan](https://www.siouxcenter.org/DocumentCenter/View/6450/2026-Highway-75-construction-outlook)
+distinguishes rolling directional work from staged full and dynamic closures
+between 5th and 12th Streets North. This supports corridor identification but
+cannot resolve the current affected lane set or the source's estimated endpoints.
+It is not an as-built survey or current road-access confirmation. No crosswalk
+approval or production closure claim was added from these documents.

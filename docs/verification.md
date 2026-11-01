@@ -2977,3 +2977,19 @@ watch, browser subscription, paid plan or hourly schedule was changed.
 
 The historical-analog outcome attempt rejected NASA's current GEOS-IT edition
 under the frozen MERRA-2 contract. See the retained [source diagnostic](analog-forward-validation.md#november-1-source-check).
+
+## November 1: narrow-column form layout and follow-up sources
+
+Browser inspection showed webhook fields squeezed into inherited five-column
+planner tracks inside the narrow details panel. Planning forms now size their
+tracks from available width; webhook fields occupy a full row, with the consent
+label separate and the submit target at least 44 pixels high. This changes
+layout only, with no notification enrollment or destination submission.
+
+The Iowa candidate was refreshed and the city's staged construction plan was
+reviewed; the [remaining source gap](route-network.md#november-1-candidate-recheck)
+still prevents reviewed closure activation. A fresh DLAF1 comparison at 20:27 UTC
+returned `insufficient_overlap`: fewer than two future timestamps remained in
+both the new forecast and the preceding October 30 edition. It did not fabricate
+a crossing-window shift from non-overlapping horizons. The real changed-window
+gate remains open.

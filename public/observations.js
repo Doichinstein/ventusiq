@@ -3,6 +3,7 @@ import {mountHrrrVerification} from './hrrr-verification.js';
 import {persistenceNodes} from './verification-persistence-ui.mjs';
 import {leadAnalysisNodes} from './verification-leads-ui.mjs';
 import {observations,HOUR} from './observations-core.mjs';
+import {mountSourceIntelligence} from './source-intelligence.js';
 export function mountObservations({document,window,fetcher=fetch,clock=()=>Date.now()}){
   const get=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
   const enabled=window.WEATHER_CONFIG?.mode==='hosted',cache=new Map();let place=null,station=null,data=null,generation=0,reportGeneration=0,report=null;
@@ -11,6 +12,7 @@ export function mountObservations({document,window,fetcher=fetch,clock=()=>Date.
   async function json(path,ttl=0){const old=cache.get(path);if(old&&clock()-old.at<ttl)return old.data;const r=await fetcher(path,{signal:AbortSignal.timeout(60000)});const d=await r.json();if(!r.ok)throw Error(d.error||'Source returned HTTP '+r.status);if(!path.startsWith('/api/verification?'))cache.set(path,{at:clock(),data:d});return d;}
   const ensembleVerification=mountEnsembleVerification({document,window,fetcher,selection:()=>({place,station})});
   const hrrrVerification=mountHrrrVerification({document,window,fetcher,selection:()=>({place,station})});
+  const intelligence=mountSourceIntelligence({document,window,fetcher,clock,selection:()=>({place,station,data})});
   function clearReport(){ensembleVerification.reset();hrrrVerification.reset();report=null;reportGeneration++;get('verification-export').disabled=true;get('verification-results').replaceChildren(el('p','Compare this station with forecasts collected for your saved point before the weather occurred.'));}
   function chart(rows){
     const target=get('observation-chart');target.replaceChildren();const usable=rows.filter(r=>r.temperature!==null);if(!usable.length)return;
@@ -24,6 +26,7 @@ export function mountObservations({document,window,fetcher=fetch,clock=()=>Date.
   }
   function render(){
     if(!data||!station)return;const rows=observations(data,clock()),latest=rows.at(-1),old=!latest||clock()-latest.at>2*HOUR;
+    intelligence.update();
     const status=`${station.name} (${station.id}) · ${station.distance_km.toFixed(1)} km from this place · checked ${fmt(data.checked_at)}`;
     get('observation-status').textContent=(data.stale?'Updates delayed. ':'')+status+(data.error?' · '+data.error:'');
     const nodes=[el('p',latest?`${old?'Latest available reading — delayed':'Observed'} ${fmt(latest.at)}`:'No readings returned in the requested seven days.',old?'warning-note':'small')];
@@ -36,11 +39,13 @@ export function mountObservations({document,window,fetcher=fetch,clock=()=>Date.
   }
   async function select(id){
     const selected=stationOptions.find(s=>s.id===id);if(!selected)return;const token=++generation;station=selected;data=null;clearReport();get('observation-current').replaceChildren();get('observation-chart').replaceChildren();get('observation-table').replaceChildren();get('observation-count').textContent='';get('verification-run').disabled=true;get('observation-status').textContent='Loading station observations…';
+    intelligence.reset();
     try{const result=await json('/api/observations/station?id='+id,1800000);if(token!==generation)return;data=result;render();get('verification-run').disabled=false;}catch(error){if(token===generation){get('observation-status').textContent='Observations unavailable: '+error.message;get('verification-run').disabled=false;}}
   }
   let stationOptions=[];
   async function updatePlace(next){
     const same=next&&place&&next.lat===place.lat&&next.lon===place.lon;if(same)return;place=next;station=null;data=null;stationOptions=[];const token=++generation;clearReport();get('observation-controls').hidden=true;get('observation-current').replaceChildren();get('observation-chart').replaceChildren();get('observation-table').replaceChildren();get('observation-count').textContent='';get('observation-coverage').textContent='';get('verification-run').disabled=true;
+    intelligence.reset();
     if(!enabled||!next)return;get('observation-controls').hidden=false;get('observation-station').replaceChildren();get('observation-station').disabled=true;
     get('observation-status').textContent='Finding NWS-listed stations within 50 km…';
     try{const list=await json(`/api/observations/near?lat=${next.lat}&lon=${next.lon}`,86400000);if(token!==generation)return;stationOptions=list.stations;get('observation-station').replaceChildren(...list.stations.map(s=>{const o=el('option',`${s.name} · ${s.distance_km.toFixed(1)} km`);o.value=s.id;return o;}));get('observation-coverage').textContent=list.coverage+(list.stale?' Station discovery is delayed.':'');

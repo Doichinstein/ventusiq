@@ -195,3 +195,12 @@ body:has(#workspace:not([data-view="live"])) .intro>div:first-child{display:none
 .compact-entry #journey-options[open]{order:2;flex-basis:100%}
 @media(min-width:901px){#workspace:is([data-view="personal"],[data-view="journey"]) #map-canvas{height:clamp(320px,calc(100dvh - 290px),670px)}}
 @media(max-width:550px){.compact-entry .entry-search-row input{width:0;font-size:14px}.compact-entry .entry-actions{column-gap:12px}.compact-entry .entry-actions>.text-button,.compact-entry .entry-more>summary{min-height:40px;padding:12px 0}.compact-entry .entry-point-row input{font-size:14px}.compact-entry .entry-point-row .text-button{min-width:44px}.compact-entry .entry-search-row .action{font-size:12px}}
+/* Local evidence keeps the map-led workspace compact until a section is opened. */
+.source-intelligence { margin: 1rem 0; padding: .8rem; border: 1px solid #303a48; border-radius: 8px; background: #111822; }
+.source-intelligence > details { margin-bottom: .65rem; }
+.source-intelligence summary { cursor: pointer; padding: .6rem 0; font-weight: 600; }
+.source-intelligence .intelligence-limits { display: flex; flex-wrap: wrap; gap: .65rem; align-items: end; }
+.intelligence-limits label { flex: 1 1 100px; min-width: 0; }
+.intelligence-limits input { width: 100%; box-sizing: border-box; }
+.intelligence-limits button { min-height: 44px; }
+.source-intelligence .river-chart svg { display: block; width: 100%; height: auto; }

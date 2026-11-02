@@ -48,7 +48,10 @@ export function mountPlanner({document,window,fetcher=fetch,clock=Date.now}){
       if(smoke.reason)box.append(el('p',smoke.reason+'.','small'));
       box.append(el('p','Smoke samples do not establish health-safe air, AQI or personal exposure during this window.','small'));nodes.push(box);
     }
-    nodes.push(el('p',r.uncertainty,'small'));get('plan-results').replaceChildren(...nodes);
+    const reliability=r.temperature_reliability,detail=el('details');detail.append(el('summary','How reliable are these temperature checks?'));
+    if(reliability){const c=reliability.counts;detail.append(el('p',reliability.sample_count?`${c.within_both}/${reliability.predicted_within} past NWS forecasts within your current ${reliability.min_f}–${reliability.max_f}°F limits had a station reading within them. ${c.missed_exceedance} missed exceedances; ${c.false_exceedance} false alarms.`:'No eligible past temperature checks for this location yet.'),el('p',`${reliability.sample_count} hourly cases across ${reliability.days} UTC days; station ${reliability.station.id}. Evaluated ${fmt(reliability.evaluated_at)}. Current limits are applied retrospectively.`,'small'),el('p',reliability.interpretation,'small'));}
+    else detail.append(el('p','Evaluate local sources under Forecast checks to see historical temperature-limit results for this place. Rain, gust, smoke and air-quality reliability remain unscored.','small'));
+    nodes.push(detail,el('p',r.uncertainty,'small'));get('plan-results').replaceChildren(...nodes);
   }
   function clearDraft(message){report=null;signature=null;get('plan-export').disabled=true;get('plan-source-status').textContent=message;get('plan-results').replaceChildren();get('plan-smoke-status').textContent='';get('plan-pm25-status').textContent='';get('plan-gas-status').textContent='';}
   function refresh(){
@@ -57,6 +60,7 @@ export function mountPlanner({document,window,fetcher=fetch,clock=Date.now}){
     if(newKey!==key){key=newKey;generation++;pending=false;nextFetch=0;grid=null;signature=null;report=null;get('plan-export').disabled=true;}
     if(!c?.place){get('plan-results').replaceChildren();get('plan-air').textContent='';get('plan-grid-status').textContent='';get('plan-smoke-status').textContent='';get('plan-pm25-status').textContent='';get('plan-gas-status').textContent='';get('plan-source-status').textContent='';return;}
     loadGrid(c);let pref;try{pref=preferences(window.WeatherPersonal?.preferences?.()||input());if(JSON.stringify(input())!==JSON.stringify(pref)){clearDraft('Limits or source changed. Compare windows to apply these settings before viewing or exporting a plan.');return;}report=evaluatePlan({...c,grid,airForecast:window.WeatherAirForecast?.snapshot?.(),geosForecast:window.WeatherGeosCF?.snapshot?.(),smoke:window.WeatherSmoke?.snapshot?.(),air:window.WeatherHazards?.snapshot?.('air'),preferences:pref,now:clock(),core:window.WeatherCore});}catch(error){clearDraft(error.message+' Compare windows after correcting the fields.');return;}
+    report.temperature_reliability=window.WeatherSourceIntelligence?.decisionFor?.({place:c.place,preferences:pref})||null;
     get('plan-export').disabled=false;const next=JSON.stringify([report,grid?.error]);if(next!==signature){signature=next;render();}
   }
   let initial;try{initial=preferences(window.WeatherPersonal?.preferences?.()||{});}catch{initial=preferences();window.WeatherPersonal?.setPreferences?.(initial);}fill(initial);

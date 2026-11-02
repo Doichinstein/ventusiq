@@ -203,4 +203,5 @@ body:has(#workspace:not([data-view="live"])) .intro>div:first-child{display:none
 .intelligence-limits label { flex: 1 1 100px; min-width: 0; }
 .intelligence-limits input { width: 100%; box-sizing: border-box; }
 .intelligence-limits button { min-height: 44px; }
-.source-intelligence .river-chart svg { display: block; width: 100%; height: auto; }
+.source-intelligence .river-chart svg { display: block; width: 100%; min-width: 0; height: auto; }
+.source-intelligence .river-chart text { font-size: 20px; }

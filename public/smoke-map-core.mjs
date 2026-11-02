@@ -1,8 +1,8 @@
 import {SMOKE_SOURCE,SMOKE_METHOD,selectSmokeRun} from './smoke-core.mjs';
-export const SMOKE_MAP_METHOD='2026-10-28.1';
+export const SMOKE_MAP_METHOD='2026-11-02.1';
 export const SMOKE_MAP_BOUNDS=[[24,-125],[50,-66]];
 export const SMOKE_BANDS=[
-  {min:0,max:1,color:[156,163,175]}, {min:1,max:5,color:[56,189,248]},
+  {min:1,max:5,color:[56,189,248]},
   {min:5,max:15,color:[139,92,246]}, {min:15,max:40,color:[251,146,60]},
   {min:40,max:100,color:[244,114,182]}, {min:100,max:1000000,color:[190,24,93]},
 ];
@@ -16,7 +16,7 @@ export function smokeMapTimeline(catalog,now=Date.now()){
 }
 // Scale raw kg/m³ as F32 before integer classification; tiny raw cutoffs can be rounded by Remap.
 // Explicit concentration bands avoid the provider's undocumented default colour scale.
-export function smokeRenderingRule(){return {rasterFunction:'Colormap',rasterFunctionArguments:{Colormap:SMOKE_BANDS.map((b,i)=>[i+1,...b.color]),Raster:{rasterFunction:'Remap',rasterFunctionArguments:{InputRanges:SMOKE_BANDS.flatMap(b=>[b.min,b.max]),OutputValues:SMOKE_BANDS.map((_,i)=>i+1),AllowUnmatched:false,Raster:{rasterFunction:'Arithmetic',rasterFunctionArguments:{Raster:'$$',Raster2:1e9,Operation:3},outputPixelType:'F32'}},outputPixelType:'U8'}},outputPixelType:'U8'};}
+export function smokeRenderingRule(){return {rasterFunction:'Colormap',rasterFunctionArguments:{Colormap:SMOKE_BANDS.map((b,i)=>[i+1,...b.color]),Raster:{rasterFunction:'Remap',rasterFunctionArguments:{NoDataRanges:[0,1],InputRanges:SMOKE_BANDS.flatMap(b=>[b.min,b.max]),OutputValues:SMOKE_BANDS.map((_,i)=>i+1),AllowUnmatched:false,Raster:{rasterFunction:'Arithmetic',rasterFunctionArguments:{Raster:'$$',Raster2:1e9,Operation:3},outputPixelType:'F32'}},outputPixelType:'U8'}},outputPixelType:'U8'};}
 export function smokeFrameRequest(frame,issued){
   const r=frame?.raster,issue=Date.parse(issued),valid=Date.parse(frame?.at);
   if(!r||!Number.isSafeInteger(r.objectid)||r.objectid<=0||r.idp_subset!=='conus'||r.idp_issueddate!==issue||r.idp_validtime!==valid||!Number.isFinite(issue)||valid<issue||valid>issue+51*HOUR)throw Error('No matching raster for this forecast hour');

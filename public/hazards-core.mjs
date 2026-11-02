@@ -5,9 +5,41 @@ export const SOURCES={
   air:'https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/Air_Now_Current_Monitors_PM25/FeatureServer/0',
   aqi:'https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/AirNowLatestContoursPM25/FeatureServer/0',
   airHistory:'https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/Air_Now_Monitors_PM25/FeatureServer/0',
+  imagery:'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/1.0.0/WMTSCapabilities.xml',
   satellite:'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/1.0.0/WMTSCapabilities.xml',
 };
 export const SATELLITE_LAYER='VIIRS_NOAA20_Thermal_Anomalies_375m_All';
+export const IMAGERY_LAYER='VIIRS_NOAA20_CorrectedReflectance_TrueColor';
+
+function validUtcDay(value){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;
+  const time=Date.parse(value+'T00:00:00Z');
+  return Number.isFinite(time)&&new Date(time).toISOString().startsWith(value+'T');
+}
+
+export function imageryMetadata(xml,now=Date.now()){
+  if(typeof xml!=='string'||xml.length>10000000)throw Error('Invalid NASA imagery catalog');
+  const layers=xml.matchAll(/<Layer\b[^>]*>([\s\S]*?)<\/Layer>/g);
+  const layer=Array.from(layers).find(entry=>entry[1].includes('>'+IMAGERY_LAYER+'</'))?.[1];
+  const dimensions=layer?.match(/<Dimension\b[^>]*>[\s\S]*?<\/Dimension>/g)||[];
+  const time=dimensions.find(entry=>/>Time<\//i.test(entry));
+  const cutoff=new Date(now-86400000).toISOString().slice(0,10);
+  let date=null;
+  for(const value of (time||'').matchAll(/<Value>([^<]+)<\/Value>/g)){
+    const parts=value[1].trim().split('/');
+    if(parts.length!==1&&(parts.length!==3||parts[2]!=='P1D'))continue;
+    const [start,end=start]=parts;
+    if(!validUtcDay(start)||!validUtcDay(end)||end<start||start>cutoff)continue;
+    const candidate=end<cutoff?end:cutoff;
+    if(!date||candidate>date)date=candidate;
+  }
+  if(!date)throw Error('NASA has no completed imagery day in the advertised coverage');
+  return {date,layer:IMAGERY_LAYER,source:'NASA GIBS / NOAA-20 VIIRS',source_url:SOURCES.imagery,data_kind:'true-color-imagery'};
+}
+
+export async function loadImagery(fetcher=fetch,signal=AbortSignal.timeout(45000)){
+  return imageryMetadata(await sourceFetch(SOURCES.imagery,signal,fetcher));
+}
 const finite=n=>typeof n==='number'&&Number.isFinite(n)?n:null;
 const nonnegative=n=>finite(n)!==null&&n>=0?n:null;
 export const stamp=n=>finite(n)!==null&&n>0&&Number.isFinite(new Date(n).getTime())?new Date(n).toISOString():null;
@@ -17,9 +49,10 @@ export async function sourceFetch(url,signal,fetcher=fetch){
   const parsed=new URL(url);
   if(!Object.values(SOURCES).some(base=>url===base||url.startsWith(base+'?')||url.startsWith(base+'/query?')))throw new Error('Untrusted hazard source URL');
   if(parsed.protocol!=='https:')throw new Error('Untrusted hazard source URL');
-  const response=await fetcher(url,{signal,headers:{Accept:url===SOURCES.satellite?'application/xml':'application/json'}});
+  const xml=url===SOURCES.satellite||url===SOURCES.imagery;
+  const response=await fetcher(url,{signal,headers:{Accept:xml?'application/xml':'application/json'}});
   if(!response.ok)throw new Error(`Source returned HTTP ${response.status}`);
-  if(url===SOURCES.satellite)return response.text();
+  if(xml)return response.text();
   const data=await response.json();if(data.error)throw new Error('Source rejected the query');return data;
 }
 export async function arcgis(base,{fields='*',where='1=1',idField='OBJECTID',maxAllowableOffset=null}={},fetcher=fetch,signal=AbortSignal.timeout(45000)){

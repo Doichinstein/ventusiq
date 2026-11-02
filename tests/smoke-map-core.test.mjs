@@ -18,7 +18,7 @@ test('map requests lock the exact raster, run and valid time with explicit proje
 test('renderer scales raw floating values before integer classification and preserves unmatched NoData',()=>{
  const r=smokeRenderingRule(),remap=r.rasterFunctionArguments.Raster,scale=remap.rasterFunctionArguments.Raster;
  assert.equal(scale.rasterFunction,'Arithmetic');assert.equal(scale.rasterFunctionArguments.Operation,3);assert.equal(scale.rasterFunctionArguments.Raster2,1e9);assert.equal(scale.outputPixelType,'F32');assert.equal(remap.rasterFunctionArguments.AllowUnmatched,false);
- assert.deepEqual(remap.rasterFunctionArguments.InputRanges,[0,1,1,5,5,15,15,40,40,100,100,1000000]);assert.deepEqual(r.rasterFunctionArguments.Colormap,SMOKE_BANDS.map((b,i)=>[i+1,...b.color]));
+ assert.deepEqual(remap.rasterFunctionArguments.NoDataRanges,[0,1]);assert.deepEqual(remap.rasterFunctionArguments.InputRanges,[1,5,5,15,15,40,40,100,100,1000000]);assert.deepEqual(r.rasterFunctionArguments.Colormap,SMOKE_BANDS.map((b,i)=>[i+1,...b.color]));
 });
 test('frame loader checks live identity before accepting only a bounded PNG with exact dimensions',async()=>{
  const t=smokeMapTimeline(catalog(),now),frame=t.frames[0],calls=[];

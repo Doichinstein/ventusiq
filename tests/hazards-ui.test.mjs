@@ -15,11 +15,11 @@ async function setup(){
   const ids=[...readFileSync(new URL('../public/index.html',import.meta.url),'utf8').matchAll(/id="([^"]+)"/g)].map(m=>m[1]);
   const nodes=Object.fromEntries(ids.map(id=>[id,new Element()])),attached=new Set(),timers=[],requests=[];
   let now=Date.parse('2026-10-28T20:00:00Z'),failure=false,hold=false;const pending=[];
-  const map={removeLayer(layer){attached.delete(layer);},closePopup(){},fitBounds(){}};
+  const map={getPane(){return null;},createPane(){return {style:{}};},removeLayer(layer){attached.delete(layer);},closePopup(){},fitBounds(){}};
   const layer=()=>({events:{},addTo(){attached.add(this);return this;},on(name,fn){this.events[name]=fn;return this;},clearLayers(){this.children=[];},children:[],getLayers(){return this.children;},addLayer(l){this.children.push(l);},getBounds(){return {isValid:()=>true};}});
-  const L={layerGroup:layer,divIcon:options=>options,marker:(latlng,options)=>({latlng,options}),circleMarker:(latlng,options)=>({latlng,options}),geoJSON(data,options){return Object.assign(layer(),{data,options});},tileLayer:{wms(url,options){return Object.assign(layer(),{url,options});}}};
+  const L={layerGroup:layer,divIcon:options=>options,marker:(latlng,options)=>({latlng,options}),circleMarker:(latlng,options)=>({latlng,options}),geoJSON(data,options){return Object.assign(layer(),{data,options});},tileLayer(url,options){return Object.assign(layer(),{url,options});}};
   const window={WEATHER_CONFIG:{mode:'hosted'},WeatherMap:{instance:map,isReplay:()=>false,focus(){}},WeatherPersonal:{current:()=>null},setInterval:fn=>timers.push(fn)};
-  const fetcher=async url=>{requests.push(url);if(hold)await new Promise(r=>pending.push(r));if(failure)throw new Error('Unavailable');const stamp=new Date(now).toISOString();const kind=url.split('/').pop();return {ok:true,json:async()=>kind==='satellite'?{date:'2026-10-27',checked_at:stamp}:{type:'FeatureCollection',source:'Test provider',features:kind==='fires'?[fire('a')]:[{...fire('b'),properties:{name:'Monitor',aqi:151,pm25:56,observed_at:stamp}}],checked_at:stamp}};};
+  const fetcher=async url=>{requests.push(url);if(hold)await new Promise(r=>pending.push(r));if(failure)throw new Error('Unavailable');const stamp=new Date(now).toISOString();const kind=url.split('/').pop();return {ok:true,json:async()=>kind==='imagery'?{layer:'VIIRS_NOAA20_CorrectedReflectance_TrueColor',date:'2026-10-27',checked_at:stamp}:{type:'FeatureCollection',source:'Test provider',features:kind==='fires'?[fire('a')]:[{...fire('b'),properties:{name:'Monitor',aqi:151,pm25:56,observed_at:stamp}}],checked_at:stamp}};};
   const mounted=mountHazards({document:{getElementById:id=>nodes[id],createElement:()=>new Element()},window,L,fetcher,clock:()=>now});
   return {nodes,window,mounted,attached,timers,requests,advance:ms=>{now+=ms;},fail:()=>{failure=true;},hold:()=>{hold=true;},release:()=>{hold=false;for(const resolve of pending.splice(0))resolve();}};
 }
@@ -58,6 +58,6 @@ test('a changed place wins over an earlier pending source request',async()=>{
 });
 test('satellite overlay uses the provider day and visibly reports missing tiles',async()=>{
   const s=await setup();s.nodes['layer-satellite'].checked=true;await s.mounted.load('satellite');const overlay=[...s.attached][0];
-  assert.equal(overlay.options.time,'2026-10-27');assert.match(overlay.url,/epsg4326/);overlay.events.tileerror();assert.match(s.nodes['satellite-status'].textContent,/coverage is incomplete/);
+  assert.match(overlay.url,/epsg3857\/best\/VIIRS_NOAA20_CorrectedReflectance_TrueColor\/default\/2026-10-27\/GoogleMapsCompatible_Level9\/\{z\}\/\{y\}\/\{x\}\.jpeg$/);assert.equal(overlay.options.pane,'satelliteImagery');assert.equal(overlay.options.maxNativeZoom,9);overlay.events.tileerror();assert.match(s.nodes['satellite-status'].textContent,/coverage is incomplete/);
   s.nodes['layer-satellite'].checked=false;s.nodes['layer-satellite'].onchange();assert.equal(s.attached.size,0);
 });

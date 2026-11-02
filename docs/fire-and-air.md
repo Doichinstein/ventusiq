@@ -34,17 +34,11 @@ Saved places use the closest measured AQI within 50 km with an observation no ol
 than three hours. If none qualifies, local air quality is unknown. Distance and
 observation time are always shown. There is no interpolation or wildfire attribution.
 
-## Satellite detections
+## Satellite imagery
 
-[NASA GIBS vector-product documentation](https://nasa-gibs.github.io/gibs-api-docs/access-advanced-topics/)
-describes daily FIRMS thermal anomalies and the EPSG:4326 WMS endpoint accepting
-EPSG:3857 map requests. This is used for a rasterized VIIRS NOAA-20 layer, with
-NASA's styling. The date is read from the matching layer in NASA's WMTS capabilities,
-not inferred from today's date. The confirmed available day at setup was
-2026-10-27; the image service returned a PNG successfully. Tile errors visibly mark
-incomplete coverage. Satellite pixels are not perimeters, and clouds, overpass
-timing and coverage gaps can hide fires. This layer is imagery only, without
-point-level measurement inspection or inference of current active fire.
+The Satellite switch displays NOAA-20 VIIRS daily true-color imagery from NASA GIBS.
+The imagery adapter selects the latest advertised observation day before the current UTC day, so a new, partially collected day does not replace yesterday’s mosaic. The map requests native Web Mercator JPEG tiles through zoom 9, then magnifies those tiles at closer zooms. A separate pane preserves their colors above the dark basemap and below the weather overlays. The displayed date and coverage status are available under source details.
+
 The separate [inspectable detection layer](satellite-detections.md) now adds
 NOAA-20 regional CSV points with acquisition time, confidence, FRP, filters and
 raw-source export. It preserves the distinction between pixels and reported fires.
@@ -52,7 +46,7 @@ raw-source export. It preserves the distinction between pixels and reported fire
 ## Runtime, failure handling and delivery status
 
 The hosted API exposes `/api/hazards/fires`, `/api/hazards/air`,
-`/api/hazards/satellite` and `/api/hazards/perimeters?id=<GUID>`. Fires and monitors
+`/api/hazards/imagery`, the legacy thermal metadata endpoint `/api/hazards/satellite`, and `/api/hazards/perimeters?id=<GUID>`. Fires and monitors
 refresh at most every 15 minutes, perimeters every 30 minutes, and NASA date
 metadata hourly. Each uses the same persistent lease/backoff/last-good mechanism as
 weather forecasts. Hazard revisions retain seven days plus the latest available

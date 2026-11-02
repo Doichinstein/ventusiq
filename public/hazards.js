@@ -1,12 +1,12 @@
 /* Fire and air observations. Source text is only inserted through textContent. */
-import {loadFires,loadAir,loadAqiContours,loadSatellite,loadPerimeters,nearest,observationFresh,aqiCategory,fireSymbolSize,fireDisplay,AQI_BANDS,SATELLITE_LAYER} from './hazards-core.mjs';
+import {loadFires,loadAir,loadAqiContours,loadImagery,loadPerimeters,nearest,observationFresh,aqiCategory,fireSymbolSize,fireDisplay,AQI_BANDS,IMAGERY_LAYER} from './hazards-core.mjs';
 
 export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   const get=id=>document.getElementById(id),map=window.WeatherMap.instance;
   const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};
   const time=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleString():'time unavailable';
   const quantity=(value,unit)=>value===null||value===undefined?'Not reported':Number(value).toLocaleString()+unit;
-  const sources={fires:loadFires,air:loadAir,aqi:loadAqiContours,satellite:loadSatellite};
+  const sources={fires:loadFires,air:loadAir,aqi:loadAqiContours,satellite:loadImagery};
   const aqiPane=map.getPane?.('aqiContours')||map.createPane?.('aqiContours');if(aqiPane)aqiPane.style.zIndex='330';
   const state=Object.fromEntries(Object.keys(sources).map(key=>[key,{data:null,pending:null,error:null,next:0}]));
   const layers={},perimeter=L.layerGroup(),perimeterCache=new Map();
@@ -15,9 +15,9 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
   const isDelayed=kind=>{const s=state[kind];return !!(s.error||s.data?.stale||!s.data?.checked_at||clock()-Date.parse(s.data.checked_at)>(kind==='satellite'?5400000:1350000));};
   async function request(kind,id){
     if(window.WEATHER_CONFIG?.mode==='hosted'){
-      const response=await fetcher('/api/hazards/'+kind+(id?'?id='+encodeURIComponent(id):''),{signal:AbortSignal.timeout(50000)});
+      const response=await fetcher('/api/hazards/'+(kind==='satellite'?'imagery':kind)+(id?'?id='+encodeURIComponent(id):''),{signal:AbortSignal.timeout(50000)});
       const data=await response.json();if(!response.ok)throw new Error(data.error||`Source returned HTTP ${response.status}`);
-      if(kind==='satellite'?!/^\d{4}-\d{2}-\d{2}$/.test(data.date||''):data.type!=='FeatureCollection'||!Array.isArray(data.features))throw new Error('Incomplete source response');
+      if(kind==='satellite'?(data.layer!==IMAGERY_LAYER||!/^\d{4}-\d{2}-\d{2}$/.test(data.date||'')):data.type!=='FeatureCollection'||!Array.isArray(data.features))throw new Error('Incomplete source response');
       return data;
     }
     const data=kind==='perimeters'?await loadPerimeters(id,fetcher):await sources[kind](fetcher);
@@ -28,7 +28,7 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     const key=kind==='fires'?get('fire-map-time'):kind==='aqi'?get('aqi-map-time'):null;
     target.className=isDelayed(kind)&&s.data?'warning-note':'small';
     if(!s.data){target.textContent=s.pending?'Loading source…':s.error?'Source unavailable. '+s.error:'Enable to load this source.';if(key)key.textContent=target.textContent;return;}
-    const base=kind==='satellite'?`Available day: ${s.data.date} UTC. ${satelliteErrors?'Some imagery tiles could not load; coverage is incomplete.':'Daily overpass detections; not continuous coverage.'}`:kind==='aqi'?`${s.data.features.length.toLocaleString()} PM2.5 AQI zones · EPA interpolated estimates. ${s.data.features.some(f=>!observationFresh(f,clock()))?'Some source times are missing or over 3 hours old; gray zones are not current.':''}`:`${s.data.features.length.toLocaleString()} ${kind==='fires'?'incident locations':'reporting monitors'}.`;
+    const base=kind==='satellite'?`VIIRS true color · ${s.data.date} UTC. ${satelliteErrors?'Some imagery tiles could not load; coverage is incomplete.':'Daylight overpass mosaic. Gaps can occur between swaths.'}`:kind==='aqi'?`${s.data.features.length.toLocaleString()} PM2.5 AQI zones · EPA interpolated estimates. ${s.data.features.some(f=>!observationFresh(f,clock()))?'Some source times are missing or over 3 hours old; gray zones are not current.':''}`:`${s.data.features.length.toLocaleString()} ${kind==='fires'?'incident locations':'reporting monitors'}.`;
     target.textContent=`${isDelayed(kind)?'Updates delayed · ':''}${base} Checked ${time(s.data.checked_at)}.${s.error?' '+s.error:''}`;
     if(key){key.textContent=target.textContent;if(kind==='aqi'){const times=[...new Set(s.data.features.map(f=>f.properties.observed_at).filter(Boolean))].sort();key.textContent+=times.length?` Source valid ${time(times[0])}${times.length>1?' through '+time(times.at(-1)):''}.`:' Source valid time unavailable.';}}
   }
@@ -81,8 +81,11 @@ export function mountHazards({document,window,L,fetcher=fetch,clock=Date.now}){
     if(kind==='satellite'){
       const date=state.satellite.data.date;
       if(satelliteDate!==date){if(layers.satellite)map.removeLayer(layers.satellite);satelliteDate=date;satelliteErrors=0;
-        // NASA documents EPSG:4326 WMS with EPSG:3857 requests for vector products.
-        layers.satellite=L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi',{layers:SATELLITE_LAYER,format:'image/png',transparent:true,version:'1.1.1',time:date,tileSize:256,opacity:0.9,attribution:'NASA FIRMS / GIBS · '+date+' UTC'});
+        const pane=map.getPane('satelliteImagery')||map.createPane('satelliteImagery');
+        pane.style.zIndex='300';
+        pane.style.pointerEvents='none';
+        const tiles='https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/'+IMAGERY_LAYER+'/default/'+date+'/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpeg';
+        layers.satellite=L.tileLayer(tiles,{pane:'satelliteImagery',maxNativeZoom:9,maxZoom:19,attribution:'NASA GIBS · NOAA-20 VIIRS true color · '+date+' UTC'});
         layers.satellite.on('loading',()=>{satelliteErrors=0;}).on('tileerror',()=>{satelliteErrors++;status('satellite');}).on('load',()=>status('satellite'));
       }
     }else if(kind==='aqi'){

@@ -132,7 +132,7 @@ export async function GET(request:Request){
     if(path==='/api/hazards/firms')return json(await new FirmsService(service).get(url.searchParams.get('region')));
     if(path.startsWith('/api/hazards/')){
       const kind=path.slice('/api/hazards/'.length);
-      if(!['fires','air','aqi','satellite','perimeters'].includes(kind))return json({error:'Unknown hazard product'},404);
+      if(!['fires','air','aqi','imagery','satellite','perimeters'].includes(kind))return json({error:'Unknown hazard product'},404);
       return json(await new HazardsService(service).get(kind,url.searchParams.get('id')));
     }
     if(path==='/api/history/storms/catalog')return json(await new StormHistoryService(service).catalog());

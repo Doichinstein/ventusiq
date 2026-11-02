@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {loadAqiContours,fireSymbolSize} from '../public/hazards-core.mjs';
-import {arcgis,SOURCES,loadFires,loadAir,loadPerimeters,sourceFetch,incidentId,stamp,nearest,observationFresh,aqiCategory,satelliteMetadata,SATELLITE_LAYER} from '../public/hazards-core.mjs';
+import {arcgis,SOURCES,loadFires,loadAir,loadPerimeters,sourceFetch,incidentId,stamp,nearest,observationFresh,aqiCategory,imageryMetadata,IMAGERY_LAYER,satelliteMetadata,SATELLITE_LAYER} from '../public/hazards-core.mjs';
 const point=(id,properties={},coordinates=[-122,37])=>({type:'Feature',id,geometry:{type:'Point',coordinates},properties:{OBJECTID:id,...properties}});
 const response=data=>({ok:true,json:async()=>data});
 const fetchCollection=features=>async url=>response(url.includes('/query?')?{type:'FeatureCollection',features}:{editingInfo:{lastEditDate:1793200000000}});
@@ -53,4 +53,12 @@ test('satellite day comes from the selected provider layer and invalid dates fai
 test('hazard adapters refuse untrusted URLs and provider errors',async()=>{
   await assert.rejects(sourceFetch(SOURCES.fires+'.evil.test',null,()=>{throw new Error('Must not fetch');}),/Untrusted/);
   await assert.rejects(loadFires(async()=>response({error:{message:'Query failed'}})),/rejected/);
+});
+
+test('true color uses the latest completed day advertised for that product, including gaps',()=>{
+ const layer=values=>'<Layer><ows:Identifier>'+IMAGERY_LAYER+'</ows:Identifier><Dimension><ows:Identifier>Time</ows:Identifier>'+values.map(v=>'<Value>'+v+'</Value>').join('')+'</Dimension></Layer>';
+ const now=Date.parse('2026-11-02T10:00:00Z');
+ assert.equal(imageryMetadata(layer(['2026-10-29/2026-11-02/P1D']),now).date,'2026-11-01');
+ assert.equal(imageryMetadata(layer(['2026-10-30','2026-11-02']),now).date,'2026-10-30');
+ assert.throws(()=>imageryMetadata(layer(['2026-02-30','2026-11-02']),now),/no completed imagery day/);
 });
